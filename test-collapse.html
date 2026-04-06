@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --accent: #3DE8C3;
+  --accent-dim: rgba(61,232,195,.12);
+  --text: #ffffff;
+  --text2: #a0a0a0;
+}
+
+.section-title {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.collapse-toggle {
+  background: none;
+  border: none;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 4px;
+  font-size: .8rem;
+  line-height: 1;
+  border-radius: 6px;
+  transition: all .15s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+.collapse-toggle:hover {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+.collapse-icon {
+  transition: transform .3s ease;
+}
+.collapse-toggle.collapsed .collapse-icon {
+  transform: rotate(-90deg);
+}
+#peptides-list {
+  transition: max-height .3s ease, opacity .3s ease, margin-bottom .3s ease;
+  overflow: hidden;
+  max-height: 1000px;
+}
+#peptides-list.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.peptide-entry {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: .6rem;
+}
+</style>
+</head>
+<body style="background: var(--bg); color: var(--text); padding: 20px;">
+<div class="card" style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; max-width: 720px;">
+  <div class="section-title">
+    <span>My Peptides</span>
+    <button class="collapse-toggle" id="peptides-toggle" aria-label="Collapse peptides list">
+      <span class="collapse-icon">▼</span>
+    </button>
+  </div>
+  <div id="peptides-list">
+    <div class="peptide-entry">Peptide 1: BPC-157</div>
+    <div class="peptide-entry">Peptide 2: TB-500</div>
+    <div class="peptide-entry">Peptide 3: GHK-Cu</div>
+    <div class="peptide-entry">Peptide 4: Epitalon</div>
+    <div class="peptide-entry">Peptide 5: Thymosin Alpha-1</div>
+  </div>
+</div>
+
+<script>
+// ── Peptides List Collapse Toggle ───────────────────────────
+document.getElementById('peptides-toggle').addEventListener('click', function() {
+  const list = document.getElementById('peptides-list');
+  const toggle = this;
+  const icon = toggle.querySelector('.collapse-icon');
+  const isCollapsed = list.classList.contains('collapsed');
+  
+  if (isCollapsed) {
+    list.classList.remove('collapsed');
+    toggle.classList.remove('collapsed');
+    icon.textContent = '▼';
+    localStorage.setItem('peptidesCollapsed', 'false');
+  } else {
+    list.classList.add('collapsed');
+    toggle.classList.add('collapsed');
+    icon.textContent = '▶';
+    localStorage.setItem('peptidesCollapsed', 'true');
+  }
+});
+
+// Initialize peptides collapse state
+(function initPeptidesCollapse() {
+  const saved = localStorage.getItem('peptidesCollapsed');
+  const list = document.getElementById('peptides-list');
+  const toggle = document.getElementById('peptides-toggle');
+  const icon = toggle.querySelector('.collapse-icon');
+  
+  // Default to expanded (false)
+  const shouldCollapse = saved === 'true';
+  
+  if (shouldCollapse) {
+    list.classList.add('collapsed');
+    toggle.classList.add('collapsed');
+    icon.textContent = '▶';
+  }
+})();
+</script>
+</body>
+</html>

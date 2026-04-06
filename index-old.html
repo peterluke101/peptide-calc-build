@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Peptide Dose Calculator</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 1rem 3rem}
+
+/* Header */
+.header{text-align:center;margin-bottom:2.5rem;padding-top:1rem}
+.header h1{font-size:1.75rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.header h1 span{color:var(--accent)}
+.header p{font-size:.8rem;font-weight:400;color:var(--text2);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
+
+/* Share button */
+.share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
+.share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
+.share-btn:active{transform:translateY(0)}
+
+/* Gumroad Banner */
+.gumroad-banner{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.08));border:1px solid rgba(61,232,195,.2);border-radius:var(--radius);padding:1.25rem;margin:0 1rem 2rem;max-width:440px;width:100%}
+.banner-content{display:flex;align-items:center;gap:1rem}
+.banner-icon{font-size:1.5rem;flex-shrink:0}
+.banner-text{flex:1;min-width:0}
+.banner-text h3{font-size:.9rem;font-weight:600;margin-bottom:.25rem;color:var(--text)}
+.banner-text p{font-size:.75rem;color:var(--text2);line-height:1.4}
+.banner-btn{background:var(--accent);color:#000;text-decoration:none;padding:.5rem .85rem;border-radius:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.banner-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:440px;box-shadow:var(--shadow);margin-bottom:1.25rem;transition:box-shadow .3s}
+
+/* Form controls */
+.field{margin-bottom:1.25rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.field select{appearance:none;-webkit-appearance:none;width:100%;background:var(--surface2) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a0a0a0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 1rem center;border:1px solid var(--border);border-radius:10px;padding:.85rem 2.5rem .85rem 1rem;font-family:inherit;font-size:.95rem;font-weight:500;color:var(--text);cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.field select option{background:var(--surface2);color:var(--text)}
+
+/* Results */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.stat{background:var(--surface2);border-radius:10px;padding:1rem;text-align:center;transition:transform .2s,background .2s}
+.stat:hover{transform:translateY(-1px);background:#242424}
+.stat .value{font-size:1.35rem;font-weight:700;color:var(--accent);line-height:1.2;transition:color .2s}
+.stat .label{font-size:.65rem;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-top:.3rem}
+.stat.wide{grid-column:1/-1}
+
+/* Timing badge */
+.timing-badge{display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;transition:all .3s}
+.timing-icon{font-size:1.4rem;line-height:1}
+.timing-text{font-size:.85rem;font-weight:500;color:var(--text)}
+
+/* Dose table */
+.dose-table{width:100%;border-collapse:collapse;margin-bottom:1.25rem}
+.dose-table th,.dose-table td{padding:.6rem .5rem;text-align:center;font-size:.85rem}
+.dose-table th{color:var(--text2);font-weight:500;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.dose-table td{font-weight:600}
+.dose-table tr td:nth-child(2){color:var(--accent)}
+
+/* Syringe visual */
+.syringe-wrap{display:flex;flex-direction:column;align-items:center;padding:.5rem 0}
+.syringe-label{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.75rem}
+.syringe{position:relative;width:36px;height:220px;display:flex;flex-direction:column;justify-content:flex-end}
+.syringe-barrel{position:relative;width:100%;height:200px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.18);border-radius:4px 4px 2px 2px;overflow:hidden}
+.syringe-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,var(--accent),rgba(61,232,195,.6));border-radius:0 0 2px 2px;transition:height .5s cubic-bezier(.4,0,.2,1)}
+.syringe-plunger{width:18px;height:16px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);border-radius:2px 2px 0 0;margin:0 auto;position:relative;top:-1px}
+.syringe-tip{width:6px;height:14px;background:rgba(255,255,255,.2);border-radius:0 0 2px 2px;margin:0 auto;position:relative;top:1px}
+.syringe-ticks{position:absolute;top:0;right:-28px;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.syringe-tick{font-size:.55rem;color:var(--text2);line-height:1;display:flex;align-items:center;gap:3px}
+.syringe-tick::before{content:'';display:block;width:6px;height:1px;background:rgba(255,255,255,.2)}
+.fill-label{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font-size:.65rem;font-weight:700;color:var(--bg);white-space:nowrap;text-shadow:0 0 4px rgba(0,0,0,.4);z-index:1;transition:opacity .3s}
+
+/* Nav */
+.nav{width:100%;max-width:440px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
+.nav a{font-size:.8rem;font-weight:500;color:var(--text2);text-decoration:none;padding:.45rem .85rem;border-radius:8px;transition:all .2s;letter-spacing:.02em}
+.nav a:hover{color:var(--text);background:var(--surface2)}
+.nav a.active{color:var(--accent);background:var(--accent-dim)}
+.nav-sep{color:var(--border);font-size:.7rem;user-select:none}
+
+/* Disclaimer */
+.disclaimer{text-align:center;font-size:.7rem;color:var(--text2);max-width:440px;line-height:1.6;padding:0 .5rem;opacity:.7}
+
+/* Dismissable banners (A2HS + WhatsApp) */
+.top-banner{width:100%;max-width:440px;background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;animation:fadeUp .4s ease both}
+.top-banner .banner-msg{flex:1;font-size:.8rem;font-weight:500;color:var(--text);line-height:1.4}
+.top-banner .dismiss-x{background:none;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer;padding:4px;line-height:1;border-radius:4px;transition:color .2s}
+.top-banner .dismiss-x:hover{color:var(--text)}
+
+/* Titration schedule */
+.titration{margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.titration h3{font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.titration-steps{display:flex;overflow-x:auto;gap:0;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.titration-steps::-webkit-scrollbar{display:none}
+.titration-step{display:flex;flex-direction:column;align-items:center;min-width:80px;position:relative;flex-shrink:0}
+.titration-step .step-dot{width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid var(--border);transition:all .3s;z-index:1}
+.titration-step.active .step-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(61,232,195,.4)}
+.titration-step .step-line{position:absolute;top:6px;left:calc(50% + 7px);width:calc(100% - 14px);height:2px;background:var(--border)}
+.titration-step:last-child .step-line{display:none}
+.titration-step.active .step-line{background:var(--accent)}
+.titration-step .step-dose{font-size:.8rem;font-weight:700;color:var(--accent);margin-top:.5rem;white-space:nowrap}
+.titration-step .step-weeks{font-size:.6rem;color:var(--text2);margin-top:.2rem;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+
+/* Stack builder */
+.stack-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:440px;box-shadow:var(--shadow);margin-bottom:1.25rem;animation:fadeUp .5s ease both;animation-delay:.24s}
+.stack-card h3{font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.stack-card .stack-text{font-size:.85rem;color:var(--text);line-height:1.5;margin-bottom:.75rem}
+.stack-pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.stack-pill{background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:20px;padding:.4rem .85rem;font-size:.75rem;font-weight:500;color:var(--accent);white-space:nowrap;transition:all .2s}
+.stack-pill:hover{background:rgba(61,232,195,.2);transform:translateY(-1px)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .5s ease both}
+.card:nth-child(2){animation-delay:.08s}
+.card:nth-child(3){animation-delay:.16s}
+
+/* Desktop */
+@media(min-width:520px){
+  body{padding:0 1.5rem 4rem}
+  .header h1{font-size:2rem}
+  .card{padding:2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- WhatsApp Banner -->
+<div class="top-banner" id="whatsapp-banner" style="display:none">
+  <span class="banner-msg">For the best experience, tap ⋮ → Open in Safari/Chrome</span>
+  <button class="dismiss-x" id="dismiss-whatsapp" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- Add to Home Screen Banner -->
+<div class="top-banner" id="a2hs-banner" style="display:none">
+  <span class="banner-msg">Add to Home Screen for the best experience</span>
+  <button class="dismiss-x" id="dismiss-a2hs" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="index.html" class="active">Calculator</a>
+  <span class="nav-sep">/</span>
+  <a href="schedule.html">Schedule</a>
+</nav>
+
+<div class="header">
+  <h1>Peptide <span>Dose</span> Calculator</h1>
+  <button id="share-btn" class="share-btn">📤 Share Calculator</button>
+</div>
+
+<!-- Inputs -->
+<div class="card">
+  <div class="field">
+    <label for="peptide">Peptide</label>
+    <select id="peptide"></select>
+  </div>
+  <div class="field">
+    <label for="vial">Vial Size</label>
+    <select id="vial"></select>
+  </div>
+  <div class="field">
+    <label for="water">Bacteriostatic Water Added</label>
+    <select id="water"></select>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="card" id="results-card">
+  <div class="results-grid">
+    <div class="stat wide">
+      <div class="value" id="concentration">—</div>
+      <div class="label">mcg per unit (100-unit syringe)</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="dose-range">—</div>
+      <div class="label">Dose Range (mcg)</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="standard-dose">—</div>
+      <div class="label">Standard Dose</div>
+    </div>
+  </div>
+
+  <div class="timing-badge" id="timing-badge">
+    <span class="timing-icon" id="timing-icon"></span>
+    <span class="timing-text" id="timing-text"></span>
+  </div>
+
+  <table class="dose-table">
+    <thead><tr><th>Dose</th><th>Amount</th><th>Units to Draw</th></tr></thead>
+    <tbody>
+      <tr><td>Start</td><td id="low-mcg">—</td><td id="low-units">—</td></tr>
+      <tr><td>Target</td><td id="std-mcg">—</td><td id="std-units">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="syringe-wrap">
+    <div class="syringe-label">Standard dose fill level</div>
+    <div class="syringe">
+      <div class="syringe-plunger"></div>
+      <div class="syringe-barrel">
+        <div class="syringe-fill" id="syringe-fill">
+          <span class="fill-label" id="fill-label"></span>
+        </div>
+        <div class="syringe-ticks">
+          <span class="syringe-tick">100</span>
+          <span class="syringe-tick">80</span>
+          <span class="syringe-tick">60</span>
+          <span class="syringe-tick">40</span>
+          <span class="syringe-tick">20</span>
+          <span class="syringe-tick">0</span>
+        </div>
+      </div>
+      <div class="syringe-tip"></div>
+    </div>
+  </div>
+
+  <!-- Titration Schedule (injected by JS for titration peptides) -->
+  <div class="titration" id="titration-section" style="display:none">
+    <h3>📈 Titration Schedule</h3>
+    <div class="titration-steps" id="titration-steps"></div>
+  </div>
+</div>
+
+<!-- Stack Builder -->
+<div class="stack-card" id="stack-card" style="display:none">
+  <h3>🧬 Common Stacks</h3>
+  <div id="stack-content"></div>
+</div>
+
+<!-- Gumroad Banner -->
+<div class="gumroad-banner">
+  <div class="banner-content">
+    <div class="banner-icon">📖</div>
+    <div class="banner-text">
+      <h3>New to peptides?</h3>
+      <p>Get the Quick Start Guide — reconstitution, injection technique, storage &amp; cycling basics</p>
+    </div>
+    <a href="https://peterlukedigital.gumroad.com/l/fkhwu" target="_blank" class="banner-btn">
+      Get Guide $9.99 →
+    </a>
+  </div>
+</div>
+
+<p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+
+<script>
+// ── Peptide Data ─────────────────────────────────────────────
+// To add a new peptide, just append an object to this array.
+const PEPTIDES = [
+  { name: 'Adipotide', startMcg: 100, targetMcg: 250, rangeLabel: 'Start 100 mcg → 250 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, max 4 weeks. ⚠️ Monitor kidneys' , cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'AICAR', startMcg: 25000, targetMcg: 50000, rangeLabel: 'Start 25 mg → 50 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.' , cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'AOD-9604', startMcg: 300, targetMcg: 300, rangeLabel: '300 mcg daily', timing: '☀️', timingNote: 'Morning fasted — daily' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'ARA-290', startMcg: 1000, targetMcg: 2000, rangeLabel: 'Start 1 mg → 2 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses' , cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'BPC-157', startMcg: 200, targetMcg: 300, rangeLabel: 'Start 200 mcg → 300 mcg', timing: '☀️🌙', timingNote: 'Twice daily — morning & evening' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Cagrilintide', startMcg: 250, targetMcg: 2400, rangeLabel: 'Start 0.25 mg → 2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, start 0.25mg, titrate up. Target 2.4mg.' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'CJC-1295 no DAC + Ipamorelin', startMcg: 100, targetMcg: 200, rangeLabel: 'Start 100 mcg → 200 mcg (each)', timing: '🌙', timingNote: 'Evening — before bed for GH pulse' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'CJC-1295 with DAC', startMcg: 500, targetMcg: 1000, rangeLabel: 'Start 0.5 mg → 1 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'Dihexa', startMcg: 10000, targetMcg: 20000, rangeLabel: 'Start 10 mg → 20 mg oral daily', timing: '☀️', timingNote: 'Morning — oral, 5 on / 2 off' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'DSIP', startMcg: 100, targetMcg: 250, rangeLabel: 'Start 100 mcg → 250 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Epitalon', startMcg: 1000, targetMcg: 2000, rangeLabel: 'Start 1 mg → 2 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year' , cycleWeeks: 3, breakWeeks: 24 },
+  { name: 'FOXO4-DRI', startMcg: 500, targetMcg: 1000, rangeLabel: 'Start 0.5 mg → 1 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental' , cycleWeeks: 2, breakWeeks: 4 },
+  { name: 'GHK-Cu', startMcg: 1000, targetMcg: 2000, rangeLabel: 'Start 1 mg → 2 mg daily', timing: '☀️🌙', timingNote: 'Morning or evening — daily, 5 on / 2 off' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'GHRP-2', startMcg: 100, targetMcg: 150, rangeLabel: 'Start 100 mcg → 150 mcg, 2-3x/day', timing: '☀️🌙', timingNote: 'Empty stomach — 2-3x daily (AM, pre-workout, bedtime)' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'GHRP-6', startMcg: 100, targetMcg: 100, rangeLabel: '100 mcg, 2-3x/day', timing: '☀️🌙', timingNote: 'Empty stomach — 2-3x daily (AM, pre-workout, bedtime)' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', startMcg: 1500, targetMcg: 2330, rangeLabel: 'Start 1.5 mg → 2.33 mg daily blend', timing: '☀️🌙', timingNote: 'Morning or evening — daily' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Glutathione', startMcg: 100000, targetMcg: 200000, rangeLabel: 'Start 100 mg → 200 mg, 3x/week', timing: '☀️', timingNote: 'Morning — 3x per week (Mon/Wed/Fri)' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'HCG', startMcg: 250, targetMcg: 500, rangeLabel: 'Start 250 IU → 500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Hexarelin', startMcg: 100, targetMcg: 100, rangeLabel: '100 mcg, 2-3x/day', timing: '☀️🌙', timingNote: 'Empty stomach — 2-3x daily, 4-8 week cycles' , cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'HGH', startMcg: 333, targetMcg: 666, rangeLabel: 'Start 1 IU → 2 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Note: 1 IU ≈ 333 mcg' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'IGF-1 LR3', startMcg: 20, targetMcg: 50, rangeLabel: 'Start 20 mcg → 50 mcg daily', timing: '💪', timingNote: 'Post-workout — daily, max 4 week cycles' , cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Ipamorelin', startMcg: 100, targetMcg: 300, rangeLabel: 'Start 100 mcg → 300 mcg, 1-3x/day', timing: '🌙', timingNote: 'Before bed preferred — empty stomach, 5 on / 2 off' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'KLOW Stack (TB + BPC + GHK + KPV)', startMcg: 2000, targetMcg: 4000, rangeLabel: 'Start 2 mg → 4 mg daily blend', timing: '☀️🌙', timingNote: 'Morning or evening — daily' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'KPV', startMcg: 200, targetMcg: 500, rangeLabel: 'Start 200 mcg → 500 mcg daily', timing: '☀️', timingNote: 'Morning empty stomach — daily, 5 on / 2 off' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'L-Carnitine', startMcg: 200000, targetMcg: 500000, rangeLabel: 'Start 200 mg → 500 mg, 2-3x/week', timing: '☀️', timingNote: 'Morning or pre-workout — 2-3x/week' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'LL-37', startMcg: 50, targetMcg: 125, rangeLabel: 'Start 50 mcg → 125 mcg daily', timing: '☀️', timingNote: 'Morning — daily, 50-day courses' , cycleWeeks: 7, breakWeeks: 4 },
+  { name: 'Mazdutide', startMcg: 1500, targetMcg: 4000, rangeLabel: 'Start 1.5 mg → 4 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, titrate up. ⚠️ Investigational' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Melanotan I', startMcg: 100, targetMcg: 250, rangeLabel: 'Start 100 mcg → 250 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance' , cycleWeeks: 4, breakWeeks: 8 },
+  { name: 'Melanotan II', startMcg: 100, targetMcg: 250, rangeLabel: 'Start 100 mcg → 250 mcg daily', timing: '🌙', timingNote: 'Evening — daily during loading, then 1-2x/week maintenance' , cycleWeeks: 4, breakWeeks: 8 },
+  { name: 'MK-677 (Ibutamoren)', startMcg: 10000, targetMcg: 25000, rangeLabel: 'Start 10 mg → 25 mg daily', timing: '🌙', timingNote: 'Before bed — daily, 8-12 week cycles' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'MOTS-C', startMcg: 1000, targetMcg: 1000, rangeLabel: '1 mg daily (5 on / 2 off)', timing: '☀️', timingNote: 'Morning — daily, 5 days on / 2 days off' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'NAD+', startMcg: 20000, targetMcg: 100000, rangeLabel: 'Start 20 mg → 100 mg, 3x/week', timing: '☀️', timingNote: 'Morning — 3x per week, start 20mg, titrate up 20mg weekly to 100mg.' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Oxytocin', startMcg: 4, targetMcg: 10, rangeLabel: 'Start 4 mcg → 10 mcg SubQ', timing: '☀️', timingNote: 'Morning — as needed or daily' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'PE-22-28', startMcg: 100, targetMcg: 150, rangeLabel: 'Start 100 mcg → 150 mcg, 2x/day', timing: '☀️🌙', timingNote: 'Morning + evening — daily, 4-8 week cycles' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'PEG-MGF', startMcg: 200, targetMcg: 200, rangeLabel: '200 mcg, 2-3x/week', timing: '💪', timingNote: 'Post-workout — 2-3x per week' , cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'PT-141 (Bremelanotide)', startMcg: 1000, targetMcg: 1750, rangeLabel: 'Start 1 mg → 1.75 mg as needed', timing: '⏰', timingNote: '45 min before activity — max 8 doses/month' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Retatrutide', startMcg: 1000, targetMcg: 12000, rangeLabel: 'Start 1 mg → 12 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, start 1mg, titrate up. Target 12mg.' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Selank', startMcg: 250, targetMcg: 400, rangeLabel: 'Start 250 mcg → 400 mcg daily', timing: '☀️', timingNote: 'Morning — daily, SubQ or nasal' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Semaglutide', startMcg: 250, targetMcg: 2400, rangeLabel: 'Start 0.25 mg → 2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, start 0.25mg, titrate up 0.25mg every 4 weeks to 2.4mg.' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Semax', startMcg: 300, targetMcg: 600, rangeLabel: 'Start 300 mcg → 600 mcg daily', timing: '☀️', timingNote: 'Morning — daily, SubQ or nasal' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Sermorelin', startMcg: 200, targetMcg: 300, rangeLabel: 'Start 200 mcg → 300 mcg daily', timing: '🌙', timingNote: 'Before bed — daily, empty stomach' , cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'SS-31 (Elamipretide)', startMcg: 250, targetMcg: 500, rangeLabel: 'Start 250 mcg → 500 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 8 week cycles' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Survodutide', startMcg: 300, targetMcg: 4800, rangeLabel: 'Start 0.3 mg → 4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, start 0.3mg, 7-step titration to 4.8mg over 20 weeks. ⚠️ Investigational' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'TB-500', startMcg: 2000, targetMcg: 2500, rangeLabel: 'Start 2 mg → 2.5 mg', timing: '☀️🌙', timingNote: 'Any time — 2x per week' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Tesamorelin', startMcg: 1000, targetMcg: 2000, rangeLabel: 'Start 1 mg → 2 mg daily', timing: '🌙', timingNote: 'Before bed — daily, empty stomach' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Thymalin', startMcg: 5000, targetMcg: 10000, rangeLabel: 'Start 5 mg → 10 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year' , cycleWeeks: 1, breakWeeks: 24 },
+  { name: 'Thymosin Alpha-1', startMcg: 750, targetMcg: 1500, rangeLabel: 'Start 0.75 mg → 1.5 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week' , cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Tirzepatide', startMcg: 2500, targetMcg: 15000, rangeLabel: 'Start 2.5 mg → 15 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, start 2.5mg, titrate up 2.5mg every 4 weeks to 15mg.' , cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'VIP', startMcg: 50, targetMcg: 50, rangeLabel: '50 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required' , cycleWeeks: 0, breakWeeks: 0 },
+];
+
+const VIALS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 40, 50, 60, 70, 80, 100, 200, 250, 500, 1000, 2000, 2500];  // mg
+const WATER = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5];   // mL
+
+// ── Populate dropdowns ───────────────────────────────────────
+const $peptide = document.getElementById('peptide');
+const $vial    = document.getElementById('vial');
+const $water   = document.getElementById('water');
+
+PEPTIDES.forEach((p, i) => {
+  const o = document.createElement('option');
+  o.value = i; o.textContent = p.name;
+  $peptide.appendChild(o);
+});
+VIALS.forEach(v => {
+  const o = document.createElement('option');
+  o.value = v; o.textContent = v + ' mg';
+  $vial.appendChild(o);
+});
+WATER.forEach(w => {
+  const o = document.createElement('option');
+  o.value = w; o.textContent = w + ' mL';
+  $water.appendChild(o);
+});
+
+// Sensible defaults
+$vial.value  = '5';
+$water.value = '2';
+
+// ── Calculation ──────────────────────────────────────────────
+function fmt(n) {
+  if (n >= 100) return Math.round(n).toLocaleString();
+  if (n >= 10)  return +n.toFixed(1) + '';
+  return +n.toFixed(2) + '';
+}
+
+function fmtDose(mcg) {
+  if (mcg >= 1000) {
+    const mg = mcg / 1000;
+    return (mg % 1 === 0 ? mg : +mg.toFixed(2)) + ' mg';
+  }
+  return fmt(mcg) + ' mcg';
+}
+
+function unitsForDose(mcg, concMcgPerUnit) {
+  return concMcgPerUnit > 0 ? mcg / concMcgPerUnit : 0;
+}
+
+function fmtUnits(u) {
+  if (u < 0.5) return '< 0.5';
+  return +u.toFixed(1) + '';
+}
+
+function calculate() {
+  const pep  = PEPTIDES[$peptide.value];
+  const vialMg  = parseFloat($vial.value);
+  const waterMl = parseFloat($water.value);
+
+  // Concentration: vial mcg total / (waterMl * 100 units)
+  const totalMcg = vialMg * 1000;
+  const concMcgPerUnit = totalMcg / (waterMl * 100);
+
+  const startUnits = unitsForDose(pep.startMcg, concMcgPerUnit);
+  const targetUnits = unitsForDose(pep.targetMcg, concMcgPerUnit);
+
+  // Update DOM
+  document.getElementById('concentration').textContent = fmt(concMcgPerUnit) + ' mcg/unit';
+  document.getElementById('dose-range').textContent    = pep.rangeLabel;
+  document.getElementById('standard-dose').textContent = fmtDose(pep.targetMcg);
+
+  document.getElementById('low-mcg').textContent   = fmtDose(pep.startMcg);
+  document.getElementById('low-units').textContent  = fmtUnits(startUnits) + ' units';
+  document.getElementById('std-mcg').textContent    = fmtDose(pep.targetMcg);
+  document.getElementById('std-units').textContent  = fmtUnits(targetUnits) + ' units';
+
+  // Timing badge
+  document.getElementById('timing-icon').textContent = pep.timing;
+  document.getElementById('timing-text').textContent = pep.timingNote;
+
+  // Syringe fill (standard dose, clamped to 100 units max)
+  const fillPct = Math.min(stdUnits, 100) / 100 * 100;
+  const fill = document.getElementById('syringe-fill');
+  const label = document.getElementById('fill-label');
+  fill.style.height = fillPct + '%';
+  label.textContent = fmtUnits(stdUnits) + 'u';
+  label.style.opacity = fillPct > 4 ? '1' : '0';
+}
+
+$peptide.addEventListener('change', calculate);
+$vial.addEventListener('change', calculate);
+$water.addEventListener('change', calculate);
+
+calculate();
+
+// ── Share functionality ─────────────────────────────────────
+document.getElementById('share-btn').addEventListener('click', async () => {
+  const shareData = {
+    title: 'Free Peptide Dose Calculator',
+    text: 'Hey — thought you might find this useful. 30+ peptides, syringe visualization, weekly schedules.\n\n' + window.location.href + '\n\nQuick Start Guide ($9.99):\nhttps://peterlukedigital.gumroad.com/l/fkhwu'
+  };
+  
+  if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      // User cancelled
+    }
+  } else {
+    // Fallback: textarea copy method (works on iOS Safari)
+    const text = '💉 Free Peptide Dose Calculator — 30+ peptides, syringe visualization, dosing schedules & more\n\n👉 ' + window.location.href + '\n\n📖 New to peptides? Grab the Quick Start Guide ($9.99)\n👉 https://peterlukedigital.gumroad.com/l/fkhwu';
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    const btn = document.getElementById('share-btn');
+    const original = btn.textContent;
+    btn.textContent = '✓ Link Copied!';
+    btn.style.background = '#10b981';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = 'var(--accent)';
+    }, 2000);
+  }
+});
+
+// ── Titration Data ──────────────────────────────────────────
+const TITRATION = {
+  'Semaglutide': [
+    { dose: '0.25 mg', weeks: 'Wk 1–4' },
+    { dose: '0.5 mg',  weeks: 'Wk 5–8' },
+    { dose: '1 mg',    weeks: 'Wk 9–12' },
+    { dose: '1.7 mg',  weeks: 'Wk 13–16' },
+    { dose: '2.4 mg',  weeks: 'Wk 17+' }
+  ],
+  'Tirzepatide': [
+    { dose: '2.5 mg',  weeks: 'Wk 1–4' },
+    { dose: '5 mg',    weeks: 'Wk 5–8' },
+    { dose: '7.5 mg',  weeks: 'Wk 9–12' },
+    { dose: '10 mg',   weeks: 'Wk 13–16' },
+    { dose: '12.5 mg', weeks: 'Wk 17–20' },
+    { dose: '15 mg',   weeks: 'Wk 21+' }
+  ],
+  'Retatrutide': [
+    { dose: '1 mg',  weeks: 'Wk 1–4' },
+    { dose: '2 mg',  weeks: 'Wk 5–8' },
+    { dose: '4 mg',  weeks: 'Wk 9–12' },
+    { dose: '8 mg',  weeks: 'Wk 13–16' },
+    { dose: '12 mg', weeks: 'Wk 17+' }
+  ]
+};
+
+// ── Stack Recommendations ───────────────────────────────────
+const STACKS = {
+  'BPC-157': { text: 'Often paired with:', pills: ['TB-500 (Wolverine Stack)', 'GHK-Cu (GLOW Stack)'] },
+  'TB-500':  { text: 'Often paired with:', pills: ['BPC-157 (Wolverine Stack)'] },
+  'GHK-Cu':  { text: 'Often paired with:', pills: ['BPC-157 + TB-500 (GLOW Stack)'] },
+  'Semaglutide':  { text: 'Often paired with:', pills: ['AOD-9604 (fat loss)', 'BPC-157 (gut protection)'] },
+  'Tirzepatide':  { text: 'Often paired with:', pills: ['AOD-9604 (fat loss)', 'BPC-157 (gut protection)'] },
+  'Sermorelin':   { text: 'Often paired with:', pills: ['Ipamorelin', 'GHRP-2', 'GHRP-6'] },
+  'CJC-1295 no DAC + Ipamorelin': { text: 'Already a stack!', pills: ['Add Sermorelin for enhanced GH pulse'] },
+  'Semax':  { text: 'Often paired with:', pills: ['Selank (cognitive + calm stack)'] },
+  'Selank': { text: 'Often paired with:', pills: ['Semax (focus + anxiety stack)'] },
+  'NAD+':   { text: 'Often paired with:', pills: ['MOTS-C (longevity stack)'] },
+  'MOTS-C': { text: 'Often paired with:', pills: ['NAD+ (longevity stack)'] }
+};
+
+// ── Update titration + stacks on peptide change ─────────────
+function updateTitration(pepName) {
+  const section = document.getElementById('titration-section');
+  const container = document.getElementById('titration-steps');
+  const schedule = TITRATION[pepName];
+
+  if (!schedule) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  container.innerHTML = schedule.map((step, i) =>
+    `<div class="titration-step${i === 0 ? ' active' : ''}">
+      <div class="step-dot"></div>
+      ${i < schedule.length - 1 ? '<div class="step-line"></div>' : ''}
+      <div class="step-dose">${step.dose}</div>
+      <div class="step-weeks">${step.weeks}</div>
+    </div>`
+  ).join('');
+}
+
+function updateStacks(pepName) {
+  const card = document.getElementById('stack-card');
+  const content = document.getElementById('stack-content');
+  const stack = STACKS[pepName];
+
+  if (!stack) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+  content.innerHTML =
+    `<div class="stack-text">${stack.text}</div>
+     <div class="stack-pills">${stack.pills.map(p => `<span class="stack-pill">${p}</span>`).join('')}</div>`;
+}
+
+// Hook titration + stacks into peptide/vial/water changes
+function updateExtras() {
+  const pep = PEPTIDES[$peptide.value];
+  if (pep) {
+    updateTitration(pep.name);
+    updateStacks(pep.name);
+  }
+}
+$peptide.addEventListener('change', updateExtras);
+$vial.addEventListener('change', updateExtras);
+$water.addEventListener('change', updateExtras);
+updateExtras();
+
+// ── WhatsApp Detection ──────────────────────────────────────
+(function() {
+  const ua = navigator.userAgent || '';
+  if (/WhatsApp/i.test(ua) && !localStorage.getItem('dismiss_whatsapp')) {
+    document.getElementById('whatsapp-banner').style.display = 'flex';
+  }
+  document.getElementById('dismiss-whatsapp').addEventListener('click', () => {
+    document.getElementById('whatsapp-banner').style.display = 'none';
+    localStorage.setItem('dismiss_whatsapp', '1');
+  });
+})();
+
+// ── Add to Home Screen Prompt ───────────────────────────────
+(function() {
+  if (localStorage.getItem('dismiss_a2hs')) return;
+  // Check if already installed as PWA
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  if (window.navigator.standalone === true) return;
+
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isSafari = isIOS && /Safari/i.test(ua) && !/CriOS|FxiOS|OPiOS/i.test(ua);
+  const isAndroidChrome = /Android/i.test(ua) && /Chrome/i.test(ua) && !/Edge|OPR|Samsung/i.test(ua);
+
+  if (isSafari || isAndroidChrome) {
+    document.getElementById('a2hs-banner').style.display = 'flex';
+  }
+
+  document.getElementById('dismiss-a2hs').addEventListener('click', () => {
+    document.getElementById('a2hs-banner').style.display = 'none';
+    localStorage.setItem('dismiss_a2hs', '1');
+  });
+})();
+
+// ── Service Worker ───────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
