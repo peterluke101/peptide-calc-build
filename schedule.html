@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Peptide Schedule</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 1rem calc(3rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+
+/* iOS Fixes */
+input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
+input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
+@supports (-webkit-touch-callout:none){body{padding-top:max(env(safe-area-inset-top), 44px);padding-bottom:calc(4rem + env(safe-area-inset-bottom))}}
+
+/* ── Nav ─────────────────────────────────────────────────── */
+.nav{width:100%;max-width:720px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
+.nav a{font-size:.8rem;font-weight:500;color:var(--text2);text-decoration:none;padding:.45rem .85rem;border-radius:8px;transition:all .2s;letter-spacing:.02em}
+.nav a:hover{color:var(--text);background:var(--surface2)}
+.nav a.active{color:var(--accent);background:var(--accent-dim)}
+.nav-sep{color:var(--border);font-size:.7rem;user-select:none}
+
+/* ── Header ──────────────────────────────────────────────── */
+.header{text-align:center;margin-bottom:2rem}
+.header h1{font-size:1.75rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.header h1 span{color:var(--accent)}
+.header p{font-size:.8rem;font-weight:400;color:var(--text2);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
+
+/* Share button */
+.share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
+.share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
+.share-btn:active{transform:translateY(0)}
+
+/* Gumroad Banner */
+.gumroad-banner{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.08));border:1px solid rgba(61,232,195,.2);border-radius:var(--radius);padding:1.25rem;margin:0 auto 2rem;max-width:720px;width:100%}
+.banner-content{display:flex;align-items:center;gap:1rem}
+.banner-icon{font-size:1.5rem;flex-shrink:0}
+.banner-text{flex:1;min-width:0}
+.banner-text h3{font-size:.9rem;font-weight:600;margin-bottom:.25rem;color:var(--text)}
+.banner-text p{font-size:.75rem;color:var(--text2);line-height:1.4}
+.banner-btn{background:var(--accent);color:#000;text-decoration:none;padding:.5rem .85rem;border-radius:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.banner-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
+
+/* ── Card ────────────────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1.25rem;transition:box-shadow .3s}
+
+/* ── Animations ──────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeUp .4s ease both}
+.animate-d1{animation-delay:.06s}
+.animate-d2{animation-delay:.12s}
+.animate-d3{animation-delay:.18s}
+.animate-d4{animation-delay:.24s}
+
+@keyframes donePop{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-state{text-align:center;padding:2.5rem 1rem}
+.empty-state .icon{font-size:2.5rem;margin-bottom:1rem;opacity:.6}
+.empty-state h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+.empty-state p{font-size:.85rem;color:var(--text2);line-height:1.6}
+
+/* ── Section headings ────────────────────────────────────── */
+.section-title{font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.collapse-toggle{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px;font-size:.8rem;line-height:1;border-radius:6px;transition:all .15s;flex-shrink:0;display:flex;align-items:center;justify-content:center;width:24px;height:24px}
+.collapse-toggle:hover{color:var(--accent);background:var(--accent-dim)}
+.collapse-icon{transition:transform .3s ease}
+.collapse-toggle.collapsed .collapse-icon{transform:rotate(-90deg)}
+#peptides-list{transition:max-height .3s ease, opacity .3s ease, margin-bottom .3s ease;overflow:hidden;max-height:1000px}
+#peptides-list.collapsed{max-height:0;opacity:0;margin-bottom:0}
+
+/* ── Today Card ──────────────────────────────────────────── */
+.today-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.today-header h2{font-size:1.1rem;font-weight:700}
+.today-date{font-size:.8rem;color:var(--text2);font-weight:500}
+.completed-counter{font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:.75rem;opacity:.9}
+.today-item{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface2);border-radius:10px;margin-bottom:.5rem;transition:transform .15s,opacity .3s,background .3s}
+.today-item:last-child{margin-bottom:0}
+.today-item:active{transform:scale(.98)}
+.today-item.completed{opacity:.6;background:rgba(61,232,195,.06)}
+.today-item.completed .today-name{text-decoration:line-through;text-decoration-color:var(--accent)}
+.today-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.today-info{flex:1;min-width:0}
+.today-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.today-meta{font-size:.75rem;color:var(--text2);margin-top:.15rem}
+.today-units{font-size:1rem;font-weight:700;color:var(--accent);white-space:nowrap;padding-left:.5rem}
+.today-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.9rem}
+.done-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:.5rem;-webkit-tap-highlight-color:transparent;user-select:none}
+.done-btn:hover{background:var(--accent-dim);border-color:var(--accent)}
+.done-btn:active{transform:scale(.95)}
+.done-btn.done{background:var(--accent);color:#000;border-color:var(--accent);animation:donePop .3s ease}
+
+/* ── History Section ─────────────────────────────────────── */
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.section-header h2{font-size:1.1rem;font-weight:700}
+.clear-btn{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.3rem .6rem;font-size:.7rem;font-weight:500;cursor:pointer;transition:all .2s}
+.clear-btn:hover{border-color:var(--accent);color:var(--accent)}
+.history-list{max-height:200px;overflow-y:auto}
+.history-item{display:flex;align-items:center;gap:.75rem;padding:.6rem;background:var(--surface2);border-radius:8px;margin-bottom:.4rem;opacity:.8}
+.history-item:last-child{margin-bottom:0}
+.history-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--accent)}
+.history-info{flex:1;min-width:0}
+.history-name{font-size:.8rem;font-weight:500}
+.history-time{font-size:.65rem;color:var(--text2);margin-top:.1rem}
+.history-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
+
+/* ── Vial Tracker ───────────────────────────────────────── */
+.vial-item{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.75rem}
+.vial-item:last-child{margin-bottom:0}
+.vial-item.low{border:1px solid #f59e0b;background:rgba(245,158,11,.08)}
+.vial-item.empty{border:1px solid #ef4444;background:rgba(239,68,68,.08)}
+.vial-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.vial-name{font-size:.9rem;font-weight:600}
+.vial-specs{font-size:.7rem;color:var(--text2)}
+.vial-progress{background:var(--bg);border-radius:3px;height:6px;margin-bottom:.5rem;overflow:hidden}
+.vial-progress-fill{height:100%;background:var(--accent);transition:width .3s;border-radius:3px}
+.vial-progress-fill.low{background:#f59e0b}
+.vial-progress-fill.empty{background:#ef4444}
+.vial-stats{display:flex;justify-content:space-between;align-items:center}
+.vial-doses{font-size:.75rem;color:var(--text2)}
+.vial-warning{font-size:.7rem;font-weight:600;color:#f59e0b}
+.vial-warning.empty-warn{color:#ef4444}
+.vial-reset-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:.2rem .4rem;font-size:.6rem;font-weight:500;cursor:pointer;transition:all .2s;margin-left:.5rem}
+.vial-reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.vial-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
+
+/* ── Calendar Grid ───────────────────────────────────────── */
+.calendar-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.calendar-nav h2{font-size:1.1rem;font-weight:700}
+.week-nav{display:flex;gap:.25rem}
+.week-nav button{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.9rem}
+.week-nav button:hover{border-color:var(--accent);color:var(--accent)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.4rem}
+.cal-day{background:var(--surface2);border-radius:10px;padding:.6rem .4rem;min-height:100px;cursor:pointer;transition:all .2s;border:1px solid transparent;-webkit-tap-highlight-color:transparent;user-select:none}
+.cal-day:active{transform:scale(.96)}
+.cal-day.today{border-color:var(--accent);box-shadow:0 0 12px var(--accent-dim)}
+.cal-day.selected{background:rgba(61,232,195,.15);border-color:var(--accent)}
+.cal-day.today.selected{background:rgba(61,232,195,.18);box-shadow:0 0 16px var(--accent-dim)}
+#today-list{transition:opacity .2s ease,transform .2s ease}
+#today-list.fade-out{opacity:0;transform:translateY(6px)}
+#today-list.fade-in{opacity:1;transform:translateY(0)}
+.cal-day-label{font-size:.65rem;font-weight:600;color:var(--text2);text-transform:uppercase;text-align:center;margin-bottom:.1rem;letter-spacing:.04em}
+.cal-day-num{font-size:.85rem;font-weight:700;text-align:center;margin-bottom:.4rem}
+.cal-day.today .cal-day-num{color:var(--accent)}
+.cal-day.selected .cal-day-num{color:var(--accent)}
+.cal-event{display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:4px;margin-bottom:2px;font-size:.55rem;font-weight:600;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cal-event .ev-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cal-event .ev-icon{font-size:.7rem;line-height:1;flex-shrink:0}
+.cal-event .ev-text{overflow:hidden;text-overflow:ellipsis}
+.cal-events-wrap{display:contents}
+.cal-rest{text-align:center;font-size:.6rem;color:var(--text2);padding:4px 0;font-style:italic}
+
+/* ── My Peptides List ────────────────────────────────────── */
+.peptide-entry{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.6rem;transition:all .2s;border:1px solid transparent}
+.peptide-entry:hover{border-color:var(--border)}
+.pep-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;margin-bottom:.6rem}
+.pep-name{display:flex;align-items:center;gap:.5rem;font-size:.95rem;font-weight:600;min-width:0}
+.pep-name .pep-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pep-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pep-remove{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px;font-size:1rem;line-height:1;border-radius:6px;transition:all .15s;flex-shrink:0}
+.pep-remove:hover{color:#ff6b6b;background:rgba(255,107,107,.1)}
+.pep-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
+.pep-detail{font-size:.7rem;color:var(--text2)}
+.pep-detail strong{display:block;color:var(--text);font-size:.8rem;font-weight:600;margin-top:.15rem}
+.pep-cycle{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.pep-cycle-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.pep-cycle-fill{height:100%;border-radius:2px;transition:width .3s}
+.pep-cycle-text{font-size:.7rem;color:var(--text2);white-space:nowrap}
+.pep-cycle-warn{color:#ffb84d}
+
+/* ── Cycle Period Styles ──────────────────────────────────── */
+.cal-day.in-break{background:rgba(239,68,68,.07)!important;border-color:rgba(239,68,68,.25)!important}
+.cal-day.in-break .cal-day-num{color:#ff8888!important}
+.cal-event.ev-break{background:rgba(239,68,68,.18);color:#ff9090}
+.cal-event.ev-cycle-end{background:rgba(61,232,195,.18);color:var(--accent);font-weight:700}
+.cal-event.ev-restart{background:rgba(61,232,195,.22);color:var(--accent);font-weight:700}
+.break-notice{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;padding:.6rem .75rem;margin-bottom:.5rem;font-size:.8rem;color:#ff9090;display:flex;align-items:center;gap:.5rem;line-height:1.4}
+.break-notice strong{color:#ffbbbb}
+.today-cycle-badge{font-size:.65rem;font-weight:700;color:var(--accent);margin-left:.35rem}
+
+/* ── Vial Usage in Peptide List ──────────────────────────── */
+.pep-vial{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.pep-vial-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.pep-vial-fill{height:100%;border-radius:2px;transition:width .3s}
+.pep-vial-text{font-size:.7rem;color:var(--text2);white-space:nowrap}
+.pep-vial-warn{color:#f59e0b}
+.pep-vial-empty{color:#ef4444}
+.pep-vial-reset{background:none;border:none;color:var(--text2);font-size:.65rem;cursor:pointer;text-decoration:underline;padding:0;transition:color .2s}
+.pep-vial-reset:hover{color:var(--accent)}
+
+/* ── Notes (collapsible) ─────────────────────────────────── */
+.pep-notes{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.notes-toggle{background:none;border:none;color:var(--text2);font-size:.7rem;font-weight:500;cursor:pointer;padding:0;transition:color .2s;display:flex;align-items:center;gap:.3rem}
+.notes-toggle:hover{color:var(--accent)}
+.notes-toggle .notes-arrow{transition:transform .2s;font-size:.6rem}
+.notes-toggle .notes-arrow.open{transform:rotate(90deg)}
+.notes-content{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.notes-content.open{max-height:200px}
+.pep-notes textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.5rem;font-family:inherit;font-size:.75rem;color:var(--text);resize:vertical;min-height:50px;max-height:120px;margin-top:.4rem}
+.pep-notes textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-dim)}
+.pep-notes textarea::placeholder{color:var(--text2)}
+.notes-charcount{font-size:.6rem;color:var(--text2);text-align:right;margin-top:.2rem}
+.notes-charcount.warn{color:#f59e0b}
+
+/* ── Titration Timeline ─────────────────────────────────── */
+.titration-timeline{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.timeline-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.timeline-title{font-size:.8rem;font-weight:600;color:var(--accent)}
+.timeline-week{font-size:.7rem;color:var(--text2)}
+.timeline-track{position:relative;height:8px;background:var(--border);border-radius:4px;margin-bottom:.5rem}
+.timeline-progress{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.timeline-steps{display:flex;justify-content:space-between;position:relative}
+.timeline-step{display:flex;flex-direction:column;align-items:center;position:relative}
+.timeline-step-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:var(--surface);transition:all .2s}
+.timeline-step.current .timeline-step-dot{border-color:var(--accent);background:var(--accent)}
+.timeline-step.completed .timeline-step-dot{border-color:var(--accent);background:var(--accent)}
+.timeline-step.future .timeline-step-dot{border-color:var(--border);background:var(--surface2)}
+.timeline-step-label{font-size:.65rem;color:var(--text2);margin-top:.25rem;text-align:center;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
+.timeline-step.current .timeline-step-label{color:var(--accent);font-weight:600}
+.timeline-current-info{background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:6px;padding:.5rem;margin-top:.5rem}
+.timeline-current-dose{font-size:.75rem;font-weight:600;color:var(--text)}
+.timeline-next{font-size:.65rem;color:var(--text2);margin-top:.15rem}
+
+/* ── Stack Builder ──────────────────────────────────────── */
+.stack-goals{display:flex;gap:.5rem;flex-wrap:wrap}
+.goal-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.5rem .75rem;font-size:.7rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.goal-btn:hover{background:var(--accent);color:#000}
+.goal-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.stack-suggestions{margin-top:1rem}
+.stack-empty{text-align:center;padding:2rem 1rem;color:var(--text2);font-size:.8rem}
+.stack-category{margin-bottom:1.5rem}
+.stack-category:last-child{margin-bottom:0}
+.stack-category-title{font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:.75rem;padding-bottom:.25rem;border-bottom:1px solid var(--border)}
+.stack-peptides{display:grid;gap:.5rem}
+.stack-peptide{background:var(--surface2);border-radius:8px;padding:.75rem;transition:all .2s}
+.stack-peptide:hover{background:#242424}
+.stack-peptide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
+.stack-peptide-name{font-size:.8rem;font-weight:600;color:var(--text)}
+.stack-peptide-priority{font-size:.6rem;padding:.15rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.02em;font-weight:600}
+.stack-peptide-priority.core{background:#10b981;color:#000}
+.stack-peptide-priority.synergistic{background:#f59e0b;color:#000}
+.stack-peptide-priority.optional{background:var(--border);color:var(--text2)}
+.stack-peptide-dose{font-size:.7rem;color:var(--text2);margin-bottom:.25rem}
+.stack-peptide-benefit{font-size:.65rem;color:var(--text2);line-height:1.3}
+
+/* ── Add Peptide Panel ───────────────────────────────────── */
+.add-panel{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:1.25rem;margin-top:.5rem}
+.add-panel .field{margin-bottom:1rem}
+.add-panel .field:last-of-type{margin-bottom:0}
+.add-panel .field label{display:block;font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.add-panel .field select{appearance:none;-webkit-appearance:none;width:100%;background:var(--surface) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a0a0a0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 1rem center;border:1px solid var(--border);border-radius:8px;padding:.7rem 2.5rem .7rem .85rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.add-panel .field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.add-panel .field select option{background:var(--surface2);color:var(--text)}
+.add-panel .field input[type="date"]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);transition:border-color .2s,box-shadow .2s;color-scheme:dark}
+.add-panel .field input[type="date"]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.add-panel .field .helper-text{font-size:.65rem;color:var(--text2);font-weight:400;margin-top:.3rem;font-style:italic}
+.btn-row{display:flex;gap:.5rem;margin-top:1rem}
+.btn{padding:.7rem 1.2rem;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--text2)}
+.btn-add-trigger{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;background:none;border:1px dashed var(--border);border-radius:10px;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s;margin-top:.5rem}
+.btn-add-trigger:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.btn-add-trigger .plus{font-size:1.1rem;font-weight:300}
+
+
+
+/* ── A2HS / WhatsApp Banner ──────────────────────────────── */
+.install-banner{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.06));border:1px solid rgba(61,232,195,.15);border-radius:var(--radius);padding:1rem 1.25rem;margin:0 auto 1.25rem;max-width:720px;width:100%;display:none;align-items:center;gap:.75rem}
+.install-banner.show{display:flex}
+.install-banner-icon{font-size:1.3rem;flex-shrink:0}
+.install-banner-text{flex:1;min-width:0}
+.install-banner-text p{font-size:.8rem;color:var(--text);font-weight:500}
+.install-banner-text small{font-size:.65rem;color:var(--text2)}
+.install-banner-btn{background:var(--accent);color:#000;border:none;border-radius:6px;padding:.45rem .7rem;font-family:inherit;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.install-banner-btn:hover{background:#2dd4b0}
+.install-banner-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:1rem;padding:4px;line-height:1}
+
+/* ── Disclaimer ──────────────────────────────────────────── */
+.disclaimer{text-align:center;font-size:.7rem;color:var(--text2);max-width:720px;line-height:1.6;padding:0 .5rem;opacity:.7;margin-top:1rem}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media(max-width:600px){
+  /* Calendar: horizontal scroll cards — swipe through days */
+  .cal-grid{display:flex;overflow-x:auto;gap:.5rem;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x mandatory}
+  .cal-grid::-webkit-scrollbar{display:none}
+  .cal-day{flex:0 0 calc(33.33% - .35rem);min-width:92px;min-height:110px;scroll-snap-align:start;display:flex;flex-direction:column;padding:.65rem .5rem;border-radius:10px;cursor:pointer;background:var(--surface2);transition:all .15s;border:1px solid transparent}
+  .cal-day:active{transform:scale(.96)}
+  .cal-day.today{border-color:var(--accent);box-shadow:0 0 12px var(--accent-dim)}
+  .cal-day.selected{background:rgba(61,232,195,.15);border-color:var(--accent)}
+  .cal-day.today.selected{background:rgba(61,232,195,.18);box-shadow:0 0 16px var(--accent-dim)}
+  .cal-day-label{font-size:.65rem;font-weight:600;color:var(--text2);text-transform:uppercase;text-align:center;margin-bottom:.1rem;letter-spacing:.04em}
+  .cal-day.today .cal-day-label{color:var(--accent)}
+  .cal-day-num{font-size:.9rem;font-weight:700;text-align:center;margin-bottom:.35rem}
+  .cal-day .cal-events-wrap{display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
+  .cal-event{display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:4px;margin-bottom:0;font-size:.55rem;font-weight:600;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .cal-event .ev-dot{width:5px;height:5px}
+  .cal-rest{text-align:center;font-size:.6rem;color:var(--text2);padding:4px 0;font-style:italic}
+  .pep-details{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .today-header,.section-header,.calendar-nav,.vial-header,.pep-header,.timeline-header{gap:.5rem;flex-wrap:wrap}
+  .today-header h2,.section-header h2,.calendar-nav h2{min-width:0}
+  .today-units{padding-left:.25rem}
+  .done-btn{margin-left:0}
+  .pep-cycle,.pep-vial,.timeline-current-info{min-width:0}
+  .timeline-step-label{font-size:.6rem}
+}
+@media(min-width:520px){
+  body{padding:0 1.5rem 4rem}
+  .header h1{font-size:2rem}
+  .card{padding:2rem}
+}
+@media(min-width:768px){
+  .cal-day{min-height:110px;padding:.7rem .5rem}
+  .cal-event{font-size:.6rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="index.html">Calculator</a>
+  <span class="nav-sep">/</span>
+  <a href="schedule.html" class="active">Schedule</a>
+</nav>
+
+<div class="header">
+  <h1>Peptide <span>Schedule</span></h1>
+  <button id="share-btn" class="share-btn">📤 Share Schedule</button>
+</div>
+
+<!-- A2HS / WhatsApp Banner -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-icon" id="install-banner-icon">📲</div>
+  <div class="install-banner-text">
+    <p id="install-banner-msg">Add to Home Screen</p>
+    <small id="install-banner-sub">Quick access — works offline</small>
+  </div>
+  <button class="install-banner-btn" id="install-banner-btn">Install</button>
+  <button class="install-banner-close" id="install-banner-close">✕</button>
+</div>
+
+<!-- Today's Injections -->
+<div class="card animate-in" id="today-card">
+  <div class="today-header">
+    <h2>Today's Injections</h2>
+    <span class="today-date" id="today-date"></span>
+  </div>
+  <div class="completed-counter" id="completed-counter"></div>
+  <div id="today-list"></div>
+</div>
+
+<!-- Weekly Calendar -->
+<div class="card animate-in animate-d1" id="calendar-card">
+  <div class="calendar-nav">
+    <h2 id="week-label">This Week</h2>
+    <div class="week-nav">
+      <button id="prev-week" aria-label="Previous week">‹</button>
+      <button id="next-week" aria-label="Next week">›</button>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<!-- Injection History -->
+<div class="card animate-in animate-d1" id="history-card">
+  <div class="section-header">
+    <h2>Recent Injections</h2>
+    <button class="clear-btn" id="clear-history">Clear</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<!-- Stack Builder -->
+<div class="card animate-in animate-d3" id="stack-card">
+  <div class="section-header">
+    <h2>Stack Builder</h2>
+    <div class="stack-goals">
+      <button class="goal-btn" data-goal="healing">🩹 Healing</button>
+      <button class="goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
+      <button class="goal-btn" data-goal="muscle">💪 Muscle</button>
+      <button class="goal-btn" data-goal="longevity">🧬 Longevity</button>
+      <button class="goal-btn" data-goal="skin">✨ Skin</button>
+    </div>
+  </div>
+  <div class="stack-suggestions" id="stack-suggestions"></div>
+</div>
+
+<!-- My Peptides -->
+<div class="card animate-in animate-d2" id="peptides-card">
+  <div class="section-title">
+    <span>My Peptides</span>
+    <button class="collapse-toggle" id="peptides-toggle" aria-label="Collapse peptides list">
+      <span class="collapse-icon">▼</span>
+    </button>
+  </div>
+  <div id="peptides-list"></div>
+  <button class="btn-add-trigger" id="add-trigger"><span class="plus">+</span> Add Peptide</button>
+  <div class="add-panel" id="add-panel" style="display:none">
+    <div class="field">
+      <label for="add-peptide">Peptide</label>
+      <select id="add-peptide"></select>
+    </div>
+    <div class="field">
+      <label for="add-tier">Dose Tier</label>
+      <select id="add-tier">
+        <option value="low">Low</option>
+        <option value="standard" selected>Standard</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="add-vial">Vial Size</label>
+      <select id="add-vial"></select>
+    </div>
+    <div class="field">
+      <label for="add-water">Bacteriostatic Water</label>
+      <select id="add-water"></select>
+    </div>
+    <div class="field">
+      <label for="add-cycle">Cycle Length (days)</label>
+      <select id="add-cycle">
+        <option value="7">7 days (1 week)</option>
+        <option value="10">10 days</option>
+        <option value="14">14 days (2 weeks)</option>
+        <option value="20">20 days</option>
+        <option value="21">21 days (3 weeks)</option>
+        <option value="28">28 days (4 weeks)</option>
+        <option value="35">35 days (5 weeks)</option>
+        <option value="42">42 days (6 weeks)</option>
+        <option value="49">49 days (7 weeks)</option>
+        <option value="56" selected>56 days (8 weeks)</option>
+        <option value="84">84 days (12 weeks)</option>
+        <option value="0">Ongoing (no end)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="add-start-date">Start Date</label>
+      <input type="date" id="add-start-date">
+      <div class="helper-text">When did you start this peptide?</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="add-confirm">Add to Schedule</button>
+      <button class="btn btn-secondary" id="add-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gumroad Banner -->
+<div class="gumroad-banner">
+  <div class="banner-content">
+    <div class="banner-icon">📚</div>
+    <div class="banner-text">
+      <h3>New to peptides?</h3>
+      <p>Get the Quick Start Guide — reconstitution, injection technique, storage & cycling basics</p>
+    </div>
+    <a href="https://peterlukedigital.gumroad.com/l/fkhwu" target="_blank" class="banner-btn">
+      Get Guide $9.99 →
+    </a>
+  </div>
+</div>
+
+
+
+<p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+
+<script>
+// ── Peptide Data ─────────────────────────────────────────────
+const PEPTIDES = [
+  { name: 'Adipotide', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, max 4 weeks. ⚠️ Monitor kidneys', frequency: '5on2off', timingIcon: '☀️', color: '#E8A838', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'Dihexa', lowMcg: 10000, stdMcg: 20000, highMcg: 30000, rangeLabel: '10-30 mg oral daily', timing: 'morning', timingNote: 'Morning — oral, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#DDAAFF', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 3, breakWeeks: 24 },
+  { name: 'FOXO4-DRI', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental', frequency: '5on2off', timingIcon: '☀️', color: '#8838E8', cycleWeeks: 2, breakWeeks: 4 },
+  { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg daily', timing: 'morning', timingNote: 'Morning or evening — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'GHRP-2', lowMcg: 100, stdMcg: 150, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#44FFAA', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'GHRP-6', lowMcg: 100, stdMcg: 100, highMcg: 300, rangeLabel: '100-300 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFAA44', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', lowMcg: 1500, stdMcg: 2330, highMcg: 3500, rangeLabel: '1.5–3.5 mg daily blend', timing: 'morning/evening', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD76C', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Glutathione', lowMcg: 100000, stdMcg: 200000, highMcg: 200000, rangeLabel: '100-200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week (Mon/Wed/Fri)', frequency: '3x/week', timingIcon: '☀️', color: '#88FF88', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'HCG', lowMcg: 250, stdMcg: 500, highMcg: 1500, rangeLabel: '250–1500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU', frequency: '3x/week', timingIcon: '☀️', color: '#E87838', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Hexarelin', lowMcg: 100, stdMcg: 100, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#DD44FF', cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'HGH', lowMcg: 333, stdMcg: 666, highMcg: 1998, rangeLabel: '1–6 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Note: 1 IU ≈ 333 mcg', frequency: 'daily', timingIcon: '🌙', color: '#38E878', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'IGF-1 LR3', lowMcg: 20, stdMcg: 50, highMcg: 100, rangeLabel: '20-100 mcg daily', timing: 'anytime', timingNote: 'Post-workout — daily, max 4 week cycles', frequency: 'daily', timingIcon: '💪', color: '#FF4444', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Ipamorelin', lowMcg: 100, stdMcg: 300, highMcg: 500, rangeLabel: '100–500 mcg, 1-3x/day', timing: '🌙', timingNote: 'Before bed preferred — empty stomach, 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#D838E8', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'KLOW Stack (TB + BPC + GHK + KPV)', lowMcg: 2000, stdMcg: 4000, highMcg: 6000, rangeLabel: '2-6 mg daily blend', timing: 'morning', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD700', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'KPV', lowMcg: 200, stdMcg: 500, highMcg: 1000, rangeLabel: '200-1000 mcg daily', timing: 'morning', timingNote: 'Morning empty stomach — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#FF88CC', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'L-Carnitine', lowMcg: 200000, stdMcg: 500000, highMcg: 1000000, rangeLabel: '200–1000 mg, 2-3x/week', timing: '☀️', timingNote: 'Morning or pre-workout — 2-3x/week', frequency: '3x/week', timingIcon: '☀️', color: '#E83878', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'LL-37', lowMcg: 50, stdMcg: 125, highMcg: 250, rangeLabel: '50–250 mcg daily', timing: '☀️', timingNote: 'Morning — daily, 50-day courses', frequency: 'daily', timingIcon: '☀️', color: '#38E8A8', cycleWeeks: 7, breakWeeks: 4 },
+  { name: 'Mazdutide', lowMcg: 1500, stdMcg: 4000, highMcg: 9000, rangeLabel: '1.5–9 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, titrate up. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E838A8', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance', frequency: '2x/week', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8 },
+  { name: 'Melanotan II', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100-500 mcg daily', timing: 'evening', timingNote: 'Evening — daily during loading, then 1-2x/week', frequency: 'daily', timingIcon: '🌙', color: '#CC8844', cycleWeeks: 4, breakWeeks: 8 },
+  { name: 'MK-677 (Ibutamoren)', lowMcg: 10000, stdMcg: 25000, highMcg: 25000, rangeLabel: '10-25 mg daily', timing: 'evening', timingNote: 'Before bed — daily, 8-12 week cycles', frequency: 'daily', timingIcon: '🌙', color: '#44BBFF', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'NAD+', lowMcg: 50000, stdMcg: 100000, highMcg: 200000, rangeLabel: '50–200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week', frequency: '3x/week', timingIcon: '☀️', color: '#FF6CA8', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Oxytocin', lowMcg: 4, stdMcg: 10, highMcg: 20, rangeLabel: '4-20 mcg SubQ', timing: 'morning', timingNote: 'Morning — as needed or daily', frequency: 'daily', timingIcon: '☀️', color: '#FF99CC', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'PE-22-28', lowMcg: 100, stdMcg: 150, highMcg: 150, rangeLabel: '100-150 mcg 2x/day', timing: 'morning', timingNote: 'Morning + evening — daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#99CCFF', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'PEG-MGF', lowMcg: 200, stdMcg: 200, highMcg: 400, rangeLabel: '200-400 mcg 2-3x/week', timing: 'anytime', timingNote: 'Post-workout — 2-3x per week', frequency: '3x/week', timingIcon: '💪', color: '#FF6644', cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'PT-141 (Bremelanotide)', lowMcg: 1000, stdMcg: 1750, highMcg: 2000, rangeLabel: '1-2 mg as needed', timing: 'anytime', timingNote: '45 min before activity — max 8 doses/month', frequency: 'weekly', timingIcon: '⏰', color: '#FFD76C', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Retatrutide', lowMcg: 1000, stdMcg: 4000, highMcg: 12000, rangeLabel: '1–12 mg weekly', timing: 'morning', timingNote: 'Morning — once weekly', frequency: 'weekly', timingIcon: '☀️', color: '#FF8F6C', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Selank', lowMcg: 250, stdMcg: 400, highMcg: 500, rangeLabel: '250-500 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#AADDFF', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Semaglutide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25-2.4 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF9F6C', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Semax', lowMcg: 300, stdMcg: 600, highMcg: 800, rangeLabel: '300-800 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#FFCCAA', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Sermorelin', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200-500 mcg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#B6FF6C', cycleWeeks: 12, breakWeeks: 4 },
+  { name: 'SS-31 (Elamipretide)', lowMcg: 250, stdMcg: 500, highMcg: 1000, rangeLabel: '250–1000 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 8 week cycles', frequency: '5on2off', timingIcon: '☀️', color: '#38D8E8', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Survodutide', lowMcg: 300, stdMcg: 2400, highMcg: 4800, rangeLabel: '0.3–4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, 7-step titration over 20 weeks. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E8A878', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Thymalin', lowMcg: 5000, stdMcg: 10000, highMcg: 20000, rangeLabel: '5–20 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year', frequency: 'daily', timingIcon: '☀️', color: '#78E8A8', cycleWeeks: 1, breakWeeks: 24 },
+  { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week', frequency: '5on2off', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'VIP', lowMcg: 50, stdMcg: 50, highMcg: 100, rangeLabel: '50–100 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required', frequency: 'daily', timingIcon: '☀️', color: '#E8E838', cycleWeeks: 0, breakWeeks: 0 },
+];
+
+const VIALS = [1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,70,80,100,200,250,500,1000,2000,2500];
+const WATER = [0.5,1,1.5,2,2.5,3,4,5];
+
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ── State ────────────────────────────────────────────────────
+let schedule = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+let weekOffset = 0;
+let selectedDate = new Date();
+selectedDate.setHours(0,0,0,0);
+
+const FULL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function saveSchedule() {
+  localStorage.setItem('peptide-schedule', JSON.stringify(schedule));
+}
+
+// ── Helpers ──────────────────────────────────────────────────
+function fmtDose(mcg) {
+  if (mcg >= 1000) {
+    const mg = mcg / 1000;
+    return (mg % 1 === 0 ? mg : +mg.toFixed(2)) + ' mg';
+  }
+  return mcg + ' mcg';
+}
+
+function calcUnits(doseMcg, vialMg, waterMl) {
+  const concMcgPerUnit = (vialMg * 1000) / (waterMl * 100);
+  return concMcgPerUnit > 0 ? doseMcg / concMcgPerUnit : 0;
+}
+
+function fmtUnits(u) {
+  if (u < 0.5) return '< 0.5';
+  return +u.toFixed(1) + '';
+}
+
+function getDoseMcg(pep, tier) {
+  if (tier === 'low') return pep.lowMcg;
+  if (tier === 'high') return pep.highMcg;
+  return pep.stdMcg;
+}
+
+function shortName(name) {
+  if (name.length <= 12) return name;
+  if (name.startsWith('CJC')) return 'CJC+Ipa';
+  if (name.startsWith('GLOW')) return 'GLOW';
+  return name.substring(0, 10) + '…';
+}
+
+function getWeekStart(offset) {
+  const now = new Date();
+  const day = now.getDay();
+  const start = new Date(now);
+  start.setDate(now.getDate() - day + (offset * 7));
+  start.setHours(0, 0, 0, 0);
+  return start;
+}
+
+function sameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function daysBetween(a, b) {
+  const msDay = 86400000;
+  return Math.floor((b - a) / msDay);
+}
+
+// ── Parse YYYY-MM-DD as local time (not UTC) ────────────────
+function parseLocalDate(str) {
+  const p = String(str).split('-');
+  return new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+}
+
+// ── Format date as YYYY-MM-DD ───────────────────────────────
+function formatLocalDate(date) {
+  return date.getFullYear() + '-' +
+         (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+         date.getDate().toString().padStart(2, '0');
+}
+
+// ── Injection Log Functions ─────────────────────────────────
+function getInjectionLog() {
+  try {
+    return JSON.parse(localStorage.getItem('injectionLog') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveInjection(injectionKey) {
+  const log = getInjectionLog();
+  log[injectionKey] = new Date().toISOString();
+  localStorage.setItem('injectionLog', JSON.stringify(log));
+
+  // Update vial tracking
+  const parts = injectionKey.split('_');
+  const dateStr = parts.pop();
+  const peptideName = parts.join('_');
+  incrementVialUsage(peptideName, 1);
+}
+
+function removeInjection(injectionKey) {
+  const log = getInjectionLog();
+  delete log[injectionKey];
+  localStorage.setItem('injectionLog', JSON.stringify(log));
+
+  const parts = injectionKey.split('_');
+  const dateStr = parts.pop();
+  const peptideName = parts.join('_');
+  incrementVialUsage(peptideName, -1);
+}
+
+// ── Vial Tracking Functions ─────────────────────────────────
+function getVialData() {
+  try {
+    return JSON.parse(localStorage.getItem('vialData') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveVialData(data) {
+  localStorage.setItem('vialData', JSON.stringify(data));
+}
+
+function getVialKey(entry) {
+  const pep = PEPTIDES[entry.peptideIndex];
+  return pep.name + '_' + entry.vialMg + '_' + entry.waterMl;
+}
+
+function calculateTotalDoses(entry) {
+  const pep = PEPTIDES[entry.peptideIndex];
+  const doseMcg = getDoseMcg(pep, entry.tier);
+  if (doseMcg <= 0) return 0;
+  return Math.floor((entry.vialMg * 1000) / doseMcg);
+}
+
+function ensureVialEntry(entry) {
+  const vialData = getVialData();
+  const key = getVialKey(entry);
+  if (!vialData[key]) {
+    const pep = PEPTIDES[entry.peptideIndex];
+    vialData[key] = {
+      peptideName: pep.name,
+      vialMg: entry.vialMg,
+      waterMl: entry.waterMl,
+      totalDoses: calculateTotalDoses(entry),
+      usedDoses: 0,
+      createdAt: new Date().toISOString()
+    };
+    saveVialData(vialData);
+  }
+  return vialData[key];
+}
+
+function incrementVialUsage(peptideName, delta) {
+  const vialData = getVialData();
+  const entry = schedule.find(e => PEPTIDES[e.peptideIndex].name === peptideName);
+  if (!entry) return;
+  const key = getVialKey(entry);
+  if (!vialData[key]) {
+    ensureVialEntry(entry);
+    return incrementVialUsage(peptideName, delta);
+  }
+  vialData[key].usedDoses = Math.max(0, vialData[key].usedDoses + delta);
+  saveVialData(vialData);
+}
+
+function resetSingleVial(key) {
+  const vialData = getVialData();
+  if (vialData[key]) {
+    vialData[key].usedDoses = 0;
+    vialData[key].createdAt = new Date().toISOString();
+    saveVialData(vialData);
+  }
+  renderAll();
+}
+
+// ── Notes Functions ─────────────────────────────────────────
+function getPeptideNotes() {
+  try {
+    return JSON.parse(localStorage.getItem('peptideNotes') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function savePeptideNote(peptideName, note) {
+  const notes = getPeptideNotes();
+  if (note.trim()) {
+    notes[peptideName] = note.trim().substring(0, 500);
+  } else {
+    delete notes[peptideName];
+  }
+  localStorage.setItem('peptideNotes', JSON.stringify(notes));
+}
+
+// ── Titration Timeline Data ─────────────────────────────────
+const TITRATION_SCHEDULES = {
+  'Semaglutide': [
+    { week: 0, dose: 0.25, label: '0.25 mg', description: 'Starting dose' },
+    { week: 4, dose: 0.5, label: '0.5 mg', description: 'First increase' },
+    { week: 8, dose: 1.0, label: '1.0 mg', description: 'Therapeutic dose' },
+    { week: 12, dose: 1.7, label: '1.7 mg', description: 'Higher dose' },
+    { week: 16, dose: 2.4, label: '2.4 mg', description: 'Maximum dose' }
+  ],
+  'Tirzepatide': [
+    { week: 0, dose: 2.5, label: '2.5 mg', description: 'Starting dose' },
+    { week: 4, dose: 5.0, label: '5.0 mg', description: 'First increase' },
+    { week: 8, dose: 7.5, label: '7.5 mg', description: 'Moderate dose' },
+    { week: 12, dose: 10, label: '10 mg', description: 'Higher dose' },
+    { week: 16, dose: 12.5, label: '12.5 mg', description: 'High dose' },
+    { week: 20, dose: 15, label: '15 mg', description: 'Maximum dose' }
+  ],
+  'Retatrutide': [
+    { week: 0, dose: 1, label: '1 mg', description: 'Starting dose' },
+    { week: 4, dose: 4, label: '4 mg', description: 'First increase' },
+    { week: 8, dose: 8, label: '8 mg', description: 'Therapeutic dose' },
+    { week: 12, dose: 12, label: '12 mg', description: 'Maximum dose' }
+  ]
+};
+
+function getTitrationData(peptideName, startDate) {
+  const sched = TITRATION_SCHEDULES[peptideName];
+  if (!sched) return null;
+
+  const start = parseLocalDate(startDate);
+  const now = new Date();
+  const weeksElapsed = Math.floor(daysBetween(start, now) / 7);
+
+  let currentPhase = 0;
+  for (let i = sched.length - 1; i >= 0; i--) {
+    if (weeksElapsed >= sched[i].week) {
+      currentPhase = i;
+      break;
+    }
+  }
+
+  return {
+    schedule: sched,
+    weeksElapsed,
+    currentPhase,
+    nextPhase: currentPhase < sched.length - 1 ? currentPhase + 1 : null,
+    isComplete: currentPhase === sched.length - 1
+  };
+}
+
+// ── Stack Builder Data ──────────────────────────────────────
+const PEPTIDE_STACKS = {
+  healing: {
+    title: 'Healing & Recovery',
+    description: 'Accelerate tissue repair, reduce inflammation, and enhance recovery',
+    categories: {
+      'Core Foundation': [
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates healing of tendons, ligaments, and muscle tissue' },
+        { name: 'TB-500', dose: '2-5 mg twice weekly', priority: 'core', benefit: 'Promotes cellular repair and reduces inflammation' }
+      ],
+      'Growth & Repair': [
+        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'synergistic', benefit: 'Enhances collagen production and wound healing' },
+        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes tissue growth and repair' }
+      ],
+      'Support Stack': [
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Boosts immune function during recovery' }
+      ]
+    }
+  },
+  fatloss: {
+    title: 'Fat Loss & Body Composition',
+    description: 'Optimize metabolic rate, appetite control, and body composition',
+    categories: {
+      'Metabolic Core': [
+        { name: 'Semaglutide', dose: '0.25-2.4 mg weekly', priority: 'core', benefit: 'Superior appetite suppression and weight loss' },
+        { name: 'Tirzepatide', dose: '2.5-15 mg weekly', priority: 'core', benefit: 'Dual GIP/GLP-1 action for enhanced fat loss' }
+      ],
+      'Growth Hormone': [
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Increases natural GH production and fat oxidation' },
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Synergizes with CJC for better body composition' }
+      ],
+      'Advanced Options': [
+        { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'optional', benefit: 'Next-generation triple-receptor agonist' },
+        { name: 'AOD-9604', dose: '300 mcg daily', priority: 'optional', benefit: 'Fat-burning fragment of growth hormone' }
+      ]
+    }
+  },
+  muscle: {
+    title: 'Muscle Growth & Performance',
+    description: 'Maximize muscle protein synthesis, strength, and athletic performance',
+    categories: {
+      'Anabolic Foundation': [
+        { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Powerful muscle building and satellite cell activation' },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Increases natural GH for muscle growth' }
+      ],
+      'Recovery & Repair': [
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'synergistic', benefit: 'Accelerates recovery between training sessions' },
+        { name: 'PEG-MGF', dose: '200-400 mcg post-workout', priority: 'synergistic', benefit: 'Mechano Growth Factor for localized muscle growth' }
+      ],
+      'Performance Stack': [
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Synergizes with CJC for GH release' },
+        { name: 'GHRP-2', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Strong GH release and appetite stimulation' }
+      ]
+    }
+  },
+  longevity: {
+    title: 'Longevity & Anti-Aging',
+    description: 'Promote cellular regeneration, cognitive health, and healthy aging',
+    categories: {
+      'Cellular Health': [
+        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Cellular energy and DNA repair mechanism' },
+        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'core', benefit: 'Telomerase activation and circadian rhythm regulation' }
+      ],
+      'Growth Hormone Axis': [
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Maintains youthful GH levels' },
+        { name: 'Tesamorelin', dose: '1-2 mg daily', priority: 'synergistic', benefit: 'Specifically targets visceral fat and GH release' }
+      ],
+      'Cognitive & Immune': [
+        { name: 'Semax', dose: '300-800 mcg daily', priority: 'optional', benefit: 'Cognitive enhancement and neuroprotection' },
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Immune system optimization' }
+      ]
+    }
+  },
+  skin: {
+    title: 'Skin Health & Beauty',
+    description: 'Improve skin texture, reduce aging signs, and enhance appearance',
+    categories: {
+      'Collagen & Repair': [
+        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'core', benefit: 'Stimulates collagen and elastin production' },
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates skin healing and regeneration' }
+      ],
+      'Growth Factors': [
+        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes skin cell growth and renewal' },
+        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'synergistic', benefit: 'Anti-aging effects on skin cells' }
+      ],
+      'Enhanced Results': [
+        { name: 'Melanotan II', dose: '250-500 mcg as needed', priority: 'optional', benefit: 'Tanning and potential skin protection' },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'GH benefits for skin thickness and quality' }
+      ]
+    }
+  }
+};
+
+function renderStackRecommendations(goal) {
+  const $recommendations = document.getElementById('stack-suggestions');
+
+  if (!goal || !PEPTIDE_STACKS[goal]) {
+    $recommendations.innerHTML = '<div class="stack-empty">Select a goal above to see Common Stacks</div>';
+    return;
+  }
+
+  const stack = PEPTIDE_STACKS[goal];
+
+  const categoriesHtml = Object.entries(stack.categories).map(([categoryName, peptides]) => {
+    const peptidesHtml = peptides.map(peptide => `
+      <div class="stack-peptide">
+        <div class="stack-peptide-header">
+          <div class="stack-peptide-name">${peptide.name}</div>
+          <div class="stack-peptide-priority ${peptide.priority}">${peptide.priority}</div>
+        </div>
+        <div class="stack-peptide-dose">${peptide.dose}</div>
+        <div class="stack-peptide-benefit">${peptide.benefit}</div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="stack-category">
+        <div class="stack-category-title">${categoryName}</div>
+        <div class="stack-peptides">${peptidesHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  $recommendations.innerHTML = `
+    <div class="stack-header">
+      <h3 style="font-size: .9rem; font-weight: 600; margin-bottom: .5rem; color: var(--text);">${stack.title}</h3>
+      <p style="font-size: .75rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.4;">${stack.description}</p>
+    </div>
+    ${categoriesHtml}
+  `;
+}
+
+function renderInjectionHistory() {
+  const $list = document.getElementById('history-list');
+  const log = getInjectionLog();
+  const entries = Object.entries(log).sort((a, b) => new Date(b[1]) - new Date(a[1]));
+
+  if (entries.length === 0) {
+    $list.innerHTML = '<div class="history-empty">No injections logged yet</div>';
+    return;
+  }
+
+  const html = entries.slice(0, 10).map(([key, timestamp]) => {
+    const parts = key.split('_');
+    parts.pop(); // remove date
+    const peptideName = parts.join('_');
+    const date = new Date(timestamp);
+    const timeStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    return `
+      <div class="history-item">
+        <div class="history-dot"></div>
+        <div class="history-info">
+          <div class="history-name">${peptideName}</div>
+          <div class="history-time">${timeStr}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $list.innerHTML = html;
+}
+
+function renderVialTracker() {
+  const $list = document.getElementById('vial-list');
+  if (!$list) return; // Vial tracker removed from UI
+
+  // Ensure all scheduled peptides have vial entries
+  schedule.forEach(entry => ensureVialEntry(entry));
+
+  const vialData = getVialData();
+  const entries = Object.entries(vialData).sort((a, b) => new Date(b[1].createdAt) - new Date(a[1].createdAt));
+
+  if (entries.length === 0) {
+    $list.innerHTML = '<div class="vial-empty">No vials tracked yet. Add peptides to your schedule to track vial usage.</div>';
+    return;
+  }
+
+  const html = entries.map(([key, vial]) => {
+    const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
+    const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
+    const isLow = remaining > 0 && remaining < 5;
+    const isEmpty = remaining <= 0;
+
+    let statusClass = '';
+    let warningHtml = '';
+
+    if (isEmpty) {
+      statusClass = 'empty';
+      warningHtml = '<div class="vial-warning empty-warn">Vial empty — replace</div>';
+    } else if (isLow) {
+      statusClass = 'low';
+      warningHtml = '<div class="vial-warning">Reorder soon</div>';
+    }
+
+    return `
+      <div class="vial-item ${statusClass}">
+        <div class="vial-header">
+          <div class="vial-name">${vial.peptideName}</div>
+          <div style="display:flex;align-items:center;gap:.4rem">
+            <div class="vial-specs">${vial.vialMg}mg · ${vial.waterMl}mL</div>
+            <button class="vial-reset-btn" data-vial-key="${key}">Reset vial</button>
+          </div>
+        </div>
+        <div class="vial-progress">
+          <div class="vial-progress-fill ${statusClass}" style="width: ${usedPct}%"></div>
+        </div>
+        <div class="vial-stats">
+          <div class="vial-doses">Vial: ${vial.usedDoses} of ${vial.totalDoses} doses used</div>
+          ${warningHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  $list.innerHTML = html;
+
+  // Per-vial reset buttons
+  $list.querySelectorAll('.vial-reset-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = btn.dataset.vialKey;
+      if (confirm('Reset this vial? (Use when opening a new vial)')) {
+        resetSingleVial(key);
+      }
+    });
+  });
+}
+
+// ── Cycle status for a given date ────────────────────────────
+// Returns { status: 'inject'|'break'|'off'|'rest', cycleNumber, cycleDayInCycle, breakDayRemaining, isLastCycleDay, isFirstBreakDay, isRestartDay }
+function getCycleStatus(entry, date) {
+  const pep = PEPTIDES[entry.peptideIndex];
+  const startDate = parseLocalDate(entry.startDate);
+  startDate.setHours(0, 0, 0, 0);
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+
+  if (target < startDate) return { status: 'off' };
+
+  const elapsed = daysBetween(startDate, target);
+
+  // Determine effective cycle/break days from peptide data
+  const pepCycleWeeks = pep.cycleWeeks || 0;
+  const pepBreakWeeks = pep.breakWeeks || 0;
+  const entryCycleDays = entry.cycleDays || 0;
+
+  let cycleDays, breakDays;
+  if (pepCycleWeeks > 0) {
+    cycleDays = pepCycleWeeks * 7;
+    breakDays = pepBreakWeeks * 7;
+  } else if (entryCycleDays > 0) {
+    cycleDays = entryCycleDays;
+    breakDays = 0;
+  } else {
+    cycleDays = 0;
+    breakDays = 0;
+  }
+
+  let cycleNumber = 1;
+  let dayInPattern = elapsed;
+  let isLastCycleDay = false;
+  let isFirstBreakDay = false;
+  let isRestartDay = false;
+  let breakDayRemaining = 0;
+  let cycleDayInCycle = 0;
+
+  if (cycleDays > 0) {
+    const totalPattern = cycleDays + breakDays;
+    if (breakDays > 0) {
+      cycleNumber = Math.floor(dayInPattern / totalPattern) + 1;
+      const posInPattern = dayInPattern % totalPattern;
+      if (posInPattern < cycleDays) {
+        cycleDayInCycle = posInPattern;
+        isLastCycleDay = posInPattern === cycleDays - 1;
+        isRestartDay = posInPattern === 0 && cycleNumber > 1;
+      } else {
+        const breakDay = posInPattern - cycleDays;
+        breakDayRemaining = breakDays - breakDay;
+        isFirstBreakDay = breakDay === 0;
+        return { status: 'break', cycleNumber, cycleDayInCycle: posInPattern, breakDayRemaining, isLastCycleDay: false, isFirstBreakDay, isRestartDay: false, cycleDays, breakDays };
+      }
+    } else {
+      if (elapsed >= cycleDays) return { status: 'off' };
+      cycleDayInCycle = elapsed;
+      isLastCycleDay = elapsed === cycleDays - 1;
+    }
+  } else {
+    cycleDayInCycle = elapsed;
+  }
+
+  const dayOfWeek = target.getDay();
+  let shouldDose = true;
+  switch (pep.frequency) {
+    case 'daily': shouldDose = true; break;
+    case 'weekly': shouldDose = dayOfWeek === startDate.getDay(); break;
+    case '2x/week': shouldDose = dayOfWeek === 1 || dayOfWeek === 4; break;
+    case '3x/week': shouldDose = dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5; break;
+    case '5on2off': shouldDose = (elapsed % 7) < 5; break;
+    default: shouldDose = true;
+  }
+
+  if (!shouldDose) {
+    return { status: 'rest', cycleNumber, cycleDayInCycle, breakDayRemaining: 0, isLastCycleDay, isFirstBreakDay: false, isRestartDay, cycleDays, breakDays };
+  }
+
+  return { status: 'inject', cycleNumber, cycleDayInCycle, breakDayRemaining: 0, isLastCycleDay, isFirstBreakDay: false, isRestartDay, cycleDays, breakDays };
+}
+
+// ── Backward-compatible wrapper ──────────────────────────────
+function shouldInject(entry, date) {
+  const result = getCycleStatus(entry, date);
+  return result.status === 'inject';
+}
+
+// ── Populate Add-Peptide Dropdowns ───────────────────────────
+const $addPep = document.getElementById('add-peptide');
+const $addVial = document.getElementById('add-vial');
+const $addWater = document.getElementById('add-water');
+
+PEPTIDES.forEach((p, i) => {
+  const o = document.createElement('option');
+  o.value = i; o.textContent = p.name;
+  $addPep.appendChild(o);
+});
+VIALS.forEach(v => {
+  const o = document.createElement('option');
+  o.value = v; o.textContent = v + ' mg';
+  $addVial.appendChild(o);
+});
+WATER.forEach(w => {
+  const o = document.createElement('option');
+  o.value = w; o.textContent = w + ' mL';
+  $addWater.appendChild(o);
+});
+$addVial.value = '5';
+$addWater.value = '2';
+
+const $addStartDate = document.getElementById('add-start-date');
+$addStartDate.value = new Date().toISOString().split('T')[0];
+
+// ── Add/Remove Panel ─────────────────────────────────────────
+const $addPanel = document.getElementById('add-panel');
+const $addTrigger = document.getElementById('add-trigger');
+
+$addPep.addEventListener('change', () => {
+  const pepIdx = parseInt($addPep.value);
+  const existing = schedule.find(e => e.peptideIndex === pepIdx);
+  if (existing) {
+    $addStartDate.value = existing.startDate;
+  } else {
+    $addStartDate.value = new Date().toISOString().split('T')[0];
+  }
+  autoPopulateCycle(pepIdx);
+});
+
+function autoPopulateCycle(pepIdx) {
+  const pep = PEPTIDES[pepIdx];
+  const $addCycle = document.getElementById('add-cycle');
+  if (!pep || !$addCycle) return;
+  if (pep.cycleWeeks > 0) {
+    const days = pep.cycleWeeks * 7;
+    const availableOptions = Array.from($addCycle.options).map(o => parseInt(o.value)).filter(v => v > 0);
+    if (availableOptions.includes(days)) {
+      $addCycle.value = String(days);
+    } else {
+      const closest = availableOptions.reduce((a, b) => Math.abs(b - days) < Math.abs(a - days) ? b : a);
+      $addCycle.value = String(closest);
+    }
+  } else {
+    $addCycle.value = '0';
+  }
+}
+
+$addTrigger.addEventListener('click', () => {
+  $addPanel.style.display = $addPanel.style.display === 'none' ? 'block' : 'none';
+  if ($addPanel.style.display === 'block') {
+    const pepIdx = parseInt($addPep.value);
+    const existing = schedule.find(e => e.peptideIndex === pepIdx);
+    $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
+    autoPopulateCycle(pepIdx);
+    $addPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+});
+
+document.getElementById('add-cancel').addEventListener('click', () => {
+  $addPanel.style.display = 'none';
+});
+
+document.getElementById('add-confirm').addEventListener('click', () => {
+  const pepIdx = parseInt($addPep.value);
+  const tier = document.getElementById('add-tier').value;
+  const vialMg = parseFloat($addVial.value);
+  const waterMl = parseFloat($addWater.value);
+  const cycleDays = parseInt(document.getElementById('add-cycle').value);
+  const startDate = $addStartDate.value || new Date().toISOString().split('T')[0];
+
+  if (schedule.some(e => e.peptideIndex === pepIdx)) {
+    const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
+    schedule[existing] = { peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate };
+  } else {
+    schedule.push({ peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate });
+  }
+
+  saveSchedule();
+  $addPanel.style.display = 'none';
+  renderAll();
+});
+
+function removePeptide(idx) {
+  schedule.splice(idx, 1);
+  saveSchedule();
+  renderAll();
+}
+
+// ── Render Today (selected day) ──────────────────────────────
+function getCardTitle(date) {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const diff = daysBetween(now, date);
+  if (diff === 0) return "Today's Injections";
+  if (diff === 1) return "Tomorrow's Injections";
+  return FULL_MONTHS[date.getMonth()] + ' ' + date.getDate() + ' Injections';
+}
+
+function renderToday(animate) {
+  const date = selectedDate;
+  const $title = document.querySelector('#today-card .today-header h2');
+  $title.textContent = getCardTitle(date);
+  document.getElementById('today-date').textContent = DAYS[date.getDay()] + ', ' + MONTHS[date.getMonth()] + ' ' + date.getDate();
+
+  const $list = document.getElementById('today-list');
+  const $counter = document.getElementById('completed-counter');
+
+  function fill() {
+    $list.innerHTML = '';
+
+    if (schedule.length === 0) {
+      $counter.textContent = '';
+      $list.innerHTML = '<div class="today-empty">No peptides scheduled yet. Add one below.</div>';
+      return;
+    }
+
+    // Collect break-period peptides for notice
+    const breakPeptides = [];
+    schedule.forEach(entry => {
+      const cs = getCycleStatus(entry, date);
+      if (cs.status === 'break') {
+        const pep = PEPTIDES[entry.peptideIndex];
+        breakPeptides.push({ name: pep.name, color: pep.color, daysLeft: cs.breakDayRemaining });
+      }
+    });
+
+    // Render break notices first
+    breakPeptides.forEach(bp => {
+      const notice = document.createElement('div');
+      notice.className = 'break-notice';
+      notice.innerHTML = `<span style="color:${bp.color};font-size:1rem">🔴</span><span><strong>${bp.name}</strong> — Break period (${bp.daysLeft} day${bp.daysLeft !== 1 ? 's' : ''} remaining). Resume when break ends.</span>`;
+      $list.appendChild(notice);
+    });
+
+    let hasItems = false;
+    let totalItems = 0;
+    let doneItems = 0;
+    const log = getInjectionLog();
+
+    schedule.forEach(entry => {
+      const pep = PEPTIDES[entry.peptideIndex];
+      if (!shouldInject(entry, date)) return;
+      hasItems = true;
+      totalItems++;
+
+      const doseMcg = getDoseMcg(pep, entry.tier);
+      const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
+      const injectionKey = pep.name + '_' + formatLocalDate(date);
+      const isDone = !!log[injectionKey];
+      if (isDone) doneItems++;
+
+      const div = document.createElement('div');
+      div.className = 'today-item' + (isDone ? ' completed' : '');
+
+      div.innerHTML = `
+        <div class="today-dot" style="background:${pep.color}"></div>
+        <div class="today-info">
+          <div class="today-name">${pep.name}</div>
+          <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)}</div>
+        </div>
+        <div class="today-units">${fmtUnits(units)} u</div>
+        <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}">
+          ${isDone ? '✓ Done' : 'Inject'}
+        </button>
+      `;
+      $list.appendChild(div);
+    });
+
+    // Update completed counter
+    if (totalItems > 0) {
+      $counter.textContent = doneItems + ' of ' + totalItems + ' completed';
+    } else {
+      $counter.textContent = '';
+    }
+
+    if (!hasItems) {
+      $counter.textContent = '';
+      if (breakPeptides.length > 0) {
+        // Already showing break notices — don't clobber them
+      } else {
+        $list.innerHTML = '<div class="today-empty">Rest day — no injections scheduled.</div>';
+      }
+    }
+
+    // Done button click handlers (toggle)
+    $list.querySelectorAll('.done-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const injectionKey = btn.getAttribute('data-injection');
+        const row = btn.closest('.today-item');
+
+        if (btn.classList.contains('done')) {
+          // Undo
+          removeInjection(injectionKey);
+          btn.classList.remove('done');
+          row.classList.remove('completed');
+          btn.textContent = 'Inject';
+        } else {
+          // Mark done
+          saveInjection(injectionKey);
+          btn.classList.add('done');
+          row.classList.add('completed');
+          btn.textContent = '✓ Done';
+          // Satisfying pop animation — re-trigger by removing and re-adding class
+          btn.style.animation = 'none';
+          btn.offsetHeight; // reflow
+          btn.style.animation = '';
+        }
+        renderInjectionHistory();
+        renderVialTracker();
+        renderPeptidesList();
+        // Update counter
+        const allBtns = $list.querySelectorAll('.done-btn');
+        const total = allBtns.length;
+        let done = 0;
+        allBtns.forEach(b => { if (b.classList.contains('done')) done++; });
+        $counter.textContent = done + ' of ' + total + ' completed';
+      });
+    });
+  }
+
+  if (animate) {
+    $list.classList.add('fade-out');
+    setTimeout(() => {
+      fill();
+      $list.classList.remove('fade-out');
+      $list.classList.add('fade-in');
+      setTimeout(() => $list.classList.remove('fade-in'), 200);
+    }, 150);
+  } else {
+    fill();
+  }
+}
+
+// ── Render Calendar ──────────────────────────────────────────
+function renderCalendar() {
+  const start = getWeekStart(weekOffset);
+  const now = new Date();
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  const label = weekOffset === 0 ? 'This Week' : MONTHS[start.getMonth()] + ' ' + start.getDate() + ' – ' + (start.getMonth() !== end.getMonth() ? MONTHS[end.getMonth()] + ' ' : '') + end.getDate();
+  document.getElementById('week-label').textContent = label;
+
+  const $grid = document.getElementById('cal-grid');
+  $grid.innerHTML = '';
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    const isToday = sameDay(date, now);
+    const isSelected = sameDay(date, selectedDate);
+
+    const col = document.createElement('div');
+    col.className = 'cal-day' + (isToday ? ' today' : '') + (isSelected ? ' selected' : '');
+
+    const dateISO = date.toISOString();
+    col.addEventListener('click', () => {
+      selectedDate = new Date(dateISO);
+      selectedDate.setHours(0,0,0,0);
+      $grid.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+      col.classList.add('selected');
+      renderToday(true);
+    });
+
+    let eventsHtml = '';
+    let hasEvents = false;
+    let dayHasBreak = false;
+
+    schedule.forEach(entry => {
+      const pep = PEPTIDES[entry.peptideIndex];
+      const cs = getCycleStatus(entry, date);
+
+      if (cs.status === 'break') {
+        dayHasBreak = true;
+        hasEvents = true;
+        // Show last-cycle-day marker: cycle ends event on first break day
+        if (cs.isFirstBreakDay) {
+          eventsHtml += `<div class="cal-event ev-cycle-end"><span class="ev-icon">🟢</span><span class="ev-text">${shortName(pep.name)} ends</span></div>`;
+        } else {
+          eventsHtml += `<div class="cal-event ev-break"><span class="ev-dot" style="background:#ef4444"></span><span class="ev-text">${shortName(pep.name)} break</span></div>`;
+        }
+        return;
+      }
+
+      if (cs.status === 'inject') {
+        hasEvents = true;
+        const doseMcg = getDoseMcg(pep, entry.tier);
+        const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
+
+        // Restart marker (first day of a new cycle after break)
+        if (cs.isRestartDay) {
+          eventsHtml += `<div class="cal-event ev-restart"><span class="ev-icon">🟢</span><span class="ev-text">${shortName(pep.name)} restart</span></div>`;
+        } else if (cs.isLastCycleDay) {
+          // Last cycle day — show cycle-ends marker
+          eventsHtml += `<div class="cal-event ev-cycle-end"><span class="ev-icon">🟢</span><span class="ev-text">${shortName(pep.name)} last</span></div>`;
+        } else {
+          eventsHtml += `<div class="cal-event"><span class="ev-dot" style="background:${pep.color}"></span><span class="ev-icon">${pep.timingIcon || ""}</span><span class="ev-text">${shortName(pep.name)} ${fmtUnits(units)}u</span></div>`;
+        }
+        return;
+      }
+
+      // rest day (5on2off rest) — don't show a calendar event
+    });
+
+    if (!hasEvents && schedule.length > 0) {
+      eventsHtml = '<div class="cal-rest">Rest</div>';
+    }
+
+    if (dayHasBreak) col.classList.add('in-break');
+
+    col.innerHTML = `
+      <div class="cal-day-label">${DAYS[date.getDay()]}</div>
+      <div class="cal-day-num">${date.getDate()}</div>
+      <div class="cal-events-wrap">${eventsHtml}</div>
+    `;
+    $grid.appendChild(col);
+  }
+}
+
+document.getElementById('prev-week').addEventListener('click', () => { weekOffset--; renderCalendar(); });
+document.getElementById('next-week').addEventListener('click', () => { weekOffset++; renderCalendar(); });
+
+// ── Render Peptides List ─────────────────────────────────────
+function renderPeptidesList() {
+  const $list = document.getElementById('peptides-list');
+  $list.innerHTML = '';
+
+  if (schedule.length === 0) {
+    $list.innerHTML = '<div class="empty-state"><div class="icon">💉</div><h3>No peptides yet</h3><p>Add your first peptide to build your weekly schedule.</p></div>';
+    return;
+  }
+
+  const now = new Date();
+  const vialData = getVialData();
+  const notes = getPeptideNotes();
+
+  schedule.forEach((entry, idx) => {
+    const pep = PEPTIDES[entry.peptideIndex];
+    const doseMcg = getDoseMcg(pep, entry.tier);
+    const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
+    const startDate = parseLocalDate(entry.startDate);
+    const elapsed = daysBetween(startDate, now);
+
+    const div = document.createElement('div');
+    div.className = 'peptide-entry';
+
+    // Cycle progress
+    let cycleHtml = '';
+    if (entry.cycleDays > 0) {
+      const pct = Math.min(elapsed / entry.cycleDays * 100, 100);
+      const remaining = Math.max(entry.cycleDays - elapsed, 0);
+      const isWarn = remaining <= 7 && remaining > 0;
+      const isEnded = remaining === 0;
+      cycleHtml = `
+        <div class="pep-cycle">
+          <div class="pep-cycle-bar"><div class="pep-cycle-fill" style="width:${pct}%;background:${isEnded ? '#ff6b6b' : isWarn ? '#ffb84d' : pep.color}"></div></div>
+          <div class="pep-cycle-text ${isWarn ? 'pep-cycle-warn' : ''}">${isEnded ? 'Cycle complete' : 'Day ' + (elapsed + 1) + ' of ' + entry.cycleDays + (isWarn ? ' ⚠️' : '')}</div>
+        </div>
+      `;
+    } else {
+      cycleHtml = `
+        <div class="pep-cycle">
+          <div class="pep-cycle-bar"><div class="pep-cycle-fill" style="width:100%;background:${pep.color};opacity:.3"></div></div>
+          <div class="pep-cycle-text">Day ${elapsed + 1} · Ongoing</div>
+        </div>
+      `;
+    }
+
+    // Vial usage indicator
+    const vialKey = getVialKey(entry);
+    const vial = vialData[vialKey];
+    let vialHtml = '';
+    if (vial) {
+      const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
+      const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
+      const isLow = remaining > 0 && remaining < 5;
+      const isEmpty = remaining <= 0;
+      let vialClass = '';
+      let warnText = '';
+      if (isEmpty) {
+        vialClass = 'pep-vial-empty';
+        warnText = '<span class="pep-vial-empty">Vial empty — replace</span>';
+      } else if (isLow) {
+        vialClass = 'pep-vial-warn';
+        warnText = '<span class="pep-vial-warn">Reorder soon</span>';
+      }
+      vialHtml = `
+        <div class="pep-vial">
+          <div class="pep-vial-bar"><div class="pep-vial-fill" style="width:${usedPct}%;background:${isEmpty ? '#ef4444' : isLow ? '#f59e0b' : pep.color}"></div></div>
+          <div class="pep-vial-text">Vial: ${vial.usedDoses} of ${vial.totalDoses} doses used ${warnText}</div>
+        </div>
+      `;
+    }
+
+    // Notes (collapsible)
+    const currentNote = notes[pep.name] || '';
+    const hasNote = currentNote.length > 0;
+    const notesHtml = `
+      <div class="pep-notes">
+        <button class="notes-toggle" data-pep-name="${pep.name}">
+          <span class="notes-arrow ${hasNote ? 'open' : ''}">▶</span> Notes${hasNote ? ' (' + currentNote.length + ')' : ''}
+        </button>
+        <div class="notes-content ${hasNote ? 'open' : ''}">
+          <textarea placeholder="e.g. Left abdomen today, Felt nauseous at 5mg..." maxlength="500" data-peptide="${pep.name}">${currentNote}</textarea>
+          <div class="notes-charcount ${currentNote.length > 450 ? 'warn' : ''}">${currentNote.length}/500</div>
+        </div>
+      </div>
+    `;
+
+    // Titration timeline
+    let titrationHtml = '';
+    if (TITRATION_SCHEDULES[pep.name]) {
+      const titration = getTitrationData(pep.name, entry.startDate);
+      if (titration) {
+        const currentDose = titration.schedule[titration.currentPhase];
+        const nextDose = titration.nextPhase !== null ? titration.schedule[titration.nextPhase] : null;
+        const progressPct = Math.min(100, (titration.weeksElapsed / titration.schedule[titration.schedule.length - 1].week) * 100);
+
+        const stepsHtml = titration.schedule.map((step, i) => {
+          let stepClass = 'timeline-step ';
+          if (i < titration.currentPhase) stepClass += 'completed';
+          else if (i === titration.currentPhase) stepClass += 'current';
+          else stepClass += 'future';
+
+          return `<div class="${stepClass}">
+            <div class="timeline-step-dot"></div>
+            <div class="timeline-step-label">${step.label}</div>
+          </div>`;
+        }).join('');
+
+        titrationHtml = `
+          <div class="titration-timeline">
+            <div class="timeline-header">
+              <div class="timeline-title">Titration Progress</div>
+              <div class="timeline-week">Week ${titration.weeksElapsed}</div>
+            </div>
+            <div class="timeline-track">
+              <div class="timeline-progress" style="width: ${progressPct}%"></div>
+            </div>
+            <div class="timeline-steps">${stepsHtml}</div>
+            <div class="timeline-current-info">
+              <div class="timeline-current-dose">Current: ${currentDose.label} — ${currentDose.description}</div>
+              ${nextDose ? `<div class="timeline-next">Next increase: Week ${nextDose.week} → ${nextDose.label}</div>` :
+                '<div class="timeline-next">Maximum dose reached</div>'}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    div.innerHTML = `
+      <div class="pep-header">
+        <div class="pep-name"><span class="pep-dot" style="background:${pep.color}"></span><span>${pep.name}</span></div>
+        <button class="pep-remove" data-idx="${idx}" aria-label="Remove">✕</button>
+      </div>
+      <div class="pep-details">
+        <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)} (${entry.tier})</strong></div>
+        <div class="pep-detail">Draw<strong>${fmtUnits(units)} units</strong></div>
+        <div class="pep-detail">Freq<strong>${pep.frequency}</strong></div>
+      </div>
+      ${cycleHtml}
+      ${vialHtml}
+      ${titrationHtml}
+      ${notesHtml}
+    `;
+    $list.appendChild(div);
+  });
+
+  // Remove buttons
+  $list.querySelectorAll('.pep-remove').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      removePeptide(idx);
+    });
+  });
+
+  // Notes toggle buttons
+  $list.querySelectorAll('.notes-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      const arrow = btn.querySelector('.notes-arrow');
+      content.classList.toggle('open');
+      arrow.classList.toggle('open');
+    });
+  });
+
+  // Notes textarea handlers
+  $list.querySelectorAll('.pep-notes textarea').forEach(textarea => {
+    textarea.addEventListener('blur', (e) => {
+      const peptideName = e.target.getAttribute('data-peptide');
+      savePeptideNote(peptideName, e.target.value);
+    });
+
+    textarea.addEventListener('input', (e) => {
+      const counter = e.target.parentElement.querySelector('.notes-charcount');
+      const len = e.target.value.length;
+      counter.textContent = len + '/500';
+      counter.classList.toggle('warn', len > 450);
+    });
+
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        savePeptideNote(e.target.getAttribute('data-peptide'), e.target.value);
+        e.target.blur();
+      }
+    });
+  });
+}
+
+// ── Render All ───────────────────────────────────────────────
+function renderAll() {
+  renderToday(false);
+  renderCalendar();
+  renderPeptidesList();
+  renderInjectionHistory();
+  renderStackRecommendations();
+}
+
+renderAll();
+
+// ── Clear History ───────────────────────────────────────────
+document.getElementById('clear-history').addEventListener('click', () => {
+  if (confirm('Clear all injection history?')) {
+    localStorage.removeItem('injectionLog');
+    renderAll();
+  }
+});
+
+// ── Reset All Vials ─────────────────────────────────────────
+// Vial tracker removed — skip reset-vials listener
+
+// ── Stack Builder ───────────────────────────────────────────
+document.querySelectorAll('.goal-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    renderStackRecommendations(e.target.getAttribute('data-goal'));
+  });
+});
+
+// ── Share functionality ─────────────────────────────────────
+document.getElementById('share-btn').addEventListener('click', async () => {
+  const shareData = {
+    title: 'Peptide Schedule & Dose Calculator',
+    text: 'Hey — thought you might find this useful. Peptide schedule, dose calculator, injection tracking.\n\n' + window.location.href + '\n\nQuick Start Guide ($9.99):\nhttps://peterlukedigital.gumroad.com/l/fkhwu'
+  };
+
+  if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      // User cancelled
+    }
+  } else {
+    // Fallback: textarea copy method (works on iOS Safari)
+    const text = '💉 Free Peptide Schedule & Dose Calculator — track your stack, log injections, cycle tracking & more\n\n👉 ' + window.location.href + '\n\n📖 New to peptides? Grab the Quick Start Guide ($9.99)\n👉 https://peterlukedigital.gumroad.com/l/fkhwu';
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    const btn = document.getElementById('share-btn');
+    const original = btn.textContent;
+    btn.textContent = '✓ Link Copied!';
+    btn.style.background = '#10b981';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = 'var(--accent)';
+    }, 2000);
+  }
+});
+
+// ── Peptides List Collapse Toggle ───────────────────────────
+document.getElementById('peptides-toggle').addEventListener('click', function() {
+  const list = document.getElementById('peptides-list');
+  const toggle = this;
+  const icon = toggle.querySelector('.collapse-icon');
+  const isCollapsed = list.classList.contains('collapsed');
+  
+  if (isCollapsed) {
+    list.classList.remove('collapsed');
+    toggle.classList.remove('collapsed');
+    icon.textContent = '▼';
+    localStorage.setItem('peptidesCollapsed', 'false');
+  } else {
+    list.classList.add('collapsed');
+    toggle.classList.add('collapsed');
+    icon.textContent = '▶';
+    localStorage.setItem('peptidesCollapsed', 'true');
+  }
+});
+
+// Initialize peptides collapse state
+(function initPeptidesCollapse() {
+  const saved = localStorage.getItem('peptidesCollapsed');
+  const list = document.getElementById('peptides-list');
+  const toggle = document.getElementById('peptides-toggle');
+  const icon = toggle.querySelector('.collapse-icon');
+  
+  // Default to expanded (false)
+  const shouldCollapse = saved === 'true';
+  
+  if (shouldCollapse) {
+    list.classList.add('collapsed');
+    toggle.classList.add('collapsed');
+    icon.textContent = '▶';
+  }
+})();
+
+
+
+// ── Add to Home Screen + WhatsApp Detection ─────────────────
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner('native');
+});
+
+function showInstallBanner(type) {
+  const banner = document.getElementById('install-banner');
+  const icon = document.getElementById('install-banner-icon');
+  const msg = document.getElementById('install-banner-msg');
+  const sub = document.getElementById('install-banner-sub');
+  const btn = document.getElementById('install-banner-btn');
+
+  if (localStorage.getItem('install-banner-dismissed')) return;
+
+  if (type === 'native') {
+    icon.textContent = '📲';
+    msg.textContent = 'Add to Home Screen';
+    sub.textContent = 'Quick access — works offline';
+    btn.textContent = 'Install';
+    btn.onclick = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        if (result.outcome === 'accepted') banner.classList.remove('show');
+        deferredPrompt = null;
+      }
+    };
+  } else if (type === 'whatsapp') {
+    icon.textContent = '💬';
+    msg.textContent = 'Share on WhatsApp';
+    sub.textContent = 'Send this schedule to a friend';
+    btn.textContent = 'Share';
+    btn.onclick = () => {
+      const text = encodeURIComponent('Check out this Peptide Schedule & Dose Calculator — ' + window.location.href);
+      window.open('https://wa.me/?text=' + text, '_blank');
+    };
+  } else if (type === 'ios') {
+    icon.textContent = '📲';
+    msg.textContent = 'Add to Home Screen';
+    sub.textContent = 'Tap Share → Add to Home Screen';
+    btn.textContent = 'Got it';
+    btn.onclick = () => {
+      banner.classList.remove('show');
+      localStorage.setItem('install-banner-dismissed', '1');
+    };
+  }
+
+  banner.classList.add('show');
+}
+
+document.getElementById('install-banner-close').addEventListener('click', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('install-banner-dismissed', '1');
+});
+
+// Detect context
+(function detectContext() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (isStandalone) return; // Already installed
+
+  const ua = navigator.userAgent || '';
+  const isWhatsApp = /WhatsApp/i.test(ua);
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+
+  if (isWhatsApp) {
+    // In WhatsApp in-app browser — show share prompt
+    showInstallBanner('whatsapp');
+  } else if (isIOS && !deferredPrompt) {
+    // iOS Safari doesn't fire beforeinstallprompt
+    setTimeout(() => showInstallBanner('ios'), 2000);
+  }
+  // Android/Chrome will fire beforeinstallprompt if applicable
+})();
+
+// ── Service Worker ───────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
