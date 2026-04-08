@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Peptide Schedule</title>
+<title>Peptide Compass Pro</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -334,11 +334,11 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 <nav class="nav">
   <a href="index.html">Calculator</a>
   <span class="nav-sep">/</span>
-  <a href="schedule.html" class="active">Schedule</a>
+  <a href="schedule.html" class="active">Compass</a>
 </nav>
 
 <div class="header">
-  <h1>Peptide <span>Schedule</span></h1>
+  <h1>Peptide <span>Compass Pro</span></h1>
   <button id="share-btn" class="share-btn">📤 Share Schedule</button>
 </div>
 
@@ -1655,7 +1655,7 @@ document.querySelectorAll('.goal-btn').forEach(btn => {
 // ── Share functionality ─────────────────────────────────────
 document.getElementById('share-btn').addEventListener('click', async () => {
   const shareData = {
-    title: 'Peptide Schedule & Dose Calculator',
+    title: 'Peptide Compass Pro',
     text: 'Hey — thought you might find this useful. Peptide schedule, dose calculator, injection tracking.\n\n' + window.location.href + '\n\nQuick Start Guide ($9.99):\nhttps://peterlukedigital.gumroad.com/l/fkhwu'
   };
 
@@ -1667,7 +1667,7 @@ document.getElementById('share-btn').addEventListener('click', async () => {
     }
   } else {
     // Fallback: textarea copy method (works on iOS Safari)
-    const text = '💉 Free Peptide Schedule & Dose Calculator — track your stack, log injections, cycle tracking & more\n\n👉 ' + window.location.href + '\n\n📖 New to peptides? Grab the Quick Start Guide ($9.99)\n👉 https://peterlukedigital.gumroad.com/l/fkhwu';
+    const text = '💉 Peptide Compass Pro — track your stack, log injections, cycle tracking & more\n\n👉 ' + window.location.href + '\n\n📖 New to peptides? Grab the Quick Start Guide ($9.99)\n👉 https://peterlukedigital.gumroad.com/l/fkhwu';
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -1767,7 +1767,7 @@ function showInstallBanner(type) {
     sub.textContent = 'Send this schedule to a friend';
     btn.textContent = 'Share';
     btn.onclick = () => {
-      const text = encodeURIComponent('Check out this Peptide Schedule & Dose Calculator — ' + window.location.href);
+      const text = encodeURIComponent('Check out Peptide Compass Pro — ' + window.location.href);
       window.open('https://wa.me/?text=' + text, '_blank');
     };
   } else if (type === 'ios') {
