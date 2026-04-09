@@ -14,8 +14,8 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
-html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(env(safe-area-inset-top),0px) 1rem calc(4.75rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(env(safe-area-inset-top),0px) 1rem calc(5rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
@@ -280,6 +280,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .add-panel .field input[type="date"]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);transition:border-color .2s,box-shadow .2s;color-scheme:dark}
 .add-panel .field input[type="date"]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
 .add-panel .field .helper-text{font-size:.65rem;color:var(--text2);font-weight:400;margin-top:.3rem;font-style:italic}
+.cycle-hint{font-size:.65rem;color:var(--accent);font-weight:500;margin-top:.3rem;opacity:.85}
 .btn-row{display:flex;gap:.5rem;margin-top:1rem}
 .btn{padding:.7rem 1.2rem;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
 .btn-primary{background:var(--accent);color:var(--bg)}
@@ -930,16 +931,6 @@ body.light-mode .btn-secondary { background: var(--surface2); color: var(--text)
 body.light-mode .nav a:hover { background: var(--surface2); color: var(--text); }
 body.light-mode .nav a.active { background: rgba(43,186,160,.15); color: var(--accent); }
 
-/* Adjust body padding for bottom nav */
-body {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: max(env(safe-area-inset-top), 0px) 1rem calc(5rem + env(safe-area-inset-bottom));
-  overflow-x: hidden;
-}
-
 /* ── Reverse Calc ─────────────────────────────────────────── */
 .rc-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0 .2rem}
 .rc-toggle-label{display:flex;flex-direction:column;gap:.15rem}
@@ -1085,8 +1076,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <option value="49">49 days (7 weeks)</option>
         <option value="56" selected>56 days (8 weeks)</option>
         <option value="84">84 days (12 weeks)</option>
+        <option value="112">112 days (16 weeks)</option>
         <option value="0">Ongoing (no end)</option>
       </select>
+      <div id="cycle-hint" class="cycle-hint" style="display:none"></div>
     </div>
     <div class="field">
       <label for="add-start-date">Start Date</label>
@@ -1622,13 +1615,13 @@ const PEPTIDES = [
   { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4 },
   { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4 },
   { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4 },
   { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0 },
   { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4 },
   { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4 },
   { name: 'Dihexa', lowMcg: 10000, stdMcg: 20000, highMcg: 30000, rangeLabel: '10-30 mg oral daily', timing: 'morning', timingNote: 'Morning — oral, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#DDAAFF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 3, breakWeeks: 24 },
+  { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 4, breakWeeks: 24 },
   { name: 'FOXO4-DRI', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental', frequency: '5on2off', timingIcon: '☀️', color: '#8838E8', cycleWeeks: 2, breakWeeks: 4 },
   { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg daily', timing: 'morning', timingNote: 'Morning or evening — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4 },
   { name: 'GHRP-2', lowMcg: 100, stdMcg: 150, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#44FFAA', cycleWeeks: 12, breakWeeks: 4 },
@@ -1648,24 +1641,24 @@ const PEPTIDES = [
   { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance', frequency: '2x/week', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8 },
   { name: 'Melanotan II', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100-500 mcg daily', timing: 'evening', timingNote: 'Evening — daily during loading, then 1-2x/week', frequency: 'daily', timingIcon: '🌙', color: '#CC8844', cycleWeeks: 4, breakWeeks: 8 },
   { name: 'MK-677 (Ibutamoren)', lowMcg: 10000, stdMcg: 25000, highMcg: 25000, rangeLabel: '10-25 mg daily', timing: 'evening', timingNote: 'Before bed — daily, 8-12 week cycles', frequency: 'daily', timingIcon: '🌙', color: '#44BBFF', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'NAD+', lowMcg: 50000, stdMcg: 100000, highMcg: 200000, rangeLabel: '50–200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week', frequency: '3x/week', timingIcon: '☀️', color: '#FF6CA8', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'NAD+', lowMcg: 50000, stdMcg: 100000, highMcg: 200000, rangeLabel: '50–200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week', frequency: '3x/week', timingIcon: '☀️', color: '#FF6CA8', cycleWeeks: 4, breakWeeks: 4 },
   { name: 'Oxytocin', lowMcg: 4, stdMcg: 10, highMcg: 20, rangeLabel: '4-20 mcg SubQ', timing: 'morning', timingNote: 'Morning — as needed or daily', frequency: 'daily', timingIcon: '☀️', color: '#FF99CC', cycleWeeks: 0, breakWeeks: 0 },
   { name: 'PE-22-28', lowMcg: 100, stdMcg: 150, highMcg: 150, rangeLabel: '100-150 mcg 2x/day', timing: 'morning', timingNote: 'Morning + evening — daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#99CCFF', cycleWeeks: 8, breakWeeks: 4 },
   { name: 'PEG-MGF', lowMcg: 200, stdMcg: 200, highMcg: 400, rangeLabel: '200-400 mcg 2-3x/week', timing: 'anytime', timingNote: 'Post-workout — 2-3x per week', frequency: '3x/week', timingIcon: '💪', color: '#FF6644', cycleWeeks: 6, breakWeeks: 4 },
-  { name: 'PT-141 (Bremelanotide)', lowMcg: 1000, stdMcg: 1750, highMcg: 2000, rangeLabel: '1-2 mg as needed', timing: 'anytime', timingNote: '45 min before activity — max 8 doses/month', frequency: 'weekly', timingIcon: '⏰', color: '#FFD76C', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'Retatrutide', lowMcg: 1000, stdMcg: 4000, highMcg: 12000, rangeLabel: '1–12 mg weekly', timing: 'morning', timingNote: 'Morning — once weekly', frequency: 'weekly', timingIcon: '☀️', color: '#FF8F6C', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'Selank', lowMcg: 250, stdMcg: 400, highMcg: 500, rangeLabel: '250-500 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#AADDFF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Semaglutide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25-2.4 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF9F6C', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'Semax', lowMcg: 300, stdMcg: 600, highMcg: 800, rangeLabel: '300-800 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#FFCCAA', cycleWeeks: 8, breakWeeks: 4 },
+  { name: 'PT-141 (Bremelanotide)', lowMcg: 1000, stdMcg: 1750, highMcg: 2000, rangeLabel: '1-2 mg as needed', timing: 'anytime', timingNote: '45 min before activity — max 8 doses/month', frequency: 'weekly', timingIcon: '⏰', color: '#FFD76C', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Retatrutide', lowMcg: 1000, stdMcg: 4000, highMcg: 12000, rangeLabel: '1–12 mg weekly', timing: 'morning', timingNote: 'Morning — once weekly', frequency: 'weekly', timingIcon: '☀️', color: '#FF8F6C', cycleWeeks: 16, breakWeeks: 0 },
+  { name: 'Selank', lowMcg: 250, stdMcg: 400, highMcg: 500, rangeLabel: '250-500 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#AADDFF', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Semaglutide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25-2.4 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF9F6C', cycleWeeks: 16, breakWeeks: 0 },
+  { name: 'Semax', lowMcg: 300, stdMcg: 600, highMcg: 800, rangeLabel: '300-800 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#FFCCAA', cycleWeeks: 4, breakWeeks: 4 },
   { name: 'Sermorelin', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200-500 mcg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#B6FF6C', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'SS-31 (Elamipretide)', lowMcg: 250, stdMcg: 500, highMcg: 1000, rangeLabel: '250–1000 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 8 week cycles', frequency: '5on2off', timingIcon: '☀️', color: '#38D8E8', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Survodutide', lowMcg: 300, stdMcg: 2400, highMcg: 4800, rangeLabel: '0.3–4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, 7-step titration over 20 weeks. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E8A878', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'SS-31 (Elamipretide)', lowMcg: 250, stdMcg: 500, highMcg: 1000, rangeLabel: '250–1000 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 4-8 week cycles', frequency: '5on2off', timingIcon: '☀️', color: '#38D8E8', cycleWeeks: 4, breakWeeks: 4 },
+  { name: 'Survodutide', lowMcg: 300, stdMcg: 2400, highMcg: 4800, rangeLabel: '0.3–4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, 7-step titration over 20 weeks. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E8A878', cycleWeeks: 16, breakWeeks: 0 },
+  { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 6, breakWeeks: 4 },
+  { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 12, breakWeeks: 4 },
   { name: 'Thymalin', lowMcg: 5000, stdMcg: 10000, highMcg: 20000, rangeLabel: '5–20 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year', frequency: 'daily', timingIcon: '☀️', color: '#78E8A8', cycleWeeks: 1, breakWeeks: 24 },
   { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week', frequency: '5on2off', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 16, breakWeeks: 0 },
   { name: 'VIP', lowMcg: 50, stdMcg: 50, highMcg: 100, rangeLabel: '50–100 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required', frequency: 'daily', timingIcon: '☀️', color: '#E8E838', cycleWeeks: 0, breakWeeks: 0 },
 ];
 
@@ -2325,6 +2318,7 @@ $addWater.value = '2';
 function autoPopulateCycle(pepIdx) {
   const pep = PEPTIDES[pepIdx];
   const $addCycle = document.getElementById('add-cycle');
+  const $hint = document.getElementById('cycle-hint');
   if (!pep || !$addCycle) return;
   if (pep.cycleWeeks > 0) {
     const days = pep.cycleWeeks * 7;
@@ -2335,8 +2329,16 @@ function autoPopulateCycle(pepIdx) {
       const closest = availableOptions.reduce((a, b) => Math.abs(b - days) < Math.abs(a - days) ? b : a);
       $addCycle.value = String(closest);
     }
+    if ($hint) {
+      $hint.textContent = `Recommended: ${pep.cycleWeeks} week${pep.cycleWeeks !== 1 ? 's' : ''}`;
+      $hint.style.display = 'block';
+    }
   } else {
     $addCycle.value = '0';
+    if ($hint) {
+      $hint.textContent = 'Recommended: ongoing (no fixed end date)';
+      $hint.style.display = 'block';
+    }
   }
 }
 
@@ -3644,6 +3646,7 @@ document.addEventListener('DOMContentLoaded', () => {
           $addStartDate.value = new Date().toISOString().split('T')[0];
         }
       }
+      autoPopulateCycle(pepIdx);
     });
   }
   
@@ -3656,6 +3659,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Expand from compact mode
         addSection.classList.remove('compact');
         $addPanel.style.display = 'block';
+        if ($addPep) autoPopulateCycle(parseInt($addPep.value));
       } else {
         // Toggle panel visibility
         const isVisible = $addPanel.style.display === 'block';
@@ -3666,6 +3670,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if ($addStartDate) {
             $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
           }
+          autoPopulateCycle(pepIdx);
         }
       }
     });
