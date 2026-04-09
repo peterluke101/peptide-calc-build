@@ -969,6 +969,40 @@ body.light-mode .rc-slider-row input[type=range]{background:#ddd}
 body.light-mode .rc-num-input{background:#f5f5f5}
 body.light-mode .rc-seg-btn{background:#f5f5f5}
 body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1),rgba(43,186,160,.04))}
+/* Print Label button */
+.btn-print-label{display:inline-flex;align-items:center;gap:.35rem;margin-top:.75rem;padding:.5rem .9rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.35);border-radius:8px;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s}
+.btn-print-label:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
+.btn-print-label-sm{padding:.3rem .55rem;font-size:.68rem;margin-top:.5rem;gap:.25rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:6px;font-family:inherit;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center}
+.btn-print-label-sm:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
+.rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
+.rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
+body.light-mode .btn-print-label,.btn-print-label-sm{background:rgba(43,186,160,.12)}
+/* Peptide select */
+.rc-pep-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;-webkit-appearance:none;appearance:none}
+.rc-pep-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-pep-select option{background:var(--surface2);color:var(--text)}
+body.light-mode .rc-pep-select{background-color:#f5f5f5}
+/* Syringe graphic — sleek redesign */
+.rc-syringe-wrap{margin-top:1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.rc-syringe-svg{width:100%;max-width:340px;overflow:visible}
+.rc-syringe-draw-label{font-size:1.5rem;font-weight:800;color:var(--accent);letter-spacing:-.02em;line-height:1}
+.rc-syringe-hint{font-size:.6rem;color:var(--text2);opacity:.7}
+/* Barrel: thin pill outline only, no fill */
+.rc-syr-barrel{fill:none;stroke:var(--border);stroke-width:1.2}
+/* Fill: teal gradient, glow — animated scaleX */
+.rc-syr-fill{transition:transform .45s cubic-bezier(.4,0,.2,1);transform-box:fill-box;transform-origin:right center}
+/* Needle: minimal triangle */
+.rc-syr-needle-tip{opacity:.45}
+/* Ticks: major only, whisper thin */
+.rc-syr-tick-major{stroke:var(--accent);stroke-width:.9;opacity:.7}
+.rc-syr-tick-label{fill:var(--accent);font-size:7px;text-anchor:middle;font-family:inherit;opacity:.8;font-weight:600}
+/* Light mode */
+body.light-mode .rc-search-input{background:#f5f5f5}
+body.light-mode .rc-search-dropdown{background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+body.light-mode .rc-syr-barrel{stroke:#ccc}
+body.light-mode .rc-syr-tick-major{stroke:#999}
+body.light-mode .rc-syr-tick-label{fill:#666}
+body.light-mode .rc-syr-needle-tip{fill:#999}
 </style>
 </head>
 <body>
@@ -1073,6 +1107,11 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
     </label>
   </div>
   <div class="rc-panel" id="rc-panel">
+    <!-- Peptide Selector -->
+    <div class="rc-field">
+      <label for="rc-pep-select">Peptide <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2)">(auto-fills vial size)</span></label>
+      <select id="rc-pep-select" class="rc-pep-select"></select>
+    </div>
     <!-- Vial Size -->
     <div class="rc-field">
       <label for="rc-vial-slider">Vial Size</label>
@@ -1109,6 +1148,51 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
         <span class="rc-result-unit">ml</span>
       </div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
+      <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
+      <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
+    </div>
+    <!-- Syringe Graphic — sleek redesign -->
+    <div class="rc-syringe-wrap">
+      <svg id="rc-syringe-svg" class="rc-syringe-svg" viewBox="0 0 340 70" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Teal gradient: lighter at top, richer at bottom -->
+          <linearGradient id="rc-fill-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#72FFE4"/>
+            <stop offset="100%" stop-color="#3DE8C3"/>
+          </linearGradient>
+          <!-- Reflective shine: white fade top-to-bottom -->
+          <linearGradient id="rc-shine-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="white" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="white" stop-opacity="0"/>
+          </linearGradient>
+          <!-- Soft glow filter -->
+          <filter id="rc-glow" x="-10%" y="-80%" width="120%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <!-- Barrel clip (thicker: 28px tall) -->
+          <clipPath id="rc-barrel-clip">
+            <rect x="20" y="16" width="282" height="28" rx="14"/>
+          </clipPath>
+        </defs>
+        <!-- Barrel outline: thicker pill, no fill -->
+        <rect class="rc-syr-barrel" x="20" y="16" width="282" height="28" rx="14"/>
+        <!-- Teal fill — gradient + glow, scaleX from RIGHT (needle side) -->
+        <rect id="rc-syr-fill" class="rc-syr-fill" x="20" y="16" width="282" height="28" rx="14"
+              fill="url(#rc-fill-grad)" filter="url(#rc-glow)" clip-path="url(#rc-barrel-clip)"/>
+        <!-- Reflective shine overlay (top third of barrel) -->
+        <rect x="20" y="16" width="282" height="12" rx="7"
+              fill="url(#rc-shine-grad)" clip-path="url(#rc-barrel-clip)" style="pointer-events:none"/>
+        <!-- Tick marks — major only, 0 at left, 100 at right (near needle), generated by JS -->
+        <g id="rc-syr-ticks"></g>
+        <!-- Needle: right-pointing triangle from barrel right edge -->
+        <polygon class="rc-syr-needle-tip" fill="#3DE8C3" points="302,19 302,43 330,30"/>
+      </svg>
+      <div class="rc-syringe-draw-label" id="rc-syringe-draw-label">10 units drawn</div>
+      <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe</div>
     </div>
   </div>
 </div>
@@ -2617,7 +2701,10 @@ function renderPeptidesList() {
     div.innerHTML = `
       <div class="pep-header">
         <div class="pep-name"><span class="pep-dot" style="background:${pep.color}"></span><span>${pep.name}</span></div>
-        <button class="pep-remove" data-idx="${idx}" aria-label="Remove">✕</button>
+        <div style="display:flex;align-items:center;gap:.4rem">
+          <button class="btn-print-label-sm pep-print-label" data-idx="${idx}" aria-label="Print label">🏷️ Label</button>
+          <button class="pep-remove" data-idx="${idx}" aria-label="Remove">✕</button>
+        </div>
       </div>
       <div class="pep-details">
         <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)} (${entry.tier})</strong></div>
@@ -2637,6 +2724,18 @@ function renderPeptidesList() {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(e.currentTarget.dataset.idx);
       removePeptide(idx);
+    });
+  });
+
+  // Print label buttons
+  $list.querySelectorAll('.pep-print-label').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      const entry = schedule[idx];
+      const pep = PEPTIDES[entry.peptideIndex];
+      const doseMcg = getDoseMcg(pep, entry.tier);
+      const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
+      printVialLabel(pep.name, entry.vialMg + 'mg', entry.waterMl + ' mL BAC water', fmtDose(doseMcg) + ' per draw (' + fmtUnits(units) + ' units)');
     });
   });
 
@@ -2672,6 +2771,45 @@ function renderPeptidesList() {
       }
     });
   });
+}
+
+// ── Print Vial Label ─────────────────────────────────────────
+function printVialLabel(peptideName, strength, waterVolume, dosePerDraw) {
+  const expDate = new Date();
+  expDate.setDate(expDate.getDate() + 14);
+  const expStr = expDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  @page { size: 40mm 20mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 40mm; height: 20mm; background: #fff; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+  .accent { display: block; width: 100%; height: 1.2mm; background: #3DE8C3; }
+  .inner { padding: .8mm 1.5mm .5mm; }
+  .name { font-size: 8.5pt; font-weight: 700; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.25; }
+  .strength { font-size: 6pt; font-weight: 700; color: #333; margin-top: .5mm; }
+  .water { font-size: 5.5pt; color: #444; margin-top: .4mm; }
+  .dose { font-size: 5pt; color: #555; margin-top: .3mm; }
+  .storage { font-size: 4pt; color: #888; margin-top: .8mm; border-top: .3mm solid #eee; padding-top: .4mm; }
+  @media print {
+    html, body { width: 40mm; height: 20mm; }
+    @page { size: 40mm 20mm; margin: 0; }
+  }
+</style>
+</head><body>
+<span class="accent"></span>
+<div class="inner">
+  <div class="name">${peptideName}</div>
+  <div class="strength">${strength}</div>
+  <div class="water">💧 ${waterVolume}</div>
+  <div class="dose">📍 ${dosePerDraw}</div>
+  <div class="storage">Store 36–46°F &nbsp;|&nbsp; Exp: ${expStr}</div>
+</div>
+<script>window.onload=function(){setTimeout(function(){window.print();},300);}<\/script>
+</body></html>`;
+
+  const w = window.open('', '_blank', 'width=320,height=240,toolbar=0,menubar=0,location=0');
+  if (w) { w.document.write(html); w.document.close(); }
 }
 
 // ── Render All ───────────────────────────────────────────────
@@ -3998,8 +4136,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Reverse Calc ─────────────────────────────────────────────
   (function() {
-    const toggle   = document.getElementById('reverse-calc-toggle');
-    const panel    = document.getElementById('rc-panel');
+    const toggle     = document.getElementById('reverse-calc-toggle');
+    const panel      = document.getElementById('rc-panel');
     const vialSlider = document.getElementById('rc-vial-slider');
     const vialNum    = document.getElementById('rc-vial-num');
     const doseSlider = document.getElementById('rc-dose-slider');
@@ -4009,37 +4147,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const breakdown  = document.getElementById('rc-result-breakdown');
     let syringeUnits = 10;
 
+    // ── Peptide vial size lookup (common commercial sizes) ──
+    const COMMON_VIALS = {
+      'Adipotide':5,'AICAR':100,'AOD-9604':5,'ARA-290':5,'BPC-157':5,
+      'Cagrilintide':5,'CJC-1295 no DAC + Ipamorelin':5,'CJC-1295 with DAC':5,
+      'Dihexa':50,'DSIP':5,'Epitalon':10,'FOXO4-DRI':5,'GHK-Cu':10,
+      'GHRP-2':5,'GHRP-6':5,'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)':10,
+      'Glutathione':500,'HCG':5,'Hexarelin':5,'HGH':10,'IGF-1 LR3':1,
+      'Ipamorelin':5,'KLOW Stack (TB + BPC + GHK + KPV)':10,'KPV':5,
+      'L-Carnitine':1000,'LL-37':5,'Mazdutide':10,'Melanotan I':10,
+      'Melanotan II':10,'MK-677 (Ibutamoren)':30,'MOTS-C':5,'NAD+':500,
+      'Oxytocin':1,'PE-22-28':5,'PEG-MGF':5,'PT-141 (Bremelanotide)':10,
+      'Retatrutide':10,'Selank':5,'Semaglutide':5,'Semax':5,'Sermorelin':5,
+      'SS-31 (Elamipretide)':5,'Survodutide':10,'TB-500':5,'Tesamorelin':10,
+      'Thymalin':50,'Thymosin Alpha-1':10,'Tirzepatide':5,'VIP':1
+    };
+
+    function suggestVialMg(pep) {
+      if (COMMON_VIALS[pep.name]) return COMMON_VIALS[pep.name];
+      const target = (pep.stdMcg / 1000) * 15;
+      return VIALS.reduce((a, b) => Math.abs(b - target) < Math.abs(a - target) ? b : a);
+    }
+
+    // ── Syringe graphic ──
+    const BL = 20, BW = 282; // barrel left x, width — needle on RIGHT
+    const fillEl   = document.getElementById('rc-syr-fill');
+    const drawLabel = document.getElementById('rc-syringe-draw-label');
+
+    // Major ticks: 100 at left (plunger end), 0 at right (needle end)
+    (function buildTicks() {
+      const g = document.getElementById('rc-syr-ticks');
+      if (!g) return;
+      const NS = 'http://www.w3.org/2000/svg';
+      for (let i = 0; i <= 100; i += 10) {
+        const x = BL + ((100 - i) / 100) * BW; // 100→left, 0→right
+        const line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', x); line.setAttribute('x2', x);
+        line.setAttribute('y1', 44); line.setAttribute('y2', 52);
+        line.setAttribute('class', 'rc-syr-tick-major');
+        g.appendChild(line);
+        const txt = document.createElementNS(NS, 'text');
+        txt.setAttribute('x', x); txt.setAttribute('y', 62);
+        txt.setAttribute('class', 'rc-syr-tick-label');
+        txt.textContent = i;
+        g.appendChild(txt);
+      }
+    })();
+
+    function updateSyringe(units) {
+      if (!fillEl) return;
+      fillEl.style.transform = `scaleX(${units / 100})`;
+      if (drawLabel) drawLabel.textContent = `${units} units drawn`;
+    }
+
     function calcAndRender() {
-      const vialMg    = parseFloat(vialNum.value)    || 5;
-      const desiredMcg = parseFloat(doseNum.value)   || 250;
-      // water_ml = (vial_mg * 1000 / desired_mcg) * syringe_units / 100
+      const vialMg     = parseFloat(vialNum.value)  || 5;
+      const desiredMcg = parseFloat(doseNum.value)  || 250;
       const waterMl = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
       const display = waterMl.toFixed(2);
       resultVal.textContent = display;
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${desiredMcg}mcg dose × ${syringeUnits} units = ${display} ml`;
+      updateSyringe(syringeUnits);
     }
 
     toggle.addEventListener('change', () => {
       panel.style.display = toggle.checked ? 'block' : 'none';
-      if (toggle.checked) calcAndRender();
+      if (toggle.checked) { calcAndRender(); updateSyringe(syringeUnits); }
     });
 
-    // Sync slider ↔ number input for vial size
-    vialSlider.addEventListener('input', () => {
-      vialNum.value = vialSlider.value; calcAndRender();
-    });
-    vialNum.addEventListener('input', () => {
-      vialSlider.value = vialNum.value; calcAndRender();
-    });
-
-    // Sync slider ↔ number input for dose
-    doseSlider.addEventListener('input', () => {
-      doseNum.value = doseSlider.value; calcAndRender();
-    });
-    doseNum.addEventListener('input', () => {
-      doseSlider.value = doseNum.value; calcAndRender();
-    });
+    // Slider ↔ number sync — vial
+    vialSlider.addEventListener('input', () => { vialNum.value = vialSlider.value; calcAndRender(); });
+    vialNum.addEventListener('input',   () => { vialSlider.value = vialNum.value; calcAndRender(); });
+    // Slider ↔ number sync — dose
+    doseSlider.addEventListener('input', () => { doseNum.value = doseSlider.value; calcAndRender(); });
+    doseNum.addEventListener('input',   () => { doseSlider.value = doseNum.value; calcAndRender(); });
 
     // Segmented syringe picker
     segBtns.forEach(btn => {
@@ -4049,6 +4231,43 @@ document.addEventListener('DOMContentLoaded', () => {
         syringeUnits = parseInt(btn.dataset.units, 10);
         calcAndRender();
       });
+    });
+
+    // ── Peptide select dropdown ──
+    const pepSelect = document.getElementById('rc-pep-select');
+    // Populate with blank + all peptides (same order as regular calc)
+    const blankOpt = document.createElement('option');
+    blankOpt.value = ''; blankOpt.textContent = '— Select peptide —';
+    pepSelect.appendChild(blankOpt);
+    PEPTIDES.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = p.name;
+      pepSelect.appendChild(o);
+    });
+    pepSelect.addEventListener('change', () => {
+      const idx = parseInt(pepSelect.value);
+      if (isNaN(idx)) return;
+      const pep = PEPTIDES[idx];
+      const vialMg = suggestVialMg(pep);
+      const dose   = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
+      vialSlider.value = vialMg; vialNum.value = vialMg;
+      doseSlider.value = dose;   doseNum.value = dose;
+      calcAndRender();
+    });
+
+    // Print label from Reverse Calc
+    document.getElementById('rc-print-label-btn')?.addEventListener('click', () => {
+      const vialMg     = parseFloat(vialNum.value)  || 5;
+      const desiredMcg = parseFloat(doseNum.value)  || 250;
+      const waterMl    = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
+      const idx = parseInt(pepSelect.value);
+      const pepName = !isNaN(idx) ? PEPTIDES[idx].name : 'Peptide';
+      printVialLabel(
+        pepName,
+        vialMg + 'mg vial',
+        waterMl.toFixed(2) + ' mL BAC water',
+        desiredMcg + ' mcg per draw (' + syringeUnits + ' units)'
+      );
     });
 
     calcAndRender();
