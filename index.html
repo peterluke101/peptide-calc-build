@@ -968,6 +968,12 @@ body {
 body.light-mode .rc-slider-row input[type=range]{background:#ddd}
 body.light-mode .rc-num-input{background:#f5f5f5}
 body.light-mode .rc-seg-btn{background:#f5f5f5}
+/* mcg/mg unit toggle */
+.rc-unit-toggle{display:inline-flex;gap:.2rem;margin-left:.4rem;flex-shrink:0}
+.rc-unit-btn{padding:.25rem .5rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:.68rem;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;line-height:1}
+.rc-unit-btn:hover{border-color:var(--accent);color:var(--text)}
+.rc-unit-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+body.light-mode .rc-unit-btn{background:#f5f5f5}
 body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1),rgba(43,186,160,.04))}
 /* Print Label button */
 .btn-print-label{display:inline-flex;align-items:center;gap:.35rem;margin-top:.75rem;padding:.5rem .9rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.35);border-radius:8px;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s}
@@ -1123,11 +1129,17 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
     <!-- Desired Dose -->
     <div class="rc-field">
-      <label for="rc-dose-slider">Desired Dose</label>
+      <label for="rc-dose-slider" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Desired Dose</span>
+        <div class="rc-unit-toggle">
+          <button class="rc-unit-btn active" id="rc-unit-mcg">mcg</button>
+          <button class="rc-unit-btn" id="rc-unit-mg">mg</button>
+        </div>
+      </label>
       <div class="rc-slider-row">
         <input type="range" id="rc-dose-slider" min="100" max="10000" step="50" value="250">
         <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="10000" step="50" value="250">
-        <span class="rc-num-unit">mcg</span>
+        <span class="rc-num-unit" id="rc-dose-unit">mcg</span>
       </div>
     </div>
     <!-- Syringe Units -->
@@ -4200,15 +4212,74 @@ document.addEventListener('DOMContentLoaded', () => {
       if (drawLabel) drawLabel.textContent = `${units} units drawn`;
     }
 
+    // ── mcg/mg unit toggle ──
+    const unitMcgBtn  = document.getElementById('rc-unit-mcg');
+    const unitMgBtn   = document.getElementById('rc-unit-mg');
+    const doseUnitLbl = document.getElementById('rc-dose-unit');
+    let doseUnitMcg   = localStorage.getItem('rc-dose-unit') !== 'mg'; // default mcg
+
+    function applyUnitMode() {
+      if (doseUnitMcg) {
+        unitMcgBtn.classList.add('active'); unitMgBtn.classList.remove('active');
+        doseUnitLbl.textContent = 'mcg';
+        doseSlider.min = 100; doseSlider.max = 10000; doseSlider.step = 50;
+        doseNum.min = 100; doseNum.max = 10000; doseNum.step = 50;
+      } else {
+        unitMgBtn.classList.add('active'); unitMcgBtn.classList.remove('active');
+        doseUnitLbl.textContent = 'mg';
+        doseSlider.min = 0.1; doseSlider.max = 10; doseSlider.step = 0.05;
+        doseNum.min = 0.1; doseNum.max = 10; doseNum.step = 0.05;
+      }
+    }
+
+    // Returns desiredMcg always in mcg regardless of display mode
+    function getDesiredMcg() {
+      const v = parseFloat(doseNum.value) || (doseUnitMcg ? 250 : 0.25);
+      return doseUnitMcg ? v : v * 1000;
+    }
+
     function calcAndRender() {
-      const vialMg     = parseFloat(vialNum.value)  || 5;
-      const desiredMcg = parseFloat(doseNum.value)  || 250;
+      const vialMg     = parseFloat(vialNum.value) || 5;
+      const desiredMcg = getDesiredMcg();
       const waterMl = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
       const display = waterMl.toFixed(2);
       resultVal.textContent = display;
+      const doseDisplay = doseUnitMcg
+        ? `${desiredMcg}mcg`
+        : `${(desiredMcg / 1000).toFixed(3).replace(/\.?0+$/, '')}mg`;
       breakdown.textContent =
-        `${vialMg}mg vial ÷ ${desiredMcg}mcg dose × ${syringeUnits} units = ${display} ml`;
+        `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
       updateSyringe(syringeUnits);
+    }
+
+    unitMcgBtn.addEventListener('click', () => {
+      if (doseUnitMcg) return;
+      // Convert displayed mg → mcg
+      const curMg = parseFloat(doseNum.value) || 0.25;
+      doseUnitMcg = true;
+      applyUnitMode();
+      const mcgVal = Math.round(curMg * 1000 / 50) * 50;
+      doseNum.value = mcgVal; doseSlider.value = mcgVal;
+      localStorage.setItem('rc-dose-unit', 'mcg');
+      calcAndRender();
+    });
+
+    unitMgBtn.addEventListener('click', () => {
+      if (!doseUnitMcg) return;
+      // Convert displayed mcg → mg
+      const curMcg = parseFloat(doseNum.value) || 250;
+      doseUnitMcg = false;
+      applyUnitMode();
+      const mgVal = +(curMcg / 1000).toFixed(3);
+      doseNum.value = mgVal; doseSlider.value = mgVal;
+      localStorage.setItem('rc-dose-unit', 'mg');
+      calcAndRender();
+    });
+
+    // Init unit mode from saved preference
+    applyUnitMode();
+    if (!doseUnitMcg) {
+      doseNum.value = 0.25; doseSlider.value = 0.25;
     }
 
     toggle.addEventListener('change', () => {
