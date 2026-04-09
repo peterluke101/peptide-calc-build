@@ -4320,24 +4320,32 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isNaN(idx)) return;
       const pep = PEPTIDES[idx];
       const vialMg = suggestVialMg(pep);
-      const dose   = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
+      const doseMcg = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
       vialSlider.value = vialMg; vialNum.value = vialMg;
-      doseSlider.value = dose;   doseNum.value = dose;
+      if (doseUnitMcg) {
+        doseSlider.value = doseMcg; doseNum.value = doseMcg;
+      } else {
+        const mgVal = +(doseMcg / 1000).toFixed(3);
+        doseSlider.value = mgVal; doseNum.value = mgVal;
+      }
       calcAndRender();
     });
 
     // Print label from Reverse Calc
     document.getElementById('rc-print-label-btn')?.addEventListener('click', () => {
-      const vialMg     = parseFloat(vialNum.value)  || 5;
-      const desiredMcg = parseFloat(doseNum.value)  || 250;
+      const vialMg     = parseFloat(vialNum.value) || 5;
+      const desiredMcg = getDesiredMcg();
       const waterMl    = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
       const idx = parseInt(pepSelect.value);
       const pepName = !isNaN(idx) ? PEPTIDES[idx].name : 'Peptide';
+      const doseLabel = doseUnitMcg
+        ? `${desiredMcg} mcg per draw (${syringeUnits} units)`
+        : `${(desiredMcg / 1000).toFixed(3).replace(/\.?0+$/, '')} mg per draw (${syringeUnits} units)`;
       printVialLabel(
         pepName,
         vialMg + 'mg vial',
         waterMl.toFixed(2) + ' mL BAC water',
-        desiredMcg + ' mcg per draw (' + syringeUnits + ' units)'
+        doseLabel
       );
     });
 
