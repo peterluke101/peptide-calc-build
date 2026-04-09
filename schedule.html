@@ -327,7 +327,7 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
   h1,h2,h3{font-size:1.2em}
 }
 @media(min-width:520px){
-  body{padding:0 1.5rem 4rem}
+  body{padding:max(env(safe-area-inset-top),0px) 1.5rem calc(4rem + env(safe-area-inset-bottom))}
   .header h1{font-size:2rem}
   .card{padding:2rem}
 }
