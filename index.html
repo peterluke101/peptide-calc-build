@@ -977,19 +977,11 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
 .rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
 .rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
 body.light-mode .btn-print-label,.btn-print-label-sm{background:rgba(43,186,160,.12)}
-/* Peptide search */
-.rc-search-wrap{position:relative}
-.rc-search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
-.rc-search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
-.rc-search-input::placeholder{color:var(--text2)}
-.rc-search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:200;display:none;box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.rc-search-item{padding:.5rem .85rem;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--text);transition:background .15s,color .15s}
-.rc-search-item:hover{background:var(--accent-dim);color:var(--accent)}
-.rc-search-item em{font-style:normal;font-weight:700;color:var(--accent)}
-.rc-selected-tag{display:none;align-items:center;gap:.5rem;margin-top:.4rem;padding:.35rem .65rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.3);border-radius:6px}
-.rc-selected-tag-text{font-size:.75rem;font-weight:600;color:var(--accent);flex:1}
-.rc-clear-pep{background:none;border:none;color:var(--text2);font-size:.8rem;cursor:pointer;padding:.1rem .25rem;border-radius:4px;transition:color .2s;line-height:1}
-.rc-clear-pep:hover{color:var(--accent)}
+/* Peptide select */
+.rc-pep-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;-webkit-appearance:none;appearance:none}
+.rc-pep-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-pep-select option{background:var(--surface2);color:var(--text)}
+body.light-mode .rc-pep-select{background-color:#f5f5f5}
 /* Syringe graphic — sleek redesign */
 .rc-syringe-wrap{margin-top:1.25rem;display:flex;flex-direction:column;align-items:center;gap:.5rem}
 .rc-syringe-svg{width:100%;max-width:340px;overflow:visible}
@@ -1117,15 +1109,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <div class="rc-panel" id="rc-panel">
     <!-- Peptide Selector -->
     <div class="rc-field">
-      <label for="rc-pep-search">Peptide <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2)">(auto-fills vial size)</span></label>
-      <div class="rc-search-wrap">
-        <input type="text" id="rc-pep-search" class="rc-search-input" placeholder="Search peptide..." autocomplete="off" spellcheck="false">
-        <div class="rc-search-dropdown" id="rc-pep-dropdown"></div>
-      </div>
-      <div class="rc-selected-tag" id="rc-selected-tag">
-        <span class="rc-selected-tag-text" id="rc-selected-name"></span>
-        <button class="rc-clear-pep" id="rc-clear-pep" aria-label="Clear selection">✕</button>
-      </div>
+      <label for="rc-pep-select">Peptide <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2)">(auto-fills vial size)</span></label>
+      <select id="rc-pep-select" class="rc-pep-select"></select>
     </div>
     <!-- Vial Size -->
     <div class="rc-field">
@@ -4248,76 +4233,26 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // ── Peptide searchable selector ──
-    const searchInput = document.getElementById('rc-pep-search');
-    const dropdown    = document.getElementById('rc-pep-dropdown');
-    const selectedTag = document.getElementById('rc-selected-tag');
-    const selectedName = document.getElementById('rc-selected-name');
-
-    function highlightMatch(text, query) {
-      const idx = text.toLowerCase().indexOf(query.toLowerCase());
-      if (idx === -1) return document.createTextNode(text);
-      const span = document.createElement('span');
-      span.appendChild(document.createTextNode(text.slice(0, idx)));
-      const em = document.createElement('em');
-      em.textContent = text.slice(idx, idx + query.length);
-      span.appendChild(em);
-      span.appendChild(document.createTextNode(text.slice(idx + query.length)));
-      return span;
-    }
-
-    function showDropdown(q) {
-      dropdown.innerHTML = '';
-      const matches = PEPTIDES.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
-      if (!matches.length) { dropdown.style.display = 'none'; return; }
-      matches.slice(0, 20).forEach(pep => {
-        const vialMg = suggestVialMg(pep);
-        const item = document.createElement('div');
-        item.className = 'rc-search-item';
-        item.appendChild(highlightMatch(pep.name, q));
-        const small = document.createElement('span');
-        small.style.cssText = 'color:var(--text2);margin-left:.4rem;font-size:.72rem';
-        small.textContent = `${vialMg}mg`;
-        item.appendChild(small);
-        item.addEventListener('mousedown', e => {
-          e.preventDefault();
-          selectPeptide(pep);
-        });
-        dropdown.appendChild(item);
-      });
-      dropdown.style.display = 'block';
-    }
-
-    function selectPeptide(pep) {
+    // ── Peptide select dropdown ──
+    const pepSelect = document.getElementById('rc-pep-select');
+    // Populate with blank + all peptides (same order as regular calc)
+    const blankOpt = document.createElement('option');
+    blankOpt.value = ''; blankOpt.textContent = '— Select peptide —';
+    pepSelect.appendChild(blankOpt);
+    PEPTIDES.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = p.name;
+      pepSelect.appendChild(o);
+    });
+    pepSelect.addEventListener('change', () => {
+      const idx = parseInt(pepSelect.value);
+      if (isNaN(idx)) return;
+      const pep = PEPTIDES[idx];
       const vialMg = suggestVialMg(pep);
       const dose   = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
       vialSlider.value = vialMg; vialNum.value = vialMg;
       doseSlider.value = dose;   doseNum.value = dose;
-      searchInput.value = pep.name;
-      dropdown.style.display = 'none';
-      selectedName.textContent = `${pep.name} — ${vialMg}mg vial`;
-      selectedTag.style.display = 'flex';
       calcAndRender();
-    }
-
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.trim();
-      selectedTag.style.display = 'none';
-      if (q.length < 1) { dropdown.style.display = 'none'; return; }
-      showDropdown(q);
-    });
-    searchInput.addEventListener('focus', () => {
-      if (searchInput.value.trim().length > 0) showDropdown(searchInput.value.trim());
-    });
-    document.addEventListener('click', e => {
-      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-      }
-    });
-    document.getElementById('rc-clear-pep')?.addEventListener('click', () => {
-      searchInput.value = '';
-      selectedTag.style.display = 'none';
-      dropdown.style.display = 'none';
     });
 
     // Print label from Reverse Calc
@@ -4325,7 +4260,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const vialMg     = parseFloat(vialNum.value)  || 5;
       const desiredMcg = parseFloat(doseNum.value)  || 250;
       const waterMl    = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
-      const pepName    = searchInput.value.trim() || 'Peptide';
+      const idx = parseInt(pepSelect.value);
+      const pepName = !isNaN(idx) ? PEPTIDES[idx].name : 'Peptide';
       printVialLabel(
         pepName,
         vialMg + 'mg vial',
