@@ -4125,13 +4125,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const fillEl   = document.getElementById('rc-syr-fill');
     const drawLabel = document.getElementById('rc-syringe-draw-label');
 
-    // Major ticks only — 0 at left, 100 at right (near needle)
+    // Major ticks: 100 at left (plunger end), 0 at right (needle end)
     (function buildTicks() {
       const g = document.getElementById('rc-syr-ticks');
       if (!g) return;
       const NS = 'http://www.w3.org/2000/svg';
       for (let i = 0; i <= 100; i += 10) {
-        const x = BL + (i / 100) * BW;
+        const x = BL + ((100 - i) / 100) * BW; // 100→left, 0→right
         const line = document.createElementNS(NS, 'line');
         line.setAttribute('x1', x); line.setAttribute('x2', x);
         line.setAttribute('y1', 44); line.setAttribute('y2', 52);
