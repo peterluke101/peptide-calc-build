@@ -3750,6 +3750,120 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Export Data (CSV) ────────────────────────────────────────
+  document.getElementById('export-option')?.addEventListener('click', () => {
+    const today = new Date().toISOString().split('T')[0];
+    // CSV field escaper — wraps in quotes if value contains comma, quote, or newline
+    const esc = v => {
+      if (v == null) return '';
+      const s = String(v);
+      return (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r'))
+        ? '"' + s.replace(/"/g, '""') + '"'
+        : s;
+    };
+    const csvRow = cols => cols.map(esc).join(',');
+    const lines = [];
+    const section = (name, headers, rows) => {
+      lines.push('## SECTION: ' + name);
+      lines.push(csvRow(headers));
+      rows.forEach(r => lines.push(csvRow(r)));
+      lines.push('');
+    };
+
+    // Schedule
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    section('SCHEDULE',
+      ['peptideName','tier','vialMg','waterMl','cycleDays','startDate'],
+      sched.map(s => {
+        const pep = PEPTIDES[s.peptideIndex];
+        return [pep ? pep.name : '', s.tier || '', s.vialMg || '', s.waterMl || '', s.cycleDays || '', s.startDate || ''];
+      })
+    );
+
+    // Injection log
+    const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    section('INJECTION_LOG',
+      ['injectionKey','timestamp'],
+      Object.entries(injLog).map(([k, v]) => [k, v])
+    );
+
+    // Vial data
+    const vialData = JSON.parse(localStorage.getItem('vialData') || '{}');
+    section('VIAL_DATA',
+      ['key','peptideName','vialMg','waterMl','totalDoses','usedDoses','createdAt'],
+      Object.entries(vialData).map(([k, v]) => [k, v.peptideName || '', v.vialMg || 0, v.waterMl || 0, v.totalDoses || 0, v.usedDoses || 0, v.createdAt || ''])
+    );
+
+    // Peptide notes
+    const notes = JSON.parse(localStorage.getItem('peptideNotes') || '{}');
+    section('PEPTIDE_NOTES',
+      ['peptideName','note'],
+      Object.entries(notes).map(([k, v]) => [k, v || ''])
+    );
+
+    // Activity logs
+    const actLogs = JSON.parse(localStorage.getItem('peptideLogs') || '[]');
+    section('ACTIVITY_LOGS',
+      ['date','weight','energy','timestamp'],
+      actLogs.map(l => [l.date || '', l.weight || '', l.energy || '', l.timestamp || ''])
+    );
+
+    // Journal entries
+    const journal = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    section('JOURNAL',
+      ['date','mood','note','timestamp'],
+      journal.map(j => [j.date || '', j.mood || '', j.note || '', j.timestamp || ''])
+    );
+
+    // Weight tracker
+    const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    section('WEIGHT_TRACKER',
+      ['date','weight','timestamp'],
+      weights.map(w => [w.date || '', w.weight || '', w.timestamp || ''])
+    );
+
+    // Settings
+    section('SETTINGS',
+      ['key','value'],
+      [
+        ['weightGoal',              localStorage.getItem('weightGoal') || ''],
+        ['weightUnitPreference',    localStorage.getItem('weightUnitPreference') || 'lbs'],
+        ['theme',                   localStorage.getItem('theme') || 'dark'],
+      ]
+    );
+
+    const csv = lines.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `peptide-compass-export-${today}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // ── Import Data (CSV) ─────────────────────────────────────────
+  document.getElementById('import-option')?.addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv';
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (!confirm('This will replace your current data. Continue?')) return;
+        try {
+          importCompassCSV(e.target.result);
+          location.reload();
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    };
+    fileInput.click();
+  });
+
   // ── Share Calendar (.ics export) ─────────────────────────────
   document.getElementById('share-calendar-option')?.addEventListener('click', () => {
     const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
@@ -3797,6 +3911,163 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open('mailto:peterluke101@gmail.com?subject=Peptide Compass Pro Feedback');
   });
 });
+
+// ── CSV parser — handles quoted fields with embedded newlines/commas ──
+function parseFullCSV(text) {
+  const rows = [];
+  let row = [];
+  let i = 0;
+  const n = text.length;
+  while (i < n) {
+    let field = '';
+    if (text[i] === '"') {
+      i++; // skip opening quote
+      while (i < n) {
+        if (text[i] === '"') {
+          if (i + 1 < n && text[i + 1] === '"') { field += '"'; i += 2; }
+          else { i++; break; } // closing quote
+        } else {
+          field += text[i++];
+        }
+      }
+    } else {
+      while (i < n && text[i] !== ',' && text[i] !== '\n' && text[i] !== '\r') {
+        field += text[i++];
+      }
+    }
+    row.push(field);
+    if (i < n && text[i] === ',') {
+      i++; // next field in same row
+    } else {
+      if (i < n && text[i] === '\r') i++; // CRLF
+      if (i < n && text[i] === '\n') i++;
+      rows.push(row);
+      row = [];
+    }
+  }
+  if (row.length > 0 && row.some(f => f !== '')) rows.push(row);
+  return rows;
+}
+
+function importCompassCSV(text) {
+  const allRows = parseFullCSV(text);
+
+  // Group rows by section markers
+  const sections = {};
+  let currentSection = null;
+  let currentRows = [];
+  for (const row of allRows) {
+    const cell0 = String(row[0] || '');
+    if (cell0.startsWith('## SECTION:')) {
+      if (currentSection) sections[currentSection] = currentRows;
+      currentSection = cell0.replace('## SECTION:', '').trim();
+      currentRows = [];
+    } else if (currentSection) {
+      if (row.some(f => f !== '')) currentRows.push(row);
+    }
+  }
+  if (currentSection) sections[currentSection] = currentRows;
+
+  // Convert a section's rows to objects (first row = headers)
+  const getSection = name => {
+    const rows = sections[name];
+    if (!rows || rows.length < 2) return null;
+    const headers = rows[0];
+    return rows.slice(1).map(r => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = r[i] ?? ''; });
+      return obj;
+    });
+  };
+
+  // SCHEDULE — convert peptideName back to peptideIndex
+  const schedRows = getSection('SCHEDULE');
+  if (schedRows) {
+    const data = schedRows.map(r => {
+      const idx = PEPTIDES.findIndex(p => p.name === r.peptideName);
+      return {
+        peptideIndex: idx >= 0 ? idx : 0,
+        tier: r.tier || 'std',
+        vialMg: parseFloat(r.vialMg) || 0,
+        waterMl: parseFloat(r.waterMl) || 0,
+        cycleDays: parseInt(r.cycleDays) || 0,
+        startDate: r.startDate || null
+      };
+    }).filter(r => PEPTIDES[r.peptideIndex]);
+    localStorage.setItem('peptide-schedule', JSON.stringify(data));
+  }
+
+  // INJECTION_LOG
+  const injRows = getSection('INJECTION_LOG');
+  if (injRows) {
+    const obj = {};
+    injRows.forEach(r => { if (r.injectionKey) obj[r.injectionKey] = r.timestamp; });
+    localStorage.setItem('injectionLog', JSON.stringify(obj));
+  }
+
+  // VIAL_DATA
+  const vialRows = getSection('VIAL_DATA');
+  if (vialRows) {
+    const obj = {};
+    vialRows.forEach(r => {
+      if (r.key) obj[r.key] = {
+        peptideName: r.peptideName,
+        vialMg: parseFloat(r.vialMg) || 0,
+        waterMl: parseFloat(r.waterMl) || 0,
+        totalDoses: parseInt(r.totalDoses) || 0,
+        usedDoses: parseInt(r.usedDoses) || 0,
+        createdAt: r.createdAt || ''
+      };
+    });
+    localStorage.setItem('vialData', JSON.stringify(obj));
+  }
+
+  // PEPTIDE_NOTES
+  const noteRows = getSection('PEPTIDE_NOTES');
+  if (noteRows) {
+    const obj = {};
+    noteRows.forEach(r => { if (r.peptideName) obj[r.peptideName] = r.note || ''; });
+    localStorage.setItem('peptideNotes', JSON.stringify(obj));
+  }
+
+  // ACTIVITY_LOGS
+  const logRows = getSection('ACTIVITY_LOGS');
+  if (logRows) {
+    const data = logRows.map(r => ({
+      date: r.date, weight: r.weight, energy: r.energy,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('peptideLogs', JSON.stringify(data));
+  }
+
+  // JOURNAL
+  const journalRows = getSection('JOURNAL');
+  if (journalRows) {
+    const data = journalRows.map(r => ({
+      date: r.date, mood: r.mood, note: r.note,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('peptideJournal', JSON.stringify(data));
+  }
+
+  // WEIGHT_TRACKER
+  const weightRows = getSection('WEIGHT_TRACKER');
+  if (weightRows) {
+    const data = weightRows.map(r => ({
+      date: r.date, weight: parseFloat(r.weight) || 0,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('weightTracker', JSON.stringify(data));
+  }
+
+  // SETTINGS
+  const settingsRows = getSection('SETTINGS');
+  if (settingsRows) {
+    settingsRows.forEach(r => {
+      if (r.key && r.value !== '') localStorage.setItem(r.key, r.value);
+    });
+  }
+}
 </script>
 
 <!-- Logs Tab Content -->
