@@ -360,6 +360,9 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
   .pep-details{grid-template-columns:1fr 1fr}
   .bottom-nav{padding:.35rem 0 calc(.45rem + env(safe-area-inset-bottom))}
   .tab-label{font-size:.62rem}
+  .form-row{flex-wrap:wrap}
+  .card{max-width:100%}
+  .nav,.header,.gumroad-banner,.install-banner,.disclaimer{max-width:100%}
 }
 @media(min-width:520px){
   body{padding:max(env(safe-area-inset-top),0px) 1.5rem calc(5rem + env(safe-area-inset-bottom))}
@@ -425,6 +428,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .tab-content {
   display: none;
   padding-bottom: 4rem; /* Space for bottom nav */
+  width: 100%;
 }
 
 .tab-content.active {
