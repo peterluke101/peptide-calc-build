@@ -70,13 +70,6 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .empty-state h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
 .empty-state p{font-size:.85rem;color:var(--text2);line-height:1.6}
 
-/* ── Compass First-Run Empty State ───────────────────────── */
-.compass-empty-card{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.06));border:1px solid rgba(61,232,195,.35);text-align:center;padding:2.5rem 1.5rem}
-.compass-empty-card .ce-icon{font-size:2.75rem;margin-bottom:1rem}
-.compass-empty-card h3{font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.6rem}
-.compass-empty-card p{font-size:.875rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem}
-.compass-empty-card .ce-arrow{font-size:1.5rem;color:var(--accent);animation:bounce .8s ease-in-out infinite alternate}
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(6px)}}
 
 /* ── Section headings ────────────────────────────────────── */
 .section-title{font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
@@ -1220,14 +1213,6 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe</div>
     </div>
   </div>
-</div>
-
-<!-- Compass Empty State (shown when no peptides added yet) -->
-<div class="card animate-in compass-empty-card" id="compass-empty" style="display:none">
-  <div class="ce-icon">💉</div>
-  <h3>Add your first peptide to see your schedule here</h3>
-  <p>Track injections, view your weekly calendar, and log your history — all in one place.</p>
-  <div class="ce-arrow">↓</div>
 </div>
 
 <!-- Today's Injections -->
@@ -2900,19 +2885,6 @@ function printVialLabel(peptideName, strength, waterVolume, dosePerDraw) {
   if (w) { w.document.write(html); w.document.close(); }
 }
 
-// ── Compass Empty State ──────────────────────────────────────
-function updateCompassEmptyState() {
-  const isEmpty = schedule.length === 0;
-  const $empty = document.getElementById('compass-empty');
-  const $today = document.getElementById('today-card');
-  const $cal   = document.getElementById('calendar-card');
-  const $hist  = document.getElementById('history-card');
-  if ($empty) $empty.style.display = isEmpty ? '' : 'none';
-  if ($today) $today.style.display = isEmpty ? 'none' : '';
-  if ($cal)   $cal.style.display   = isEmpty ? 'none' : '';
-  if ($hist)  $hist.style.display  = isEmpty ? 'none' : '';
-}
-
 // ── Render All ───────────────────────────────────────────────
 function renderAll() {
   renderToday(false);
@@ -2921,7 +2893,6 @@ function renderAll() {
   renderInjectionHistory();
   renderStackRecommendations();
   updateAddPeptideVisibility();
-  updateCompassEmptyState();
 }
 
 // ── Clear History ───────────────────────────────────────────
