@@ -258,16 +258,28 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .stack-category:last-child{margin-bottom:0}
 .stack-category-title{font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:.75rem;padding-bottom:.25rem;border-bottom:1px solid var(--border)}
 .stack-peptides{display:grid;gap:.5rem}
-.stack-peptide{background:var(--surface2);border-radius:8px;padding:.75rem;transition:all .2s}
+.stack-peptide{background:var(--surface2);border-radius:8px;padding:.75rem;transition:all .2s;border:1px solid transparent}
 .stack-peptide:hover{background:#242424}
+.stack-peptide.is-featured{background:rgba(61,232,195,.05);border-color:rgba(61,232,195,.28)}
 .stack-peptide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem}
-.stack-peptide-name{font-size:.8rem;font-weight:600;color:var(--text)}
+.stack-peptide-name{font-size:.8rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:.4rem}
 .stack-peptide-priority{font-size:.6rem;padding:.15rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.02em;font-weight:600}
 .stack-peptide-priority.core{background:#10b981;color:#000}
 .stack-peptide-priority.synergistic{background:#f59e0b;color:#000}
 .stack-peptide-priority.optional{background:var(--border);color:var(--text2)}
+.stack-peptide-priority.featured{background:var(--accent);color:#000}
 .stack-peptide-dose{font-size:.7rem;color:var(--text2);margin-bottom:.25rem}
 .stack-peptide-benefit{font-size:.65rem;color:var(--text2);line-height:1.3}
+/* Featured highlight card */
+.stack-featured-card{background:linear-gradient(135deg,rgba(61,232,195,.09) 0%,var(--surface2) 100%);border:1px solid rgba(61,232,195,.4);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.25rem}
+.stack-featured-tag{display:inline-flex;align-items:center;gap:.25rem;background:var(--accent);color:#000;font-size:.58rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;border-radius:4px;padding:.15rem .45rem;margin-bottom:.55rem}
+.stack-featured-name{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.stack-featured-desc{font-size:.72rem;color:var(--text2);line-height:1.45;margin-bottom:.75rem}
+.stack-featured-btn{display:inline-flex;align-items:center;gap:.3rem;background:var(--accent);color:#000;border:none;border-radius:7px;padding:.45rem .85rem;font-family:inherit;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;-webkit-appearance:none}
+.stack-featured-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
+.stack-featured-btn:active{transform:translateY(0)}
+body.light-mode .stack-featured-card{background:linear-gradient(135deg,rgba(43,186,160,.07),rgba(43,186,160,.02))}
+body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 
 /* ── Add Peptide Panel ───────────────────────────────────── */
 .add-panel{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:1.25rem;margin-top:.5rem}
@@ -2009,6 +2021,7 @@ const PEPTIDE_STACKS = {
     description: 'Optimize metabolic rate, appetite control, and body composition',
     categories: {
       'Metabolic Core': [
+        { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'featured', featured: true, benefit: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available' },
         { name: 'Semaglutide', dose: '0.25-2.4 mg weekly', priority: 'core', benefit: 'Superior appetite suppression and weight loss' },
         { name: 'Tirzepatide', dose: '2.5-15 mg weekly', priority: 'core', benefit: 'Dual GIP/GLP-1 action for enhanced fat loss' }
       ],
@@ -2017,7 +2030,6 @@ const PEPTIDE_STACKS = {
         { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Synergizes with CJC for better body composition' }
       ],
       'Advanced Options': [
-        { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'optional', benefit: 'Next-generation triple-receptor agonist' },
         { name: 'AOD-9604', dose: '300 mcg daily', priority: 'optional', benefit: 'Fat-burning fragment of growth hormone' }
       ]
     }
@@ -2090,9 +2102,11 @@ function renderStackRecommendations(goal) {
 
   const categoriesHtml = Object.entries(stack.categories).map(([categoryName, peptides]) => {
     const peptidesHtml = peptides.map(peptide => `
-      <div class="stack-peptide">
+      <div class="stack-peptide${peptide.featured ? ' is-featured' : ''}">
         <div class="stack-peptide-header">
-          <div class="stack-peptide-name">${peptide.name}</div>
+          <div class="stack-peptide-name">
+            ${peptide.featured ? '⭐ ' : ''}${peptide.name}
+          </div>
           <div class="stack-peptide-priority ${peptide.priority}">${peptide.priority}</div>
         </div>
         <div class="stack-peptide-dose">${peptide.dose}</div>
@@ -2108,13 +2122,47 @@ function renderStackRecommendations(goal) {
     `;
   }).join('');
 
+  const featuredCardHtml = goal === 'fatloss' ? `
+    <div class="stack-featured-card">
+      <div class="stack-featured-tag">⭐ Featured Pick</div>
+      <div class="stack-featured-name">Retatrutide</div>
+      <div class="stack-featured-desc">Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available. Outperforms semaglutide and tirzepatide in clinical trials.</div>
+      <button class="stack-featured-btn" id="stack-add-retatrutide">+ Add to Stack</button>
+    </div>
+  ` : '';
+
   $recommendations.innerHTML = `
     <div class="stack-header">
       <h3 style="font-size: .9rem; font-weight: 600; margin-bottom: .5rem; color: var(--text);">${stack.title}</h3>
       <p style="font-size: .75rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.4;">${stack.description}</p>
     </div>
+    ${featuredCardHtml}
     ${categoriesHtml}
   `;
+
+  // Wire the Add to Stack button → pre-select Retatrutide in the Add Peptide form
+  const addBtn = document.getElementById('stack-add-retatrutide');
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      const pepSelect = document.getElementById('add-peptide');
+      if (pepSelect) {
+        const retIdx = Array.from(pepSelect.options).findIndex(o => o.text === 'Retatrutide');
+        if (retIdx >= 0) {
+          pepSelect.value = pepSelect.options[retIdx].value;
+          pepSelect.dispatchEvent(new Event('change'));
+        }
+      }
+      // Switch to schedule tab and show the add panel
+      const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
+      if (scheduleTab) scheduleTab.click();
+      setTimeout(() => {
+        const addTrigger = document.getElementById('add-trigger');
+        const addPanel = document.getElementById('add-panel');
+        if (addPanel) addPanel.style.display = 'block';
+        if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 120);
+    });
+  }
 }
 
 function renderInjectionHistory() {
