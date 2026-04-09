@@ -969,6 +969,37 @@ body.light-mode .rc-slider-row input[type=range]{background:#ddd}
 body.light-mode .rc-num-input{background:#f5f5f5}
 body.light-mode .rc-seg-btn{background:#f5f5f5}
 body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1),rgba(43,186,160,.04))}
+/* Peptide search */
+.rc-search-wrap{position:relative}
+.rc-search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.rc-search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-search-input::placeholder{color:var(--text2)}
+.rc-search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:200;display:none;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.rc-search-item{padding:.5rem .85rem;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--text);transition:background .15s,color .15s}
+.rc-search-item:hover{background:var(--accent-dim);color:var(--accent)}
+.rc-search-item em{font-style:normal;font-weight:700;color:var(--accent)}
+.rc-selected-tag{display:none;align-items:center;gap:.5rem;margin-top:.4rem;padding:.35rem .65rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.3);border-radius:6px}
+.rc-selected-tag-text{font-size:.75rem;font-weight:600;color:var(--accent);flex:1}
+.rc-clear-pep{background:none;border:none;color:var(--text2);font-size:.8rem;cursor:pointer;padding:.1rem .25rem;border-radius:4px;transition:color .2s;line-height:1}
+.rc-clear-pep:hover{color:var(--accent)}
+/* Syringe graphic */
+.rc-syringe-wrap{margin-top:1.1rem;display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.rc-syringe-svg{width:100%;max-width:340px;overflow:visible}
+.rc-syringe-draw-label{font-size:.8rem;font-weight:700;color:var(--accent);letter-spacing:.02em}
+.rc-syringe-hint{font-size:.6rem;color:var(--text2)}
+.rc-syr-barrel{fill:var(--surface2);stroke:var(--border);stroke-width:1.5}
+.rc-syr-fill{fill:var(--accent);opacity:.8;transition:transform .4s cubic-bezier(.4,0,.2,1);transform-box:fill-box;transform-origin:left center}
+.rc-syr-needle-tip{fill:var(--text2);opacity:.55}
+.rc-syr-piston-g{transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.rc-syr-rod{fill:var(--surface2);stroke:var(--border);stroke-width:1}
+.rc-syr-face{fill:var(--surface2);stroke:var(--border);stroke-width:1.5}
+.rc-syr-grip{fill:var(--surface2);stroke:var(--border);stroke-width:1.5}
+.rc-syr-tick{stroke:var(--border);stroke-width:1}
+.rc-syr-tick-major{stroke:var(--text2);stroke-width:1}
+.rc-syr-tick-label{fill:var(--text2);font-size:7px;text-anchor:middle;font-family:inherit}
+body.light-mode .rc-search-input{background:#f5f5f5}
+body.light-mode .rc-search-dropdown{background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+body.light-mode .rc-syr-barrel,.rc-syr-rod,.rc-syr-face,.rc-syr-grip{fill:#eee}
 </style>
 </head>
 <body>
@@ -1073,6 +1104,18 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
     </label>
   </div>
   <div class="rc-panel" id="rc-panel">
+    <!-- Peptide Selector -->
+    <div class="rc-field">
+      <label for="rc-pep-search">Peptide <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2)">(auto-fills vial size)</span></label>
+      <div class="rc-search-wrap">
+        <input type="text" id="rc-pep-search" class="rc-search-input" placeholder="Search peptide..." autocomplete="off" spellcheck="false">
+        <div class="rc-search-dropdown" id="rc-pep-dropdown"></div>
+      </div>
+      <div class="rc-selected-tag" id="rc-selected-tag">
+        <span class="rc-selected-tag-text" id="rc-selected-name"></span>
+        <button class="rc-clear-pep" id="rc-clear-pep" aria-label="Clear selection">✕</button>
+      </div>
+    </div>
     <!-- Vial Size -->
     <div class="rc-field">
       <label for="rc-vial-slider">Vial Size</label>
@@ -1109,6 +1152,35 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
         <span class="rc-result-unit">ml</span>
       </div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
+    </div>
+    <!-- Syringe Graphic -->
+    <div class="rc-syringe-wrap">
+      <svg id="rc-syringe-svg" class="rc-syringe-svg" viewBox="0 0 340 96" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="rc-barrel-clip">
+            <rect x="68" y="32" width="204" height="28"/>
+          </clipPath>
+        </defs>
+        <!-- Barrel -->
+        <rect class="rc-syr-barrel" x="68" y="32" width="204" height="28" rx="3"/>
+        <!-- Fill (clipped, scaleX animated) -->
+        <rect id="rc-syr-fill" class="rc-syr-fill" x="68" y="34" width="204" height="24" clip-path="url(#rc-barrel-clip)"/>
+        <!-- Tic marks generated by JS -->
+        <g id="rc-syr-ticks"></g>
+        <!-- Needle tip -->
+        <polygon class="rc-syr-needle-tip" points="272,38 272,54 312,46"/>
+        <!-- Plunger group (translateX animated) -->
+        <g id="rc-syr-piston-g" class="rc-syr-piston-g">
+          <rect class="rc-syr-rod" x="-220" y="42" width="220" height="10" rx="3"/>
+          <rect class="rc-syr-face" x="-5" y="29" width="10" height="34" rx="2"/>
+        </g>
+        <!-- Grip flange (static) -->
+        <rect class="rc-syr-grip" x="8" y="30" width="14" height="32" rx="2"/>
+        <rect class="rc-syr-grip" x="2" y="24" width="26" height="10" rx="2"/>
+        <rect class="rc-syr-grip" x="2" y="58" width="26" height="10" rx="2"/>
+      </svg>
+      <div class="rc-syringe-draw-label" id="rc-syringe-draw-label">10 units drawn</div>
+      <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe</div>
     </div>
   </div>
 </div>
@@ -3998,8 +4070,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Reverse Calc ─────────────────────────────────────────────
   (function() {
-    const toggle   = document.getElementById('reverse-calc-toggle');
-    const panel    = document.getElementById('rc-panel');
+    const toggle     = document.getElementById('reverse-calc-toggle');
+    const panel      = document.getElementById('rc-panel');
     const vialSlider = document.getElementById('rc-vial-slider');
     const vialNum    = document.getElementById('rc-vial-num');
     const doseSlider = document.getElementById('rc-dose-slider');
@@ -4009,37 +4081,87 @@ document.addEventListener('DOMContentLoaded', () => {
     const breakdown  = document.getElementById('rc-result-breakdown');
     let syringeUnits = 10;
 
+    // ── Peptide vial size lookup (common commercial sizes) ──
+    const COMMON_VIALS = {
+      'Adipotide':5,'AICAR':100,'AOD-9604':5,'ARA-290':5,'BPC-157':5,
+      'Cagrilintide':5,'CJC-1295 no DAC + Ipamorelin':5,'CJC-1295 with DAC':5,
+      'Dihexa':50,'DSIP':5,'Epitalon':10,'FOXO4-DRI':5,'GHK-Cu':10,
+      'GHRP-2':5,'GHRP-6':5,'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)':10,
+      'Glutathione':500,'HCG':5,'Hexarelin':5,'HGH':10,'IGF-1 LR3':1,
+      'Ipamorelin':5,'KLOW Stack (TB + BPC + GHK + KPV)':10,'KPV':5,
+      'L-Carnitine':1000,'LL-37':5,'Mazdutide':10,'Melanotan I':10,
+      'Melanotan II':10,'MK-677 (Ibutamoren)':30,'MOTS-C':5,'NAD+':500,
+      'Oxytocin':1,'PE-22-28':5,'PEG-MGF':5,'PT-141 (Bremelanotide)':10,
+      'Retatrutide':10,'Selank':5,'Semaglutide':5,'Semax':5,'Sermorelin':5,
+      'SS-31 (Elamipretide)':5,'Survodutide':10,'TB-500':5,'Tesamorelin':10,
+      'Thymalin':50,'Thymosin Alpha-1':10,'Tirzepatide':5,'VIP':1
+    };
+
+    function suggestVialMg(pep) {
+      if (COMMON_VIALS[pep.name]) return COMMON_VIALS[pep.name];
+      const target = (pep.stdMcg / 1000) * 15;
+      return VIALS.reduce((a, b) => Math.abs(b - target) < Math.abs(a - target) ? b : a);
+    }
+
+    // ── Syringe graphic ──
+    const BL = 68, BW = 204; // barrel left x, barrel width
+    const pistonEl = document.getElementById('rc-syr-piston-g');
+    const fillEl   = document.getElementById('rc-syr-fill');
+    const drawLabel = document.getElementById('rc-syringe-draw-label');
+
+    // Generate tic marks once
+    (function buildTicks() {
+      const g = document.getElementById('rc-syr-ticks');
+      if (!g) return;
+      const NS = 'http://www.w3.org/2000/svg';
+      for (let i = 0; i <= 100; i += 5) {
+        const x = BL + (i / 100) * BW;
+        const major = i % 10 === 0;
+        const line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', x); line.setAttribute('x2', x);
+        line.setAttribute('y1', 60); line.setAttribute('y2', major ? 73 : 68);
+        line.setAttribute('class', major ? 'rc-syr-tick-major' : 'rc-syr-tick');
+        g.appendChild(line);
+        if (major) {
+          const txt = document.createElementNS(NS, 'text');
+          txt.setAttribute('x', x); txt.setAttribute('y', 83);
+          txt.setAttribute('class', 'rc-syr-tick-label');
+          txt.textContent = i;
+          g.appendChild(txt);
+        }
+      }
+    })();
+
+    function updateSyringe(units) {
+      if (!fillEl || !pistonEl) return;
+      const frac = units / 100;
+      fillEl.style.transform = `scaleX(${frac})`;
+      pistonEl.style.transform = `translateX(${BL + frac * BW}px)`;
+      if (drawLabel) drawLabel.textContent = `${units} units drawn`;
+    }
+
     function calcAndRender() {
-      const vialMg    = parseFloat(vialNum.value)    || 5;
-      const desiredMcg = parseFloat(doseNum.value)   || 250;
-      // water_ml = (vial_mg * 1000 / desired_mcg) * syringe_units / 100
+      const vialMg     = parseFloat(vialNum.value)  || 5;
+      const desiredMcg = parseFloat(doseNum.value)  || 250;
       const waterMl = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
       const display = waterMl.toFixed(2);
       resultVal.textContent = display;
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${desiredMcg}mcg dose × ${syringeUnits} units = ${display} ml`;
+      updateSyringe(syringeUnits);
     }
 
     toggle.addEventListener('change', () => {
       panel.style.display = toggle.checked ? 'block' : 'none';
-      if (toggle.checked) calcAndRender();
+      if (toggle.checked) { calcAndRender(); updateSyringe(syringeUnits); }
     });
 
-    // Sync slider ↔ number input for vial size
-    vialSlider.addEventListener('input', () => {
-      vialNum.value = vialSlider.value; calcAndRender();
-    });
-    vialNum.addEventListener('input', () => {
-      vialSlider.value = vialNum.value; calcAndRender();
-    });
-
-    // Sync slider ↔ number input for dose
-    doseSlider.addEventListener('input', () => {
-      doseNum.value = doseSlider.value; calcAndRender();
-    });
-    doseNum.addEventListener('input', () => {
-      doseSlider.value = doseNum.value; calcAndRender();
-    });
+    // Slider ↔ number sync — vial
+    vialSlider.addEventListener('input', () => { vialNum.value = vialSlider.value; calcAndRender(); });
+    vialNum.addEventListener('input',   () => { vialSlider.value = vialNum.value; calcAndRender(); });
+    // Slider ↔ number sync — dose
+    doseSlider.addEventListener('input', () => { doseNum.value = doseSlider.value; calcAndRender(); });
+    doseNum.addEventListener('input',   () => { doseSlider.value = doseNum.value; calcAndRender(); });
 
     // Segmented syringe picker
     segBtns.forEach(btn => {
@@ -4049,6 +4171,78 @@ document.addEventListener('DOMContentLoaded', () => {
         syringeUnits = parseInt(btn.dataset.units, 10);
         calcAndRender();
       });
+    });
+
+    // ── Peptide searchable selector ──
+    const searchInput = document.getElementById('rc-pep-search');
+    const dropdown    = document.getElementById('rc-pep-dropdown');
+    const selectedTag = document.getElementById('rc-selected-tag');
+    const selectedName = document.getElementById('rc-selected-name');
+
+    function highlightMatch(text, query) {
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return document.createTextNode(text);
+      const span = document.createElement('span');
+      span.appendChild(document.createTextNode(text.slice(0, idx)));
+      const em = document.createElement('em');
+      em.textContent = text.slice(idx, idx + query.length);
+      span.appendChild(em);
+      span.appendChild(document.createTextNode(text.slice(idx + query.length)));
+      return span;
+    }
+
+    function showDropdown(q) {
+      dropdown.innerHTML = '';
+      const matches = PEPTIDES.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+      if (!matches.length) { dropdown.style.display = 'none'; return; }
+      matches.slice(0, 20).forEach(pep => {
+        const vialMg = suggestVialMg(pep);
+        const item = document.createElement('div');
+        item.className = 'rc-search-item';
+        item.appendChild(highlightMatch(pep.name, q));
+        const small = document.createElement('span');
+        small.style.cssText = 'color:var(--text2);margin-left:.4rem;font-size:.72rem';
+        small.textContent = `${vialMg}mg`;
+        item.appendChild(small);
+        item.addEventListener('mousedown', e => {
+          e.preventDefault();
+          selectPeptide(pep);
+        });
+        dropdown.appendChild(item);
+      });
+      dropdown.style.display = 'block';
+    }
+
+    function selectPeptide(pep) {
+      const vialMg = suggestVialMg(pep);
+      const dose   = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
+      vialSlider.value = vialMg; vialNum.value = vialMg;
+      doseSlider.value = dose;   doseNum.value = dose;
+      searchInput.value = pep.name;
+      dropdown.style.display = 'none';
+      selectedName.textContent = `${pep.name} — ${vialMg}mg vial`;
+      selectedTag.style.display = 'flex';
+      calcAndRender();
+    }
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      selectedTag.style.display = 'none';
+      if (q.length < 1) { dropdown.style.display = 'none'; return; }
+      showDropdown(q);
+    });
+    searchInput.addEventListener('focus', () => {
+      if (searchInput.value.trim().length > 0) showDropdown(searchInput.value.trim());
+    });
+    document.addEventListener('click', e => {
+      if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+    document.getElementById('rc-clear-pep')?.addEventListener('click', () => {
+      searchInput.value = '';
+      selectedTag.style.display = 'none';
+      dropdown.style.display = 'none';
     });
 
     calcAndRender();
