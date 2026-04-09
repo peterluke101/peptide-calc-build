@@ -291,6 +291,12 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .btn-add-trigger:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .btn-add-trigger .plus{font-size:1.1rem;font-weight:300}
 
+/* ── Add Peptide Primary Card ────────────────────────────── */
+.add-peptide-primary{border-left:4px solid var(--accent);background:linear-gradient(135deg,rgba(61,232,195,.06) 0%,var(--surface) 60%)}
+.add-peptide-primary .section-title span:not(.add-peptide-step){font-size:1rem;font-weight:700;color:var(--text)}
+.add-peptide-title-group{display:flex;align-items:center;gap:.5rem}
+.add-peptide-step{font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:4px;padding:.15rem .45rem;line-height:1.4}
+
 /* ── Smart Add Peptide Section ────────────────────────────── */
 .add-peptide-section{transition:all .3s ease}
 .add-peptide-section.compact .add-panel{display:none}
@@ -798,56 +804,13 @@ body {
   <button class="install-banner-close" id="install-banner-close">✕</button>
 </div>
 
-<!-- Today's Injections -->
-<div class="card animate-in" id="today-card">
-  <div class="today-header">
-    <h2>Today's Injections</h2>
-    <span class="today-date" id="today-date"></span>
-  </div>
-  <div class="completed-counter" id="completed-counter"></div>
-  <div id="today-list"></div>
-</div>
-
-<!-- Weekly Calendar -->
-<div class="card animate-in animate-d1" id="calendar-card">
-  <div class="calendar-nav">
-    <h2 id="week-label">This Week</h2>
-    <div class="week-nav">
-      <button id="prev-week" aria-label="Previous week">‹</button>
-      <button id="next-week" aria-label="Next week">›</button>
-    </div>
-  </div>
-  <div class="cal-grid" id="cal-grid"></div>
-</div>
-
-<!-- Injection History -->
-<div class="card animate-in animate-d1" id="history-card">
-  <div class="section-header">
-    <h2>Recent Injections</h2>
-    <button class="clear-btn" id="clear-history">Clear</button>
-  </div>
-  <div class="history-list" id="history-list"></div>
-</div>
-
-<!-- Stack Builder -->
-<div class="card animate-in animate-d3" id="stack-card">
-  <div class="section-header">
-    <h2>Stack Builder</h2>
-    <div class="stack-goals">
-      <button class="goal-btn" data-goal="healing">🩹 Healing</button>
-      <button class="goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
-      <button class="goal-btn" data-goal="muscle">💪 Muscle</button>
-      <button class="goal-btn" data-goal="longevity">🧬 Longevity</button>
-      <button class="goal-btn" data-goal="skin">✨ Skin</button>
-    </div>
-  </div>
-  <div class="stack-suggestions" id="stack-suggestions"></div>
-</div>
-
 <!-- Add Peptide (Smart Section) -->
-<div class="card animate-in animate-d2 add-peptide-section" id="add-peptide-card">
+<div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
   <div class="section-title">
-    <span>Add Peptide</span>
+    <div class="add-peptide-title-group">
+      <span class="add-peptide-step">STEP 1</span>
+      <span>Add Peptide</span>
+    </div>
     <button class="collapse-toggle" id="add-section-toggle" aria-label="Collapse add peptide section">
       <span class="collapse-icon">▼</span>
     </button>
@@ -902,6 +865,52 @@ body {
       <button class="btn btn-secondary" id="add-cancel">Cancel</button>
     </div>
   </div>
+</div>
+
+<!-- Today's Injections -->
+<div class="card animate-in" id="today-card">
+  <div class="today-header">
+    <h2>Today's Injections</h2>
+    <span class="today-date" id="today-date"></span>
+  </div>
+  <div class="completed-counter" id="completed-counter"></div>
+  <div id="today-list"></div>
+</div>
+
+<!-- Weekly Calendar -->
+<div class="card animate-in animate-d1" id="calendar-card">
+  <div class="calendar-nav">
+    <h2 id="week-label">This Week</h2>
+    <div class="week-nav">
+      <button id="prev-week" aria-label="Previous week">‹</button>
+      <button id="next-week" aria-label="Next week">›</button>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<!-- Injection History -->
+<div class="card animate-in animate-d1" id="history-card">
+  <div class="section-header">
+    <h2>Recent Injections</h2>
+    <button class="clear-btn" id="clear-history">Clear</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<!-- Stack Builder -->
+<div class="card animate-in animate-d3" id="stack-card">
+  <div class="section-header">
+    <h2>Stack Builder</h2>
+    <div class="stack-goals">
+      <button class="goal-btn" data-goal="healing">🩹 Healing</button>
+      <button class="goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
+      <button class="goal-btn" data-goal="muscle">💪 Muscle</button>
+      <button class="goal-btn" data-goal="longevity">🧬 Longevity</button>
+      <button class="goal-btn" data-goal="skin">✨ Skin</button>
+    </div>
+  </div>
+  <div class="stack-suggestions" id="stack-suggestions"></div>
 </div>
 
 <!-- My Peptides -->
