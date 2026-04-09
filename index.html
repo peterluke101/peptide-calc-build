@@ -1000,6 +1000,12 @@ body.light-mode .rc-syr-barrel{stroke:#ccc}
 body.light-mode .rc-syr-tick-major{stroke:#999}
 body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
+/* ── Dilution Graph ──────────────────────────────────────── */
+.rc-graph-card{margin-top:1.25rem;background:var(--surface2);border-radius:12px;padding:1rem 1rem .75rem;border:1px solid var(--border)}
+.rc-graph-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
+.rc-graph-title{font-size:.8rem;font-weight:700;color:var(--text)}
+.rc-graph-sub{font-size:.62rem;color:var(--text2);font-style:italic}
+.rc-graph-svg{width:100%;display:block}
 </style>
 </head>
 <body>
@@ -1198,6 +1204,14 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       </svg>
       <div class="rc-syringe-draw-label" id="rc-syringe-draw-label">10 units drawn</div>
       <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe</div>
+    </div>
+    <!-- Dilution Preview Graph -->
+    <div class="rc-graph-card">
+      <div class="rc-graph-header">
+        <span class="rc-graph-title">Dilution Preview</span>
+        <span class="rc-graph-sub">Concentration vs water volume</span>
+      </div>
+      <svg id="dilution-graph-svg" class="rc-graph-svg" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
   </div>
 </div>
@@ -4243,6 +4257,127 @@ document.addEventListener('DOMContentLoaded', () => {
       return doseUnitMcg ? v : v * 1000;
     }
 
+    function renderDilutionGraph() {
+      const svg = document.getElementById('dilution-graph-svg');
+      if (!svg) return;
+
+      const vialMg     = parseFloat(vialNum.value) || 5;
+      const desiredMcg = getDesiredMcg();
+      const waterMl    = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
+      const optConc    = waterMl > 0 ? vialMg * 1000 / waterMl : 0;
+
+      // Chart geometry
+      const W = 320, H = 190;
+      const padL = 52, padR = 14, padT = 14, padB = 36;
+      const cW = W - padL - padR, cH = H - padT - padB;
+
+      // Y-axis max: fit optimal point with headroom, snapped to a nice ceiling
+      function niceCeil(v) {
+        if (v <= 0) return 1000;
+        const mag = Math.pow(10, Math.floor(Math.log10(v)));
+        const step = mag >= 5000 ? mag : (mag >= 1000 ? mag / 2 : mag);
+        return Math.ceil(v / step) * step;
+      }
+      const rawYMax = Math.max(optConc * 2.2, vialMg * 1000 / 0.5);
+      const yMax = niceCeil(rawYMax);
+
+      // Scale helpers
+      const sx = ml   => padL + (Math.min(ml, 10) / 10) * cW;
+      const sy = conc => padT + cH - Math.min(1, Math.max(0, conc / yMax)) * cH;
+
+      // Curve path: sample 300 pts from 0.05 → 10 ml
+      let d = '';
+      for (let i = 1; i <= 300; i++) {
+        const ml   = (i / 300) * 10;
+        const conc = vialMg * 1000 / ml;
+        const x    = sx(ml).toFixed(1);
+        const y    = sy(conc).toFixed(1);
+        d += i === 1 ? `M${x},${y}` : `L${x},${y}`;
+      }
+
+      // Optimal point — clamp to chart bounds
+      const optVisible = waterMl > 0 && waterMl <= 10 && optConc <= yMax * 1.05;
+      const optX = sx(waterMl);
+      const optY = sy(Math.min(optConc, yMax));
+
+      // Y-axis ticks (5 levels: 0, 25%, 50%, 75%, 100% of yMax)
+      const yTicks = [0, 1, 2, 3, 4].map(i => {
+        const val = (yMax / 4) * i;
+        const y   = sy(val);
+        const lbl = val >= 10000 ? (val / 1000).toFixed(0) + 'k'
+                  : val >= 1000  ? (val / 1000).toFixed(1) + 'k'
+                  : Math.round(val).toString();
+        return { y, lbl };
+      });
+
+      // X-axis ticks
+      const xTicks = [0, 2, 4, 6, 8, 10];
+
+      // Optimal-point label — flip near edges
+      const lblOffX = optX > padL + cW - 72 ? -6 : 6;
+      const lblAnchor = lblOffX < 0 ? 'end' : 'start';
+      const lblOffY   = optY < padT + 18 ? 16 : -6;
+      const concLbl   = optConc >= 10000 ? (optConc / 1000).toFixed(1) + 'k'
+                      : optConc >= 1000  ? (optConc / 1000).toFixed(1) + 'k'
+                      : Math.round(optConc).toString();
+
+      // Colors respond to light/dark mode
+      const light    = document.body.classList.contains('light-mode');
+      const gridClr  = light ? '#e8e8e8' : '#252525';
+      const axisClr  = light ? '#ccc'    : '#3a3a3a';
+      const txtClr   = light ? '#888'    : '#666';
+
+      svg.innerHTML = `
+        <defs>
+          <clipPath id="dg-clip">
+            <rect x="${padL}" y="${padT}" width="${cW}" height="${cH}"/>
+          </clipPath>
+        </defs>
+        ${yTicks.map(t => `
+        <line x1="${padL}" y1="${t.y.toFixed(1)}" x2="${padL + cW}" y2="${t.y.toFixed(1)}"
+              stroke="${gridClr}" stroke-width="1"/>`).join('')}
+        ${xTicks.map(v => `
+        <line x1="${sx(v).toFixed(1)}" y1="${padT}" x2="${sx(v).toFixed(1)}" y2="${padT + cH}"
+              stroke="${gridClr}" stroke-width="1"/>`).join('')}
+        <path d="${d}" fill="none" stroke="#3DE8C3" stroke-width="2.2"
+              stroke-linejoin="round" stroke-linecap="round" clip-path="url(#dg-clip)"/>
+        ${optVisible ? `
+        <line x1="${optX.toFixed(1)}" y1="${optY.toFixed(1)}"
+              x2="${optX.toFixed(1)}" y2="${(padT + cH).toFixed(1)}"
+              stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.75"/>
+        <line x1="${padL}" y1="${optY.toFixed(1)}"
+              x2="${optX.toFixed(1)}" y2="${optY.toFixed(1)}"
+              stroke="#4CAF50" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.75"/>
+        <circle cx="${optX.toFixed(1)}" cy="${optY.toFixed(1)}" r="7"
+                fill="#4CAF50" opacity="0.18"/>
+        <circle cx="${optX.toFixed(1)}" cy="${optY.toFixed(1)}" r="4"
+                fill="#4CAF50"/>
+        <text x="${(optX + lblOffX).toFixed(1)}" y="${(optY + lblOffY).toFixed(1)}"
+              fill="#4CAF50" font-size="9.5" font-family="inherit" font-weight="700"
+              text-anchor="${lblAnchor}">${concLbl} mcg/ml</text>
+        ` : ''}
+        <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + cH}"
+              stroke="${axisClr}" stroke-width="1"/>
+        <line x1="${padL}" y1="${padT + cH}" x2="${padL + cW}" y2="${padT + cH}"
+              stroke="${axisClr}" stroke-width="1"/>
+        ${yTicks.map(t => `
+        <text x="${(padL - 5).toFixed(1)}" y="${(t.y + 3.5).toFixed(1)}"
+              fill="${txtClr}" font-size="8.5" font-family="inherit"
+              text-anchor="end">${t.lbl}</text>`).join('')}
+        ${xTicks.map(v => `
+        <text x="${sx(v).toFixed(1)}" y="${(padT + cH + 12).toFixed(1)}"
+              fill="${txtClr}" font-size="8.5" font-family="inherit"
+              text-anchor="middle">${v}</text>`).join('')}
+        <text x="${(padL + cW / 2).toFixed(1)}" y="${H - 3}"
+              fill="${txtClr}" font-size="8" font-family="inherit"
+              text-anchor="middle" letter-spacing="0.05em">Water (ml)</text>
+        <text x="11" y="${(padT + cH / 2).toFixed(1)}"
+              fill="${txtClr}" font-size="8" font-family="inherit" text-anchor="middle"
+              transform="rotate(-90 11 ${(padT + cH / 2).toFixed(1)})"
+              letter-spacing="0.05em">mcg/ml</text>
+      `;
+    }
+
     function calcAndRender() {
       const vialMg     = parseFloat(vialNum.value) || 5;
       const desiredMcg = getDesiredMcg();
@@ -4255,6 +4390,7 @@ document.addEventListener('DOMContentLoaded', () => {
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
       updateSyringe(syringeUnits);
+      renderDilutionGraph();
     }
 
     unitMcgBtn.addEventListener('click', () => {
