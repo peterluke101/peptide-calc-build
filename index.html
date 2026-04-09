@@ -767,6 +767,169 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
   font-size: .8rem;
 }
 
+/* Premium Guides promo card */
+.guides-promo-card {
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(43,186,160,.12), rgba(100,120,255,.1));
+  border: 1px solid rgba(43,186,160,.35);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .25rem;
+}
+.guides-promo-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+.guides-promo-text {
+  flex: 1;
+}
+.guides-promo-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.guides-promo-desc {
+  font-size: .72rem;
+  color: var(--text2);
+  margin-top: .2rem;
+  line-height: 1.4;
+}
+.guides-promo-btn {
+  margin-top: .75rem;
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: .45rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.guides-promo-btn:hover { opacity: .85; }
+
+/* Dark mode toggle row */
+.more-option-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.toggle-switch input { display: none; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #555;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: .3s;
+}
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: .3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+/* Reset warning colour */
+.more-title-danger { color: #e05252 !important; }
+
+/* Light mode */
+body.light-mode {
+  --bg: #f0f0f0;
+  --surface: #ffffff;
+  --surface2: #e8e8e8;
+  --text: #1a1a2e;
+  --text2: #5a5a72;
+  --border: #d0d0d0;
+  --accent: #2bbaa0;
+  --accent-dim: rgba(43,186,160,.15);
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  background: var(--bg);
+  color: var(--text);
+}
+/* Base surfaces — card, nav, bottom bar */
+body.light-mode .card,
+body.light-mode .section-card { background: var(--surface); border-color: var(--border); }
+body.light-mode .bottom-nav { background: #fff; border-top: 1px solid var(--border); box-shadow: 0 -2px 12px rgba(0,0,0,.06); }
+body.light-mode .tab-btn { color: var(--text2); }
+/* All form controls */
+body.light-mode input,
+body.light-mode select,
+body.light-mode textarea { background: #f5f5f5; color: var(--text); border-color: var(--border); }
+body.light-mode .add-panel .field input[type="date"] { color-scheme: light; background: #f5f5f5; }
+body.light-mode .pep-notes textarea { background: #f5f5f5; color: var(--text); }
+body.light-mode #tab-logs .input,
+body.light-mode #tab-weight .input,
+body.light-mode #tab-journal .input { background: var(--surface2); color: var(--text); border-color: var(--border); }
+/* Calendar */
+body.light-mode .cal-day { background: var(--surface2); border-color: transparent; }
+body.light-mode .cal-day.today { border-color: var(--accent); }
+body.light-mode .cal-day.selected { background: rgba(43,186,160,.15); border-color: var(--accent); }
+body.light-mode .cal-day.in-break { background: rgba(239,68,68,.07) !important; border-color: rgba(239,68,68,.2) !important; }
+body.light-mode .week-nav button { background: var(--surface2); border-color: var(--border); color: var(--text); }
+/* Peptide list rows */
+body.light-mode .peptide-entry { background: var(--surface2); border-color: transparent; }
+body.light-mode .peptide-entry:hover { border-color: var(--border); }
+body.light-mode .today-item { background: var(--surface2); }
+body.light-mode .done-btn { background: var(--surface); border-color: var(--border); color: var(--text); }
+/* History + vial tracker */
+body.light-mode .history-item { background: var(--surface2); }
+body.light-mode .vial-item { background: var(--surface2); }
+body.light-mode .vial-progress { background: #d0d0d0; }
+/* Stack builder */
+body.light-mode .goal-btn { background: var(--surface2); border-color: var(--border); color: var(--text); }
+body.light-mode .stack-peptide { background: var(--surface2); }
+body.light-mode .stack-peptide:hover { background: #dcdcdc; }
+body.light-mode .stack-peptide-priority.optional { background: var(--border); color: var(--text2); }
+/* Add panel */
+body.light-mode .add-panel { background: var(--surface2); border-color: var(--border); }
+body.light-mode .add-panel .field select option { background: var(--surface); color: var(--text); }
+/* Log + journal entries */
+body.light-mode .log-entry,
+body.light-mode .journal-entry,
+body.light-mode .weight-entry { background: var(--surface2); border-color: var(--border); }
+body.light-mode .log-entry { background: var(--surface2); }
+body.light-mode .tag-pill { background: var(--surface2); color: var(--text); }
+/* Logbook toggle */
+body.light-mode .logbook-toggle { background: var(--surface2); }
+body.light-mode .logbook-toggle-btn { color: var(--text2); }
+/* Titration timeline */
+body.light-mode .timeline-step-dot { background: var(--surface); }
+body.light-mode .timeline-step.future .timeline-step-dot { background: var(--surface2); }
+/* More tab rows */
+body.light-mode .more-option { background: var(--surface2); }
+body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
+/* Guides promo card */
+body.light-mode .guides-promo-card { background: linear-gradient(135deg,rgba(43,186,160,.1),rgba(100,120,255,.06)); border-color: rgba(43,186,160,.3); }
+/* Toggle switch off-state */
+body.light-mode .toggle-slider { background: #bbb; }
+/* Gumroad banner + install banner */
+body.light-mode .gumroad-banner,
+body.light-mode .install-banner { background: linear-gradient(135deg,rgba(43,186,160,.08),rgba(43,186,160,.04)); border-color: rgba(43,186,160,.2); }
+/* Section title divider */
+body.light-mode .section-title::after { background: var(--border); }
+/* Btn secondary */
+body.light-mode .btn-secondary { background: var(--surface2); color: var(--text); border-color: var(--border); }
+/* Nav links */
+body.light-mode .nav a:hover { background: var(--surface2); color: var(--text); }
+body.light-mode .nav a.active { background: rgba(43,186,160,.15); color: var(--accent); }
+
 /* Adjust body padding for bottom nav */
 body {
   min-height: 100dvh;
@@ -1152,19 +1315,38 @@ body {
 <div id="tab-more" class="tab-content">
   <div class="header">
     <h1>More <span>Options</span></h1>
-    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Settings, sharing, and additional features</p>
+    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Tools, preferences, and additional features</p>
+  </div>
+
+  <!-- A) Premium Guides promo card -->
+  <div class="card animate-in">
+    <div class="guides-promo-card">
+      <div class="guides-promo-icon">📚</div>
+      <div class="guides-promo-text">
+        <div class="guides-promo-title">Premium Guides</div>
+        <div class="guides-promo-desc">Expert guides on peptides, supplements, nootropics, TRT &amp; more</div>
+        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Browse Guides →</a>
+      </div>
+    </div>
   </div>
 
   <div class="card animate-in">
     <div class="more-options">
-      <div class="more-option" id="settings-option">
-        <div class="more-icon">⚙️</div>
+
+      <!-- B) Dark/Light Mode toggle -->
+      <div class="more-option more-option-toggle" style="cursor:default;">
+        <div class="more-icon">🌓</div>
         <div class="more-text">
-          <div class="more-title">Settings</div>
-          <div class="more-desc">Units, notifications, data management</div>
+          <div class="more-title">Dark Mode</div>
+          <div class="more-desc">Toggle dark / light theme</div>
         </div>
-        <div class="more-arrow">›</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
+
+      <!-- C) Export Data -->
       <div class="more-option" id="export-option">
         <div class="more-icon">📤</div>
         <div class="more-text">
@@ -1173,6 +1355,8 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
+
+      <!-- D) Import Data -->
       <div class="more-option" id="import-option">
         <div class="more-icon">📥</div>
         <div class="more-text">
@@ -1181,22 +1365,38 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
-      <div class="more-option" id="backup-option">
-        <div class="more-icon">💾</div>
+
+      <!-- E) Share Calendar -->
+      <div class="more-option" id="share-calendar-option">
+        <div class="more-icon">📅</div>
         <div class="more-text">
-          <div class="more-title">Backup & Restore</div>
-          <div class="more-desc">Cloud backup of your data</div>
+          <div class="more-title">Share Calendar</div>
+          <div class="more-desc">Export schedule as .ics calendar file</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
-      <div class="more-option" id="help-option">
-        <div class="more-icon">❓</div>
+
+      <!-- F) Reset All Data -->
+      <div class="more-option" id="reset-data-option">
+        <div class="more-icon">🗑️</div>
         <div class="more-text">
-          <div class="more-title">Help & Support</div>
-          <div class="more-desc">FAQ, tutorials, contact support</div>
+          <div class="more-title more-title-danger">Reset All Data</div>
+          <div class="more-desc">Clear all data and start fresh</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
+
+      <!-- G) Send Feedback -->
+      <div class="more-option" id="feedback-option">
+        <div class="more-icon">💬</div>
+        <div class="more-text">
+          <div class="more-title">Send Feedback</div>
+          <div class="more-desc">Help us improve the app</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
+      <!-- H) About -->
       <div class="more-option" id="about-option">
         <div class="more-icon">ℹ️</div>
         <div class="more-text">
@@ -1205,6 +1405,7 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
+
     </div>
   </div>
 
@@ -3482,32 +3683,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
     const goal = parseFloat(localStorage.getItem('weightGoal'));
     const $current = document.getElementById('stat-current');
-    const $goal = document.getElementById('stat-goal');
+    const $goal    = document.getElementById('stat-goal');
     const $progress = document.getElementById('stat-progress');
-    const $bodyFill = document.getElementById('body-fill');
-    
+    const $arc     = document.getElementById('weight-ring-arc');
+    const $pct     = document.getElementById('weight-ring-pct');
+    const CIRC = 502.65; // 2π × r(80)
+
     if (weights.length === 0) return;
-    
+
     const current = weights[weights.length - 1].weight;
-    const start = weights[0].weight;
-    
+    const start   = weights[0].weight;
+
     if ($current) $current.textContent = current + ' lbs';
-    if ($goal) $goal.textContent = goal ? goal + ' lbs' : '--';
-    
-    if (goal && $progress) {
+    if ($goal)    $goal.textContent    = goal ? goal + ' lbs' : '--';
+
+    let percent = 0;
+    if (goal) {
       const totalToLose = start - goal;
       const lost = start - current;
-      const percent = totalToLose > 0 ? Math.round((lost / totalToLose) * 100) : 0;
-      $progress.textContent = percent + '%';
-      
-      // Update body silhouette - thinner as you lose weight
-      if ($bodyFill) {
-        // Start at 85% fill, go down to 40% as you approach goal
-        const fillHeight = Math.max(40, 85 - (percent * 0.45));
-        $bodyFill.style.height = fillHeight + '%';
-      }
+      percent = totalToLose > 0
+        ? Math.min(100, Math.max(0, Math.round((lost / totalToLose) * 100)))
+        : 0;
+      if ($progress) $progress.textContent = lost > 0 ? lost.toFixed(1) + ' lbs' : '--';
     }
-    
+
+    // Animate the ring arc
+    if ($arc) $arc.style.strokeDashoffset = CIRC * (1 - percent / 100);
+    if ($pct) $pct.textContent = percent + '%';
+
     // Update history
     const $history = document.getElementById('weight-history');
     if ($history) {
@@ -3526,7 +3729,347 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('weight-goal').value = savedGoal;
   }
   updateWeightDisplay();
+
+  // ── Dark / Light Mode ────────────────────────────────────────
+  const darkToggle = document.getElementById('dark-mode-toggle');
+  if (darkToggle) {
+    // Dark mode is default; toggle is ON = dark, OFF = light
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      darkToggle.checked = false;
+    } else {
+      darkToggle.checked = true; // dark is default
+    }
+    darkToggle.addEventListener('change', () => {
+      if (darkToggle.checked) {
+        document.body.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
+
+  // ── Export Data (CSV) ────────────────────────────────────────
+  document.getElementById('export-option')?.addEventListener('click', () => {
+    const today = new Date().toISOString().split('T')[0];
+    // CSV field escaper — wraps in quotes if value contains comma, quote, or newline
+    const esc = v => {
+      if (v == null) return '';
+      const s = String(v);
+      return (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r'))
+        ? '"' + s.replace(/"/g, '""') + '"'
+        : s;
+    };
+    const csvRow = cols => cols.map(esc).join(',');
+    const lines = [];
+    const section = (name, headers, rows) => {
+      lines.push('## SECTION: ' + name);
+      lines.push(csvRow(headers));
+      rows.forEach(r => lines.push(csvRow(r)));
+      lines.push('');
+    };
+
+    // Schedule
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    section('SCHEDULE',
+      ['peptideName','tier','vialMg','waterMl','cycleDays','startDate'],
+      sched.map(s => {
+        const pep = PEPTIDES[s.peptideIndex];
+        return [pep ? pep.name : '', s.tier || '', s.vialMg || '', s.waterMl || '', s.cycleDays || '', s.startDate || ''];
+      })
+    );
+
+    // Injection log
+    const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    section('INJECTION_LOG',
+      ['injectionKey','timestamp'],
+      Object.entries(injLog).map(([k, v]) => [k, v])
+    );
+
+    // Vial data
+    const vialData = JSON.parse(localStorage.getItem('vialData') || '{}');
+    section('VIAL_DATA',
+      ['key','peptideName','vialMg','waterMl','totalDoses','usedDoses','createdAt'],
+      Object.entries(vialData).map(([k, v]) => [k, v.peptideName || '', v.vialMg || 0, v.waterMl || 0, v.totalDoses || 0, v.usedDoses || 0, v.createdAt || ''])
+    );
+
+    // Peptide notes
+    const notes = JSON.parse(localStorage.getItem('peptideNotes') || '{}');
+    section('PEPTIDE_NOTES',
+      ['peptideName','note'],
+      Object.entries(notes).map(([k, v]) => [k, v || ''])
+    );
+
+    // Activity logs
+    const actLogs = JSON.parse(localStorage.getItem('peptideLogs') || '[]');
+    section('ACTIVITY_LOGS',
+      ['date','weight','energy','timestamp'],
+      actLogs.map(l => [l.date || '', l.weight || '', l.energy || '', l.timestamp || ''])
+    );
+
+    // Journal entries
+    const journal = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    section('JOURNAL',
+      ['date','mood','note','timestamp'],
+      journal.map(j => [j.date || '', j.mood || '', j.note || '', j.timestamp || ''])
+    );
+
+    // Weight tracker
+    const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    section('WEIGHT_TRACKER',
+      ['date','weight','timestamp'],
+      weights.map(w => [w.date || '', w.weight || '', w.timestamp || ''])
+    );
+
+    // Settings
+    section('SETTINGS',
+      ['key','value'],
+      [
+        ['weightGoal',              localStorage.getItem('weightGoal') || ''],
+        ['weightUnitPreference',    localStorage.getItem('weightUnitPreference') || 'lbs'],
+        ['theme',                   localStorage.getItem('theme') || 'dark'],
+      ]
+    );
+
+    const csv = lines.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `peptide-compass-export-${today}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // ── Import Data (CSV) ─────────────────────────────────────────
+  document.getElementById('import-option')?.addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.csv';
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (!confirm('This will replace your current data. Continue?')) return;
+        try {
+          importCompassCSV(e.target.result);
+          location.reload();
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    };
+    fileInput.click();
+  });
+
+  // ── Share Calendar (.ics export) ─────────────────────────────
+  document.getElementById('share-calendar-option')?.addEventListener('click', () => {
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    if (!sched.length) { alert('No scheduled peptides to export.'); return; }
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const toIcsDate = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+    const uid = () => Math.random().toString(36).slice(2) + '@peptidecompass';
+    let events = '';
+    sched.forEach(item => {
+      const peptide = PEPTIDES[item.peptideIndex];
+      if (!peptide) return;
+      const start = item.startDate ? new Date(item.startDate) : now;
+      const end = new Date(start);
+      end.setDate(end.getDate() + (item.cycleDays || 30));
+      events += [
+        'BEGIN:VEVENT',
+        `UID:${uid()}`,
+        `DTSTART;VALUE=DATE:${toIcsDate(start)}`,
+        `DTEND;VALUE=DATE:${toIcsDate(end)}`,
+        `SUMMARY:${peptide.name} cycle`,
+        `DESCRIPTION:${peptide.rangeLabel} — ${peptide.timingNote || ''}`,
+        'END:VEVENT'
+      ].join('\r\n') + '\r\n';
+    });
+    const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Peptide Compass Pro//EN\r\n${events}END:VCALENDAR`;
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'peptide-schedule.ics';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // ── Reset All Data ───────────────────────────────────────────
+  document.getElementById('reset-data-option')?.addEventListener('click', () => {
+    if (confirm('Are you sure? This will delete all peptides, logs, and schedule data. This cannot be undone.')) {
+      localStorage.clear();
+      location.reload();
+    }
+  });
+
+  // ── Send Feedback ────────────────────────────────────────────
+  document.getElementById('feedback-option')?.addEventListener('click', () => {
+    window.open('mailto:peterluke101@gmail.com?subject=Peptide Compass Pro Feedback');
+  });
 });
+
+// ── CSV parser — handles quoted fields with embedded newlines/commas ──
+function parseFullCSV(text) {
+  const rows = [];
+  let row = [];
+  let i = 0;
+  const n = text.length;
+  while (i < n) {
+    let field = '';
+    if (text[i] === '"') {
+      i++; // skip opening quote
+      while (i < n) {
+        if (text[i] === '"') {
+          if (i + 1 < n && text[i + 1] === '"') { field += '"'; i += 2; }
+          else { i++; break; } // closing quote
+        } else {
+          field += text[i++];
+        }
+      }
+    } else {
+      while (i < n && text[i] !== ',' && text[i] !== '\n' && text[i] !== '\r') {
+        field += text[i++];
+      }
+    }
+    row.push(field);
+    if (i < n && text[i] === ',') {
+      i++; // next field in same row
+    } else {
+      if (i < n && text[i] === '\r') i++; // CRLF
+      if (i < n && text[i] === '\n') i++;
+      rows.push(row);
+      row = [];
+    }
+  }
+  if (row.length > 0 && row.some(f => f !== '')) rows.push(row);
+  return rows;
+}
+
+function importCompassCSV(text) {
+  const allRows = parseFullCSV(text);
+
+  // Group rows by section markers
+  const sections = {};
+  let currentSection = null;
+  let currentRows = [];
+  for (const row of allRows) {
+    const cell0 = String(row[0] || '');
+    if (cell0.startsWith('## SECTION:')) {
+      if (currentSection) sections[currentSection] = currentRows;
+      currentSection = cell0.replace('## SECTION:', '').trim();
+      currentRows = [];
+    } else if (currentSection) {
+      if (row.some(f => f !== '')) currentRows.push(row);
+    }
+  }
+  if (currentSection) sections[currentSection] = currentRows;
+
+  // Convert a section's rows to objects (first row = headers)
+  const getSection = name => {
+    const rows = sections[name];
+    if (!rows || rows.length < 2) return null;
+    const headers = rows[0];
+    return rows.slice(1).map(r => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = r[i] ?? ''; });
+      return obj;
+    });
+  };
+
+  // SCHEDULE — convert peptideName back to peptideIndex
+  const schedRows = getSection('SCHEDULE');
+  if (schedRows) {
+    const data = schedRows.map(r => {
+      const idx = PEPTIDES.findIndex(p => p.name === r.peptideName);
+      return {
+        peptideIndex: idx >= 0 ? idx : 0,
+        tier: r.tier || 'std',
+        vialMg: parseFloat(r.vialMg) || 0,
+        waterMl: parseFloat(r.waterMl) || 0,
+        cycleDays: parseInt(r.cycleDays) || 0,
+        startDate: r.startDate || null
+      };
+    }).filter(r => PEPTIDES[r.peptideIndex]);
+    localStorage.setItem('peptide-schedule', JSON.stringify(data));
+  }
+
+  // INJECTION_LOG
+  const injRows = getSection('INJECTION_LOG');
+  if (injRows) {
+    const obj = {};
+    injRows.forEach(r => { if (r.injectionKey) obj[r.injectionKey] = r.timestamp; });
+    localStorage.setItem('injectionLog', JSON.stringify(obj));
+  }
+
+  // VIAL_DATA
+  const vialRows = getSection('VIAL_DATA');
+  if (vialRows) {
+    const obj = {};
+    vialRows.forEach(r => {
+      if (r.key) obj[r.key] = {
+        peptideName: r.peptideName,
+        vialMg: parseFloat(r.vialMg) || 0,
+        waterMl: parseFloat(r.waterMl) || 0,
+        totalDoses: parseInt(r.totalDoses) || 0,
+        usedDoses: parseInt(r.usedDoses) || 0,
+        createdAt: r.createdAt || ''
+      };
+    });
+    localStorage.setItem('vialData', JSON.stringify(obj));
+  }
+
+  // PEPTIDE_NOTES
+  const noteRows = getSection('PEPTIDE_NOTES');
+  if (noteRows) {
+    const obj = {};
+    noteRows.forEach(r => { if (r.peptideName) obj[r.peptideName] = r.note || ''; });
+    localStorage.setItem('peptideNotes', JSON.stringify(obj));
+  }
+
+  // ACTIVITY_LOGS
+  const logRows = getSection('ACTIVITY_LOGS');
+  if (logRows) {
+    const data = logRows.map(r => ({
+      date: r.date, weight: r.weight, energy: r.energy,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('peptideLogs', JSON.stringify(data));
+  }
+
+  // JOURNAL
+  const journalRows = getSection('JOURNAL');
+  if (journalRows) {
+    const data = journalRows.map(r => ({
+      date: r.date, mood: r.mood, note: r.note,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('peptideJournal', JSON.stringify(data));
+  }
+
+  // WEIGHT_TRACKER
+  const weightRows = getSection('WEIGHT_TRACKER');
+  if (weightRows) {
+    const data = weightRows.map(r => ({
+      date: r.date, weight: parseFloat(r.weight) || 0,
+      timestamp: parseInt(r.timestamp) || Date.now()
+    }));
+    localStorage.setItem('weightTracker', JSON.stringify(data));
+  }
+
+  // SETTINGS
+  const settingsRows = getSection('SETTINGS');
+  if (settingsRows) {
+    settingsRows.forEach(r => {
+      if (r.key && r.value !== '') localStorage.setItem(r.key, r.value);
+    });
+  }
+}
 </script>
 
 <!-- Logs Tab Content -->
@@ -3565,27 +4108,38 @@ document.addEventListener('DOMContentLoaded', () => {
     <button id="update-weight-btn" class="btn" style="width: 100%;">Update</button>
   </div>
   <div class="card animate-in">
-    <div class="body-visual-container" style="display: flex; justify-content: center; padding: 2rem 0;">
-      <div class="body-visual" style="position: relative; width: 100px; height: 160px;">
-        <!-- Simple body shape using CSS -->
-        <div style="position: absolute; top: 0; left: 30px; width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--accent);"></div>
-        <div style="position: absolute; top: 35px; left: 42px; width: 16px; height: 20px; background: var(--surface2); border: 2px solid var(--accent); border-top: none;"></div>
-        <div id="body-torso" style="position: absolute; top: 50px; left: 20px; width: 60px; height: 100px; background: var(--surface2); border: 2px solid var(--accent); border-radius: 30px 30px 40px 40px; transition: all 0.5s ease;"></div>
-        <div id="body-fill" style="position: absolute; bottom: 10px; left: 25px; width: 50px; background: linear-gradient(to top, var(--accent), var(--accent-dim)); border-radius: 0 0 35px 35px; transition: height 0.5s ease; height: 80px;"></div>
-      </div>
-    </div>
-    <div class="weight-stats" style="display: flex; justify-content: space-around; text-align: center;">
-      <div>
-        <div style="font-size: 0.75rem; color: var(--text2);">Current</div>
-        <div id="stat-current" style="font-size: 1.5rem; font-weight: 600;">--</div>
-      </div>
-      <div>
-        <div style="font-size: 0.75rem; color: var(--text2);">Goal</div>
-        <div id="stat-goal" style="font-size: 1.5rem; font-weight: 600;">--</div>
-      </div>
-      <div>
-        <div style="font-size: 0.75rem; color: var(--text2);">Progress</div>
-        <div id="stat-progress" style="font-size: 1.5rem; font-weight: 600; color: var(--accent);">--</div>
+    <div style="display: flex; flex-direction: column; align-items: center; padding: 1rem 0 0.5rem;">
+      <!-- Circular progress ring (r=80, circumference≈502.65) -->
+      <svg id="weight-ring" width="190" height="190" viewBox="0 0 200 200" aria-label="Weight loss progress ring">
+        <!-- Track -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--surface2)" stroke-width="18"/>
+        <!-- Progress arc — starts at 12 o'clock via rotate(-90) -->
+        <circle id="weight-ring-arc" cx="100" cy="100" r="80" fill="none"
+          stroke="var(--accent)" stroke-width="18" stroke-linecap="round"
+          stroke-dasharray="502.65" stroke-dashoffset="502.65"
+          transform="rotate(-90 100 100)"
+          style="transition: stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1);"/>
+        <!-- Center percentage -->
+        <text id="weight-ring-pct" x="100" y="92" text-anchor="middle"
+          font-family="Inter,system-ui,sans-serif" font-size="38" font-weight="700"
+          fill="var(--text)">0%</text>
+        <text x="100" y="122" text-anchor="middle"
+          font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="500"
+          fill="var(--text2)">to goal</text>
+      </svg>
+      <div style="display: flex; justify-content: space-around; text-align: center; width: 100%; margin-top: 1rem; padding-bottom: 0.5rem;">
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Current</div>
+          <div id="stat-current" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
+        </div>
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Goal</div>
+          <div id="stat-goal" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
+        </div>
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Lost</div>
+          <div id="stat-progress" style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: .2rem;">--</div>
+        </div>
       </div>
     </div>
   </div>
