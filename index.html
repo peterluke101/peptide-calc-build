@@ -939,6 +939,36 @@ body {
   padding: max(env(safe-area-inset-top), 0px) 1rem calc(5rem + env(safe-area-inset-bottom));
   overflow-x: hidden;
 }
+
+/* ── Reverse Calc ─────────────────────────────────────────── */
+.rc-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0 .2rem}
+.rc-toggle-label{display:flex;flex-direction:column;gap:.15rem}
+.rc-toggle-title{font-size:.85rem;font-weight:700;color:var(--text)}
+.rc-toggle-sub{font-size:.68rem;color:var(--accent);font-weight:600;letter-spacing:.04em}
+.rc-panel{display:none;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border);animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.rc-field{margin-bottom:1rem}
+.rc-field label{display:block;font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.rc-slider-row{display:flex;align-items:center;gap:.6rem}
+.rc-slider-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;transition:background .2s}
+.rc-slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-slider-row input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-num-input{width:72px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--text);text-align:right;transition:border-color .2s,box-shadow .2s}
+.rc-num-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.rc-num-unit{font-size:.7rem;color:var(--text2);white-space:nowrap;min-width:24px}
+.rc-seg{display:flex;gap:.3rem;flex-wrap:wrap}
+.rc-seg-btn{flex:1;min-width:44px;padding:.45rem .5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;transition:all .2s}
+.rc-seg-btn:hover{border-color:var(--accent);color:var(--text)}
+.rc-seg-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.rc-result{background:linear-gradient(135deg,rgba(61,232,195,.1) 0%,var(--surface2) 100%);border:1px solid rgba(61,232,195,.3);border-radius:10px;padding:1rem 1.1rem;margin-top:.5rem;text-align:center}
+.rc-result-label{font-size:.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.rc-result-value{font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.rc-result-unit{font-size:.85rem;font-weight:600;color:var(--accent);margin-left:.2rem;vertical-align:middle}
+.rc-result-breakdown{font-size:.7rem;color:var(--text2);margin-top:.5rem;font-weight:400}
+body.light-mode .rc-slider-row input[type=range]{background:#ddd}
+body.light-mode .rc-num-input{background:#f5f5f5}
+body.light-mode .rc-seg-btn{background:#f5f5f5}
+body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1),rgba(43,186,160,.04))}
 </style>
 </head>
 <body>
@@ -1026,6 +1056,59 @@ body {
     <div class="btn-row">
       <button class="btn btn-primary" id="add-confirm">Add to Schedule</button>
       <button class="btn btn-secondary" id="add-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reverse Calc Card -->
+<div class="card animate-in" id="reverse-calc-card">
+  <div class="rc-toggle-row">
+    <div class="rc-toggle-label">
+      <span class="rc-toggle-title">Reverse Calc</span>
+      <span class="rc-toggle-sub">Dose → Water</span>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="reverse-calc-toggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="rc-panel" id="rc-panel">
+    <!-- Vial Size -->
+    <div class="rc-field">
+      <label for="rc-vial-slider">Vial Size</label>
+      <div class="rc-slider-row">
+        <input type="range" id="rc-vial-slider" min="1" max="1000" step="1" value="5">
+        <input type="number" id="rc-vial-num" class="rc-num-input" min="1" max="1000" step="1" value="5">
+        <span class="rc-num-unit">mg</span>
+      </div>
+    </div>
+    <!-- Desired Dose -->
+    <div class="rc-field">
+      <label for="rc-dose-slider">Desired Dose</label>
+      <div class="rc-slider-row">
+        <input type="range" id="rc-dose-slider" min="100" max="10000" step="50" value="250">
+        <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="10000" step="50" value="250">
+        <span class="rc-num-unit">mcg</span>
+      </div>
+    </div>
+    <!-- Syringe Units -->
+    <div class="rc-field">
+      <label>Syringe Units</label>
+      <div class="rc-seg" id="rc-seg">
+        <button class="rc-seg-btn" data-units="5">5</button>
+        <button class="rc-seg-btn active" data-units="10">10</button>
+        <button class="rc-seg-btn" data-units="20">20</button>
+        <button class="rc-seg-btn" data-units="50">50</button>
+      </div>
+    </div>
+    <!-- Result -->
+    <div class="rc-result">
+      <div class="rc-result-label">Required BAC Water</div>
+      <div>
+        <span class="rc-result-value" id="rc-result-value">2.00</span>
+        <span class="rc-result-unit">ml</span>
+      </div>
+      <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
     </div>
   </div>
 </div>
@@ -3912,6 +3995,64 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('feedback-option')?.addEventListener('click', () => {
     window.open('mailto:peterluke101@gmail.com?subject=Peptide Compass Pro Feedback');
   });
+
+  // ── Reverse Calc ─────────────────────────────────────────────
+  (function() {
+    const toggle   = document.getElementById('reverse-calc-toggle');
+    const panel    = document.getElementById('rc-panel');
+    const vialSlider = document.getElementById('rc-vial-slider');
+    const vialNum    = document.getElementById('rc-vial-num');
+    const doseSlider = document.getElementById('rc-dose-slider');
+    const doseNum    = document.getElementById('rc-dose-num');
+    const segBtns    = document.querySelectorAll('.rc-seg-btn');
+    const resultVal  = document.getElementById('rc-result-value');
+    const breakdown  = document.getElementById('rc-result-breakdown');
+    let syringeUnits = 10;
+
+    function calcAndRender() {
+      const vialMg    = parseFloat(vialNum.value)    || 5;
+      const desiredMcg = parseFloat(doseNum.value)   || 250;
+      // water_ml = (vial_mg * 1000 / desired_mcg) * syringe_units / 100
+      const waterMl = (vialMg * 1000 / desiredMcg) * syringeUnits / 100;
+      const display = waterMl.toFixed(2);
+      resultVal.textContent = display;
+      breakdown.textContent =
+        `${vialMg}mg vial ÷ ${desiredMcg}mcg dose × ${syringeUnits} units = ${display} ml`;
+    }
+
+    toggle.addEventListener('change', () => {
+      panel.style.display = toggle.checked ? 'block' : 'none';
+      if (toggle.checked) calcAndRender();
+    });
+
+    // Sync slider ↔ number input for vial size
+    vialSlider.addEventListener('input', () => {
+      vialNum.value = vialSlider.value; calcAndRender();
+    });
+    vialNum.addEventListener('input', () => {
+      vialSlider.value = vialNum.value; calcAndRender();
+    });
+
+    // Sync slider ↔ number input for dose
+    doseSlider.addEventListener('input', () => {
+      doseNum.value = doseSlider.value; calcAndRender();
+    });
+    doseNum.addEventListener('input', () => {
+      doseSlider.value = doseNum.value; calcAndRender();
+    });
+
+    // Segmented syringe picker
+    segBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        segBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        syringeUnits = parseInt(btn.dataset.units, 10);
+        calcAndRender();
+      });
+    });
+
+    calcAndRender();
+  })();
 });
 
 // ── CSV parser — handles quoted fields with embedded newlines/commas ──
