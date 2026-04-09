@@ -767,6 +767,106 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
   font-size: .8rem;
 }
 
+/* Premium Guides promo card */
+.guides-promo-card {
+  border-radius: 12px;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(43,186,160,.12), rgba(100,120,255,.1));
+  border: 1px solid rgba(43,186,160,.35);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .25rem;
+}
+.guides-promo-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+.guides-promo-text {
+  flex: 1;
+}
+.guides-promo-title {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.guides-promo-desc {
+  font-size: .72rem;
+  color: var(--text2);
+  margin-top: .2rem;
+  line-height: 1.4;
+}
+.guides-promo-btn {
+  margin-top: .75rem;
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: .45rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: opacity .2s;
+}
+.guides-promo-btn:hover { opacity: .85; }
+
+/* Dark mode toggle row */
+.more-option-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.toggle-switch input { display: none; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #555;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: .3s;
+}
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: .3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+/* Reset warning colour */
+.more-title-danger { color: #e05252 !important; }
+
+/* Light mode */
+body.light-mode {
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --text: #1a1a2e;
+  --text2: #555;
+  --border: #ddd;
+  --accent: #2bbaa0;
+  --accent-dim: rgba(43,186,160,.15);
+  background: var(--bg);
+  color: var(--text);
+}
+body.light-mode .card,
+body.light-mode .section-card { background: var(--surface); border-color: var(--border); }
+body.light-mode .bottom-nav { background: #fff; border-top: 1px solid #ddd; }
+body.light-mode input,
+body.light-mode select { background: #f0f0f0; color: var(--text); border-color: var(--border); }
+
 /* Adjust body padding for bottom nav */
 body {
   min-height: 100dvh;
@@ -1152,19 +1252,38 @@ body {
 <div id="tab-more" class="tab-content">
   <div class="header">
     <h1>More <span>Options</span></h1>
-    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Settings, sharing, and additional features</p>
+    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Tools, preferences, and additional features</p>
+  </div>
+
+  <!-- A) Premium Guides promo card -->
+  <div class="card animate-in">
+    <div class="guides-promo-card">
+      <div class="guides-promo-icon">📚</div>
+      <div class="guides-promo-text">
+        <div class="guides-promo-title">Premium Guides</div>
+        <div class="guides-promo-desc">Expert guides on peptides, supplements, nootropics, TRT &amp; more</div>
+        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Browse Guides →</a>
+      </div>
+    </div>
   </div>
 
   <div class="card animate-in">
     <div class="more-options">
-      <div class="more-option" id="settings-option">
-        <div class="more-icon">⚙️</div>
+
+      <!-- B) Dark/Light Mode toggle -->
+      <div class="more-option more-option-toggle" style="cursor:default;">
+        <div class="more-icon">🌓</div>
         <div class="more-text">
-          <div class="more-title">Settings</div>
-          <div class="more-desc">Units, notifications, data management</div>
+          <div class="more-title">Dark Mode</div>
+          <div class="more-desc">Toggle dark / light theme</div>
         </div>
-        <div class="more-arrow">›</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
+
+      <!-- C) Export Data -->
       <div class="more-option" id="export-option">
         <div class="more-icon">📤</div>
         <div class="more-text">
@@ -1173,6 +1292,8 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
+
+      <!-- D) Import Data -->
       <div class="more-option" id="import-option">
         <div class="more-icon">📥</div>
         <div class="more-text">
@@ -1181,22 +1302,38 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
-      <div class="more-option" id="backup-option">
-        <div class="more-icon">💾</div>
+
+      <!-- E) Share Calendar -->
+      <div class="more-option" id="share-calendar-option">
+        <div class="more-icon">📅</div>
         <div class="more-text">
-          <div class="more-title">Backup & Restore</div>
-          <div class="more-desc">Cloud backup of your data</div>
+          <div class="more-title">Share Calendar</div>
+          <div class="more-desc">Export schedule as .ics calendar file</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
-      <div class="more-option" id="help-option">
-        <div class="more-icon">❓</div>
+
+      <!-- F) Reset All Data -->
+      <div class="more-option" id="reset-data-option">
+        <div class="more-icon">🗑️</div>
         <div class="more-text">
-          <div class="more-title">Help & Support</div>
-          <div class="more-desc">FAQ, tutorials, contact support</div>
+          <div class="more-title more-title-danger">Reset All Data</div>
+          <div class="more-desc">Clear all data and start fresh</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
+
+      <!-- G) Send Feedback -->
+      <div class="more-option" id="feedback-option">
+        <div class="more-icon">💬</div>
+        <div class="more-text">
+          <div class="more-title">Send Feedback</div>
+          <div class="more-desc">Help us improve the app</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
+      <!-- H) About -->
       <div class="more-option" id="about-option">
         <div class="more-icon">ℹ️</div>
         <div class="more-text">
@@ -1205,6 +1342,7 @@ body {
         </div>
         <div class="more-arrow">›</div>
       </div>
+
     </div>
   </div>
 
@@ -3526,6 +3664,75 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('weight-goal').value = savedGoal;
   }
   updateWeightDisplay();
+
+  // ── Dark / Light Mode ────────────────────────────────────────
+  const darkToggle = document.getElementById('dark-mode-toggle');
+  if (darkToggle) {
+    // Dark mode is default; toggle is ON = dark, OFF = light
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      darkToggle.checked = false;
+    } else {
+      darkToggle.checked = true; // dark is default
+    }
+    darkToggle.addEventListener('change', () => {
+      if (darkToggle.checked) {
+        document.body.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
+
+  // ── Share Calendar (.ics export) ─────────────────────────────
+  document.getElementById('share-calendar-option')?.addEventListener('click', () => {
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    if (!sched.length) { alert('No scheduled peptides to export.'); return; }
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const toIcsDate = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+    const uid = () => Math.random().toString(36).slice(2) + '@peptidecompass';
+    let events = '';
+    sched.forEach(item => {
+      const peptide = PEPTIDES[item.peptideIndex];
+      if (!peptide) return;
+      const start = item.startDate ? new Date(item.startDate) : now;
+      const end = new Date(start);
+      end.setDate(end.getDate() + (item.cycleDays || 30));
+      events += [
+        'BEGIN:VEVENT',
+        `UID:${uid()}`,
+        `DTSTART;VALUE=DATE:${toIcsDate(start)}`,
+        `DTEND;VALUE=DATE:${toIcsDate(end)}`,
+        `SUMMARY:${peptide.name} cycle`,
+        `DESCRIPTION:${peptide.rangeLabel} — ${peptide.timingNote || ''}`,
+        'END:VEVENT'
+      ].join('\r\n') + '\r\n';
+    });
+    const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Peptide Compass Pro//EN\r\n${events}END:VCALENDAR`;
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'peptide-schedule.ics';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // ── Reset All Data ───────────────────────────────────────────
+  document.getElementById('reset-data-option')?.addEventListener('click', () => {
+    if (confirm('Are you sure? This will delete all peptides, logs, and schedule data. This cannot be undone.')) {
+      localStorage.clear();
+      location.reload();
+    }
+  });
+
+  // ── Send Feedback ────────────────────────────────────────────
+  document.getElementById('feedback-option')?.addEventListener('click', () => {
+    window.open('mailto:peterluke101@gmail.com?subject=Peptide Compass Pro Feedback');
+  });
 });
 </script>
 
