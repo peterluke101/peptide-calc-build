@@ -1990,7 +1990,7 @@ const PEPTIDE_STACKS = {
     description: 'Accelerate tissue repair, reduce inflammation, and enhance recovery',
     categories: {
       'Core Foundation': [
-        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates healing of tendons, ligaments, and muscle tissue' },
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'featured', featured: true, benefit: 'Accelerates healing of tendons, ligaments, gut lining, and muscle tissue' },
         { name: 'TB-500', dose: '2-5 mg twice weekly', priority: 'core', benefit: 'Promotes cellular repair and reduces inflammation' }
       ],
       'Growth & Repair': [
@@ -2025,6 +2025,7 @@ const PEPTIDE_STACKS = {
     description: 'Maximize muscle protein synthesis, strength, and athletic performance',
     categories: {
       'Anabolic Foundation': [
+        { name: 'CJC-1295 no DAC + Ipamorelin', dose: '200 mcg each 3x/week', priority: 'featured', featured: true, benefit: 'Classic GH combo — promotes lean muscle, deep sleep, and recovery' },
         { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Powerful muscle building and satellite cell activation' },
         { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Increases natural GH for muscle growth' }
       ],
@@ -2043,8 +2044,8 @@ const PEPTIDE_STACKS = {
     description: 'Promote cellular regeneration, cognitive health, and healthy aging',
     categories: {
       'Cellular Health': [
-        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Cellular energy and DNA repair mechanism' },
-        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'core', benefit: 'Telomerase activation and circadian rhythm regulation' }
+        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'featured', featured: true, benefit: 'Telomerase activation and circadian rhythm regulation — the most researched anti-aging peptide' },
+        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Cellular energy and DNA repair mechanism' }
       ],
       'Growth Hormone Axis': [
         { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Maintains youthful GH levels' },
@@ -2061,7 +2062,7 @@ const PEPTIDE_STACKS = {
     description: 'Improve skin texture, reduce aging signs, and enhance appearance',
     categories: {
       'Collagen & Repair': [
-        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'core', benefit: 'Stimulates collagen and elastin production' },
+        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'featured', featured: true, benefit: 'Stimulates collagen and elastin production, reduces wrinkles, and promotes hair growth' },
         { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates skin healing and regeneration' }
       ],
       'Growth Factors': [
@@ -2108,12 +2109,21 @@ function renderStackRecommendations(goal) {
     `;
   }).join('');
 
-  const featuredCardHtml = goal === 'fatloss' ? `
+  const FEATURED_PICKS = {
+    healing: { name: 'BPC-157', desc: 'The gold standard healing peptide — accelerates tissue repair, gut healing, and injury recovery' },
+    fatloss:  { name: 'Retatrutide', desc: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available. Outperforms semaglutide and tirzepatide in clinical trials.' },
+    muscle:   { name: 'CJC-1295 no DAC + Ipamorelin', desc: 'The classic growth hormone stack — promotes lean muscle, recovery, and deep sleep' },
+    longevity:{ name: 'Epitalon', desc: 'Telomerase activator — the most researched anti-aging peptide for cellular longevity' },
+    skin:     { name: 'GHK-Cu', desc: 'The Glow Stack essential — stimulates collagen, reduces wrinkles, and promotes hair growth' }
+  };
+
+  const pick = FEATURED_PICKS[goal];
+  const featuredCardHtml = pick ? `
     <div class="stack-featured-card">
       <div class="stack-featured-tag">⭐ Featured Pick</div>
-      <div class="stack-featured-name">Retatrutide</div>
-      <div class="stack-featured-desc">Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available. Outperforms semaglutide and tirzepatide in clinical trials.</div>
-      <button class="stack-featured-btn" id="stack-add-retatrutide">+ Add to Stack</button>
+      <div class="stack-featured-name">${pick.name}</div>
+      <div class="stack-featured-desc">${pick.desc}</div>
+      <button class="stack-featured-btn" data-featured-peptide="${pick.name}">+ Add to Stack</button>
     </div>
   ` : '';
 
@@ -2126,24 +2136,24 @@ function renderStackRecommendations(goal) {
     ${categoriesHtml}
   `;
 
-  // Wire the Add to Stack button → pre-select Retatrutide in the Add Peptide form
-  const addBtn = document.getElementById('stack-add-retatrutide');
+  // Wire Add to Stack button — pre-selects the featured peptide in the Add Peptide form
+  const addBtn = $recommendations.querySelector('[data-featured-peptide]');
   if (addBtn) {
     addBtn.addEventListener('click', () => {
+      const pepName = addBtn.dataset.featuredPeptide;
       const pepSelect = document.getElementById('add-peptide');
       if (pepSelect) {
-        const retIdx = Array.from(pepSelect.options).findIndex(o => o.text === 'Retatrutide');
-        if (retIdx >= 0) {
-          pepSelect.value = pepSelect.options[retIdx].value;
+        const idx = Array.from(pepSelect.options).findIndex(o => o.text === pepName);
+        if (idx >= 0) {
+          pepSelect.value = pepSelect.options[idx].value;
           pepSelect.dispatchEvent(new Event('change'));
         }
       }
-      // Switch to schedule tab and show the add panel
       const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
       if (scheduleTab) scheduleTab.click();
       setTimeout(() => {
-        const addTrigger = document.getElementById('add-trigger');
         const addPanel = document.getElementById('add-panel');
+        const addTrigger = document.getElementById('add-trigger');
         if (addPanel) addPanel.style.display = 'block';
         if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 120);
