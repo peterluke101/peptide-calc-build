@@ -1036,6 +1036,11 @@ body.light-mode .rc-syr-barrel{stroke:#ccc}
 body.light-mode .rc-syr-tick-major{stroke:#999}
 body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
+/* App tagline */
+.app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
+/* Section divider */
+.section-divider{display:flex;align-items:center;gap:.65rem;margin:.5rem 0;color:var(--text2);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 </style>
 </head>
 <body>
@@ -1049,6 +1054,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 
   <div class="header">
     <h1>Peptide <span>Compass Pro</span></h1>
+    <p class="app-tagline">Plan doses, calculate units, track injections, and organize your peptide schedule — all in one place.</p>
     <div style="height: 1.5rem;"></div>
     <button id="share-app-btn" class="share-btn">📤 Share App</button>
   </div>
@@ -1063,6 +1069,32 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <button class="install-banner-btn" id="install-banner-btn">Install</button>
   <button class="install-banner-close" id="install-banner-close">✕</button>
 </div>
+
+<div class="section-divider">YOUR SCHEDULE</div>
+
+<!-- Today's Injections -->
+<div class="card animate-in" id="today-card">
+  <div class="today-header">
+    <h2>Today's Injections</h2>
+    <span class="today-date" id="today-date"></span>
+  </div>
+  <div class="completed-counter" id="completed-counter"></div>
+  <div id="today-list"></div>
+</div>
+
+<!-- Weekly Calendar -->
+<div class="card animate-in animate-d1" id="calendar-card">
+  <div class="calendar-nav">
+    <h2 id="week-label">This Week</h2>
+    <div class="week-nav">
+      <button id="prev-week" aria-label="Previous week">‹</button>
+      <button id="next-week" aria-label="Next week">›</button>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<div class="section-divider">TOOLS</div>
 
 <!-- Add Peptide (Smart Section) -->
 <div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
@@ -1238,37 +1270,6 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   </div>
 </div>
 
-<!-- Today's Injections -->
-<div class="card animate-in" id="today-card">
-  <div class="today-header">
-    <h2>Today's Injections</h2>
-    <span class="today-date" id="today-date"></span>
-  </div>
-  <div class="completed-counter" id="completed-counter"></div>
-  <div id="today-list"></div>
-</div>
-
-<!-- Weekly Calendar -->
-<div class="card animate-in animate-d1" id="calendar-card">
-  <div class="calendar-nav">
-    <h2 id="week-label">This Week</h2>
-    <div class="week-nav">
-      <button id="prev-week" aria-label="Previous week">‹</button>
-      <button id="next-week" aria-label="Next week">›</button>
-    </div>
-  </div>
-  <div class="cal-grid" id="cal-grid"></div>
-</div>
-
-<!-- Injection History -->
-<div class="card animate-in animate-d1" id="history-card">
-  <div class="section-header">
-    <h2>Recent Injections</h2>
-    <button class="clear-btn" id="clear-history">Clear</button>
-  </div>
-  <div class="history-list" id="history-list"></div>
-</div>
-
 <!-- My Peptides -->
 <div class="card animate-in animate-d3" id="peptides-card">
   <div class="section-title">
@@ -1278,6 +1279,15 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </button>
   </div>
   <div id="peptides-list"></div>
+</div>
+
+<!-- Injection History -->
+<div class="card animate-in animate-d1" id="history-card">
+  <div class="section-header">
+    <h2>Recent Injections</h2>
+    <button class="clear-btn" id="clear-history">Clear</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
 </div>
 
 <!-- Stack Builder -->
