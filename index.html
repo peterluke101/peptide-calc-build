@@ -81,6 +81,29 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 #peptides-list{transition:max-height .3s ease, opacity .3s ease, margin-bottom .3s ease;overflow:hidden;max-height:9000px}
 #peptides-list.collapsed{max-height:0;opacity:0;margin-bottom:0}
 
+/* ── About Modal ─────────────────────────────────────────── */
+.about-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.about-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:88dvh;overflow-y:auto;padding:1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:1.25rem;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.about-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto -0.5rem}
+.about-header{text-align:center;padding:.25rem 0}
+.about-logo{font-size:2.25rem;margin-bottom:.5rem}
+.about-app-name{font-size:1.35rem;font-weight:700;color:var(--accent);letter-spacing:-.02em}
+.about-version{font-size:.78rem;color:var(--text2);margin-top:.2rem;letter-spacing:.04em;text-transform:uppercase}
+.about-builder{font-size:.85rem;color:var(--text2);margin-top:.35rem}
+.about-divider{height:1px;background:var(--border)}
+.about-section{display:flex;flex-direction:column;gap:.4rem}
+.about-section-title{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.about-section-body{font-size:.85rem;color:var(--text2);line-height:1.65}
+.about-link{display:inline-flex;align-items:center;gap:.4rem;background:var(--accent);color:#000;text-decoration:none;padding:.55rem 1.1rem;border-radius:8px;font-size:.8rem;font-weight:600;letter-spacing:.02em;transition:background .2s,transform .15s;margin-top:.25rem}
+.about-link:hover{background:#2dd4b0;transform:translateY(-1px)}
+.about-mailto{color:var(--accent);text-decoration:none;font-weight:500}
+.about-mailto:hover{text-decoration:underline}
+.about-credits{text-align:center;font-size:.8rem;color:var(--text2);padding:.5rem 0}
+.about-credits span{color:var(--accent)}
+.about-close{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.75rem;font-family:inherit;font-size:.9rem;font-weight:500;cursor:pointer;width:100%;transition:background .2s}
+.about-close:hover{background:var(--border)}
+
 /* ── Today Card ──────────────────────────────────────────── */
 .today-header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}
 .today-header h2{font-size:1.05rem;font-weight:700}
@@ -4195,6 +4218,67 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Send Feedback ────────────────────────────────────────────
   document.getElementById('feedback-option')?.addEventListener('click', () => {
     window.open('mailto:peterluke101@gmail.com?subject=Peptide Compass Pro Feedback');
+  });
+
+  // ── About ─────────────────────────────────────────────────────
+  document.getElementById('about-option')?.addEventListener('click', () => {
+    const overlay = document.createElement('div');
+    overlay.className = 'about-overlay';
+    overlay.innerHTML = `
+      <div class="about-sheet" role="dialog" aria-modal="true" aria-label="About Peptide Compass Pro">
+        <div class="about-handle"></div>
+
+        <div class="about-header">
+          <div class="about-logo">🧭</div>
+          <div class="about-app-name">Peptide Compass Pro</div>
+          <div class="about-version">Version 1.0</div>
+          <div class="about-builder">Built by PeterLukeDigital</div>
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section">
+          <div class="about-section-title">Premium Guides</div>
+          <div class="about-section-body">Detailed peptide protocols, dosing guides, and reference sheets.</div>
+          <a class="about-link" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener noreferrer">
+            🛒 Browse Guides
+          </a>
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section">
+          <div class="about-section-title">Privacy</div>
+          <div class="about-section-body">Your data stays on your device. Peptide Compass Pro stores everything locally in your browser. No accounts, no cloud sync, no tracking. Your health data is yours alone.</div>
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section">
+          <div class="about-section-title">Disclaimer</div>
+          <div class="about-section-body">For educational purposes only. This app does not provide medical advice. Always consult a qualified healthcare provider before starting any peptide protocol.</div>
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section">
+          <div class="about-section-title">Contact & Support</div>
+          <div class="about-section-body">Questions or feedback? Reach out anytime.<br><br>
+            <a class="about-mailto" href="mailto:peterluke101@gmail.com">peterluke101@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="about-credits">Built with <span>♥</span> for the peptide community</div>
+
+        <button class="about-close">Close</button>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const close = () => document.body.removeChild(overlay);
+    overlay.querySelector('.about-close').addEventListener('click', close);
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
   });
 
   // ── Reverse Calc ─────────────────────────────────────────────
