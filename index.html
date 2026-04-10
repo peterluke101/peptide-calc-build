@@ -3141,19 +3141,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(content => {
       content.classList.remove('active');
     });
-    document.getElementById('tab-' + targetTab).classList.add('active');
-    
+    const tabContent = document.getElementById('tab-' + targetTab);
+    if (tabContent) tabContent.classList.add('active');
+
     // Save active tab
     localStorage.setItem('activeTab', targetTab);
   });
 });
-
-// Restore active tab on load
-(function restoreTab() {
-  const savedTab = localStorage.getItem('activeTab') || 'schedule';
-  const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
-  if (tabBtn) tabBtn.click();
-})();
 
 // ── Service Worker ───────────────────────────────────────────
 if ('serviceWorker' in navigator) {
