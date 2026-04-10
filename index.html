@@ -36,6 +36,9 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .header h1 span{color:var(--accent)}
 .header p{font-size:clamp(.78rem,2.8vw,.9rem);font-weight:400;color:var(--text2);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
 
+/* Section dividers */
+.section-divider{height:1px;background:var(--border);opacity:.45;margin:.25rem 0;width:100%;max-width:720px;align-self:center}
+
 /* Share button */
 .share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
 .share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
@@ -1049,7 +1052,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 
   <div class="header">
     <h1>Peptide <span>Compass Pro</span></h1>
-    <div style="height: 1.5rem;"></div>
+    <p>Your personal peptide protocol tracker</p>
     <button id="share-app-btn" class="share-btn">📤 Share App</button>
   </div>
 
@@ -1063,6 +1066,30 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <button class="install-banner-btn" id="install-banner-btn">Install</button>
   <button class="install-banner-close" id="install-banner-close">✕</button>
 </div>
+
+<!-- Today's Injections -->
+<div class="card animate-in" id="today-card">
+  <div class="today-header">
+    <h2>Today's Injections</h2>
+    <span class="today-date" id="today-date"></span>
+  </div>
+  <div class="completed-counter" id="completed-counter"></div>
+  <div id="today-list"></div>
+</div>
+
+<!-- Weekly Calendar -->
+<div class="card animate-in animate-d1" id="calendar-card">
+  <div class="calendar-nav">
+    <h2 id="week-label">This Week</h2>
+    <div class="week-nav">
+      <button id="prev-week" aria-label="Previous week">‹</button>
+      <button id="next-week" aria-label="Next week">›</button>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<div class="section-divider"></div>
 
 <!-- Add Peptide (Smart Section) -->
 <div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
@@ -1128,6 +1155,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
   </div>
 </div>
+
+<div class="section-divider"></div>
 
 <!-- Reverse Calc Card -->
 <div class="card animate-in" id="reverse-calc-card">
@@ -1238,36 +1267,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   </div>
 </div>
 
-<!-- Today's Injections -->
-<div class="card animate-in" id="today-card">
-  <div class="today-header">
-    <h2>Today's Injections</h2>
-    <span class="today-date" id="today-date"></span>
-  </div>
-  <div class="completed-counter" id="completed-counter"></div>
-  <div id="today-list"></div>
-</div>
-
-<!-- Weekly Calendar -->
-<div class="card animate-in animate-d1" id="calendar-card">
-  <div class="calendar-nav">
-    <h2 id="week-label">This Week</h2>
-    <div class="week-nav">
-      <button id="prev-week" aria-label="Previous week">‹</button>
-      <button id="next-week" aria-label="Next week">›</button>
-    </div>
-  </div>
-  <div class="cal-grid" id="cal-grid"></div>
-</div>
-
-<!-- Injection History -->
-<div class="card animate-in animate-d1" id="history-card">
-  <div class="section-header">
-    <h2>Recent Injections</h2>
-    <button class="clear-btn" id="clear-history">Clear</button>
-  </div>
-  <div class="history-list" id="history-list"></div>
-</div>
+<div class="section-divider"></div>
 
 <!-- My Peptides -->
 <div class="card animate-in animate-d3" id="peptides-card">
@@ -1279,6 +1279,19 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   </div>
   <div id="peptides-list"></div>
 </div>
+
+<div class="section-divider"></div>
+
+<!-- Injection History -->
+<div class="card animate-in animate-d1" id="history-card">
+  <div class="section-header">
+    <h2>Recent Injections</h2>
+    <button class="clear-btn" id="clear-history">Clear</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<div class="section-divider"></div>
 
 <!-- Stack Builder -->
 <div class="card animate-in animate-d3" id="stack-card">
