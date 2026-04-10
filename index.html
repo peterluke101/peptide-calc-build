@@ -3813,13 +3813,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addSection.classList.toggle('compact');
   });
   
-  // ── Peptides Toggle ─────────────────────────────────────────
-  document.getElementById('peptides-toggle')?.addEventListener('click', function() {
-    const peptidesList = document.getElementById('peptides-list');
-    peptidesList.classList.toggle('collapsed');
-    this.textContent = peptidesList.classList.contains('collapsed') ? '▼' : '▲';
-  });
-  
   // ── Install Banner Close ────────────────────────────────────
   document.getElementById('install-banner-close')?.addEventListener('click', () => {
     document.getElementById('install-banner').style.display = 'none';
