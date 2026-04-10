@@ -38,6 +38,9 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 
 /* Section dividers */
 .section-divider{height:1px;background:var(--border);opacity:.45;margin:.25rem 0;width:100%;max-width:720px;align-self:center}
+/* Labeled section dividers (YOUR SCHEDULE / TOOLS) */
+.section-label{display:flex;align-items:center;gap:.65rem;margin:.5rem 0;color:var(--text2);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+.section-label::before,.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* Share button */
 .share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
@@ -1041,9 +1044,6 @@ body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
 /* App tagline */
 .app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
-/* Section divider */
-.section-divider{display:flex;align-items:center;gap:.65rem;margin:.5rem 0;color:var(--text2);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
-.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 </style>
 </head>
 <body>
@@ -1073,7 +1073,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <button class="install-banner-close" id="install-banner-close">✕</button>
 </div>
 
-<div class="section-divider">YOUR SCHEDULE</div>
+<div class="section-label">Your Schedule</div>
 
 
 <!-- Today's Injections -->
@@ -1098,7 +1098,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <div class="cal-grid" id="cal-grid"></div>
 </div>
 
-<div class="section-divider">TOOLS</div>
+<div class="section-label">Tools</div>
 
 <!-- Add Peptide (Smart Section) -->
 <div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
@@ -1164,8 +1164,6 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
   </div>
 </div>
-
-<div class="section-divider"></div>
 
 <!-- Reverse Calc Card -->
 <div class="card animate-in" id="reverse-calc-card">
