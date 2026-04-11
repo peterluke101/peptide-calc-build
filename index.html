@@ -126,7 +126,9 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .today-header h2{font-size:1.05rem;font-weight:700}
 .today-date{font-size:.78rem;color:var(--text2);font-weight:500}
 .completed-counter{font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:.75rem;opacity:.9}
-.today-item{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface2);border-radius:10px;margin-bottom:.5rem;transition:transform .15s,opacity .3s,background .3s}
+.today-item{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;padding:.75rem;background:var(--surface2);border-radius:10px;margin-bottom:.5rem;transition:transform .15s,opacity .3s,background .3s}
+.today-math-btn{flex-basis:100%;width:100%;margin-top:-.2rem}
+.today-math-detail{flex-basis:100%;width:100%}
 .today-item:last-child{margin-bottom:0}
 
 /* ── Logs, Weight, Journal Tabs ──────────────────────────── */
@@ -436,6 +438,19 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 .warn-card{display:flex;gap:.5rem;align-items:flex-start;background:rgba(61,232,195,.06);border:1px solid rgba(61,232,195,.2);border-radius:8px;padding:.55rem .75rem;margin:.75rem 0 0;font-size:.7rem;color:var(--text2);line-height:1.45}
 .warn-card .warn-icon{flex-shrink:0;line-height:1.45}
 .warn-card.warn-caution{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.28);color:var(--text2)}
+
+/* ── Math Transparency ───────────────────────────────────── */
+.math-toggle{display:inline-flex;align-items:center;gap:.3rem;background:none;border:none;font-family:inherit;font-size:.7rem;font-weight:500;color:var(--text2);cursor:pointer;padding:.3rem 0;transition:color .2s;-webkit-tap-highlight-color:transparent;line-height:1}
+.math-toggle:hover{color:var(--accent)}
+.math-chevron{display:inline-block;font-size:.6rem;transition:transform .2s;line-height:1}
+.math-toggle[aria-expanded=true] .math-chevron{transform:rotate(90deg)}
+.math-detail{display:none;background:rgba(61,232,195,.04);border:1px solid rgba(61,232,195,.12);border-radius:8px;padding:.6rem .75rem;margin-top:.35rem;font-size:.72rem;color:var(--text2);line-height:1.65;text-align:left}
+.math-detail.open{display:block}
+.math-step{margin:.1rem 0}
+.math-num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent);font-weight:600}
+.math-section{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin:.5rem 0 .15rem;opacity:.7}
+.math-section:first-child{margin-top:0}
+.math-assume{margin-top:.45rem;padding-top:.35rem;border-top:1px solid rgba(61,232,195,.1);font-size:.67rem;opacity:.8}
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media(max-width:600px){
@@ -1278,6 +1293,12 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <div class="gs-draw-label">Draw</div>
         <div><span class="gs-draw-value" id="gs-draw-value">—</span><span class="gs-draw-unit"> units</span></div>
       </div>
+      <div style="text-align:center">
+        <button class="math-toggle" id="gs-math-toggle" aria-expanded="false" type="button">
+          <span class="math-chevron">▶</span> Show math
+        </button>
+      </div>
+      <div class="math-detail" id="gs-math-detail"></div>
       <div class="warn-card warn-caution">
         <span class="warn-icon">⚠️</span>
         <span>Dose tiers are reference ranges from published research — not a personal prescription. Start low and adjust only with guidance from a healthcare provider.</span>
@@ -1374,8 +1395,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         </div>
       </label>
       <div class="rc-slider-row">
-        <input type="range" id="rc-dose-slider" min="100" max="10000" step="50" value="250">
-        <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="10000" step="50" value="250">
+        <input type="range" id="rc-dose-slider" min="100" max="500000" step="100" value="250">
+        <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="500000" step="100" value="250">
         <span class="rc-num-unit" id="rc-dose-unit">mcg</span>
       </div>
     </div>
@@ -1387,6 +1408,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <button class="rc-seg-btn active" data-units="10">10</button>
         <button class="rc-seg-btn" data-units="20">20</button>
         <button class="rc-seg-btn" data-units="50">50</button>
+        <button class="rc-seg-btn" data-units="100">100</button>
       </div>
     </div>
     <!-- Result -->
@@ -1397,6 +1419,12 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <span class="rc-result-unit">ml</span>
       </div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
+      <div style="text-align:center">
+        <button class="math-toggle" id="rc-math-toggle" aria-expanded="false" type="button">
+          <span class="math-chevron">▶</span> Show math
+        </button>
+      </div>
+      <div class="math-detail" id="rc-math-detail"></div>
       <div class="warn-card" style="margin:.6rem 0 0">
         <span class="warn-icon">ℹ️</span>
         <span>Assumes stated product concentration and a standard 100-unit (1mL) insulin syringe. Reconstitution math changes if your syringe type or product purity differs — verify with your supplier.</span>
@@ -2004,6 +2032,52 @@ function fmtDose(mcg) {
 function calcUnits(doseMcg, vialMg, waterMl) {
   const concMcgPerUnit = (vialMg * 1000) / (waterMl * 100);
   return concMcgPerUnit > 0 ? doseMcg / concMcgPerUnit : 0;
+}
+
+// Returns HTML for the step-by-step draw calculation explanation
+function buildMathHtml(doseMcg, vialMg, waterMl) {
+  const vialMcg      = vialMg * 1000;
+  const waterUnits   = waterMl * 100;
+  const concMgMl     = vialMg / waterMl;
+  const concMcgUnit  = vialMcg / waterUnits;
+  const rawUnits     = concMcgUnit > 0 ? doseMcg / concMcgUnit : 0;
+  const fmtConc      = n => +n.toFixed(4) === Math.round(n) ? String(Math.round(n)) : +n.toFixed(2) + '';
+  const rounded      = Math.abs(rawUnits - Math.round(rawUnits * 10) / 10) > 0.005;
+  return `
+    <div class="math-section">Reconstitution</div>
+    <div class="math-step"><span class="math-num">${vialMg}mg</span> ÷ <span class="math-num">${waterMl}mL</span> water = <span class="math-num">${concMgMl.toFixed(2)} mg/mL</span></div>
+    <div class="math-section">Per-unit concentration <span style="font-weight:400;text-transform:none;letter-spacing:0">(1mL = 100 units on a standard syringe)</span></div>
+    <div class="math-step"><span class="math-num">${vialMcg.toLocaleString()} mcg</span> ÷ <span class="math-num">${waterUnits} units</span> = <span class="math-num">${fmtConc(concMcgUnit)} mcg/unit</span></div>
+    <div class="math-section">Draw</div>
+    <div class="math-step"><span class="math-num">${doseMcg} mcg</span> ÷ <span class="math-num">${fmtConc(concMcgUnit)} mcg/unit</span> = <span class="math-num">${rawUnits.toFixed(1)} units</span>${rounded ? ' <span style="opacity:.7">(rounded to 1 decimal)</span>' : ''}</div>
+    <div class="math-assume"><strong>Assumptions:</strong> Standard 100-unit insulin syringe · 1mL = 100 units · stated product concentration</div>
+  `;
+}
+
+// Returns HTML for the reverse-calc step-by-step explanation
+function buildRcMathHtml(vialMg, desiredMcg, syringeUnits, waterMl) {
+  const mlPerDraw  = syringeUnits / 100;
+  const concNeeded = desiredMcg / mlPerDraw;
+  return `
+    <div class="math-section">Draw volume <span style="font-weight:400;text-transform:none;letter-spacing:0">(1mL = 100 units on a standard syringe)</span></div>
+    <div class="math-step"><span class="math-num">${syringeUnits} units</span> ÷ 100 = <span class="math-num">${mlPerDraw.toFixed(2)} mL</span> per injection</div>
+    <div class="math-section">Concentration needed</div>
+    <div class="math-step"><span class="math-num">${desiredMcg} mcg</span> ÷ <span class="math-num">${mlPerDraw.toFixed(2)} mL</span> = <span class="math-num">${concNeeded.toFixed(2)} mcg/mL</span></div>
+    <div class="math-section">BAC water to add</div>
+    <div class="math-step"><span class="math-num">${(vialMg * 1000).toLocaleString()} mcg</span> ÷ <span class="math-num">${concNeeded.toFixed(2)} mcg/mL</span> = <span class="math-num">${waterMl.toFixed(2)} mL</span></div>
+    <div class="math-assume"><strong>Assumptions:</strong> Standard 100-unit insulin syringe · 1mL = 100 units · stated product concentration</div>
+  `;
+}
+
+// Wire up a math toggle button to its detail panel
+function initMathToggle(toggleId, detailId) {
+  const btn    = document.getElementById(toggleId);
+  const detail = document.getElementById(detailId);
+  if (!btn || !detail) return;
+  btn.addEventListener('click', () => {
+    const open = detail.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  });
 }
 
 function fmtUnits(u) {
@@ -2739,6 +2813,7 @@ function renderToday(animate) {
       const div = document.createElement('div');
       div.className = 'today-item' + (isDone ? ' completed' : '');
 
+      const mathId = 'math-' + injectionKey.replace(/[^a-z0-9]/gi, '_');
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
@@ -2749,8 +2824,21 @@ function renderToday(animate) {
         <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}">
           ${isDone ? '✓ Done' : 'Inject'}
         </button>
+        <button class="math-toggle today-math-btn" aria-expanded="false" data-detail="${mathId}" type="button">
+          <span class="math-chevron">▶</span> Show math
+        </button>
+        <div class="math-detail today-math-detail" id="${mathId}">
+          ${buildMathHtml(doseMcg, entry.vialMg, entry.waterMl)}
+        </div>
       `;
       $list.appendChild(div);
+      div.querySelector('.today-math-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        const detail = document.getElementById(e.currentTarget.dataset.detail);
+        if (!detail) return;
+        const open = detail.classList.toggle('open');
+        e.currentTarget.setAttribute('aria-expanded', open);
+      });
     });
 
     // Update completed counter
@@ -4053,6 +4141,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Sync hidden tier select
       const tierSel = document.getElementById('add-tier');
       if (tierSel) tierSel.value = tier;
+      // Update math detail (keep open/closed state)
+      const mathDetail = document.getElementById('gs-math-detail');
+      if (mathDetail) mathDetail.innerHTML = buildMathHtml(doseMcg, vialMg, waterMl);
     };
 
     container.querySelectorAll('.gs-tier-btn').forEach(btn => {
@@ -4063,6 +4154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     calcDraw();
+    initMathToggle('gs-math-toggle', 'gs-math-detail');
   }
 
   function gsInitSchedule() {
@@ -4825,13 +4917,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (doseUnitMcg) {
         unitMcgBtn.classList.add('active'); unitMgBtn.classList.remove('active');
         doseUnitLbl.textContent = 'mcg';
-        doseSlider.min = 100; doseSlider.max = 10000; doseSlider.step = 50;
-        doseNum.min = 100; doseNum.max = 10000; doseNum.step = 50;
+        doseSlider.min = 100; doseSlider.max = 500000; doseSlider.step = 100;
+        doseNum.min = 100; doseNum.max = 500000; doseNum.step = 100;
       } else {
         unitMgBtn.classList.add('active'); unitMcgBtn.classList.remove('active');
         doseUnitLbl.textContent = 'mg';
-        doseSlider.min = 0.1; doseSlider.max = 10; doseSlider.step = 0.05;
-        doseNum.min = 0.1; doseNum.max = 10; doseNum.step = 0.05;
+        doseSlider.min = 0.1; doseSlider.max = 500; doseSlider.step = 0.5;
+        doseNum.min = 0.1; doseNum.max = 500; doseNum.step = 0.5;
       }
     }
 
@@ -4854,6 +4946,9 @@ document.addEventListener('DOMContentLoaded', () => {
         `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
       const rcHighWarn = document.getElementById('rc-high-water-warn');
       if (rcHighWarn) rcHighWarn.style.display = waterMl > 5 ? 'flex' : 'none';
+      // Update math detail (preserve open/closed state)
+      const rcMathDetail = document.getElementById('rc-math-detail');
+      if (rcMathDetail) rcMathDetail.innerHTML = buildRcMathHtml(vialMg, desiredMcg, syringeUnits, waterMl);
       updateSyringe(syringeUnits);
     }
 
@@ -4924,13 +5019,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = parseInt(pepSelect.value);
       if (isNaN(idx)) return;
       const pep = PEPTIDES[idx];
-      const vialMg = suggestVialMg(pep);
-      const doseMcg = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
+      const vialMg  = suggestVialMg(pep);
+      const doseMcg = Math.min(500000, Math.max(100, Math.round(pep.stdMcg / 100) * 100));
       vialSlider.value = vialMg; vialNum.value = vialMg;
+      // Auto-switch to mg mode for high-dose peptides (≥50mg std dose)
+      if (pep.stdMcg >= 50000 && doseUnitMcg) {
+        doseUnitMcg = false;
+        applyUnitMode();
+        localStorage.setItem('rc-dose-unit', 'mg');
+      }
       if (doseUnitMcg) {
         doseSlider.value = doseMcg; doseNum.value = doseMcg;
       } else {
-        const mgVal = +(doseMcg / 1000).toFixed(3);
+        const mgVal = +(doseMcg / 1000).toFixed(2);
         doseSlider.value = mgVal; doseNum.value = mgVal;
       }
       calcAndRender();
@@ -4998,6 +5099,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calcAndRender();
+    initMathToggle('rc-math-toggle', 'rc-math-detail');
   })();
 });
 
