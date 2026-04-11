@@ -4284,9 +4284,11 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('activeTab', 'weight');
   });
 
-  // Restore active tab on load — map legacy values to new names
-  let savedTab = localStorage.getItem('activeTab') || 'schedule';
+  // Restore active tab on load — hash takes priority (e.g. index.html#history)
+  const hashTab = window.location.hash.replace('#', '');
+  let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   if (savedTab === 'logs' || savedTab === 'journal' || savedTab === 'logbook') savedTab = 'history';
+  if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
   if (tabBtn) tabBtn.click();
 

@@ -15,13 +15,13 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 1rem calc(3rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 1rem calc(5rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
 button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
-@supports (-webkit-touch-callout:none){body{padding-top:max(env(safe-area-inset-top), 44px);padding-bottom:calc(4rem + env(safe-area-inset-bottom))}}
+@supports (-webkit-touch-callout:none){body{padding-top:max(env(safe-area-inset-top), 44px);padding-bottom:calc(5rem + env(safe-area-inset-bottom))}}
 
 /* ── Nav ─────────────────────────────────────────────────── */
 .nav{width:100%;max-width:720px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
@@ -327,6 +327,58 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 @media(min-width:768px){
   .cal-day{min-height:110px;padding:.7rem .5rem}
   .cal-event{font-size:.6rem}
+}
+
+/* ── Bottom Navigation ───────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: .5rem 0 max(env(safe-area-inset-bottom), 0.5rem);
+  z-index: 1000;
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: .5rem 0;
+  color: var(--text2);
+  font-size: .7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.tab-btn.active {
+  color: var(--accent);
+}
+
+.tab-icon {
+  font-size: 1.2rem;
+  margin-bottom: .2rem;
+  transition: transform .2s;
+}
+
+.tab-btn.active .tab-icon {
+  transform: scale(1.1);
+}
+
+.tab-label {
+  font-size: .65rem;
+  letter-spacing: .02em;
 }
 </style>
 </head>
@@ -1815,5 +1867,25 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <button class="tab-btn" onclick="window.location.href='index.html'">
+    <span class="tab-icon">📅</span>
+    <span class="tab-label">Compass</span>
+  </button>
+  <button class="tab-btn active">
+    <span class="tab-icon">🗓️</span>
+    <span class="tab-label">Schedule</span>
+  </button>
+  <button class="tab-btn" onclick="window.location.href='index.html#history'">
+    <span class="tab-icon">🕐</span>
+    <span class="tab-label">History</span>
+  </button>
+  <button class="tab-btn" onclick="window.location.href='index.html#more'">
+    <span class="tab-icon">⚙️</span>
+    <span class="tab-label">More</span>
+  </button>
+</div>
 </body>
 </html>
