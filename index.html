@@ -15,13 +15,13 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(env(safe-area-inset-top),1rem) 1rem calc(5rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
 button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.install-banner-close,.collapse-toggle,.week-nav button{min-height:44px;min-width:44px}
-@supports (-webkit-touch-callout:none){body{padding-top:max(env(safe-area-inset-top), 18px);padding-bottom:calc(5rem + env(safe-area-inset-bottom))}}
+@supports (-webkit-touch-callout:none){.app-content{padding-top:max(env(safe-area-inset-top), 18px)}}
 
 /* ── Nav ─────────────────────────────────────────────────── */
 .nav{width:100%;max-width:720px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
@@ -472,7 +472,7 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
   .nav,.header,.gumroad-banner,.install-banner,.disclaimer{max-width:100%}
 }
 @media(min-width:520px){
-  body{padding:max(env(safe-area-inset-top),0px) 1.5rem calc(5rem + env(safe-area-inset-bottom))}
+  .app-content{padding-left:1.5rem;padding-right:1.5rem}
   .card{padding:1.5rem}
   .tab-content{max-width:720px}
 }
@@ -481,16 +481,16 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
   .cal-event{font-size:.6rem}
 }
 
+/* ── App Layout ─────────────────────────────────────────────── */
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:max(env(safe-area-inset-top),1rem) 1rem 1rem;display:flex;flex-direction:column;align-items:center}
+
 /* ── Bottom Navigation Tabs ────────────────────────────────── */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
-  padding: .5rem 0 calc(.5rem + env(safe-area-inset-bottom));
+  padding: .5rem 0 max(env(safe-area-inset-bottom), .5rem);
   z-index: 1000;
   box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
 }
@@ -1109,6 +1109,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 </style>
 </head>
 <body>
+<div class="app-content">
 
 <!-- Tab Content Containers -->
 <div id="tab-schedule" class="tab-content active">
@@ -1806,6 +1807,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 
   <p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
 </div>
+
+</div><!-- /.app-content -->
 
 <!-- Bottom Navigation Tabs -->
 <div class="bottom-nav">

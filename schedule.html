@@ -15,13 +15,13 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-body{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 1rem calc(5rem + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
 button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
-@supports (-webkit-touch-callout:none){body{padding-top:max(env(safe-area-inset-top), 44px);padding-bottom:calc(5rem + env(safe-area-inset-bottom))}}
+@supports (-webkit-touch-callout:none){.app-content{padding-top:max(env(safe-area-inset-top), 44px)}}
 
 /* ── Nav ─────────────────────────────────────────────────── */
 .nav{width:100%;max-width:720px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
@@ -329,16 +329,16 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
   .cal-event{font-size:.6rem}
 }
 
+/* ── App Layout ─────────────────────────────────────────────── */
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:max(env(safe-area-inset-top),1rem) 1rem 1rem;display:flex;flex-direction:column;align-items:center}
+
 /* ── Bottom Navigation ───────────────────────────────────── */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
-  padding: .5rem 0 max(env(safe-area-inset-bottom), 0.5rem);
+  padding: .5rem 0 max(env(safe-area-inset-bottom), .5rem);
   z-index: 1000;
   box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
 }
@@ -383,6 +383,7 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 </style>
 </head>
 <body>
+<div class="app-content">
 
 <!-- Nav -->
 <nav class="nav">
@@ -1867,6 +1868,8 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 </script>
+
+</div><!-- /.app-content -->
 
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
