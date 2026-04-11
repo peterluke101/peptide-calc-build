@@ -1049,6 +1049,84 @@ body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
 /* App tagline */
 .app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
+
+/* ── Guided Add Peptide Flow ─────────────────────────────── */
+.guided-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.guided-sheet{position:relative;background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:92dvh;overflow-y:auto;padding:1.5rem 1.5rem calc(2rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:1.1rem;animation:slideUp .3s ease}
+.guided-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto -0.25rem;flex-shrink:0}
+.guided-close-btn{position:absolute;top:.9rem;right:.9rem;background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;line-height:1;transition:all .2s;font-family:inherit}
+.guided-close-btn:hover{color:var(--text);border-color:var(--text2)}
+.guided-steps-row{display:flex;align-items:center;justify-content:center;gap:.35rem;padding:.1rem 0}
+.guided-sdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;border:2px solid var(--border);color:var(--text2);transition:all .25s;flex-shrink:0}
+.guided-sdot.active{background:var(--accent);border-color:var(--accent);color:#000}
+.guided-sdot.done{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.guided-sconn{height:2px;width:20px;border-radius:1px;background:var(--border);transition:background .25s;flex-shrink:0}
+.guided-sconn.done{background:var(--accent)}
+.guided-step-header{display:flex;flex-direction:column;gap:.15rem}
+.guided-step-title{font-size:1.05rem;font-weight:700;color:var(--text)}
+.guided-step-sub{font-size:.78rem;color:var(--text2)}
+.guided-section-label{font-size:.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem}
+.guided-recap{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px}
+.guided-recap-name{font-size:.85rem;font-weight:600;color:var(--text);flex:1}
+.guided-recap-meta{font-size:.75rem;color:var(--text2)}
+.guided-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.guided-chip{padding:.35rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:.75rem;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.guided-chip:hover,.guided-chip.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.guided-search{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.65rem .85rem;font-family:inherit;font-size:.9rem;color:var(--text);outline:none;box-sizing:border-box;margin-bottom:.5rem;transition:border-color .2s,box-shadow .2s}
+.guided-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.guided-pep-list{display:flex;flex-direction:column;gap:.3rem;max-height:200px;overflow-y:auto}
+.guided-pep-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.guided-pep-item:hover{border-color:var(--accent);background:var(--accent-dim)}
+.guided-pep-item.sel{border-color:var(--accent);background:rgba(61,232,195,.1)}
+.guided-pep-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.guided-pep-name{font-size:.85rem;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.guided-pep-range{font-size:.68rem;color:var(--text2);white-space:nowrap}
+.guided-btns{display:flex;flex-wrap:wrap;gap:.4rem}
+.guided-option-btn{padding:.45rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.guided-option-btn:hover,.guided-option-btn.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.guided-result-box{background:linear-gradient(135deg,rgba(61,232,195,.1) 0%,var(--surface2) 100%);border:1px solid rgba(61,232,195,.3);border-radius:10px;padding:1rem 1rem .9rem;text-align:center}
+.guided-result-lbl{font-size:.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.guided-result-val{font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.guided-result-unit{font-size:.85rem;font-weight:600;color:var(--accent);margin-left:.2rem;vertical-align:middle}
+.guided-result-breakdown{font-size:.7rem;color:var(--text2);margin-top:.4rem}
+.guided-dose-preset{flex:1;padding:.65rem .3rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-family:inherit;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.guided-dose-preset:hover{border-color:var(--accent)}
+.guided-dose-preset.sel{background:var(--accent-dim);border-color:var(--accent)}
+.guided-dose-preset .dp-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);display:block;font-weight:600}
+.guided-dose-preset.sel .dp-label{color:var(--accent)}
+.guided-dose-preset .dp-val{font-size:.88rem;font-weight:700;color:var(--text);display:block;margin-top:.15rem}
+.guided-dose-preset.sel .dp-val{color:var(--accent)}
+.guided-tip{font-size:.72rem;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .85rem;line-height:1.5}
+.guided-freq-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem}
+.guided-freq-val{font-size:.95rem;font-weight:700;color:var(--accent);margin:.25rem 0}
+.guided-freq-note{font-size:.75rem;color:var(--text2);line-height:1.4}
+.guided-cycle-select{width:100%;appearance:none;-webkit-appearance:none;background:var(--surface2) url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23a0a0a0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .9rem center;border:1px solid var(--border);border-radius:8px;padding:.7rem 2.2rem .7rem .85rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);cursor:pointer;box-sizing:border-box;transition:border-color .2s}
+.guided-cycle-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.guided-date-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;font-family:inherit;font-size:.85rem;color:var(--text);color-scheme:dark;box-sizing:border-box;transition:border-color .2s;outline:none}
+.guided-date-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.guided-summary-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.6rem}
+.guided-summary-row{display:flex;justify-content:space-between;align-items:center}
+.guided-sum-lbl{font-size:.68rem;color:var(--text2);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.guided-sum-val{font-size:.85rem;font-weight:600;color:var(--text)}
+.guided-sum-val.ac{color:var(--accent)}
+.guided-sum-name{display:flex;align-items:center;gap:.4rem}
+.guided-save-btn{width:100%;padding:.9rem;background:var(--accent);color:#000;border:none;border-radius:10px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.guided-save-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.guided-save-btn:active{transform:translateY(0)}
+.guided-edit-row{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap}
+.guided-edit-link{background:none;border:none;color:var(--text2);font-size:.72rem;cursor:pointer;padding:.2rem;font-family:inherit;text-decoration:underline;-webkit-tap-highlight-color:transparent}
+.guided-edit-link:hover{color:var(--accent)}
+.guided-nav-row{display:flex;gap:.5rem}
+.guided-btn-back{padding:.7rem 1rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.guided-btn-back:hover{border-color:var(--text2)}
+.guided-btn-next{flex:1;padding:.7rem 1rem;background:var(--accent);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.guided-btn-next:hover{filter:brightness(1.1)}
+.guided-btn-classic{padding:.7rem .8rem;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;font-family:inherit;font-size:.75rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.guided-btn-classic:hover{border-color:var(--text2);color:var(--text)}
+body.light-mode .guided-sheet{background:var(--surface)}
+body.light-mode .guided-search,body.light-mode .guided-pep-item,body.light-mode .guided-option-btn,body.light-mode .guided-freq-box,body.light-mode .guided-summary-card,.guided-dose-preset{background:#f5f5f5}
+body.light-mode .guided-result-box{background:linear-gradient(135deg,rgba(43,186,160,.1),rgba(43,186,160,.04))}
+body.light-mode .guided-cycle-select,body.light-mode .guided-date-input{background:#f5f5f5}
 </style>
 </head>
 <body>
@@ -3724,6 +3802,491 @@ function setupLogbookToggle() {
 }
 
 // ── Initialize on DOM Ready ─────────────────────────────────
+// ── Guided Add Peptide Flow ───────────────────────────────────
+function openGuidedAddFlow(prefillPepIdx) {
+  // Default to BPC-157 (index 4) for new users
+  let step = 1;
+  const defaultPep = prefillPepIdx !== undefined ? prefillPepIdx : 4;
+  let state = {
+    pepIdx: defaultPep,
+    vialMg: 5,
+    waterMl: 2,
+    tier: 'standard',
+    cycleDays: 56,
+    startDate: new Date().toISOString().split('T')[0]
+  };
+
+  // Pre-fill from existing entry if already in schedule
+  const existing = schedule.find(e => e.peptideIndex === state.pepIdx);
+  if (existing) {
+    state.vialMg = existing.vialMg;
+    state.waterMl = existing.waterMl;
+    state.tier = existing.tier || 'standard';
+    state.cycleDays = existing.cycleDays || 56;
+    state.startDate = existing.startDate;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'guided-overlay';
+  const sheet = document.createElement('div');
+  sheet.className = 'guided-sheet';
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  function close() {
+    overlay.style.transition = 'opacity .2s';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 200);
+  }
+
+  function fmt(mcg) {
+    if (mcg >= 1000 && mcg % 1000 === 0) return (mcg / 1000) + ' mg';
+    if (mcg >= 1000) return (mcg / 1000).toFixed(2) + ' mg';
+    return mcg + ' mcg';
+  }
+
+  function calcUnits(doseMcg) {
+    const concMcgMl = state.vialMg * 1000 / state.waterMl;
+    return Math.round((doseMcg / concMcgMl) * 100);
+  }
+
+  function render() {
+    sheet.scrollTop = 0;
+    sheet.innerHTML = '';
+
+    // Handle drag indicator
+    const handle = document.createElement('div');
+    handle.className = 'guided-handle';
+    sheet.appendChild(handle);
+
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'guided-close-btn';
+    closeBtn.textContent = '✕';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.addEventListener('click', close);
+    sheet.appendChild(closeBtn);
+
+    if (step <= 4) {
+      // Step indicator
+      const stepsRow = document.createElement('div');
+      stepsRow.className = 'guided-steps-row';
+      const stepLabels = ['Peptide', 'Mix', 'Dose', 'Schedule'];
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'guided-sdot' + (i === step ? ' active' : i < step ? ' done' : '');
+        dot.textContent = i < step ? '✓' : String(i);
+        dot.title = stepLabels[i - 1];
+        stepsRow.appendChild(dot);
+        if (i < 4) {
+          const conn = document.createElement('div');
+          conn.className = 'guided-sconn' + (i < step ? ' done' : '');
+          stepsRow.appendChild(conn);
+        }
+      }
+      sheet.appendChild(stepsRow);
+
+      // Step title
+      const titles = ['Select Peptide', 'Reconstitution', 'Your Dose', 'Schedule'];
+      const subs = ['Which peptide and vial size?', 'How much bacteriostatic water?', 'What dose do you want to draw?', 'When and how often?'];
+      const hdr = document.createElement('div');
+      hdr.className = 'guided-step-header';
+      hdr.innerHTML = `<div class="guided-step-title">${titles[step - 1]}</div><div class="guided-step-sub">${subs[step - 1]}</div>`;
+      sheet.appendChild(hdr);
+    }
+
+    if (step === 1) renderStep1();
+    else if (step === 2) renderStep2();
+    else if (step === 3) renderStep3();
+    else if (step === 4) renderStep4();
+    else renderSummary();
+  }
+
+  // ── Step 1: Peptide + Vial ──────────────────────────────────
+  function renderStep1() {
+    const pep = PEPTIDES[state.pepIdx];
+
+    // Popular chips
+    const popularDiv = document.createElement('div');
+    const popLbl = document.createElement('div');
+    popLbl.className = 'guided-section-label';
+    popLbl.textContent = 'Popular';
+    popularDiv.appendChild(popLbl);
+    const chipsEl = document.createElement('div');
+    chipsEl.className = 'guided-chips';
+    const featured = ['BPC-157', 'Semaglutide', 'Tirzepatide', 'TB-500', 'Ipamorelin', 'Sermorelin', 'CJC-1295 no DAC + Ipamorelin'];
+    featured.forEach(name => {
+      const idx = PEPTIDES.findIndex(p => p.name === name);
+      if (idx === -1) return;
+      const chip = document.createElement('button');
+      chip.className = 'guided-chip' + (state.pepIdx === idx ? ' sel' : '');
+      chip.textContent = name === 'CJC-1295 no DAC + Ipamorelin' ? 'CJC + Ipa' : name;
+      chip.addEventListener('click', () => { state.pepIdx = idx; render(); });
+      chipsEl.appendChild(chip);
+    });
+    popularDiv.appendChild(chipsEl);
+    sheet.appendChild(popularDiv);
+
+    // All peptides search
+    const allDiv = document.createElement('div');
+    const allLbl = document.createElement('div');
+    allLbl.className = 'guided-section-label';
+    allLbl.textContent = 'All Peptides';
+    allDiv.appendChild(allLbl);
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'guided-search';
+    searchInput.placeholder = 'Search peptides…';
+    allDiv.appendChild(searchInput);
+
+    const pepList = document.createElement('div');
+    pepList.className = 'guided-pep-list';
+
+    function populateList(filter) {
+      pepList.innerHTML = '';
+      PEPTIDES.forEach((p, i) => {
+        if (filter && !p.name.toLowerCase().includes(filter.toLowerCase())) return;
+        const item = document.createElement('div');
+        item.className = 'guided-pep-item' + (state.pepIdx === i ? ' sel' : '');
+        item.innerHTML = `<div class="guided-pep-dot" style="background:${p.color}"></div><span class="guided-pep-name">${p.name}</span><span class="guided-pep-range">${p.rangeLabel}</span>`;
+        item.addEventListener('click', () => { state.pepIdx = i; render(); });
+        pepList.appendChild(item);
+      });
+    }
+    populateList('');
+    searchInput.addEventListener('input', () => populateList(searchInput.value));
+    allDiv.appendChild(pepList);
+    sheet.appendChild(allDiv);
+
+    // Vial size
+    const vialDiv = document.createElement('div');
+    const vialLbl = document.createElement('div');
+    vialLbl.className = 'guided-section-label';
+    vialLbl.textContent = 'Vial Size';
+    vialDiv.appendChild(vialLbl);
+    const vialBtns = document.createElement('div');
+    vialBtns.className = 'guided-btns';
+    [1, 2, 3, 5, 10, 20, 50].forEach(mg => {
+      const btn = document.createElement('button');
+      btn.className = 'guided-option-btn' + (state.vialMg === mg ? ' sel' : '');
+      btn.textContent = mg + ' mg';
+      btn.addEventListener('click', () => { state.vialMg = mg; render(); });
+      vialBtns.appendChild(btn);
+    });
+    vialDiv.appendChild(vialBtns);
+    sheet.appendChild(vialDiv);
+
+    renderNav();
+  }
+
+  // ── Step 2: Reconstitution ──────────────────────────────────
+  function renderStep2() {
+    const pep = PEPTIDES[state.pepIdx];
+
+    // Recap
+    const recap = document.createElement('div');
+    recap.className = 'guided-recap';
+    recap.innerHTML = `<div class="guided-pep-dot" style="background:${pep.color}"></div><span class="guided-recap-name">${pep.name}</span><span class="guided-recap-meta">${state.vialMg}mg vial</span>`;
+    sheet.appendChild(recap);
+
+    // BAC water buttons
+    const waterDiv = document.createElement('div');
+    const waterLbl = document.createElement('div');
+    waterLbl.className = 'guided-section-label';
+    waterLbl.textContent = 'Bacteriostatic Water to Add';
+    waterDiv.appendChild(waterLbl);
+    const waterBtns = document.createElement('div');
+    waterBtns.className = 'guided-btns';
+    [0.5, 1, 1.5, 2, 2.5, 3, 4, 5].forEach(ml => {
+      const btn = document.createElement('button');
+      btn.className = 'guided-option-btn' + (state.waterMl === ml ? ' sel' : '');
+      btn.textContent = ml + ' mL';
+      btn.addEventListener('click', () => { state.waterMl = ml; render(); });
+      waterBtns.appendChild(btn);
+    });
+    waterDiv.appendChild(waterBtns);
+    sheet.appendChild(waterDiv);
+
+    // Concentration result
+    const concMgMl = state.vialMg / state.waterMl;
+    const concBox = document.createElement('div');
+    concBox.className = 'guided-result-box';
+    concBox.innerHTML = `
+      <div class="guided-result-lbl">Resulting Concentration</div>
+      <div><span class="guided-result-val">${concMgMl.toFixed(2)}</span><span class="guided-result-unit">mg/mL</span></div>
+      <div class="guided-result-breakdown">${state.vialMg}mg ÷ ${state.waterMl}mL = ${concMgMl.toFixed(2)} mg/mL</div>
+    `;
+    sheet.appendChild(concBox);
+
+    // Tip
+    const tip = document.createElement('div');
+    tip.className = 'guided-tip';
+    tip.innerHTML = '<strong>Tip:</strong> Most users use 1–2mL per vial. More water means lower concentration and larger injection volume. Less water means smaller volume per dose.';
+    sheet.appendChild(tip);
+
+    renderNav();
+  }
+
+  // ── Step 3: Dose ────────────────────────────────────────────
+  function renderStep3() {
+    const pep = PEPTIDES[state.pepIdx];
+    const concMgMl = state.vialMg / state.waterMl;
+
+    // Recap
+    const recap = document.createElement('div');
+    recap.className = 'guided-recap';
+    recap.innerHTML = `<div class="guided-pep-dot" style="background:${pep.color}"></div><span class="guided-recap-name">${pep.name}</span><span class="guided-recap-meta">${concMgMl.toFixed(2)} mg/mL</span>`;
+    sheet.appendChild(recap);
+
+    // Dose presets
+    const doseDiv = document.createElement('div');
+    const doseLbl = document.createElement('div');
+    doseLbl.className = 'guided-section-label';
+    doseLbl.textContent = 'Select Dose Tier';
+    doseDiv.appendChild(doseLbl);
+    const presetsRow = document.createElement('div');
+    presetsRow.style.cssText = 'display:flex;gap:.4rem';
+    [
+      { key: 'low', label: 'Low', mcg: pep.lowMcg },
+      { key: 'standard', label: 'Standard', mcg: pep.stdMcg },
+      { key: 'high', label: 'High', mcg: pep.highMcg }
+    ].forEach(tier => {
+      const btn = document.createElement('button');
+      btn.className = 'guided-dose-preset' + (state.tier === tier.key ? ' sel' : '');
+      btn.innerHTML = `<span class="dp-label">${tier.label}</span><span class="dp-val">${fmt(tier.mcg)}</span>`;
+      btn.addEventListener('click', () => { state.tier = tier.key; render(); });
+      presetsRow.appendChild(btn);
+    });
+    doseDiv.appendChild(presetsRow);
+
+    const rangeNote = document.createElement('div');
+    rangeNote.style.cssText = 'font-size:.7rem;color:var(--text2);margin-top:.3rem';
+    rangeNote.textContent = 'Typical range: ' + pep.rangeLabel;
+    doseDiv.appendChild(rangeNote);
+    sheet.appendChild(doseDiv);
+
+    // Draw result
+    const tierMcg = { low: pep.lowMcg, standard: pep.stdMcg, high: pep.highMcg }[state.tier] || pep.stdMcg;
+    const units = calcUnits(tierMcg);
+    const drawBox = document.createElement('div');
+    drawBox.className = 'guided-result-box';
+    drawBox.innerHTML = `
+      <div class="guided-result-lbl">Draw on 100-Unit Syringe</div>
+      <div><span class="guided-result-val">${units}</span><span class="guided-result-unit">units</span></div>
+      <div class="guided-result-breakdown">${fmt(tierMcg)} at ${concMgMl.toFixed(2)} mg/mL</div>
+    `;
+    sheet.appendChild(drawBox);
+
+    // Timing
+    const timingDiv = document.createElement('div');
+    timingDiv.className = 'guided-tip';
+    timingDiv.innerHTML = `<strong>Timing:</strong> ${pep.timingIcon} ${pep.timingNote}`;
+    sheet.appendChild(timingDiv);
+
+    renderNav();
+  }
+
+  // ── Step 4: Schedule ────────────────────────────────────────
+  function renderStep4() {
+    const pep = PEPTIDES[state.pepIdx];
+
+    // Frequency info
+    const freqLabels = {
+      'daily': 'Every Day',
+      'weekly': 'Once Weekly',
+      '2x/week': 'Twice a Week (Mon + Thu)',
+      '3x/week': '3× / Week (Mon + Wed + Fri)',
+      '5on2off': '5 On / 2 Off',
+      'morning+evening': 'Twice Daily'
+    };
+    const freqDiv = document.createElement('div');
+    freqDiv.className = 'guided-freq-box';
+    freqDiv.innerHTML = `
+      <div class="guided-section-label">Injection Frequency</div>
+      <div class="guided-freq-val">${freqLabels[pep.frequency] || pep.frequency}</div>
+      <div class="guided-freq-note">${pep.timingNote}</div>
+    `;
+    sheet.appendChild(freqDiv);
+
+    // Cycle length
+    const cycleDiv = document.createElement('div');
+    const cycleLbl = document.createElement('div');
+    cycleLbl.className = 'guided-section-label';
+    cycleLbl.textContent = 'Cycle Length';
+    cycleDiv.appendChild(cycleLbl);
+    const cycleSelect = document.createElement('select');
+    cycleSelect.className = 'guided-cycle-select';
+    [
+      { v: 7, l: '7 days (1 week)' }, { v: 14, l: '14 days (2 weeks)' },
+      { v: 21, l: '21 days (3 weeks)' }, { v: 28, l: '28 days (4 weeks)' },
+      { v: 42, l: '42 days (6 weeks)' }, { v: 56, l: '56 days (8 weeks)' },
+      { v: 84, l: '84 days (12 weeks)' }, { v: 112, l: '112 days (16 weeks)' },
+      { v: 0, l: 'Ongoing (no end)' }
+    ].forEach(({ v, l }) => {
+      const opt = document.createElement('option');
+      opt.value = v; opt.textContent = l;
+      cycleSelect.appendChild(opt);
+    });
+    // Auto-set from peptide recommendation
+    if (pep.cycleWeeks > 0) {
+      const recDays = pep.cycleWeeks * 7;
+      const avail = [7, 14, 21, 28, 42, 56, 84, 112];
+      const closest = avail.reduce((a, b) => Math.abs(b - recDays) < Math.abs(a - recDays) ? b : a);
+      state.cycleDays = closest;
+    } else {
+      state.cycleDays = 0;
+    }
+    cycleSelect.value = String(state.cycleDays);
+    cycleSelect.addEventListener('change', () => { state.cycleDays = parseInt(cycleSelect.value); });
+    cycleDiv.appendChild(cycleSelect);
+    if (pep.cycleWeeks > 0) {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'font-size:.65rem;color:var(--accent);font-weight:500;margin-top:.3rem;opacity:.85';
+      hint.textContent = `Recommended: ${pep.cycleWeeks} week${pep.cycleWeeks !== 1 ? 's' : ''}`;
+      cycleDiv.appendChild(hint);
+    }
+    sheet.appendChild(cycleDiv);
+
+    // Start date
+    const dateDiv = document.createElement('div');
+    const dateLbl = document.createElement('div');
+    dateLbl.className = 'guided-section-label';
+    dateLbl.textContent = 'Start Date';
+    dateDiv.appendChild(dateLbl);
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.className = 'guided-date-input';
+    dateInput.value = state.startDate;
+    dateInput.addEventListener('change', () => { state.startDate = dateInput.value; });
+    dateDiv.appendChild(dateInput);
+    sheet.appendChild(dateDiv);
+
+    renderNav();
+  }
+
+  // ── Step 5: Summary ─────────────────────────────────────────
+  function renderSummary() {
+    const pep = PEPTIDES[state.pepIdx];
+    const concMgMl = state.vialMg / state.waterMl;
+    const tierMcg = { low: pep.lowMcg, standard: pep.stdMcg, high: pep.highMcg }[state.tier] || pep.stdMcg;
+    const units = calcUnits(tierMcg);
+
+    // Title
+    const titleEl = document.createElement('div');
+    titleEl.style.cssText = 'text-align:center;padding:.25rem 0';
+    titleEl.innerHTML = `<div style="font-size:1.5rem;margin-bottom:.35rem">✅</div><div style="font-size:1.1rem;font-weight:700;color:var(--text)">Ready to Start</div><div style="font-size:.78rem;color:var(--text2);margin-top:.2rem">${pep.name} is all set</div>`;
+    sheet.appendChild(titleEl);
+
+    // Summary card
+    const card = document.createElement('div');
+    card.className = 'guided-summary-card';
+    [
+      { l: 'Peptide', v: pep.name, dot: pep.color },
+      { l: 'Vial Size', v: state.vialMg + 'mg' },
+      { l: 'BAC Water', v: state.waterMl + 'mL' },
+      { l: 'Concentration', v: concMgMl.toFixed(2) + ' mg/mL', ac: true },
+      { l: 'Dose', v: fmt(tierMcg) + ' (' + state.tier + ')' },
+      { l: 'Draw', v: units + ' units on 100U syringe', ac: true },
+      { l: 'Frequency', v: pep.frequency },
+      { l: 'Start Date', v: state.startDate },
+      { l: 'Cycle', v: state.cycleDays > 0 ? state.cycleDays + ' days' : 'Ongoing' }
+    ].forEach(row => {
+      const r = document.createElement('div');
+      r.className = 'guided-summary-row';
+      let valHtml;
+      if (row.dot) {
+        valHtml = `<div class="guided-sum-name"><div class="guided-pep-dot" style="background:${row.dot}"></div><span class="guided-sum-val">${row.v}</span></div>`;
+      } else {
+        valHtml = `<span class="guided-sum-val${row.ac ? ' ac' : ''}">${row.v}</span>`;
+      }
+      r.innerHTML = `<span class="guided-sum-lbl">${row.l}</span>${valHtml}`;
+      card.appendChild(r);
+    });
+    sheet.appendChild(card);
+
+    // Save button
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'guided-save-btn';
+    saveBtn.textContent = 'Save & Start Tracking';
+    saveBtn.addEventListener('click', () => {
+      const entry = {
+        peptideIndex: state.pepIdx,
+        tier: state.tier,
+        vialMg: state.vialMg,
+        waterMl: state.waterMl,
+        cycleDays: state.cycleDays,
+        startDate: state.startDate
+      };
+      const idx = schedule.findIndex(e => e.peptideIndex === state.pepIdx);
+      if (idx >= 0) schedule[idx] = entry;
+      else schedule.push(entry);
+      saveSchedule();
+      if (schedule.length >= 3) {
+        document.getElementById('add-peptide-card')?.classList.add('compact');
+      }
+      const addPanel = document.getElementById('add-panel');
+      if (addPanel) addPanel.style.display = 'none';
+      renderAll();
+      close();
+    });
+    sheet.appendChild(saveBtn);
+
+    // Edit links
+    const editRow = document.createElement('div');
+    editRow.className = 'guided-edit-row';
+    ['Peptide', 'Mix', 'Dose', 'Schedule'].forEach((label, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'guided-edit-link';
+      btn.textContent = `Edit ${label}`;
+      btn.addEventListener('click', () => { step = i + 1; render(); });
+      editRow.appendChild(btn);
+    });
+    sheet.appendChild(editRow);
+  }
+
+  // ── Nav buttons ─────────────────────────────────────────────
+  function renderNav() {
+    const navRow = document.createElement('div');
+    navRow.className = 'guided-nav-row';
+
+    if (step > 1) {
+      const back = document.createElement('button');
+      back.className = 'guided-btn-back';
+      back.textContent = '← Back';
+      back.addEventListener('click', () => { step--; render(); });
+      navRow.appendChild(back);
+    } else {
+      // Step 1: show "Classic form" escape hatch
+      const classic = document.createElement('button');
+      classic.className = 'guided-btn-classic';
+      classic.textContent = 'Classic form';
+      classic.addEventListener('click', () => {
+        close();
+        const addPanel = document.getElementById('add-panel');
+        if (addPanel) {
+          addPanel.style.display = 'block';
+          const addPepSel = document.getElementById('add-peptide');
+          if (addPepSel) { addPepSel.value = String(state.pepIdx); autoPopulateCycle(state.pepIdx); }
+        }
+      });
+      navRow.appendChild(classic);
+    }
+
+    const next = document.createElement('button');
+    next.className = 'guided-btn-next';
+    next.textContent = step < 4 ? 'Next →' : 'Review & Save';
+    next.addEventListener('click', () => { step = Math.min(step + 1, 5); render(); });
+    navRow.appendChild(next);
+
+    sheet.appendChild(navRow);
+  }
+
+  render();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
   renderAll();
@@ -3753,29 +4316,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  if ($addTrigger && $addPanel) {
+  if ($addTrigger) {
     $addTrigger.addEventListener('click', () => {
-      const addSection = document.getElementById('add-peptide-card');
-      const isCompact = addSection?.classList.contains('compact');
-      
-      if (isCompact) {
-        // Expand from compact mode
-        addSection.classList.remove('compact');
-        $addPanel.style.display = 'block';
-        if ($addPep) autoPopulateCycle(parseInt($addPep.value));
-      } else {
-        // Toggle panel visibility
-        const isVisible = $addPanel.style.display === 'block';
-        $addPanel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible && $addPep) {
-          const pepIdx = parseInt($addPep.value);
-          const existing = schedule.find(e => e.peptideIndex === pepIdx);
-          if ($addStartDate) {
-            $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
-          }
-          autoPopulateCycle(pepIdx);
-        }
-      }
+      // Pre-fill guided flow with currently selected peptide if panel already has one
+      const pepIdx = $addPep ? parseInt($addPep.value) : undefined;
+      openGuidedAddFlow(pepIdx);
     });
   }
   
