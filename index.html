@@ -1412,6 +1412,23 @@ body:not(.light-mode) .cycle-end-complete{background:#05280e44;color:#86efac;bor
 body:not(.light-mode) .rc-warn-red{color:#fca5a5}
 body:not(.light-mode) .rc-warn-amber{color:#fcd34d}
 .rc-supplier-note{font-size:.75rem;color:var(--text-muted);border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:.3rem .5rem;margin:.4rem 0;background:rgba(245,158,11,.05);line-height:1.4}
+/* === Stack Safety (Issue #89) === */
+.complexity-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.02em}
+.complexity-low{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+.complexity-moderate{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.complexity-high{background:#fed7aa;color:#9a3412;border:1px solid #fb923c}
+.complexity-veryhigh{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+body:not(.light-mode) .complexity-low{background:#064e3b;color:#6ee7b7;border-color:#065f46}
+body:not(.light-mode) .complexity-moderate{background:#451a03;color:#fcd34d;border-color:#92400e}
+body:not(.light-mode) .complexity-high{background:#431407;color:#fdba74;border-color:#9a3412}
+body:not(.light-mode) .complexity-veryhigh{background:#450a0a;color:#fca5a5;border-color:#991b1b}
+.stack-meta-bar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.4rem 0 .75rem;padding:.45rem .6rem;background:var(--card-bg);border:1px solid var(--border);border-radius:8px}
+.stack-weekly-stat{font-size:.78rem;color:var(--text-muted);display:flex;align-items:center;gap:.3rem}
+.stack-weekly-stat strong{color:var(--text)}
+.stack-overlap-warn{display:flex;gap:.4rem;align-items:flex-start;background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:.4rem .6rem;font-size:.76rem;color:#92400e;margin:.3rem 0;line-height:1.5}
+body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#fcd34d}
+.stacks-one-at-a-time{background:var(--card-bg);border:1px solid var(--accent);border-radius:10px;padding:.65rem .75rem;margin-bottom:.75rem;font-size:.82rem;color:var(--text-muted);line-height:1.5;position:relative}
+.stacks-one-at-a-time .dismiss-btn{position:absolute;top:.4rem;right:.5rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;padding:.1rem .25rem}
 </style>
 </head>
 <body>
@@ -1911,6 +1928,12 @@ body:not(.light-mode) .rc-warn-amber{color:#fcd34d}
   <div class="header">
     <h1>Peptide <span>Stacks</span></h1>
     <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Browse example stacks organized by goal</p>
+  </div>
+
+  <!-- One-at-a-time reminder (dismissible) -->
+  <div class="stacks-one-at-a-time" id="stacks-one-at-a-time-card">
+    <button class="dismiss-btn" id="stacks-oat-dismiss" title="Dismiss">✕</button>
+    💡 <strong>Consider starting with one compound at a time.</strong> This makes it easier to identify what's working and spot any side effects. Add compounds gradually as you gain experience with each one.
   </div>
 
   <div class="stacks-new-user-note">
@@ -3195,94 +3218,147 @@ const PEPTIDE_STACKS = {
   healing: {
     title: 'Healing & Recovery',
     description: 'Commonly associated with tissue repair support, inflammation reduction, and recovery',
+    why: 'BPC-157 and TB-500 are commonly referenced together because they work through complementary pathways — BPC-157 for localized healing and gut support, TB-500 for systemic tissue repair and anti-inflammatory effects.',
     categories: {
       'Core Foundation': [
-        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'featured', featured: true, benefit: 'Accelerates healing of tendons, ligaments, gut lining, and muscle tissue' },
-        { name: 'TB-500', dose: '2-5 mg twice weekly', priority: 'core', benefit: 'Promotes cellular repair and reduces inflammation' }
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'featured', featured: true, benefit: 'Accelerates healing of tendons, ligaments, gut lining, and muscle tissue', systems: ['healing'] },
+        { name: 'TB-500', dose: '2-5 mg twice weekly', priority: 'core', benefit: 'Promotes cellular repair and reduces inflammation', systems: ['healing'] }
       ],
       'Growth & Repair': [
-        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'synergistic', benefit: 'Enhances collagen production and wound healing' },
-        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes tissue growth and repair' }
+        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'synergistic', benefit: 'Enhances collagen production and wound healing', systems: ['healing'] },
+        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes tissue growth and repair', systems: ['gh-secretagogue'] }
       ],
       'Support Stack': [
-        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune function support during recovery' }
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune function support during recovery', systems: ['healing'] }
       ]
     }
   },
   fatloss: {
     title: 'Fat Loss & Body Composition',
     description: 'Commonly associated with metabolic support, appetite regulation, and body composition',
+    why: 'GLP-1/GIP receptor agonists are commonly combined with supporting compounds in research contexts. Evidence strength varies significantly by compound — see badges.',
     categories: {
       'Metabolic Core': [
-        { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'featured', featured: true, benefit: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available' },
-        { name: 'Semaglutide', dose: '0.25-2.4 mg weekly', priority: 'core', benefit: 'Superior appetite suppression and weight loss' },
-        { name: 'Tirzepatide', dose: '2.5-15 mg weekly', priority: 'core', benefit: 'Dual GIP/GLP-1 action for enhanced fat loss' }
+        { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'featured', featured: true, benefit: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available', systems: ['appetite-suppressant'] },
+        { name: 'Semaglutide', dose: '0.25-2.4 mg weekly', priority: 'core', benefit: 'Superior appetite suppression and weight loss', systems: ['appetite-suppressant'] },
+        { name: 'Tirzepatide', dose: '2.5-15 mg weekly', priority: 'core', benefit: 'Dual GIP/GLP-1 action for enhanced fat loss', systems: ['appetite-suppressant'] }
       ],
       'Growth Hormone': [
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with natural GH production and fat oxidation pathways' },
-        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Commonly combined with CJC for body composition support' }
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with natural GH production and fat oxidation pathways', systems: ['gh-secretagogue'] },
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Commonly combined with CJC for body composition support', systems: ['gh-secretagogue'] }
       ],
       'Advanced Options': [
-        { name: 'AOD-9604', dose: '300 mcg daily', priority: 'optional', benefit: 'Fat-burning fragment of growth hormone' }
+        { name: 'AOD-9604', dose: '300 mcg daily', priority: 'optional', benefit: 'Fat-burning fragment of growth hormone', systems: ['gh-secretagogue'] }
       ]
     }
   },
   muscle: {
     title: 'Muscle Growth & Performance',
     description: 'Commonly associated with muscle protein synthesis, strength support, and athletic performance',
+    why: 'CJC-1295 and Ipamorelin are commonly referenced together as a GHRH + GHRP combination — each stimulates GH release through different receptors, and research suggests they may have a synergistic effect on GH pulse amplitude.',
     categories: {
       'Anabolic Foundation': [
-        { name: 'CJC-1295 no DAC + Ipamorelin', dose: '200 mcg each 3x/week', priority: 'featured', featured: true, benefit: 'Classic GH combo — commonly associated with lean muscle support, sleep quality, and recovery' },
-        { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Associated with muscle protein synthesis and satellite cell activity' },
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Associated with natural GH production and muscle growth support' }
+        { name: 'CJC-1295 no DAC + Ipamorelin', dose: '200 mcg each 3x/week', priority: 'featured', featured: true, benefit: 'Classic GH combo — commonly associated with lean muscle support, sleep quality, and recovery', systems: ['gh-secretagogue'] },
+        { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Associated with muscle protein synthesis and satellite cell activity', systems: ['gh-secretagogue'] },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Associated with natural GH production and muscle growth support', systems: ['gh-secretagogue'] }
       ],
       'Recovery & Repair': [
-        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'synergistic', benefit: 'Accelerates recovery between training sessions' },
-        { name: 'PEG-MGF', dose: '200-400 mcg post-workout', priority: 'synergistic', benefit: 'Mechano Growth Factor for localized muscle growth' }
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'synergistic', benefit: 'Accelerates recovery between training sessions', systems: ['healing'] },
+        { name: 'PEG-MGF', dose: '200-400 mcg post-workout', priority: 'synergistic', benefit: 'Mechano Growth Factor for localized muscle growth', systems: ['gh-secretagogue'] }
       ],
       'Performance Stack': [
-        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Commonly combined with CJC for GH release support' },
-        { name: 'GHRP-2', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH release and appetite stimulation' }
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Commonly combined with CJC for GH release support', systems: ['gh-secretagogue'] },
+        { name: 'GHRP-2', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH release and appetite stimulation', systems: ['gh-secretagogue'] }
       ]
     }
   },
   longevity: {
     title: 'Longevity & Anti-Aging',
     description: 'Commonly associated with cellular regeneration, cognitive health, and healthy aging',
+    why: 'Longevity-oriented stacks typically combine senolytic, telomere-supporting, and mitochondrial compounds. Evidence quality is limited for most — see badges.',
     categories: {
       'Cellular Health': [
-        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'featured', featured: true, benefit: 'Telomerase activation and circadian rhythm regulation — the most researched anti-aging peptide' },
-        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Associated with cellular energy and DNA repair mechanisms' }
+        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'featured', featured: true, benefit: 'Telomerase activation and circadian rhythm regulation — the most researched anti-aging peptide', systems: [] },
+        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Associated with cellular energy and DNA repair mechanisms', systems: [] }
       ],
       'Growth Hormone Axis': [
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with GH level support' },
-        { name: 'Tesamorelin', dose: '1-2 mg daily', priority: 'synergistic', benefit: 'Specifically targets visceral fat and GH release' }
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with GH level support', systems: ['gh-secretagogue'] },
+        { name: 'Tesamorelin', dose: '1-2 mg daily', priority: 'synergistic', benefit: 'Specifically targets visceral fat and GH release', systems: ['gh-secretagogue'] }
       ],
       'Cognitive & Immune': [
-        { name: 'Semax', dose: '300-800 mcg daily', priority: 'optional', benefit: 'Research suggests cognitive and neuroprotective effects' },
-        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune system support' }
+        { name: 'Semax', dose: '300-800 mcg daily', priority: 'optional', benefit: 'Research suggests cognitive and neuroprotective effects', systems: [] },
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune system support', systems: ['healing'] }
       ]
     }
   },
   skin: {
     title: 'Skin Health & Beauty',
     description: 'Commonly associated with skin texture support, reduced aging signs, and appearance improvement',
+    why: 'GHK-Cu is commonly cited as a foundational skin peptide. PT-141 appears in some skin protocols for melanin-related effects. These compounds act through different pathways.',
     categories: {
       'Collagen & Repair': [
-        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'featured', featured: true, benefit: 'Stimulates collagen and elastin production, reduces wrinkles, and promotes hair growth' },
-        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates skin healing and regeneration' }
+        { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'featured', featured: true, benefit: 'Stimulates collagen and elastin production, reduces wrinkles, and promotes hair growth', systems: ['healing'] },
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Accelerates skin healing and regeneration', systems: ['healing'] }
       ],
       'Growth Factors': [
-        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes skin cell growth and renewal' },
-        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'synergistic', benefit: 'Anti-aging effects on skin cells' }
+        { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes skin cell growth and renewal', systems: ['gh-secretagogue'] },
+        { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'synergistic', benefit: 'Anti-aging effects on skin cells', systems: [] }
       ],
       'Enhanced Results': [
-        { name: 'Melanotan II', dose: '250-500 mcg as needed', priority: 'optional', benefit: 'Tanning and potential skin protection' },
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH pathways and skin thickness support' }
+        { name: 'Melanotan II', dose: '250-500 mcg as needed', priority: 'optional', benefit: 'Tanning and potential skin protection', systems: ['melanocortin'] },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH pathways and skin thickness support', systems: ['gh-secretagogue'] }
       ]
     }
   }
 };
+
+function getWeeklyInjectionsForFrequency(freq) {
+  switch(freq) {
+    case 'daily': return 7;
+    case '2x/week': return 2;
+    case '3x/week': return 3;
+    case 'weekly': return 1;
+    case '5on2off': return 5;
+    default: return 3; // assume every other day if unknown
+  }
+}
+
+function computeStackComplexity(peptidesFlat) {
+  const count = peptidesFlat.length;
+  let weeklyTotal = 0;
+  peptidesFlat.forEach(sp => {
+    const pepData = PEPTIDES.find(p => p.name === sp.name || sp.name.startsWith(p.name));
+    if (pepData) weeklyTotal += getWeeklyInjectionsForFrequency(pepData.frequency);
+    else weeklyTotal += 3; // fallback
+  });
+  let level, cls;
+  if (count >= 5 || weeklyTotal >= 8) { level = 'Very High'; cls = 'complexity-veryhigh'; }
+  else if (count >= 3 || weeklyTotal >= 6) { level = 'High'; cls = 'complexity-high'; }
+  else if (count >= 2 || weeklyTotal >= 4) { level = 'Moderate'; cls = 'complexity-moderate'; }
+  else { level = 'Low'; cls = 'complexity-low'; }
+  return { level, cls, weeklyTotal, count };
+}
+
+function detectStackOverlaps(peptidesFlat) {
+  const warnings = [];
+  const systems = {};
+  peptidesFlat.forEach(sp => {
+    (sp.systems || []).forEach(sys => {
+      if (!systems[sys]) systems[sys] = [];
+      systems[sys].push(sp.name);
+    });
+  });
+  if ((systems['gh-secretagogue'] || []).length >= 2) {
+    warnings.push(`⚠️ Multiple GH secretagogues (${systems['gh-secretagogue'].join(', ')}) — may not provide additional benefit over a single compound.`);
+  }
+  if ((systems['appetite-suppressant'] || []).length >= 2) {
+    warnings.push(`⚠️ Multiple appetite suppressants — effects may compound unpredictably.`);
+  }
+  if ((systems['melanocortin'] || []).length >= 2) {
+    warnings.push(`⚠️ Multiple melanocortin-pathway compounds — use caution with combined dosing.`);
+  }
+  return warnings;
+}
 
 function renderStackRecommendations(goal) {
   const $recommendations = document.getElementById('stack-suggestions-logbook');
@@ -3294,6 +3370,30 @@ function renderStackRecommendations(goal) {
   }
 
   const stack = PEPTIDE_STACKS[goal];
+
+  // Collect all peptides flat for analysis
+  const allPeptides = Object.values(stack.categories).flat();
+  const complexity = computeStackComplexity(allPeptides);
+  const overlaps = detectStackOverlaps(allPeptides);
+
+  // Complexity + weekly stat bar
+  const metaBarHtml = `
+    <div class="stack-meta-bar">
+      <span class="complexity-badge ${complexity.cls}">Complexity: ${complexity.level}</span>
+      <span class="stack-weekly-stat">💉 <strong>~${complexity.weeklyTotal}</strong> injections/week (all compounds)</span>
+    </div>
+  `;
+
+  // Overlap warnings
+  const overlapHtml = overlaps.map(w => `<div class="stack-overlap-warn"><span>⚠️</span><span>${w.slice(2)}</span></div>`).join('');
+
+  // Why this combination
+  const whyHtml = stack.why ? `
+    <details class="stack-why" style="margin:.25rem 0 .75rem">
+      <summary>Why this combination? ›</summary>
+      <div class="stack-why-body">${stack.why}<br><span style="font-size:.7rem;color:var(--text-muted)">This is an educational reference, not a personalized recommendation.</span></div>
+    </details>
+  ` : '';
 
   const categoriesHtml = Object.entries(stack.categories).map(([categoryName, peptides]) => {
     const peptidesHtml = peptides.map(peptide => {
@@ -3344,34 +3444,37 @@ function renderStackRecommendations(goal) {
   $recommendations.innerHTML = `
     <div class="stack-header">
       <h3 style="font-size: .9rem; font-weight: 600; margin-bottom: .5rem; color: var(--text);">${stack.title}</h3>
-      <p style="font-size: .75rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.4;">${stack.description}</p>
+      <p style="font-size: .75rem; color: var(--text2); margin-bottom: .5rem; line-height: 1.4;">${stack.description}</p>
+      ${metaBarHtml}
+      ${overlapHtml}
+      ${whyHtml}
     </div>
     ${featuredCardHtml}
     ${categoriesHtml}
   `;
 
-  // Wire Add to Stack button — pre-selects the featured peptide and opens guided flow
+  // Wire Add to Stack button — shows confirmation sheet before opening guided flow
   const addBtn = $recommendations.querySelector('[data-featured-peptide]');
   if (addBtn) {
     addBtn.addEventListener('click', () => {
       const pepName = addBtn.dataset.featuredPeptide;
-      // Sync both hidden and visible peptide selects
-      [document.getElementById('add-peptide'), document.getElementById('gs-peptide-sel')].forEach(sel => {
-        if (!sel) return;
-        const idx = Array.from(sel.options).findIndex(o => o.text === pepName);
-        if (idx >= 0) sel.value = sel.options[idx].value;
+      const goalTitle = stack.title || goal;
+      openStackAddConfirm(pepName, goalTitle, complexity, overlaps, () => {
+        // Original action after confirm:
+        [document.getElementById('add-peptide'), document.getElementById('gs-peptide-sel')].forEach(sel => {
+          if (!sel) return;
+          const idx = Array.from(sel.options).findIndex(o => o.text === pepName);
+          if (idx >= 0) sel.value = sel.options[idx].value;
+        });
+        const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
+        if (scheduleTab) scheduleTab.click();
+        setTimeout(() => {
+          const addPanel = document.getElementById('add-panel');
+          if (addPanel) { addPanel.style.display = 'block'; gsShowStep(1); }
+          const addTrigger = document.getElementById('add-trigger');
+          if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 120);
       });
-      const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
-      if (scheduleTab) scheduleTab.click();
-      setTimeout(() => {
-        const addPanel = document.getElementById('add-panel');
-        const addTrigger = document.getElementById('add-trigger');
-        if (addPanel) {
-          addPanel.style.display = 'block';
-          gsShowStep(1);
-        }
-        if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 120);
     });
   }
 }
@@ -4555,6 +4658,49 @@ function printVialLabel(peptideName, strength, waterVolume, dosePerDraw) {
 
   const w = window.open('', '_blank', 'width=320,height=240,toolbar=0,menubar=0,location=0');
   if (w) { w.document.write(html); w.document.close(); }
+}
+
+// ── Stack Add Confirm Sheet ──────────────────────────────────
+function openStackAddConfirm(pepName, goalTitle, complexity, overlaps, onConfirm) {
+  const overlay = document.createElement('div');
+  overlay.className = 'log-sheet-overlay';
+  const warningsHtml = overlaps.length ? `
+    <div style="margin:.5rem 0">
+      ${overlaps.map(w => `<div class="stack-overlap-warn"><span>⚠️</span><span>${w.slice(2)}</span></div>`).join('')}
+    </div>` : '';
+  overlay.innerHTML = `
+    <div class="log-sheet" role="dialog" aria-modal="true">
+      <div class="log-sheet-handle"></div>
+      <div class="log-sheet-title">Add to Protocol</div>
+      <div style="font-size:.85rem;line-height:1.6;color:var(--text-muted)">
+        <p style="margin:0 0 .4rem">You're adding <strong style="color:var(--text)">${pepName}</strong> from the <em>${goalTitle}</em> reference stack.</p>
+        <div style="display:flex;gap:.4rem;align-items:center;margin:.4rem 0">
+          <span class="complexity-badge ${complexity.cls}">Complexity: ${complexity.level}</span>
+          <span style="font-size:.75rem">· ~${complexity.weeklyTotal} injections/week if full stack</span>
+        </div>
+        ${warningsHtml}
+        <p style="margin:.5rem 0 0;font-size:.75rem;color:var(--text-muted)">⚕️ Verify this addition with your healthcare provider before starting.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.25rem">
+        <button id="stack-confirm-add" style="flex:1;padding:.65rem;border-radius:10px;background:var(--accent);color:#000;font-weight:700;border:none;cursor:pointer;font-size:.95rem">Add to Protocol</button>
+        <button id="stack-confirm-cancel" style="padding:.65rem 1rem;border-radius:10px;background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-size:.9rem">Review Again</button>
+      </div>
+      <p style="font-size:.7rem;color:var(--text-muted);text-align:center;margin:.25rem 0 0">This adds one compound. Consider starting one at a time.</p>
+    </div>`;
+  overlay.querySelector('#stack-confirm-add').addEventListener('click', () => {
+    overlay.remove();
+    onConfirm();
+    // Show "monitor changes" note briefly
+    const toast = document.createElement('div');
+    toast.className = 'rc-toast show';
+    toast.style.cssText = 'bottom:5.5rem;max-width:90%;white-space:normal;text-align:center;line-height:1.4;font-size:.78rem';
+    toast.textContent = '📋 When starting a new compound, log observations in your journal to track your experience.';
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 5000);
+  });
+  overlay.querySelector('#stack-confirm-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
 }
 
 // ── Log Detail Sheet ─────────────────────────────────────────
@@ -6542,7 +6688,19 @@ document.addEventListener('DOMContentLoaded', () => {
       renderStackRecommendations(e.target.getAttribute('data-goal'));
     });
   });
-  
+
+  // One-at-a-time card dismiss
+  const oatCard = document.getElementById('stacks-one-at-a-time-card');
+  if (oatCard) {
+    if (localStorage.getItem('stacks-oat-dismissed') === '1') {
+      oatCard.style.display = 'none';
+    }
+    document.getElementById('stacks-oat-dismiss')?.addEventListener('click', () => {
+      oatCard.style.display = 'none';
+      localStorage.setItem('stacks-oat-dismissed', '1');
+    });
+  }
+
   // ── Week Navigation ─────────────────────────────────────────
   document.getElementById('prev-week')?.addEventListener('click', () => { 
     weekOffset--; 
