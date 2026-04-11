@@ -287,13 +287,16 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .today-cycle-badge{font-size:.65rem;font-weight:700;color:var(--accent);margin-left:.35rem}
 
 /* ── Vial Usage in Peptide List ──────────────────────────── */
-.pep-vial{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
-.pep-vial-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-.pep-vial-fill{height:100%;border-radius:2px;transition:width .3s}
-.pep-vial-text{font-size:.7rem;color:var(--text2);white-space:nowrap}
+.pep-vial{display:flex;flex-direction:column;gap:.35rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
+.pep-vial-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.pep-vial-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.pep-vial-info{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.pep-vial-text{font-size:.7rem;color:var(--text2);flex:1;min-width:0}
 .pep-vial-warn{color:#f59e0b}
 .pep-vial-empty{color:#ef4444}
-.pep-vial-reset{background:none;border:none;color:var(--text2);font-size:.65rem;cursor:pointer;text-decoration:underline;padding:0;transition:color .2s}
+.vial-low-badge{font-size:.6rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.13);border:1px solid rgba(245,158,11,.35);border-radius:4px;padding:.1rem .35rem;white-space:nowrap;flex-shrink:0}
+.vial-empty-badge{font-size:.6rem;font-weight:600;color:#ef4444;background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.35);border-radius:4px;padding:.1rem .35rem;white-space:nowrap;flex-shrink:0}
+.pep-vial-reset{background:none;border:none;color:var(--text2);font-size:.65rem;cursor:pointer;text-decoration:underline;padding:0;transition:color .2s;min-height:unset;min-width:unset;flex-shrink:0}
 .pep-vial-reset:hover{color:var(--accent)}
 
 /* ── Notes (collapsible) ─────────────────────────────────── */
@@ -2693,6 +2696,39 @@ function renderInjectionHistory() {
   $list.innerHTML = html;
 }
 
+// ── Estimate days of supply remaining ────────────────────────
+// Walks forward from today using shouldInject() to count injection
+// days until 'dosesRemaining' doses are consumed. Capped at 365.
+function estimateDaysLeft(entry, dosesRemaining) {
+  if (dosesRemaining <= 0) return 0;
+  const today = new Date();
+  let count = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+    if (shouldInject(entry, d)) {
+      count++;
+      if (count >= dosesRemaining) return i + 1;
+    }
+  }
+  return 365;
+}
+
+// ── Reset a vial's used-dose counter ─────────────────────────
+function startNewVial(scheduleIdx) {
+  const entry = schedule[scheduleIdx];
+  if (!entry) return;
+  const vialData = getVialData();
+  const key = getVialKey(entry);
+  if (vialData[key]) {
+    vialData[key].usedDoses = 0;
+    vialData[key].createdAt = new Date().toISOString();
+    saveVialData(vialData);
+  } else {
+    ensureVialEntry(entry);
+  }
+  renderPeptidesList();
+}
+
 function renderVialTracker() {
   const $list = document.getElementById('vial-list');
   if (!$list) return; // Vial tracker removed from UI
@@ -3261,28 +3297,33 @@ function renderPeptidesList() {
       `;
     }
 
-    // Vial usage indicator
+    // Vial usage indicator — ensure entry exists, then render
+    ensureVialEntry(entry);
     const vialKey = getVialKey(entry);
-    const vial = vialData[vialKey];
+    const vial = getVialData()[vialKey];
     let vialHtml = '';
     if (vial) {
       const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
-      const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
-      const isLow = remaining > 0 && remaining < 5;
+      const remainPct = vial.totalDoses > 0 ? Math.min(100, (remaining / vial.totalDoses) * 100) : 0;
       const isEmpty = remaining <= 0;
-      let vialClass = '';
-      let warnText = '';
-      if (isEmpty) {
-        vialClass = 'pep-vial-empty';
-        warnText = '<span class="pep-vial-empty">Vial empty — replace</span>';
-      } else if (isLow) {
-        vialClass = 'pep-vial-warn';
-        warnText = '<span class="pep-vial-warn">Reorder soon</span>';
-      }
+      const isLow = !isEmpty && remaining < 3;
+      const barColor = isEmpty ? '#ef4444' : remainPct > 50 ? '#3DE8C3' : remainPct > 25 ? '#f59e0b' : '#ef4444';
+      const daysLeft = isEmpty ? 0 : estimateDaysLeft(entry, remaining);
+      const daysStr = daysLeft > 0 && daysLeft < 365 ? ' · ~' + daysLeft + ' days' : '';
+      const badge = isEmpty
+        ? '<span class="vial-empty-badge">Empty — replace</span>'
+        : isLow
+          ? '<span class="vial-low-badge">⚠ Low</span>'
+          : '';
+      const dosesLabel = isEmpty ? 'No doses left' : remaining + ' dose' + (remaining !== 1 ? 's' : '') + ' left' + daysStr;
       vialHtml = `
         <div class="pep-vial">
-          <div class="pep-vial-bar"><div class="pep-vial-fill" style="width:${usedPct}%;background:${isEmpty ? '#ef4444' : isLow ? '#f59e0b' : pep.color}"></div></div>
-          <div class="pep-vial-text">Vial: ${vial.usedDoses} of ${vial.totalDoses} doses used ${warnText}</div>
+          <div class="pep-vial-bar"><div class="pep-vial-fill" style="width:${remainPct}%;background:${barColor}"></div></div>
+          <div class="pep-vial-info">
+            <span class="pep-vial-text">${dosesLabel}</span>
+            ${badge}
+            <button class="pep-vial-reset pep-new-vial" data-idx="${idx}">New vial</button>
+          </div>
         </div>
       `;
     }
@@ -3381,6 +3422,17 @@ function renderPeptidesList() {
       const doseMcg = getDoseMcg(pep, entry.tier);
       const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
       printVialLabel(pep.name, entry.vialMg + 'mg', entry.waterMl + ' mL BAC water', fmtDose(doseMcg) + ' per draw (' + fmtUnits(units) + ' units)');
+    });
+  });
+
+  // New Vial buttons
+  $list.querySelectorAll('.pep-new-vial').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      if (confirm('Start a new vial? This resets the dose counter for this peptide.')) {
+        startNewVial(idx);
+      }
     });
   });
 
