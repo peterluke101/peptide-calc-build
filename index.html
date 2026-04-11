@@ -2285,7 +2285,8 @@ const PEPTIDE_STACKS = {
 };
 
 function renderStackRecommendations(goal) {
-  const $recommendations = document.getElementById('stack-suggestions');
+  const $recommendations = document.getElementById('stack-suggestions-logbook');
+  if (!$recommendations) return;
 
   if (!goal || !PEPTIDE_STACKS[goal]) {
     $recommendations.innerHTML = '<div class="stack-empty">Select a goal above to see Common Stacks</div>';
