@@ -36,6 +36,12 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .header h1 span{color:var(--accent)}
 .header p{font-size:clamp(.78rem,2.8vw,.9rem);font-weight:400;color:var(--text2);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
 
+/* Section dividers */
+.section-divider{height:1px;background:var(--border);opacity:.45;margin:.25rem 0;width:100%;max-width:720px;align-self:center}
+/* Labeled section dividers (YOUR SCHEDULE / TOOLS) */
+.section-label{display:flex;align-items:center;gap:.65rem;margin:.5rem 0;color:var(--text2);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+.section-label::before,.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
 /* Share button */
 .share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
 .share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
@@ -1009,6 +1015,11 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
 .btn-print-label-sm:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
 .rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
 .rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
+.btn-add-schedule{width:100%;margin-top:10px;background:var(--accent);color:#1a1a2e;font-weight:700;border:none;border-radius:10px;padding:12px;font-size:.85rem;font-family:inherit;letter-spacing:.03em;cursor:pointer;transition:opacity .2s}
+.btn-add-schedule:hover{opacity:.82}
+.rc-add-schedule-hint{font-size:.7rem;color:var(--text2);text-align:center;margin-top:.4rem;opacity:.65}
+.rc-toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;z-index:9999;white-space:nowrap}
+.rc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 body.light-mode .btn-print-label,.btn-print-label-sm{background:rgba(43,186,160,.12)}
 /* Peptide select */
 .rc-pep-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;-webkit-appearance:none;appearance:none}
@@ -1036,6 +1047,8 @@ body.light-mode .rc-syr-barrel{stroke:#ccc}
 body.light-mode .rc-syr-tick-major{stroke:#999}
 body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
+/* App tagline */
+.app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
 </style>
 </head>
 <body>
@@ -1049,6 +1062,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 
   <div class="header">
     <h1>Peptide <span>Compass Pro</span></h1>
+    <p class="app-tagline">Plan doses, calculate units, track injections, and organize your peptide schedule — all in one place.</p>
     <div style="height: 1.5rem;"></div>
     <button id="share-app-btn" class="share-btn">📤 Share App</button>
   </div>
@@ -1063,6 +1077,33 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <button class="install-banner-btn" id="install-banner-btn">Install</button>
   <button class="install-banner-close" id="install-banner-close">✕</button>
 </div>
+
+<div class="section-label">Your Schedule</div>
+
+
+<!-- Today's Injections -->
+<div class="card animate-in" id="today-card">
+  <div class="today-header">
+    <h2>Today's Injections</h2>
+    <span class="today-date" id="today-date"></span>
+  </div>
+  <div class="completed-counter" id="completed-counter"></div>
+  <div id="today-list"></div>
+</div>
+
+<!-- Weekly Calendar -->
+<div class="card animate-in animate-d1" id="calendar-card">
+  <div class="calendar-nav">
+    <h2 id="week-label">This Week</h2>
+    <div class="week-nav">
+      <button id="prev-week" aria-label="Previous week">‹</button>
+      <button id="next-week" aria-label="Next week">›</button>
+    </div>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<div class="section-label">Tools</div>
 
 <!-- Add Peptide (Smart Section) -->
 <div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
@@ -1191,6 +1232,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
+      <button class="btn-add-schedule" id="rc-add-schedule">📅 Add to Schedule</button>
+      <div class="rc-add-schedule-hint" id="rc-add-schedule-hint">Select a peptide above to add to schedule</div>
     </div>
     <!-- Syringe Graphic — sleek redesign -->
     <div class="rc-syringe-wrap">
@@ -1238,37 +1281,6 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   </div>
 </div>
 
-<!-- Today's Injections -->
-<div class="card animate-in" id="today-card">
-  <div class="today-header">
-    <h2>Today's Injections</h2>
-    <span class="today-date" id="today-date"></span>
-  </div>
-  <div class="completed-counter" id="completed-counter"></div>
-  <div id="today-list"></div>
-</div>
-
-<!-- Weekly Calendar -->
-<div class="card animate-in animate-d1" id="calendar-card">
-  <div class="calendar-nav">
-    <h2 id="week-label">This Week</h2>
-    <div class="week-nav">
-      <button id="prev-week" aria-label="Previous week">‹</button>
-      <button id="next-week" aria-label="Next week">›</button>
-    </div>
-  </div>
-  <div class="cal-grid" id="cal-grid"></div>
-</div>
-
-<!-- Injection History -->
-<div class="card animate-in animate-d1" id="history-card">
-  <div class="section-header">
-    <h2>Recent Injections</h2>
-    <button class="clear-btn" id="clear-history">Clear</button>
-  </div>
-  <div class="history-list" id="history-list"></div>
-</div>
-
 <!-- My Peptides -->
 <div class="card animate-in animate-d3" id="peptides-card">
   <div class="section-title">
@@ -1278,6 +1290,15 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </button>
   </div>
   <div id="peptides-list"></div>
+</div>
+
+<!-- Injection History -->
+<div class="card animate-in animate-d1" id="history-card">
+  <div class="section-header">
+    <h2>Recent Injections</h2>
+    <button class="clear-btn" id="clear-history">Clear</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
 </div>
 
 <!-- Stack Builder -->
@@ -1811,9 +1832,9 @@ function shortName(name) {
 
 function getWeekStart(offset) {
   const now = new Date();
-  const day = now.getDay();
   const start = new Date(now);
-  start.setDate(now.getDate() - day + (offset * 7));
+  // Center today in the 7-day strip (3 days before today)
+  start.setDate(now.getDate() - 3 + (offset * 7));
   start.setHours(0, 0, 0, 0);
   return start;
 }
@@ -2661,6 +2682,12 @@ function renderCalendar() {
       <div class="cal-events-wrap">${eventsHtml}</div>
     `;
     $grid.appendChild(col);
+  }
+
+  // Scroll today into view (mobile horizontal strip)
+  if (weekOffset === 0) {
+    const todayEl = $grid.querySelector('.cal-day.today');
+    if (todayEl) todayEl.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
   }
 }
 
@@ -4464,6 +4491,49 @@ document.addEventListener('DOMContentLoaded', () => {
         doseSlider.value = mgVal; doseNum.value = mgVal;
       }
       calcAndRender();
+    });
+
+    // Add to Schedule from Reverse Calc
+    const addSchedBtn  = document.getElementById('rc-add-schedule');
+    const addSchedHint = document.getElementById('rc-add-schedule-hint');
+
+    function updateAddSchedState() {
+      addSchedHint.style.display = pepSelect.value === '' ? 'block' : 'none';
+    }
+    updateAddSchedState();
+    pepSelect.addEventListener('change', updateAddSchedState);
+
+    addSchedBtn.addEventListener('click', () => {
+      const idx = parseInt(pepSelect.value);
+      if (isNaN(idx)) {
+        addSchedHint.style.display = 'block';
+        return;
+      }
+      const vialMg     = parseFloat(vialNum.value) || 5;
+      const desiredMcg = getDesiredMcg();
+      const waterMl    = parseFloat(((vialMg * 1000 / desiredMcg) * syringeUnits / 100).toFixed(2));
+      const startDate  = new Date().toISOString().split('T')[0];
+
+      const existing = schedule.findIndex(e => e.peptideIndex === idx);
+      if (existing !== -1) {
+        schedule[existing] = { peptideIndex: idx, tier: 'standard', vialMg, waterMl, cycleDays: schedule[existing].cycleDays || 56, startDate };
+      } else {
+        schedule.push({ peptideIndex: idx, tier: 'standard', vialMg, waterMl, cycleDays: 56, startDate });
+      }
+      saveSchedule();
+      renderAll();
+
+      let toast = document.getElementById('rc-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'rc-toast';
+        toast.className = 'rc-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = '\u2713 ' + PEPTIDES[idx].name + ' added to schedule';
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove('show'), 2500);
     });
 
     // Print label from Reverse Calc
