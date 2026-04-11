@@ -1126,6 +1126,61 @@ body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
 /* App tagline */
 .app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
+
+/* ── Sprint 5: Dose Status Badge ──────────────────────────── */
+.tab-icon-wrap{position:relative;display:inline-block;line-height:1}
+.nav-badge{position:absolute;top:-4px;right:-8px;background:#ef4444;color:#fff;font-size:.55rem;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;transition:all .3s;pointer-events:none;border:2px solid var(--bg)}
+
+/* ── Sprint 5: Today's Doses Summary Card ────────────────── */
+.doses-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.doses-header h2{font-size:1rem;font-weight:700}
+.doses-subtext{font-size:.72rem;color:var(--text2);margin-top:.15rem}
+.doses-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.doses-ring{transform:rotate(-90deg)}
+.doses-ring-track{fill:none;stroke:var(--surface2);stroke-width:3}
+.doses-ring-fill{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.doses-ring-label{position:absolute;font-size:.62rem;font-weight:700;color:var(--text);pointer-events:none}
+.doses-section-label{font-size:.6rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;padding:.3rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:.4rem}
+.dose-row{display:flex;align-items:center;gap:.6rem;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.dose-row:last-child{border-bottom:none}
+.dose-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dose-info{flex:1;min-width:0}
+.dose-name{font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dose-amount{font-size:.68rem;color:var(--text2);margin-top:.1rem}
+.dose-status-badge{font-size:.6rem;font-weight:700;padding:.2rem .5rem;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+.dose-status-badge.done{background:rgba(34,197,94,.15);color:#22c55e}
+.dose-status-badge.due{background:rgba(251,191,36,.15);color:#f59e0b}
+.dose-status-badge.overdue{background:rgba(239,68,68,.15);color:#ef4444}
+.dose-status-badge.skipped{background:rgba(160,160,160,.15);color:var(--text2)}
+.dose-actions{display:flex;gap:.35rem;flex-shrink:0}
+.dose-act-btn{padding:.28rem .55rem;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text2);font-size:.6rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:28px;min-width:44px}
+.dose-act-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dose-act-btn.done-act{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:#22c55e}
+.dose-act-btn.skip-act:hover{border-color:#f59e0b;color:#f59e0b}
+.doses-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.82rem}
+
+/* ── Sprint 5: Adherence Stats ────────────────────────────── */
+.adherence-card-header{display:flex;align-items:center;gap:1.25rem;margin-bottom:1rem}
+.adherence-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adherence-ring{transform:rotate(-90deg)}
+.adherence-ring-track{fill:none;stroke:var(--surface2);stroke-width:5}
+.adherence-ring-fill{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+.adherence-ring-center{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.adherence-pct{font-size:1.15rem;font-weight:800;color:var(--accent);line-height:1}
+.adherence-ring-sub{font-size:.5rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-top:.1rem}
+.adherence-info{flex:1}
+.adherence-streak{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.adherence-best{font-size:.75rem;color:var(--text2);margin-bottom:.2rem}
+.adherence-period{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.adherence-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.adherence-stat{text-align:center;padding:.4rem 0}
+.adherence-stat-value{font-size:1.1rem;font-weight:800;color:var(--text)}
+.adherence-stat-label{font-size:.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-top:.15rem}
+
+/* Light mode overrides for Sprint 5 */
+body.light-mode .nav-badge{border-color:var(--surface)}
+body.light-mode .dose-act-btn{background:var(--surface2);color:var(--text2)}
+body.light-mode .dose-act-btn.done-act{background:rgba(34,197,94,.1)}
 </style>
 </head>
 <body>
@@ -1160,6 +1215,26 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <p>Your personal peptide injection companion. Let's get you set up.</p>
   <button class="welcome-cta" id="welcome-cta">＋ Add Your First Peptide</button>
   <button class="welcome-skip" id="welcome-skip">Skip for now</button>
+</div>
+
+<!-- ── Sprint 5: Today's Doses Summary ──────────────────────── -->
+<div class="card animate-in" id="doses-summary-card">
+  <div class="doses-header">
+    <div>
+      <h2>Today's Doses</h2>
+      <div class="doses-subtext" id="doses-subtext">Loading...</div>
+    </div>
+    <div class="doses-ring-wrap">
+      <svg class="doses-ring" viewBox="0 0 40 40" width="52" height="52">
+        <circle class="doses-ring-track" cx="20" cy="20" r="16"/>
+        <circle class="doses-ring-fill" cx="20" cy="20" r="16"
+          id="doses-ring-fill"
+          style="stroke-dasharray:100.5;stroke-dashoffset:100.5"/>
+      </svg>
+      <span class="doses-ring-label" id="doses-ring-label">0/0</span>
+    </div>
+  </div>
+  <div id="doses-summary-list"></div>
 </div>
 
 <div class="section-label">Your Schedule</div>
@@ -1590,6 +1665,47 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Track your progress, symptoms, and results</p>
   </div>
 
+  <!-- ── Sprint 5: Adherence Stats ────────────────────────────── -->
+  <div class="card animate-in" id="adherence-card">
+    <div class="adherence-card-header">
+      <div class="adherence-ring-wrap">
+        <svg viewBox="0 0 80 80" class="adherence-ring" width="80" height="80">
+          <circle class="adherence-ring-track" cx="40" cy="40" r="30"/>
+          <circle class="adherence-ring-fill" cx="40" cy="40" r="30"
+            id="adherence-ring-fill"
+            style="stroke-dasharray:188.5;stroke-dashoffset:188.5"/>
+        </svg>
+        <div class="adherence-ring-center">
+          <div class="adherence-pct" id="adherence-pct">--%</div>
+          <div class="adherence-ring-sub">30-day</div>
+        </div>
+      </div>
+      <div class="adherence-info">
+        <div class="adherence-streak" id="adherence-streak-text">🔥 0-day streak</div>
+        <div class="adherence-best" id="adherence-best-text">Best: 0 days</div>
+        <div class="adherence-period">Doses completed · last 30 days</div>
+      </div>
+    </div>
+    <div class="adherence-stats-grid">
+      <div class="adherence-stat">
+        <div class="adherence-stat-value" id="adherence-stat-missed">0</div>
+        <div class="adherence-stat-label">Missed</div>
+      </div>
+      <div class="adherence-stat">
+        <div class="adherence-stat-value" id="adherence-stat-completed">0</div>
+        <div class="adherence-stat-label">Completed</div>
+      </div>
+      <div class="adherence-stat">
+        <div class="adherence-stat-value" id="adherence-stat-avg">0</div>
+        <div class="adherence-stat-label">Avg/Week</div>
+      </div>
+      <div class="adherence-stat">
+        <div class="adherence-stat-value" id="adherence-stat-best">0</div>
+        <div class="adherence-stat-label">Best Streak</div>
+      </div>
+    </div>
+  </div>
+
   <!-- History Toggle -->
   <div class="logbook-toggle">
     <button class="logbook-toggle-btn active" data-view="logs">Injection Log</button>
@@ -1878,7 +1994,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     <span class="tab-label">Schedule</span>
   </button>
   <button class="tab-btn" data-tab="history">
-    <span class="tab-icon">🕐</span>
+    <span class="tab-icon-wrap">
+      <span class="tab-icon">🕐</span>
+      <span class="nav-badge" id="overdue-badge" style="display:none">0</span>
+    </span>
     <span class="tab-label">History</span>
   </button>
   <button class="tab-btn" data-tab="more">
@@ -3251,6 +3370,288 @@ function renderAll() {
   renderInjectionHistory();
   renderStackRecommendations();
   updateAddPeptideVisibility();
+  renderDosesSummary();
+  renderAdherenceStats();
+}
+
+// ── Sprint 5: Dose Status Storage ───────────────────────────
+function getDoseStatus() {
+  try { return JSON.parse(localStorage.getItem('doseStatus') || '{}'); } catch { return {}; }
+}
+function saveDoseStatus(data) {
+  localStorage.setItem('doseStatus', JSON.stringify(data));
+}
+
+// ── Sprint 5: Compute Adherence Stats ───────────────────────
+function computeAdherenceStats() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const log = getInjectionLog();
+
+  if (schedule.length === 0) {
+    return { currentStreak: 0, longestStreak: 0, adherencePct: 0, missed30: 0, completed30: 0, avgWeekly: 0 };
+  }
+
+  // Current streak: consecutive days (going back from yesterday) where all scheduled doses were done
+  let currentStreak = 0;
+  let currentBroken = false;
+  for (let d = 1; d <= 365; d++) {
+    const dt = new Date(today); dt.setDate(today.getDate() - d);
+    const keys = [];
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, dt)) return;
+      keys.push(PEPTIDES[entry.peptideIndex].name + '_' + formatLocalDate(dt));
+    });
+    if (keys.length === 0) continue; // rest day — transparent
+    if (keys.every(k => !!log[k])) {
+      if (!currentBroken) currentStreak++;
+    } else {
+      currentBroken = true;
+    }
+  }
+
+  // Longest streak: scan full history
+  let longestStreak = currentStreak;
+  let tempStreak = 0;
+  for (let d = 1; d <= 365; d++) {
+    const dt = new Date(today); dt.setDate(today.getDate() - d);
+    const keys = [];
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, dt)) return;
+      keys.push(PEPTIDES[entry.peptideIndex].name + '_' + formatLocalDate(dt));
+    });
+    if (keys.length === 0) continue;
+    if (keys.every(k => !!log[k])) {
+      tempStreak++;
+      longestStreak = Math.max(longestStreak, tempStreak);
+    } else {
+      tempStreak = 0;
+    }
+  }
+
+  // 30-day window (yesterday back 30 days)
+  let scheduled30 = 0, completed30 = 0, missed30 = 0;
+  for (let d = 1; d <= 30; d++) {
+    const dt = new Date(today); dt.setDate(today.getDate() - d);
+    const dStr = formatLocalDate(dt);
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, dt)) return;
+      const key = PEPTIDES[entry.peptideIndex].name + '_' + dStr;
+      scheduled30++;
+      if (log[key]) completed30++; else missed30++;
+    });
+  }
+
+  const adherencePct = scheduled30 > 0 ? Math.round((completed30 / scheduled30) * 100) : 0;
+  const avgWeekly = scheduled30 > 0 ? +(completed30 / 30 * 7).toFixed(1) : 0;
+  return { currentStreak, longestStreak, adherencePct, missed30, completed30, avgWeekly };
+}
+
+// ── Sprint 5: Update overdue badge ──────────────────────────
+function updateOverdueBadge(count) {
+  const badge = document.getElementById('overdue-badge');
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count > 99 ? '99+' : String(count);
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ── Sprint 5: Render Doses Summary Card ─────────────────────
+function renderDosesSummary() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = formatLocalDate(today);
+  const log = getInjectionLog();
+  const doseStatus = getDoseStatus();
+
+  // Gather today's doses
+  const todayDoses = [];
+  schedule.forEach(entry => {
+    if (!shouldInject(entry, today)) return;
+    const pep = PEPTIDES[entry.peptideIndex];
+    const key = pep.name + '_' + todayStr;
+    const doseMcg = getDoseMcg(pep, entry.tier);
+    let status = 'due';
+    if (log[key]) status = 'done';
+    else if (doseStatus[key] === 'skipped') status = 'skipped';
+    todayDoses.push({ pep, entry, key, doseMcg, status, dateStr: todayStr });
+  });
+
+  // Gather overdue (past 7 days, not done/skipped/moved)
+  const overdueDoses = [];
+  for (let d = 1; d <= 7; d++) {
+    const dt = new Date(today); dt.setDate(today.getDate() - d);
+    const dStr = formatLocalDate(dt);
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, dt)) return;
+      const pep = PEPTIDES[entry.peptideIndex];
+      const key = pep.name + '_' + dStr;
+      if (log[key]) return;
+      const st = doseStatus[key];
+      if (st === 'skipped' || (st && st.startsWith('moved_'))) return;
+      const doseMcg = getDoseMcg(pep, entry.tier);
+      overdueDoses.push({ pep, entry, key, doseMcg, status: 'overdue', dateStr: dStr, daysAgo: d });
+    });
+  }
+
+  // Update progress ring
+  const totalToday = todayDoses.length;
+  const doneToday = todayDoses.filter(d => d.status === 'done').length;
+  const pct = totalToday > 0 ? doneToday / totalToday : 0;
+  const circumference = 2 * Math.PI * 16; // r=16
+  const ringFill = document.getElementById('doses-ring-fill');
+  if (ringFill) {
+    ringFill.style.strokeDasharray = String(circumference);
+    ringFill.style.strokeDashoffset = String(circumference * (1 - pct));
+  }
+  const ringLabel = document.getElementById('doses-ring-label');
+  if (ringLabel) ringLabel.textContent = doneToday + '/' + totalToday;
+
+  const subtext = document.getElementById('doses-subtext');
+  if (subtext) {
+    if (totalToday === 0 && overdueDoses.length === 0) {
+      subtext.textContent = 'Rest day — no doses scheduled';
+    } else if (doneToday === totalToday && totalToday > 0 && overdueDoses.length === 0) {
+      subtext.textContent = 'All done for today!';
+    } else {
+      const parts = [];
+      const dueCount = todayDoses.filter(d => d.status === 'due').length;
+      if (dueCount > 0) parts.push(dueCount + ' due today');
+      if (overdueDoses.length > 0) parts.push(overdueDoses.length + ' overdue');
+      subtext.textContent = parts.join(' · ');
+    }
+  }
+
+  // Render rows
+  const $list = document.getElementById('doses-summary-list');
+  if (!$list) return;
+
+  if (totalToday === 0 && overdueDoses.length === 0) {
+    $list.innerHTML = '<div class="doses-empty">Rest day — no injections scheduled</div>';
+    updateOverdueBadge(0);
+    return;
+  }
+
+  function doseRowHtml(dose) {
+    const statusLabels = { done: 'Done', due: 'Due Today', overdue: 'Overdue', skipped: 'Skipped' };
+    const overdueLabel = dose.daysAgo ? 'Overdue (' + dose.daysAgo + 'd)' : 'Overdue';
+    const label = dose.status === 'overdue' ? overdueLabel : statusLabels[dose.status] || dose.status;
+    const isDone = dose.status === 'done';
+    const isSkipped = dose.status === 'skipped';
+    const actionsHtml = (isDone || isSkipped) ? `
+      <div class="dose-actions">
+        <button class="dose-act-btn" data-dose-action="undo" data-injection-key="${dose.key}" title="Undo">↩ Undo</button>
+      </div>` : `
+      <div class="dose-actions">
+        <button class="dose-act-btn done-act" data-dose-action="done" data-injection-key="${dose.key}">✓ Done</button>
+        <button class="dose-act-btn skip-act" data-dose-action="skip" data-injection-key="${dose.key}">Skip</button>
+        ${dose.status === 'due' ? `<button class="dose-act-btn" data-dose-action="move" data-injection-key="${dose.key}">→ +1d</button>` : ''}
+      </div>`;
+    return `<div class="dose-row" data-key="${dose.key}">
+      <div class="dose-dot" style="background:${dose.pep.color}"></div>
+      <div class="dose-info">
+        <div class="dose-name">${dose.pep.name}</div>
+        <div class="dose-amount">${fmtDose(dose.doseMcg)}</div>
+      </div>
+      <span class="dose-status-badge ${dose.status}">${label}</span>
+      ${actionsHtml}
+    </div>`;
+  }
+
+  let html = '';
+  if (overdueDoses.length > 0) {
+    html += `<div class="doses-section-label">Overdue (${overdueDoses.length})</div>`;
+    overdueDoses.forEach(d => { html += doseRowHtml(d); });
+  }
+  if (todayDoses.length > 0) {
+    if (overdueDoses.length > 0) html += `<div class="doses-section-label" style="margin-top:.5rem">Today</div>`;
+    todayDoses.forEach(d => { html += doseRowHtml(d); });
+  }
+
+  $list.innerHTML = html;
+
+  // Wire action buttons
+  $list.querySelectorAll('[data-dose-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.doseAction;
+      const key = btn.dataset.injectionKey;
+      handleDoseAction(action, key);
+    });
+  });
+
+  updateOverdueBadge(overdueDoses.length);
+}
+
+// ── Sprint 5: Handle Dose Action ────────────────────────────
+function handleDoseAction(action, injectionKey) {
+  const log = getInjectionLog();
+  const doseStatus = getDoseStatus();
+
+  if (action === 'done') {
+    saveInjection(injectionKey);
+    delete doseStatus[injectionKey];
+    saveDoseStatus(doseStatus);
+  } else if (action === 'skip') {
+    doseStatus[injectionKey] = 'skipped';
+    saveDoseStatus(doseStatus);
+  } else if (action === 'move') {
+    // Parse date from key, add 1 day, store mapping
+    const parts = injectionKey.split('_');
+    const dateStr = parts[parts.length - 1];
+    const origDate = parseLocalDate(dateStr);
+    const newDate = new Date(origDate);
+    newDate.setDate(origDate.getDate() + 1);
+    doseStatus[injectionKey] = 'moved_' + formatLocalDate(newDate);
+    saveDoseStatus(doseStatus);
+  } else if (action === 'undo') {
+    removeInjection(injectionKey);
+    delete doseStatus[injectionKey];
+    saveDoseStatus(doseStatus);
+  }
+
+  renderDosesSummary();
+  renderToday(false);
+  renderInjectionHistory();
+  renderAdherenceStats();
+}
+
+// ── Sprint 5: Render Adherence Stats ────────────────────────
+function renderAdherenceStats() {
+  const stats = computeAdherenceStats();
+
+  // Progress ring (r=30, circumference ≈ 188.5)
+  const circumference = 2 * Math.PI * 30;
+  const ringFill = document.getElementById('adherence-ring-fill');
+  if (ringFill) {
+    const offset = circumference * (1 - stats.adherencePct / 100);
+    ringFill.style.strokeDasharray = String(circumference);
+    ringFill.style.strokeDashoffset = String(offset);
+  }
+
+  const pctEl = document.getElementById('adherence-pct');
+  if (pctEl) pctEl.textContent = stats.adherencePct + '%';
+
+  const streakEl = document.getElementById('adherence-streak-text');
+  if (streakEl) {
+    const s = stats.currentStreak;
+    streakEl.textContent = s > 0 ? '🔥 ' + s + '-day streak' : '— No current streak';
+  }
+
+  const bestEl = document.getElementById('adherence-best-text');
+  if (bestEl) bestEl.textContent = 'Best: ' + stats.longestStreak + ' day' + (stats.longestStreak !== 1 ? 's' : '');
+
+  const missedEl = document.getElementById('adherence-stat-missed');
+  if (missedEl) missedEl.textContent = String(stats.missed30);
+
+  const completedEl = document.getElementById('adherence-stat-completed');
+  if (completedEl) completedEl.textContent = String(stats.completed30);
+
+  const avgEl = document.getElementById('adherence-stat-avg');
+  if (avgEl) avgEl.textContent = String(stats.avgWeekly);
+
+  const bestStatEl = document.getElementById('adherence-stat-best');
+  if (bestStatEl) bestStatEl.textContent = String(stats.longestStreak);
 }
 
 // ── Clear History ───────────────────────────────────────────
@@ -3504,6 +3905,9 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
 
     // Save active tab
     localStorage.setItem('activeTab', targetTab);
+
+    // Sprint 5: refresh adherence stats when history tab opens
+    if (targetTab === 'history') renderAdherenceStats();
   });
 });
 
@@ -4398,6 +4802,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Save active tab
       localStorage.setItem('activeTab', targetTab);
+
+      // Sprint 5: refresh adherence stats when history tab opens
+      if (targetTab === 'history') renderAdherenceStats();
     });
   });
 
