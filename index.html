@@ -5083,17 +5083,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
+  const MAIN_TABS = ['schedule', 'history', 'more'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
-  if (savedTab === 'logs' || savedTab === 'journal' || savedTab === 'logbook') savedTab = 'history';
+  // Sub-tabs are children of More; never restore them as the root landing tab
+  if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
+  // Ensure only valid main tabs are used; fall back to Compass
+  if (!MAIN_TABS.includes(savedTab)) savedTab = 'schedule';
   if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
-  // 'weight' is a sub-tab of 'more' — restore it directly
-  if (savedTab === 'weight') {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-weight')?.classList.add('active');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    return;
-  }
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
   if (tabBtn) {
     tabBtn.click();
