@@ -1007,6 +1007,7 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
 .btn-print-label:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
 .btn-print-label-sm{padding:.3rem .55rem;font-size:.68rem;margin-top:.5rem;gap:.25rem;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:6px;font-family:inherit;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center}
 .btn-print-label-sm:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
+.rc-action-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
 .rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
 .rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
 body.light-mode .btn-print-label,.btn-print-label-sm{background:rgba(43,186,160,.12)}
@@ -1189,7 +1190,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <span class="rc-result-unit">ml</span>
       </div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
-      <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
+      <div class="rc-action-row">
+        <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
+        <button class="btn-print-label" id="rc-add-schedule-btn">+ Add to Schedule</button>
+      </div>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
     </div>
     <!-- Syringe Graphic — sleek redesign -->
@@ -4482,6 +4486,49 @@ document.addEventListener('DOMContentLoaded', () => {
         waterMl.toFixed(2) + ' mL BAC water',
         doseLabel
       );
+    });
+
+    // Add to Schedule from Reverse Calc
+    document.getElementById('rc-add-schedule-btn')?.addEventListener('click', () => {
+      const vialMg  = parseFloat(vialNum.value) || 5;
+      const waterMl = parseFloat(resultVal.textContent) || 2;
+      const pepIdx  = parseInt(pepSelect.value);
+
+      // Switch to schedule tab
+      const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
+      if (scheduleTab) scheduleTab.click();
+
+      setTimeout(() => {
+        const $addPanel = document.getElementById('add-panel');
+        const $addPep   = document.getElementById('add-peptide');
+        const $addVial  = document.getElementById('add-vial');
+        const $addWater = document.getElementById('add-water');
+
+        // Pre-fill peptide
+        if (!isNaN(pepIdx) && $addPep) {
+          $addPep.value = pepIdx;
+          autoPopulateCycle(pepIdx);
+        }
+
+        // Pre-fill vial — find closest option
+        if ($addVial) {
+          const closest = Array.from($addVial.options)
+            .map(o => parseFloat(o.value))
+            .reduce((a, b) => Math.abs(b - vialMg) < Math.abs(a - vialMg) ? b : a);
+          $addVial.value = String(closest);
+        }
+
+        // Pre-fill water — find closest option
+        if ($addWater) {
+          const closest = Array.from($addWater.options)
+            .map(o => parseFloat(o.value))
+            .reduce((a, b) => Math.abs(b - waterMl) < Math.abs(a - waterMl) ? b : a);
+          $addWater.value = String(closest);
+        }
+
+        if ($addPanel) $addPanel.style.display = 'block';
+        document.getElementById('add-trigger')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 120);
     });
 
     calcAndRender();
