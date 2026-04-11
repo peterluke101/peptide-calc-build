@@ -1124,6 +1124,23 @@ body.light-mode .rc-syr-barrel{stroke:#ccc}
 body.light-mode .rc-syr-tick-major{stroke:#999}
 body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
+/* Preset scenario buttons */
+.rc-presets{margin-bottom:1.1rem}
+.rc-presets-label{display:block;font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.rc-preset-btns{display:flex;gap:.35rem;flex-wrap:wrap}
+.rc-preset-btn{padding:.32rem .65rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-family:inherit;font-size:.72rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.rc-preset-btn:hover{border-color:var(--accent);color:var(--text)}
+.rc-preset-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+body.light-mode .rc-preset-btn{background:#f5f5f5}
+/* Input hint and example text */
+.rc-hint{display:block;font-size:.65rem;color:var(--text2);opacity:.75;font-weight:400;text-transform:none;letter-spacing:0;margin-top:.2rem;line-height:1.4}
+.rc-example{display:block;font-size:.62rem;color:var(--text2);opacity:.6;font-style:italic;margin-top:.15rem}
+/* Instruction-style output */
+.rc-instruction{font-size:.83rem;color:var(--text);line-height:1.6;margin-top:.65rem;text-align:center;padding:.55rem .8rem;background:rgba(61,232,195,.07);border-radius:8px;border:1px solid rgba(61,232,195,.15)}
+.rc-instruction strong{color:var(--accent)}
+/* Tradeoff callout */
+.rc-tradeoff{font-size:.68rem;color:var(--text2);line-height:1.5;margin-top:.6rem;padding:.5rem .7rem .5rem .85rem;border-left:2px solid rgba(61,232,195,.3);text-align:left;opacity:.85}
+.rc-tradeoff b{color:var(--text);opacity:1}
 /* App tagline */
 .app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
 </style>
@@ -1371,6 +1388,17 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </label>
   </div>
   <div class="rc-panel" id="rc-panel">
+    <!-- Common Presets -->
+    <div class="rc-presets">
+      <span class="rc-presets-label">Quick presets</span>
+      <div class="rc-preset-btns">
+        <button class="rc-preset-btn" data-preset="bpc157">BPC-157 standard</button>
+        <button class="rc-preset-btn" data-preset="sema">Semaglutide</button>
+        <button class="rc-preset-btn" data-preset="tb500">TB-500</button>
+        <button class="rc-preset-btn" data-preset="nad">NAD+</button>
+        <button class="rc-preset-btn" data-preset="pt141">PT-141</button>
+      </div>
+    </div>
     <!-- Peptide Selector -->
     <div class="rc-field">
       <label for="rc-pep-select">Peptide <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text2)">(auto-fills vial size)</span></label>
@@ -1378,7 +1406,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
     <!-- Vial Size -->
     <div class="rc-field">
-      <label for="rc-vial-slider">Vial Size</label>
+      <label for="rc-vial-slider">Vial Size
+        <span class="rc-hint">Total peptide powder in your vial</span>
+        <span class="rc-example">Common: BPC-157 = 5mg · Semaglutide = 5mg · NAD+ = 500mg</span>
+      </label>
       <div class="rc-slider-row">
         <input type="range" id="rc-vial-slider" min="1" max="1000" step="1" value="5">
         <input type="number" id="rc-vial-num" class="rc-num-input" min="1" max="1000" step="1" value="5">
@@ -1387,12 +1418,16 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
     <!-- Desired Dose -->
     <div class="rc-field">
-      <label for="rc-dose-slider" style="display:flex;align-items:center;justify-content:space-between">
-        <span>Desired Dose</span>
-        <div class="rc-unit-toggle">
-          <button class="rc-unit-btn active" id="rc-unit-mcg">mcg</button>
-          <button class="rc-unit-btn" id="rc-unit-mg">mg</button>
+      <label for="rc-dose-slider" style="display:block">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem">
+          <span>Desired Dose</span>
+          <div class="rc-unit-toggle">
+            <button class="rc-unit-btn active" id="rc-unit-mcg">mcg</button>
+            <button class="rc-unit-btn" id="rc-unit-mg">mg</button>
+          </div>
         </div>
+        <span class="rc-hint">How much peptide you want per injection</span>
+        <span class="rc-example">BPC-157 = 250mcg · PT-141 = 1mg · Semaglutide = 0.5mg</span>
       </label>
       <div class="rc-slider-row">
         <input type="range" id="rc-dose-slider" min="100" max="500000" step="100" value="250">
@@ -1402,7 +1437,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
     <!-- Syringe Units -->
     <div class="rc-field">
-      <label>Syringe Units</label>
+      <label>Syringe Units
+        <span class="rc-hint">How many units you'll draw per injection (on a 100-unit insulin syringe)</span>
+        <span class="rc-example">Most protocols use 10 units · small doses may need 5 units for precision</span>
+      </label>
       <div class="rc-seg" id="rc-seg">
         <button class="rc-seg-btn" data-units="5">5</button>
         <button class="rc-seg-btn active" data-units="10">10</button>
@@ -1413,11 +1451,12 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
     <!-- Result -->
     <div class="rc-result">
-      <div class="rc-result-label">Required BAC Water</div>
+      <div class="rc-result-label">BAC Water to Add</div>
       <div>
         <span class="rc-result-value" id="rc-result-value">2.00</span>
         <span class="rc-result-unit">ml</span>
       </div>
+      <div id="rc-instruction" class="rc-instruction">Add <strong>2.00 mL</strong> of BAC water to your vial, then draw <strong>10 units</strong> to get <strong>250 mcg</strong> per injection.</div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
       <div style="text-align:center">
         <button class="math-toggle" id="rc-math-toggle" aria-expanded="false" type="button">
@@ -1425,13 +1464,25 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         </button>
       </div>
       <div class="math-detail" id="rc-math-detail"></div>
+      <div class="rc-tradeoff" id="rc-tradeoff">
+        <b>More water</b> → easier to measure small doses, but more volume per injection.<br>
+        <b>Less water</b> → more concentrated, but harder to measure precisely.
+      </div>
       <div class="warn-card" style="margin:.6rem 0 0">
         <span class="warn-icon">ℹ️</span>
         <span>Assumes stated product concentration and a standard 100-unit (1mL) insulin syringe. Reconstitution math changes if your syringe type or product purity differs — verify with your supplier.</span>
       </div>
+      <div class="warn-card warn-caution" id="rc-low-water-warn" style="display:none;margin:.4rem 0 0">
+        <span class="warn-icon">⚠️</span>
+        <span>Very concentrated mix — less than 0.1 mL makes dosing extremely difficult to measure accurately. Consider adding more water or adjusting your dose.</span>
+      </div>
       <div class="warn-card warn-caution" id="rc-high-water-warn" style="display:none;margin:.4rem 0 0">
         <span class="warn-icon">⚠️</span>
-        <span>Unusually large water volume — check that your dose and vial size are correct. A result this high often indicates a data-entry error.</span>
+        <span>Unusually large water volume — more than 10 mL means a very dilute mix. Check your dose and vial size are correct.</span>
+      </div>
+      <div class="warn-card warn-caution" id="rc-dose-over-warn" style="display:none;margin:.4rem 0 0">
+        <span class="warn-icon">⚠️</span>
+        <span>Desired dose exceeds total vial content — you can't draw more peptide than is in the vial. Reduce your dose or use a larger vial.</span>
       </div>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
@@ -4944,8 +4995,22 @@ document.addEventListener('DOMContentLoaded', () => {
         : `${(desiredMcg / 1000).toFixed(3).replace(/\.?0+$/, '')}mg`;
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
+
+      // Instruction-style output
+      const rcInstruction = document.getElementById('rc-instruction');
+      if (rcInstruction) {
+        rcInstruction.innerHTML = `Add <strong>${display} mL</strong> of BAC water to your vial, then draw <strong>${syringeUnits} units</strong> to get <strong>${doseDisplay}</strong> per injection.`;
+      }
+
+      // Validation warnings
+      const rcLowWarn  = document.getElementById('rc-low-water-warn');
       const rcHighWarn = document.getElementById('rc-high-water-warn');
-      if (rcHighWarn) rcHighWarn.style.display = waterMl > 5 ? 'flex' : 'none';
+      const rcDoseOver = document.getElementById('rc-dose-over-warn');
+      const vialMcg    = vialMg * 1000;
+      if (rcLowWarn)  rcLowWarn.style.display  = (waterMl > 0 && waterMl < 0.1) ? 'flex' : 'none';
+      if (rcHighWarn) rcHighWarn.style.display  = waterMl > 10 ? 'flex' : 'none';
+      if (rcDoseOver) rcDoseOver.style.display  = desiredMcg > vialMcg ? 'flex' : 'none';
+
       // Update math detail (preserve open/closed state)
       const rcMathDetail = document.getElementById('rc-math-detail');
       if (rcMathDetail) rcMathDetail.innerHTML = buildRcMathHtml(vialMg, desiredMcg, syringeUnits, waterMl);
@@ -5003,6 +5068,55 @@ document.addEventListener('DOMContentLoaded', () => {
         calcAndRender();
       });
     });
+
+    // ── Common scenario presets ──
+    const PRESETS = {
+      bpc157: { label:'BPC-157 standard', vialMg:5,  doseMcg:250,    units:10, unitMcg:true  },
+      sema:   { label:'Semaglutide',      vialMg:5,  doseMcg:500,    units:10, unitMcg:true  },
+      tb500:  { label:'TB-500',           vialMg:5,  doseMcg:5000,   units:10, unitMcg:true  },
+      nad:    { label:'NAD+',             vialMg:500, doseMcg:100000, units:50, unitMcg:false },
+      pt141:  { label:'PT-141',           vialMg:10,  doseMcg:1000,   units:10, unitMcg:true  },
+    };
+
+    document.querySelectorAll('.rc-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = PRESETS[btn.dataset.preset];
+        if (!p) return;
+
+        // Set unit mode first
+        if (p.unitMcg !== doseUnitMcg) {
+          doseUnitMcg = p.unitMcg;
+          applyUnitMode();
+          localStorage.setItem('rc-dose-unit', doseUnitMcg ? 'mcg' : 'mg');
+        }
+
+        vialSlider.value = p.vialMg; vialNum.value = p.vialMg;
+
+        const doseVal = p.unitMcg ? p.doseMcg : +(p.doseMcg / 1000).toFixed(3);
+        doseSlider.value = doseVal; doseNum.value = doseVal;
+
+        // Set syringe units
+        segBtns.forEach(b => {
+          b.classList.toggle('active', parseInt(b.dataset.units, 10) === p.units);
+        });
+        syringeUnits = p.units;
+
+        // Highlight active preset, deselect others
+        document.querySelectorAll('.rc-preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        calcAndRender();
+      });
+    });
+
+    // Clear preset highlight when any input changes manually
+    function clearPresetActive() {
+      document.querySelectorAll('.rc-preset-btn').forEach(b => b.classList.remove('active'));
+    }
+    vialSlider.addEventListener('input', clearPresetActive);
+    vialNum.addEventListener('input', clearPresetActive);
+    doseSlider.addEventListener('input', clearPresetActive);
+    doseNum.addEventListener('input', clearPresetActive);
 
     // ── Peptide select dropdown ──
     const pepSelect = document.getElementById('rc-pep-select');
