@@ -1320,6 +1320,32 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 /* Sprint 11 collapsible cards */
 .s11-collapsible-body{overflow:hidden;max-height:2000px;transition:max-height .3s ease}
 .s11-collapsible-body.collapsed{max-height:0}
+/* === Evidence Badges (Issue #83) === */
+.ev-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.15rem .5rem;border-radius:999px;font-size:.68rem;font-weight:600;letter-spacing:.02em;white-space:nowrap;vertical-align:middle;line-height:1.4}
+.ev-badge-human{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+.ev-badge-animal{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+.ev-badge-anecdotal{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.ev-badge-limited{background:#f3f4f6;color:#374151;border:1px solid #d1d5db}
+.ev-badge-uncertain{background:transparent;color:#dc2626;border:1.5px solid #dc2626}
+body.light-mode .ev-badge-human{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+body.light-mode .ev-badge-animal{background:#dbeafe;color:#1e40af;border-color:#93c5fd}
+body.light-mode .ev-badge-anecdotal{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+body.light-mode .ev-badge-limited{background:#f3f4f6;color:#374151;border-color:#d1d5db}
+body.light-mode .ev-badge-uncertain{background:transparent;color:#dc2626;border-color:#dc2626}
+body:not(.light-mode) .ev-badge-human{background:#064e3b;color:#6ee7b7;border-color:#065f46}
+body:not(.light-mode) .ev-badge-animal{background:#1e3a5f;color:#93c5fd;border-color:#1e40af}
+body:not(.light-mode) .ev-badge-anecdotal{background:#451a03;color:#fcd34d;border-color:#92400e}
+body:not(.light-mode) .ev-badge-limited{background:#1f2937;color:#9ca3af;border-color:#374151}
+body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;border-color:#dc2626}
+.ev-source{font-size:.72rem;color:var(--text-muted,var(--text2));margin:.25rem 0 0;font-style:italic;line-height:1.4}
+.ev-callout{display:flex;gap:.5rem;align-items:flex-start;background:var(--card-bg,var(--surface));border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:.5rem .65rem;margin:.5rem 0;font-size:.78rem;color:var(--text-muted,var(--text2));line-height:1.5}
+.ev-callout-icon{flex-shrink:0;font-size:.9rem}
+.ev-meta{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.3rem 0 .1rem}
+.stack-why{font-size:.75rem;color:var(--text-muted,var(--text2));margin-top:.4rem}
+.stack-why summary{cursor:pointer;color:var(--accent);font-weight:500;list-style:none;display:inline-flex;align-items:center;gap:.25rem}
+.stack-why summary::-webkit-details-marker{display:none}
+.stack-why-body{margin-top:.3rem;padding:.4rem .5rem;background:var(--card-bg,var(--surface));border-radius:6px;border:1px solid var(--border);line-height:1.5}
+.ev-legend{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 .75rem}
 </style>
 </head>
 <body>
@@ -1495,6 +1521,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <div class="gs-step-panel" data-step="3">
       <div class="gs-step-heading">Dose</div>
       <div class="gs-tier-group" id="gs-tier-btns"></div>
+      <div id="gs-evidence-badge"></div>
       <div class="gs-draw-box">
         <div class="gs-draw-label">Draw</div>
         <div><span class="gs-draw-value" id="gs-draw-value">—</span><span class="gs-draw-unit"> units</span></div>
@@ -1509,6 +1536,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
         <span class="warn-icon">⚠️</span>
         <span>Dose tiers are reference ranges from published research — not a personal prescription. Start low and adjust only with guidance from a healthcare provider.</span>
       </div>
+      <p class="ev-source" style="margin:.3rem 0 .1rem">Common reference ranges — evidence base varies by compound</p>
       <div class="warn-card warn-caution" id="gs-high-dose-warn" style="display:none">
         <span class="warn-icon">⚠️</span>
         <span>High draw volume — double-check your vial size and BAC water amount. If you need more than one syringe per dose, verify the product concentration with your supplier.</span>
@@ -1788,6 +1816,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   <div class="stack-disclaimer">
     ℹ️ <strong>Educational reference only.</strong> Stack examples reflect commonly reported combinations in published literature. They are not personalized recommendations. Consider starting with one compound at a time and consult your healthcare provider before combining compounds.
   </div>
+  <p class="ev-source" style="margin-bottom:.5rem;padding:0 .25rem">Evidence levels reflect commonly available research. Individual compounds may have varying levels of clinical support — see badges on each compound below.</p>
 
   <!-- Stack Builder Card -->
   <div class="card animate-in">
@@ -2236,6 +2265,18 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     ℹ️ <strong>Educational reference only.</strong> Content in this section is for informational purposes. Evidence quality varies — check confidence badges. This is not medical advice.
   </div>
 
+  <div class="card animate-in" style="padding:.6rem .75rem;margin-bottom:.75rem">
+    <p style="font-size:.75rem;font-weight:600;margin:0 0 .4rem;color:var(--text2)">Evidence Key</p>
+    <div class="ev-legend">
+      <span class="ev-badge ev-badge-human">🧬 Human Data</span>
+      <span class="ev-badge ev-badge-animal">🔬 Animal Data</span>
+      <span class="ev-badge ev-badge-anecdotal">💬 Anecdotal</span>
+      <span class="ev-badge ev-badge-limited">📊 Limited Evidence</span>
+      <span class="ev-badge ev-badge-uncertain">❓ High Uncertainty</span>
+    </div>
+    <p class="ev-source" style="margin:0">Badges reflect commonly available research quality. Always verify with a qualified healthcare provider.</p>
+  </div>
+
   <div class="card animate-in">
     <h3 style="font-size:.85rem;font-weight:600;margin-bottom:1rem;color:var(--text);">Units &amp; Measurements</h3>
 
@@ -2468,57 +2509,66 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 </div>
 
 <script>
+// ── Evidence Icons (Issue #83) ────────────────────────────────
+const EVIDENCE_ICONS = {
+  human:     '🧬',
+  animal:    '🔬',
+  anecdotal: '💬',
+  limited:   '📊',
+  uncertain: '❓'
+};
+
 // ── Peptide Data ─────────────────────────────────────────────
 const PEPTIDES = [
-  { name: 'Adipotide', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, max 4 weeks. ⚠️ Monitor kidneys', frequency: '5on2off', timingIcon: '☀️', color: '#E8A838', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4 },
-  { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'Dihexa', lowMcg: 10000, stdMcg: 20000, highMcg: 30000, rangeLabel: '10-30 mg oral daily', timing: 'morning', timingNote: 'Morning — oral, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#DDAAFF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 4, breakWeeks: 24 },
-  { name: 'FOXO4-DRI', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental', frequency: '5on2off', timingIcon: '☀️', color: '#8838E8', cycleWeeks: 2, breakWeeks: 4 },
-  { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg daily', timing: 'morning', timingNote: 'Morning or evening — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'GHRP-2', lowMcg: 100, stdMcg: 150, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#44FFAA', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'GHRP-6', lowMcg: 100, stdMcg: 100, highMcg: 300, rangeLabel: '100-300 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFAA44', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', lowMcg: 1500, stdMcg: 2330, highMcg: 3500, rangeLabel: '1.5–3.5 mg daily blend', timing: 'morning/evening', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD76C', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Glutathione', lowMcg: 100000, stdMcg: 200000, highMcg: 200000, rangeLabel: '100-200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week (Mon/Wed/Fri)', frequency: '3x/week', timingIcon: '☀️', color: '#88FF88', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'HCG', lowMcg: 250, stdMcg: 500, highMcg: 1500, rangeLabel: '250–1500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU', frequency: '3x/week', timingIcon: '☀️', color: '#E87838', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'Hexarelin', lowMcg: 100, stdMcg: 100, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#DD44FF', cycleWeeks: 6, breakWeeks: 4 },
-  { name: 'HGH', lowMcg: 333, stdMcg: 666, highMcg: 1998, rangeLabel: '1–6 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Note: 1 IU ≈ 333 mcg', frequency: 'daily', timingIcon: '🌙', color: '#38E878', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'IGF-1 LR3', lowMcg: 20, stdMcg: 50, highMcg: 100, rangeLabel: '20-100 mcg daily', timing: 'anytime', timingNote: 'Post-workout — daily, max 4 week cycles', frequency: 'daily', timingIcon: '💪', color: '#FF4444', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Ipamorelin', lowMcg: 100, stdMcg: 300, highMcg: 500, rangeLabel: '100–500 mcg, 1-3x/day', timing: '🌙', timingNote: 'Before bed preferred — empty stomach, 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#D838E8', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'KLOW Stack (TB + BPC + GHK + KPV)', lowMcg: 2000, stdMcg: 4000, highMcg: 6000, rangeLabel: '2-6 mg daily blend', timing: 'morning', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD700', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'KPV', lowMcg: 200, stdMcg: 500, highMcg: 1000, rangeLabel: '200-1000 mcg daily', timing: 'morning', timingNote: 'Morning empty stomach — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#FF88CC', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'L-Carnitine', lowMcg: 200000, stdMcg: 500000, highMcg: 1000000, rangeLabel: '200–1000 mg, 2-3x/week', timing: '☀️', timingNote: 'Morning or pre-workout — 2-3x/week', frequency: '3x/week', timingIcon: '☀️', color: '#E83878', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'LL-37', lowMcg: 50, stdMcg: 125, highMcg: 250, rangeLabel: '50–250 mcg daily', timing: '☀️', timingNote: 'Morning — daily, 50-day courses', frequency: 'daily', timingIcon: '☀️', color: '#38E8A8', cycleWeeks: 7, breakWeeks: 4 },
-  { name: 'Mazdutide', lowMcg: 1500, stdMcg: 4000, highMcg: 9000, rangeLabel: '1.5–9 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, titrate up. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E838A8', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance', frequency: '2x/week', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8 },
-  { name: 'Melanotan II', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100-500 mcg daily', timing: 'evening', timingNote: 'Evening — daily during loading, then 1-2x/week', frequency: 'daily', timingIcon: '🌙', color: '#CC8844', cycleWeeks: 4, breakWeeks: 8 },
-  { name: 'MK-677 (Ibutamoren)', lowMcg: 10000, stdMcg: 25000, highMcg: 25000, rangeLabel: '10-25 mg daily', timing: 'evening', timingNote: 'Before bed — daily, 8-12 week cycles', frequency: 'daily', timingIcon: '🌙', color: '#44BBFF', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'NAD+', lowMcg: 50000, stdMcg: 100000, highMcg: 200000, rangeLabel: '50–200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week', frequency: '3x/week', timingIcon: '☀️', color: '#FF6CA8', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Oxytocin', lowMcg: 4, stdMcg: 10, highMcg: 20, rangeLabel: '4-20 mcg SubQ', timing: 'morning', timingNote: 'Morning — as needed or daily', frequency: 'daily', timingIcon: '☀️', color: '#FF99CC', cycleWeeks: 0, breakWeeks: 0 },
-  { name: 'PE-22-28', lowMcg: 100, stdMcg: 150, highMcg: 150, rangeLabel: '100-150 mcg 2x/day', timing: 'morning', timingNote: 'Morning + evening — daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#99CCFF', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'PEG-MGF', lowMcg: 200, stdMcg: 200, highMcg: 400, rangeLabel: '200-400 mcg 2-3x/week', timing: 'anytime', timingNote: 'Post-workout — 2-3x per week', frequency: '3x/week', timingIcon: '💪', color: '#FF6644', cycleWeeks: 6, breakWeeks: 4 },
-  { name: 'PT-141 (Bremelanotide)', lowMcg: 1000, stdMcg: 1750, highMcg: 2000, rangeLabel: '1-2 mg as needed', timing: 'anytime', timingNote: '45 min before activity — max 8 doses/month', frequency: 'weekly', timingIcon: '⏰', color: '#FFD76C', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Retatrutide', lowMcg: 1000, stdMcg: 4000, highMcg: 12000, rangeLabel: '1–12 mg weekly', timing: 'morning', timingNote: 'Morning — once weekly', frequency: 'weekly', timingIcon: '☀️', color: '#FF8F6C', cycleWeeks: 16, breakWeeks: 0 },
-  { name: 'Selank', lowMcg: 250, stdMcg: 400, highMcg: 500, rangeLabel: '250-500 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#AADDFF', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Semaglutide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25-2.4 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF9F6C', cycleWeeks: 16, breakWeeks: 0 },
-  { name: 'Semax', lowMcg: 300, stdMcg: 600, highMcg: 800, rangeLabel: '300-800 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#FFCCAA', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Sermorelin', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200-500 mcg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#B6FF6C', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'SS-31 (Elamipretide)', lowMcg: 250, stdMcg: 500, highMcg: 1000, rangeLabel: '250–1000 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 4-8 week cycles', frequency: '5on2off', timingIcon: '☀️', color: '#38D8E8', cycleWeeks: 4, breakWeeks: 4 },
-  { name: 'Survodutide', lowMcg: 300, stdMcg: 2400, highMcg: 4800, rangeLabel: '0.3–4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, 7-step titration over 20 weeks. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E8A878', cycleWeeks: 16, breakWeeks: 0 },
-  { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 6, breakWeeks: 4 },
-  { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 12, breakWeeks: 4 },
-  { name: 'Thymalin', lowMcg: 5000, stdMcg: 10000, highMcg: 20000, rangeLabel: '5–20 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year', frequency: 'daily', timingIcon: '☀️', color: '#78E8A8', cycleWeeks: 1, breakWeeks: 24 },
-  { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week', frequency: '5on2off', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4 },
-  { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 16, breakWeeks: 0 },
-  { name: 'VIP', lowMcg: 50, stdMcg: 50, highMcg: 100, rangeLabel: '50–100 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required', frequency: 'daily', timingIcon: '☀️', color: '#E8E838', cycleWeeks: 0, breakWeeks: 0 },
+  { name: 'Adipotide', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, max 4 weeks. ⚠️ Monitor kidneys', frequency: '5on2off', timingIcon: '☀️', color: '#E8A838', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal studies; limited human trial data' } },
+  { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human and animal metabolic studies; limited efficacy data' } },
+  { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human obesity trials; limited broader efficacy data' } },
+  { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; limited peer-reviewed data' } },
+  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Primarily rodent studies; limited human trial data' } },
+  { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available' } },
+  { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human PK studies; mostly anecdotal for bodybuilding use' } },
+  { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; mostly anecdotal for bodybuilding use' } },
+  { name: 'Dihexa', lowMcg: 10000, stdMcg: 20000, highMcg: 30000, rangeLabel: '10-30 mg oral daily', timing: 'morning', timingNote: 'Morning — oral, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#DDAAFF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal cognitive studies; very limited human data' } },
+  { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human sleep studies; limited modern peer review' } },
+  { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 4, breakWeeks: 24, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Animal and small human longevity studies' } },
+  { name: 'FOXO4-DRI', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental', frequency: '5on2off', timingIcon: '☀️', color: '#8838E8', cycleWeeks: 2, breakWeeks: 4, evidence: { level: 'uncertain', label: 'High Uncertainty', source: 'Very early research; mostly animal senolytic data' } },
+  { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg daily', timing: 'morning', timingNote: 'Morning or evening — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Cell/animal wound healing studies; limited human clinical data' } },
+  { name: 'GHRP-2', lowMcg: 100, stdMcg: 150, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#44FFAA', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Rodent studies and some human GH pulse studies' } },
+  { name: 'GHRP-6', lowMcg: 100, stdMcg: 100, highMcg: 300, rangeLabel: '100-300 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFAA44', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Rodent studies and some human GH pulse studies' } },
+  { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', lowMcg: 1500, stdMcg: 2330, highMcg: 3500, rangeLabel: '1.5–3.5 mg daily blend', timing: 'morning/evening', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD76C', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Component compounds primarily animal-studied; limited human data' } },
+  { name: 'Glutathione', lowMcg: 100000, stdMcg: 200000, highMcg: 200000, rangeLabel: '100-200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week (Mon/Wed/Fri)', frequency: '3x/week', timingIcon: '☀️', color: '#88FF88', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human antioxidant studies; IV efficacy data limited' } },
+  { name: 'HCG', lowMcg: 250, stdMcg: 500, highMcg: 1500, rangeLabel: '250–1500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU', frequency: '3x/week', timingIcon: '☀️', color: '#E87838', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Established human clinical use; FDA-approved hormone' } },
+  { name: 'Hexarelin', lowMcg: 100, stdMcg: 100, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#DD44FF', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human GH secretagogue studies; limited modern data' } },
+  { name: 'HGH', lowMcg: 333, stdMcg: 666, highMcg: 1998, rangeLabel: '1–6 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Note: 1 IU ≈ 333 mcg', frequency: 'daily', timingIcon: '🌙', color: '#38E878', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Extensive human clinical data; FDA-approved hormone therapy' } },
+  { name: 'IGF-1 LR3', lowMcg: 20, stdMcg: 50, highMcg: 100, rangeLabel: '20-100 mcg daily', timing: 'anytime', timingNote: 'Post-workout — daily, max 4 week cycles', frequency: 'daily', timingIcon: '💪', color: '#FF4444', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal muscle studies; limited formal human efficacy data' } },
+  { name: 'Ipamorelin', lowMcg: 100, stdMcg: 300, highMcg: 500, rangeLabel: '100–500 mcg, 1-3x/day', timing: '🌙', timingNote: 'Before bed preferred — empty stomach, 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#D838E8', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human PK data; limited efficacy trials' } },
+  { name: 'KLOW Stack (TB + BPC + GHK + KPV)', lowMcg: 2000, stdMcg: 4000, highMcg: 6000, rangeLabel: '2-6 mg daily blend', timing: 'morning', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD700', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Component compounds primarily animal-studied; limited human data' } },
+  { name: 'KPV', lowMcg: 200, stdMcg: 500, highMcg: 1000, rangeLabel: '200-1000 mcg daily', timing: 'morning', timingNote: 'Morning empty stomach — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#FF88CC', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal anti-inflammatory studies; very limited human data' } },
+  { name: 'L-Carnitine', lowMcg: 200000, stdMcg: 500000, highMcg: 1000000, rangeLabel: '200–1000 mg, 2-3x/week', timing: '☀️', timingNote: 'Morning or pre-workout — 2-3x/week', frequency: '3x/week', timingIcon: '☀️', color: '#E83878', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Human trials for metabolic and exercise performance' } },
+  { name: 'LL-37', lowMcg: 50, stdMcg: 125, highMcg: 250, rangeLabel: '50–250 mcg daily', timing: '☀️', timingNote: 'Morning — daily, 50-day courses', frequency: 'daily', timingIcon: '☀️', color: '#38E8A8', cycleWeeks: 7, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal antimicrobial/wound studies; limited human clinical data' } },
+  { name: 'Mazdutide', lowMcg: 1500, stdMcg: 4000, highMcg: 9000, rangeLabel: '1.5–9 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, titrate up. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E838A8', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available; investigational' } },
+  { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance', frequency: '2x/week', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human tanning studies; limited formal efficacy data' } },
+  { name: 'Melanotan II', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100-500 mcg daily', timing: 'evening', timingNote: 'Evening — daily during loading, then 1-2x/week', frequency: 'daily', timingIcon: '🌙', color: '#CC8844', cycleWeeks: 4, breakWeeks: 8, evidence: { level: 'anecdotal', label: 'Anecdotal', source: 'Widely used; limited formal human efficacy data' } },
+  { name: 'MK-677 (Ibutamoren)', lowMcg: 10000, stdMcg: 25000, highMcg: 25000, rangeLabel: '10-25 mg daily', timing: 'evening', timingNote: 'Before bed — daily, 8-12 week cycles', frequency: 'daily', timingIcon: '🌙', color: '#44BBFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human GH secretagogue studies; limited long-term data' } },
+  { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Mouse studies; early human exploration only' } },
+  { name: 'NAD+', lowMcg: 50000, stdMcg: 100000, highMcg: 200000, rangeLabel: '50–200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week', frequency: '3x/week', timingIcon: '☀️', color: '#FF6CA8', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'anecdotal', label: 'Anecdotal', source: 'Some human safety trials; efficacy largely anecdotal' } },
+  { name: 'Oxytocin', lowMcg: 4, stdMcg: 10, highMcg: 20, rangeLabel: '4-20 mcg SubQ', timing: 'morning', timingNote: 'Morning — as needed or daily', frequency: 'daily', timingIcon: '☀️', color: '#FF99CC', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Established human clinical use for various indications' } },
+  { name: 'PE-22-28', lowMcg: 100, stdMcg: 150, highMcg: 150, rangeLabel: '100-150 mcg 2x/day', timing: 'morning', timingNote: 'Morning + evening — daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#99CCFF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'uncertain', label: 'High Uncertainty', source: 'Very early research; extremely limited human data' } },
+  { name: 'PEG-MGF', lowMcg: 200, stdMcg: 200, highMcg: 400, rangeLabel: '200-400 mcg 2-3x/week', timing: 'anytime', timingNote: 'Post-workout — 2-3x per week', frequency: '3x/week', timingIcon: '💪', color: '#FF6644', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal muscle growth studies; very limited human data' } },
+  { name: 'PT-141 (Bremelanotide)', lowMcg: 1000, stdMcg: 1750, highMcg: 2000, rangeLabel: '1-2 mg as needed', timing: 'anytime', timingNote: '45 min before activity — max 8 doses/month', frequency: 'weekly', timingIcon: '⏰', color: '#FFD76C', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'FDA approved for HSDD; human trial data available' } },
+  { name: 'Retatrutide', lowMcg: 1000, stdMcg: 4000, highMcg: 12000, rangeLabel: '1–12 mg weekly', timing: 'morning', timingNote: 'Morning — once weekly', frequency: 'weekly', timingIcon: '☀️', color: '#FF8F6C', cycleWeeks: 16, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available' } },
+  { name: 'Selank', lowMcg: 250, stdMcg: 400, highMcg: 500, rangeLabel: '250-500 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#AADDFF', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Russian clinical data; limited Western peer-reviewed studies' } },
+  { name: 'Semaglutide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25-2.4 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF9F6C', cycleWeeks: 16, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Extensive human RCTs for weight/glycemic control; FDA approved' } },
+  { name: 'Semax', lowMcg: 300, stdMcg: 600, highMcg: 800, rangeLabel: '300-800 mcg daily', timing: 'morning', timingNote: 'Morning — daily, SubQ or nasal', frequency: 'daily', timingIcon: '☀️', color: '#FFCCAA', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Russian clinical data; limited Western peer-reviewed studies' } },
+  { name: 'Sermorelin', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200-500 mcg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#B6FF6C', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'FDA-approved GHRH analog; established human clinical data' } },
+  { name: 'SS-31 (Elamipretide)', lowMcg: 250, stdMcg: 500, highMcg: 1000, rangeLabel: '250–1000 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 4-8 week cycles', frequency: '5on2off', timingIcon: '☀️', color: '#38D8E8', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human mitochondrial studies; limited broader data' } },
+  { name: 'Survodutide', lowMcg: 300, stdMcg: 2400, highMcg: 4800, rangeLabel: '0.3–4.8 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, 7-step titration over 20 weeks. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E8A878', cycleWeeks: 16, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available; investigational' } },
+  { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal studies; very limited human data' } },
+  { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'FDA approved; strong human trial data for lipodystrophy' } },
+  { name: 'Thymalin', lowMcg: 5000, stdMcg: 10000, highMcg: 20000, rangeLabel: '5–20 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year', frequency: 'daily', timingIcon: '☀️', color: '#78E8A8', cycleWeeks: 1, breakWeeks: 24, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Soviet-era studies; limited modern peer-reviewed data' } },
+  { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week', frequency: '5on2off', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'Human clinical trials for immune modulation; approved in some countries' } },
+  { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 16, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 3 human trials; FDA approved (Mounjaro/Zepbound)' } },
+  { name: 'VIP', lowMcg: 50, stdMcg: 50, highMcg: 100, rangeLabel: '50–100 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required', frequency: 'daily', timingIcon: '☀️', color: '#E8E838', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human CIRS/mold illness studies; limited broader data' } },
 ];
 
 const VIALS = [1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,70,80,100,200,250,500,1000,2000,2500];
@@ -3090,7 +3140,11 @@ function renderStackRecommendations(goal) {
   const stack = PEPTIDE_STACKS[goal];
 
   const categoriesHtml = Object.entries(stack.categories).map(([categoryName, peptides]) => {
-    const peptidesHtml = peptides.map(peptide => `
+    const peptidesHtml = peptides.map(peptide => {
+      const pepData = PEPTIDES.find(p => p.name === peptide.name || peptide.name.startsWith(p.name));
+      const evBadge = pepData ? `<span class="ev-badge ev-badge-${pepData.evidence.level}">${EVIDENCE_ICONS[pepData.evidence.level]} ${pepData.evidence.label}</span>` : '';
+      const evSource = pepData ? `<p class="ev-source">${pepData.evidence.source}</p>` : '';
+      return `
       <div class="stack-peptide${peptide.featured ? ' is-featured' : ''}">
         <div class="stack-peptide-header">
           <div class="stack-peptide-name">
@@ -3099,9 +3153,11 @@ function renderStackRecommendations(goal) {
           <div class="stack-peptide-priority ${peptide.priority}">${peptide.priority}</div>
         </div>
         <div class="stack-peptide-dose">${peptide.dose}</div>
+        ${evBadge ? `<div class="ev-meta">${evBadge}${evSource}</div>` : ''}
         <div class="stack-peptide-benefit">${peptide.benefit}</div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     return `
       <div class="stack-category">
@@ -5704,6 +5760,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="gs-tier-dose">${fmtDose(t.dose)}</span>
       </button>
     `).join('');
+
+    // Evidence badge for selected peptide
+    if (pep.evidence) {
+      const evEl = document.getElementById('gs-evidence-badge');
+      if (evEl) {
+        evEl.innerHTML = `<div class="ev-meta" style="margin:.5rem 0 .25rem"><span class="ev-badge ev-badge-${pep.evidence.level}">${EVIDENCE_ICONS[pep.evidence.level]} ${pep.evidence.label}</span></div><p class="ev-source">${pep.evidence.source}</p>`;
+      }
+    }
 
     const calcDraw = () => {
       const tier    = container.querySelector('.gs-tier-btn.active')?.dataset.tier || 'standard';
