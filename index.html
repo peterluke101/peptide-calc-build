@@ -1395,8 +1395,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         </div>
       </label>
       <div class="rc-slider-row">
-        <input type="range" id="rc-dose-slider" min="100" max="10000" step="50" value="250">
-        <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="10000" step="50" value="250">
+        <input type="range" id="rc-dose-slider" min="100" max="500000" step="100" value="250">
+        <input type="number" id="rc-dose-num" class="rc-num-input" min="100" max="500000" step="100" value="250">
         <span class="rc-num-unit" id="rc-dose-unit">mcg</span>
       </div>
     </div>
@@ -1408,6 +1408,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <button class="rc-seg-btn active" data-units="10">10</button>
         <button class="rc-seg-btn" data-units="20">20</button>
         <button class="rc-seg-btn" data-units="50">50</button>
+        <button class="rc-seg-btn" data-units="100">100</button>
       </div>
     </div>
     <!-- Result -->
@@ -4916,13 +4917,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (doseUnitMcg) {
         unitMcgBtn.classList.add('active'); unitMgBtn.classList.remove('active');
         doseUnitLbl.textContent = 'mcg';
-        doseSlider.min = 100; doseSlider.max = 10000; doseSlider.step = 50;
-        doseNum.min = 100; doseNum.max = 10000; doseNum.step = 50;
+        doseSlider.min = 100; doseSlider.max = 500000; doseSlider.step = 100;
+        doseNum.min = 100; doseNum.max = 500000; doseNum.step = 100;
       } else {
         unitMgBtn.classList.add('active'); unitMcgBtn.classList.remove('active');
         doseUnitLbl.textContent = 'mg';
-        doseSlider.min = 0.1; doseSlider.max = 10; doseSlider.step = 0.05;
-        doseNum.min = 0.1; doseNum.max = 10; doseNum.step = 0.05;
+        doseSlider.min = 0.1; doseSlider.max = 500; doseSlider.step = 0.5;
+        doseNum.min = 0.1; doseNum.max = 500; doseNum.step = 0.5;
       }
     }
 
@@ -5018,13 +5019,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = parseInt(pepSelect.value);
       if (isNaN(idx)) return;
       const pep = PEPTIDES[idx];
-      const vialMg = suggestVialMg(pep);
-      const doseMcg = Math.min(10000, Math.max(100, Math.round(pep.stdMcg / 50) * 50));
+      const vialMg  = suggestVialMg(pep);
+      const doseMcg = Math.min(500000, Math.max(100, Math.round(pep.stdMcg / 100) * 100));
       vialSlider.value = vialMg; vialNum.value = vialMg;
+      // Auto-switch to mg mode for high-dose peptides (≥50mg std dose)
+      if (pep.stdMcg >= 50000 && doseUnitMcg) {
+        doseUnitMcg = false;
+        applyUnitMode();
+        localStorage.setItem('rc-dose-unit', 'mg');
+      }
       if (doseUnitMcg) {
         doseSlider.value = doseMcg; doseNum.value = doseMcg;
       } else {
-        const mgVal = +(doseMcg / 1000).toFixed(3);
+        const mgVal = +(doseMcg / 1000).toFixed(2);
         doseSlider.value = mgVal; doseNum.value = mgVal;
       }
       calcAndRender();
