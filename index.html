@@ -1399,6 +1399,19 @@ body:not(.light-mode) .cycle-end-complete{background:#05280e44;color:#86efac;bor
 .cycle-act-muted{opacity:.7}
 #impact-note{background:var(--card-bg);border:1px solid var(--accent);border-radius:8px;padding:.4rem .65rem;font-size:.78rem;color:var(--accent);margin-top:.5rem;transition:opacity .3s}
 .impact-note-visible{opacity:1}
+
+/* === Calculator guardrails (Issue #88) === */
+.rc-syringe-size-group{display:flex;gap:.35rem;margin:.5rem 0 .25rem}
+.rc-sz-btn{flex:1;padding:.3rem .25rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-muted);font-size:.75rem;cursor:pointer;transition:all .15s;text-align:center}
+.rc-sz-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(61,232,195,.1);font-weight:600}
+.rc-nearest-mark{font-size:.78rem;color:var(--text-muted);margin:.35rem 0;padding:.3rem .5rem;background:var(--card-bg);border:1px solid var(--border);border-radius:6px}
+.rc-nearest-mark strong{color:var(--accent)}
+.rc-warn-red{display:none;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:0 8px 8px 0;padding:.45rem .65rem;font-size:.78rem;color:#dc2626;margin:.35rem 0;line-height:1.5}
+.rc-warn-amber{display:none;background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:.45rem .65rem;font-size:.78rem;color:#92400e;margin:.35rem 0;line-height:1.5}
+.rc-warn-info{display:none;background:var(--card-bg);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:.45rem .65rem;font-size:.78rem;color:var(--text-muted);margin:.35rem 0;line-height:1.5}
+body:not(.light-mode) .rc-warn-red{color:#fca5a5}
+body:not(.light-mode) .rc-warn-amber{color:#fcd34d}
+.rc-supplier-note{font-size:.75rem;color:var(--text-muted);border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;padding:.3rem .5rem;margin:.4rem 0;background:rgba(245,158,11,.05);line-height:1.4}
 </style>
 </head>
 <body>
@@ -1736,6 +1749,15 @@ body:not(.light-mode) .cycle-end-complete{background:#05280e44;color:#86efac;bor
         <button class="rc-seg-btn" data-units="100">100</button>
       </div>
     </div>
+    <!-- Syringe size selector -->
+    <div style="margin-top:.75rem">
+      <label style="font-size:.78rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:.25rem">Physical Syringe Size</label>
+      <div class="rc-syringe-size-group">
+        <button class="rc-sz-btn" data-sz="30">0.3 mL<br><span style="font-size:.65rem">30 unit</span></button>
+        <button class="rc-sz-btn" data-sz="50">0.5 mL<br><span style="font-size:.65rem">50 unit</span></button>
+        <button class="rc-sz-btn active" data-sz="100">1.0 mL<br><span style="font-size:.65rem">100 unit</span></button>
+      </div>
+    </div>
     <!-- Result -->
     <div class="rc-result">
       <div class="rc-result-label">BAC Water to Add</div>
@@ -1771,6 +1793,15 @@ body:not(.light-mode) .cycle-end-complete{background:#05280e44;color:#86efac;bor
         <span class="warn-icon">⚠️</span>
         <span>Desired dose exceeds total vial content — you can't draw more peptide than is in the vial. Reduce your dose or use a larger vial.</span>
       </div>
+      <!-- Draw volume warnings -->
+      <div class="rc-warn-red" id="rc-draw-warn-red">⚠️ <strong>Extremely small draw volume.</strong> This is very difficult to measure accurately. Consider using more BAC water to get a larger, more measurable draw.</div>
+      <div class="rc-warn-amber" id="rc-draw-warn-amber">⚠️ <strong>Small draw volume.</strong> For better accuracy, consider adjusting your reconstitution to achieve a larger draw.</div>
+      <div class="rc-warn-info" id="rc-draw-warn-info">ℹ️ Small draw volumes are more sensitive to measurement error. Take extra care with your measurement.</div>
+      <div class="rc-warn-red" id="rc-capacity-warn" style="display:none">⚠️ <strong>Draw exceeds syringe capacity.</strong> Use a larger syringe or reconstitute with less BAC water to reduce the draw volume.</div>
+      <div class="rc-warn-info" id="rc-between-marks" style="display:none">ℹ️ This exact amount falls between syringe marks — you'll need to estimate between <span id="rc-mark-lower">—</span> and <span id="rc-mark-upper">—</span> units.</div>
+      <div class="rc-nearest-mark" id="rc-nearest-mark" style="display:none">Nearest measurable mark: <strong id="rc-nearest-val">—</strong> units (<span id="rc-nearest-ml">—</span> mL) on your <span id="rc-nearest-sz">—</span> syringe</div>
+      <!-- Supplier note -->
+      <p class="rc-supplier-note">⚠️ Always verify your peptide's concentration matches the supplier's label. Concentrations vary between manufacturers and batches.</p>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
       <button class="btn-add-schedule" id="rc-add-schedule">📅 Add to Schedule</button>
@@ -7106,6 +7137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultVal  = document.getElementById('rc-result-value');
     const breakdown  = document.getElementById('rc-result-breakdown');
     let syringeUnits = 10;
+    let syringeSize = parseInt(localStorage.getItem('rc-syringe-size') || '100', 10);
 
     // ── Peptide vial size lookup (common commercial sizes) ──
     const COMMON_VIALS = {
@@ -7186,6 +7218,74 @@ document.addEventListener('DOMContentLoaded', () => {
       return doseUnitMcg ? v : v * 1000;
     }
 
+    function getGraduation(sz) {
+      return sz === 30 ? 0.5 : 1; // 30-unit syringes have half-unit marks
+    }
+
+    function getNearestMark(drawUnits, sz) {
+      const grad = getGraduation(sz);
+      const lower = Math.floor(drawUnits / grad) * grad;
+      const upper = Math.ceil(drawUnits / grad) * grad;
+      const nearest = (drawUnits - lower) < (upper - drawUnits) ? lower : upper;
+      return { lower, upper, nearest, exact: Math.abs(drawUnits - nearest) < 0.001 };
+    }
+
+    function applyDrawWarnings(drawUnits, sz) {
+      const red = document.getElementById('rc-draw-warn-red');
+      const amb = document.getElementById('rc-draw-warn-amber');
+      const inf = document.getElementById('rc-draw-warn-info');
+      const cap = document.getElementById('rc-capacity-warn');
+      const btw = document.getElementById('rc-between-marks');
+      const nmEl = document.getElementById('rc-nearest-mark');
+
+      if (!red) return;
+
+      // Hide all first
+      [red, amb, inf, cap, btw].forEach(el => { if(el) el.style.display = 'none'; });
+      if (nmEl) nmEl.style.display = 'none';
+
+      if (drawUnits <= 0) return;
+
+      // Capacity check
+      if (drawUnits > sz) {
+        if (cap) cap.style.display = '';
+        const szLabel = sz === 30 ? '0.3 mL (30-unit)' : sz === 50 ? '0.5 mL (50-unit)' : '1.0 mL (100-unit)';
+        if (cap) cap.innerHTML = `⚠️ <strong>Draw volume (${drawUnits} units) exceeds your ${szLabel} syringe capacity.</strong> Use a larger syringe or reconstitute with less BAC water.`;
+        return; // Skip other warnings if capacity exceeded
+      }
+
+      // Draw size warnings
+      if (drawUnits < 3) {
+        if (red) red.style.display = '';
+      } else if (drawUnits < 5) {
+        if (amb) amb.style.display = '';
+      } else if (drawUnits < 10) {
+        if (inf) inf.style.display = '';
+      }
+
+      // Between-marks check
+      const mark = getNearestMark(drawUnits, sz);
+      if (!mark.exact) {
+        if (btw) {
+          btw.style.display = '';
+          const lEl = document.getElementById('rc-mark-lower');
+          const uEl = document.getElementById('rc-mark-upper');
+          if (lEl) lEl.textContent = mark.lower;
+          if (uEl) uEl.textContent = mark.upper;
+        }
+      }
+
+      // Nearest mark display
+      if (nmEl) {
+        nmEl.style.display = '';
+        const szLabel = sz === 30 ? '0.3 mL (30-unit)' : sz === 50 ? '0.5 mL (50-unit)' : '1.0 mL (100-unit)';
+        const ml = (mark.nearest * 0.01).toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+        document.getElementById('rc-nearest-val').textContent = mark.nearest;
+        document.getElementById('rc-nearest-ml').textContent = ml;
+        document.getElementById('rc-nearest-sz').textContent = szLabel;
+      }
+    }
+
     function calcAndRender() {
       const vialMg     = parseFloat(vialNum.value) || 5;
       const desiredMcg = getDesiredMcg();
@@ -7217,6 +7317,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const rcMathDetail = document.getElementById('rc-math-detail');
       if (rcMathDetail) rcMathDetail.innerHTML = buildRcMathHtml(vialMg, desiredMcg, syringeUnits, waterMl);
       updateSyringe(syringeUnits);
+      applyDrawWarnings(syringeUnits, syringeSize);
     }
 
     unitMcgBtn.addEventListener('click', () => {
@@ -7272,6 +7373,23 @@ document.addEventListener('DOMContentLoaded', () => {
         segBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         syringeUnits = parseInt(btn.dataset.units, 10);
+        calcAndRender();
+      });
+    });
+
+    // Syringe size buttons
+    document.querySelectorAll('.rc-sz-btn').forEach(btn => {
+      // Restore active state on load
+      if (parseInt(btn.dataset.sz) === syringeSize) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+      btn.addEventListener('click', () => {
+        syringeSize = parseInt(btn.dataset.sz);
+        localStorage.setItem('rc-syringe-size', syringeSize);
+        document.querySelectorAll('.rc-sz-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         calcAndRender();
       });
     });
