@@ -754,35 +754,37 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 
 .delete-journal {
   position: absolute;
-  top: .5rem;
-  right: .5rem;
+  top: 8px;
+  right: 8px;
   width: 26px;
   height: 26px;
   border-radius: 50%;
   border: none;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.45);
-  font-size: .8rem;
-  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  line-height: 26px;
+  text-align: center;
   cursor: pointer;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  transition: background .15s, color .15s;
-  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
 }
-.delete-journal:hover {
-  background: rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.75);
+.delete-journal:hover,
+.delete-journal:active {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
 }
 body.light-mode .delete-journal {
-  background: rgba(0,0,0,0.07);
-  color: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.4);
 }
-body.light-mode .delete-journal:hover {
-  background: rgba(0,0,0,0.13);
-  color: rgba(0,0,0,0.65);
+body.light-mode .delete-journal:hover,
+body.light-mode .delete-journal:active {
+  background: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .journal-header {
@@ -6151,7 +6153,7 @@ function renderJournalList() {
           ${moodHtml}
         </div>
         <div class="journal-content">${notePreview}</div>
-        <button class="delete-journal" data-date="${entry.date}" aria-label="Delete journal entry">✕</button>
+        <button class="delete-journal" data-date="${entry.date}" aria-label="Delete journal entry">×</button>
       </div>
     `;
   }).join('');
