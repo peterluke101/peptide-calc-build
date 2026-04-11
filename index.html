@@ -1092,6 +1092,46 @@ body.light-mode .btn-secondary { background: var(--surface2); color: var(--text)
 body.light-mode .nav a:hover { background: var(--surface2); color: var(--text); }
 body.light-mode .nav a.active { background: rgba(43,186,160,.15); color: var(--accent); }
 
+/* ── Sprint 5: Adherence & Overdue ─────────────────────────── */
+/* Overdue badge on nav icon */
+.overdue-badge{position:absolute;top:-5px;right:-7px;min-width:16px;height:16px;background:#ef4444;color:#fff;font-size:.58rem;font-weight:700;border-radius:8px;padding:0 3px;display:none;align-items:center;justify-content:center;line-height:1;pointer-events:none;letter-spacing:.01em}
+/* Dose status badges */
+.dose-status-badge{display:inline-flex;align-items:center;padding:.18rem .45rem;border-radius:4px;font-size:.62rem;font-weight:700;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+.badge-done{color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25)}
+.badge-due{color:#f59e0b;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3)}
+.badge-overdue{color:#ef4444;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
+.badge-skipped{color:var(--text2);background:var(--surface);border:1px solid var(--border)}
+/* Today action buttons (Skip, Move, Undo) */
+.today-actions{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.today-skip-btn,.today-move-btn,.today-undo-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.35rem .5rem;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;min-height:32px}
+.today-skip-btn:hover{border-color:var(--text2);color:var(--text)}
+.today-move-btn:hover{border-color:var(--accent);color:var(--accent)}
+.today-undo-btn:hover{border-color:var(--border);color:var(--text)}
+/* Section labels inside today-card */
+.overdue-section-lbl{font-size:.68rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.07em;padding:.2rem 0 .4rem;margin-top:.1rem}
+.today-section-lbl{font-size:.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;padding:.5rem 0 .3rem}
+/* Progress ring in today-card */
+.today-progress-wrap{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.today-progress-ring{flex-shrink:0}
+.today-progress-text{font-size:.75rem;font-weight:500;color:var(--text2)}
+.today-progress-text strong{color:var(--accent);font-weight:700}
+/* Adherence ring section (History tab) */
+.adh-ring-section{display:flex;flex-direction:column;align-items:center;padding:.25rem 0 .5rem}
+.adh-ring-wrap{position:relative;width:136px;height:136px}
+.adh-ring-svg{width:136px;height:136px}
+.adh-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;line-height:1;pointer-events:none}
+.adh-ring-pct{font-size:1.75rem;font-weight:800;color:var(--text);display:block}
+.adh-ring-lbl{font-size:.58rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem;display:block}
+.adh-streak-line{font-size:.95rem;font-weight:700;color:var(--accent);margin-top:.55rem;letter-spacing:-.01em}
+.adh-big-stats{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:.85rem;width:100%}
+.adh-stat-box{background:var(--surface2);border-radius:10px;padding:.6rem .7rem;text-align:center}
+.adh-stat-num{font-size:1.25rem;font-weight:800;color:var(--text);line-height:1}
+.adh-stat-lbl{font-size:.6rem;color:var(--text2);font-weight:500;margin-top:.2rem;text-transform:uppercase;letter-spacing:.04em}
+/* Light mode overrides */
+body.light-mode .today-skip-btn,body.light-mode .today-move-btn,body.light-mode .today-undo-btn{background:#f5f5f5;border-color:var(--border);color:var(--text2)}
+body.light-mode .badge-skipped{background:var(--surface2);color:var(--text2)}
+body.light-mode .adh-stat-box{background:var(--surface2)}
+
 /* ── Reverse Calc ─────────────────────────────────────────── */
 .rc-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0 .2rem}
 .rc-toggle-label{display:flex;flex-direction:column;gap:.15rem}
@@ -2193,8 +2233,9 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <span class="tab-icon">🗓️</span>
     <span class="tab-label">Schedule</span>
   </button>
-  <button class="tab-btn" data-tab="history">
+  <button class="tab-btn" data-tab="history" style="position:relative">
     <span class="tab-icon">🕐</span>
+    <span class="overdue-badge" id="overdue-badge"></span>
     <span class="tab-label">History</span>
   </button>
   <button class="tab-btn" data-tab="more">
@@ -2500,6 +2541,53 @@ function removeInjection(injectionKey) {
   const dateStr = parts.pop();
   const peptideName = parts.join('_');
   incrementVialUsage(peptideName, -1);
+}
+
+// ── Skip Log ────────────────────────────────────────────────
+function getSkipLog() {
+  try { return JSON.parse(localStorage.getItem('skipLog') || '{}'); } catch { return {}; }
+}
+function saveDoseSkip(injectionKey) {
+  const log = getSkipLog();
+  log[injectionKey] = { skippedAt: new Date().toISOString() };
+  localStorage.setItem('skipLog', JSON.stringify(log));
+}
+function removeDoseSkip(injectionKey) {
+  const log = getSkipLog();
+  delete log[injectionKey];
+  localStorage.setItem('skipLog', JSON.stringify(log));
+}
+function isDoseSkipped(injectionKey) {
+  return !!getSkipLog()[injectionKey];
+}
+
+// ── Overdue Badge ────────────────────────────────────────────
+function updateOverdueBadge() {
+  const badge = document.getElementById('overdue-badge');
+  if (!badge) return;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const log = getInjectionLog();
+  const skipLog = getSkipLog();
+  let count = 0;
+  // Walk back up to 30 days looking for missed doses
+  for (let i = 1; i <= 30; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = formatLocalDate(d);
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, d)) return;
+      const pep = PEPTIDES[entry.peptideIndex];
+      const key = pep.name + '_' + dateStr;
+      if (!log[key] && !skipLog[key]) count++;
+    });
+  }
+  if (count > 0) {
+    badge.textContent = count > 99 ? '99+' : count;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 
 // ── Vial Tracking Functions ─────────────────────────────────
@@ -2824,6 +2912,7 @@ function getInjectionTimestamp(val) {
 
 function calcAdherence() {
   const log = getInjectionLog();
+  const skipLog = getSkipLog();
   const now = new Date();
 
   // Counts last 7 / 30 days
@@ -2837,38 +2926,60 @@ function calcAdherence() {
     if (diffDays < 30) count30++;
   });
 
-  // Streak: consecutive days with at least one logged injection (date part of key)
-  const daysSeen = new Set(Object.keys(log).map(k => {
-    const parts = k.split('_');
-    return parts.pop();
-  }));
+  // Current streak: consecutive days with all scheduled doses completed or skipped
   let streak = 0;
-  const cursor = new Date(now);
-  while (true) {
-    if (daysSeen.has(formatLocalDate(cursor))) {
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
-    } else {
-      break;
-    }
+  const today = new Date(now); today.setHours(0,0,0,0);
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const dateStr = formatLocalDate(d);
+    let dayScheduled = 0, dayDone = 0;
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, d)) return;
+      dayScheduled++;
+      const pep = PEPTIDES[entry.peptideIndex];
+      const key = pep.name + '_' + dateStr;
+      if (log[key] || skipLog[key]) dayDone++;
+    });
+    if (dayScheduled === 0) { if (i > 0) break; continue; } // rest day — only skip if past day 0
+    if (dayDone >= dayScheduled) { streak++; } else { break; }
   }
 
-  // Completion rate: logged vs scheduled over last 30 days
-  let scheduled30 = 0, logged30 = 0;
+  // Longest streak (scan last 365 days)
+  let longestStreak = 0, runStreak = 0;
+  for (let i = 364; i >= 0; i--) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const dateStr = formatLocalDate(d);
+    let dayScheduled = 0, dayDone = 0;
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, d)) return;
+      dayScheduled++;
+      const pep = PEPTIDES[entry.peptideIndex];
+      const key = pep.name + '_' + dateStr;
+      if (log[key] || skipLog[key]) dayDone++;
+    });
+    if (dayScheduled === 0) continue; // rest day — don't break streak
+    if (dayDone >= dayScheduled) { runStreak++; longestStreak = Math.max(longestStreak, runStreak); }
+    else { runStreak = 0; }
+  }
+
+  // Completion rate, missed count, avg weekly doses (last 30 days)
+  let scheduled30 = 0, logged30 = 0, missed30 = 0;
   for (let i = 0; i < 30; i++) {
-    const d = new Date(now);
-    d.setDate(now.getDate() - i);
+    const d = new Date(now); d.setDate(now.getDate() - i);
     const dateStr = formatLocalDate(d);
     schedule.forEach(entry => {
       if (!shouldInject(entry, d)) return;
       scheduled30++;
       const pep = PEPTIDES[entry.peptideIndex];
-      if (log[pep.name + '_' + dateStr]) logged30++;
+      const key = pep.name + '_' + dateStr;
+      if (log[key]) logged30++;
+      else if (!skipLog[key]) missed30++;
     });
   }
   const completionRate = scheduled30 > 0 ? Math.round((logged30 / scheduled30) * 100) : null;
+  const avgWeekly = scheduled30 > 0 ? +(logged30 / (30 / 7)).toFixed(1) : null;
 
-  return { count7, count30, streak, completionRate };
+  return { count7, count30, streak, longestStreak, completionRate, missed30, avgWeekly };
 }
 
 function renderInjectionHistory() {
@@ -3191,7 +3302,7 @@ function renderToday(animate) {
     $list.innerHTML = '';
 
     if (schedule.length === 0) {
-      $counter.textContent = '';
+      $counter.innerHTML = '';
       $list.innerHTML = `<div class="today-empty-cta">
         <div class="today-empty-cta-body">
           <div class="today-empty-cta-icon">💉</div>
@@ -3205,6 +3316,13 @@ function renderToday(animate) {
       return;
     }
 
+    const log = getInjectionLog();
+    const skipLog = getSkipLog();
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const isViewingToday = sameDay(date, todayStart);
+    const isPastDate = date < todayStart;
+
     // Collect break-period peptides for notice
     const breakPeptides = [];
     schedule.forEach(entry => {
@@ -3214,8 +3332,6 @@ function renderToday(animate) {
         breakPeptides.push({ name: pep.name, color: pep.color, daysLeft: cs.breakDayRemaining });
       }
     });
-
-    // Render break notices first
     breakPeptides.forEach(bp => {
       const notice = document.createElement('div');
       notice.className = 'break-notice';
@@ -3223,137 +3339,210 @@ function renderToday(animate) {
       $list.appendChild(notice);
     });
 
-    let hasItems = false;
-    let totalItems = 0;
-    let doneItems = 0;
-    const log = getInjectionLog();
-
+    // Collect doses for this date, grouped by status
+    const overdueDoses = [], todayDoses = [], doneDoses = [], skippedDoses = [];
     schedule.forEach(entry => {
       const pep = PEPTIDES[entry.peptideIndex];
       if (!shouldInject(entry, date)) return;
-      hasItems = true;
-      totalItems++;
-
       const doseMcg = getDoseMcg(pep, entry.tier);
       const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
       const injectionKey = pep.name + '_' + formatLocalDate(date);
       const isDone = !!log[injectionKey];
-      if (isDone) doneItems++;
+      const isSkipped = isDoseSkipped(injectionKey);
+      const item = { pep, entry, doseMcg, units, injectionKey, isDone, isSkipped };
+      if (isDone) doneDoses.push(item);
+      else if (isSkipped) skippedDoses.push(item);
+      else if (isPastDate) overdueDoses.push(item);
+      else todayDoses.push(item);
+    });
 
-      const now = new Date();
-      const isPast = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const isMissed = isPast && !isDone;
+    const totalItems = overdueDoses.length + todayDoses.length + doneDoses.length + skippedDoses.length;
+    const doneItems = doneDoses.length;
+
+    // Progress ring counter
+    if (totalItems > 0) {
+      const pct = Math.round((doneItems / totalItems) * 100);
+      const r = 14, circ = 2 * Math.PI * r;
+      const offset = circ - (pct / 100) * circ;
+      $counter.innerHTML = `
+        <div class="today-progress-wrap">
+          <svg class="today-progress-ring" width="36" height="36" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="${r}" fill="none" stroke="var(--surface2)" stroke-width="3.5"/>
+            <circle cx="18" cy="18" r="${r}" fill="none" stroke="var(--accent)" stroke-width="3.5"
+              stroke-linecap="round" stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+              transform="rotate(-90 18 18)" style="transition:stroke-dashoffset .4s ease"/>
+          </svg>
+          <span class="today-progress-text"><strong>${doneItems} of ${totalItems}</strong> doses complete today</span>
+        </div>`;
+    } else {
+      $counter.innerHTML = '';
+    }
+
+    function buildDoseRow(item, status) {
+      const { pep, entry, doseMcg, units, injectionKey, isDone, isSkipped } = item;
+      const mathId = 'math-' + injectionKey.replace(/[^a-z0-9]/gi, '_');
+      let badgeHtml;
+      if (status === 'done')    badgeHtml = '<span class="dose-status-badge badge-done">✓ Done</span>';
+      else if (status === 'overdue') badgeHtml = '<span class="dose-status-badge badge-overdue">Overdue</span>';
+      else if (status === 'skipped') badgeHtml = '<span class="dose-status-badge badge-skipped">Skipped</span>';
+      else                      badgeHtml = '<span class="dose-status-badge badge-due">Due</span>';
+
+      let actionsHtml = '';
+      if (status === 'done') {
+        actionsHtml = `<div class="today-actions">
+          <button class="done-btn done" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">✓ Done</button>
+          <button class="dose-detail-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}" title="Add details">✎</button>
+        </div>`;
+      } else if (status === 'skipped') {
+        actionsHtml = `<div class="today-actions">
+          <button class="today-undo-btn" data-injection="${injectionKey}">Undo skip</button>
+          <button class="done-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">Inject</button>
+        </div>`;
+      } else {
+        // due or overdue
+        const moveBtn = !isPastDate || status === 'overdue' ? `<button class="today-move-btn" data-injection="${injectionKey}" data-entry-idx="${schedule.indexOf(entry)}">Move +1d</button>` : '';
+        actionsHtml = `<div class="today-actions">
+          <button class="done-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">Inject</button>
+          <button class="today-skip-btn" data-injection="${injectionKey}">Skip</button>
+          ${moveBtn}
+        </div>`;
+      }
 
       const div = document.createElement('div');
       div.className = 'today-item' + (isDone ? ' completed' : '');
-
-      const mathId = 'math-' + injectionKey.replace(/[^a-z0-9]/gi, '_');
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
-          <div class="today-name">${pep.name}${isMissed ? '<span class="missed-badge">Missed</span>' : ''}</div>
-          <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)}</div>
+          <div class="today-name">${pep.name} ${badgeHtml}</div>
+          <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)} · ${fmtUnits(units)} u</div>
         </div>
-        <div class="today-units">${fmtUnits(units)} u</div>
-        <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">
-          ${isDone ? '✓ Done' : 'Inject'}
-        </button>
-        ${isDone ? `<button class="dose-detail-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}" title="Add details">✎</button>` : ''}
-        <button class="math-toggle today-math-btn" aria-expanded="false" data-detail="${mathId}" type="button">
+        ${actionsHtml}
+        <button class="math-toggle today-math-btn" aria-expanded="false" data-detail="${mathId}" type="button" style="flex-basis:100%;order:99">
           <span class="math-chevron">▶</span> Show math
         </button>
-        <div class="math-detail today-math-detail" id="${mathId}">
+        <div class="math-detail today-math-detail" id="${mathId}" style="flex-basis:100%;order:100">
           ${buildMathHtml(doseMcg, entry.vialMg, entry.waterMl)}
         </div>
       `;
-      $list.appendChild(div);
-      div.querySelector('.today-math-btn').addEventListener('click', e => {
+      return div;
+    }
+
+    function attachRowHandlers(div, item) {
+      const { injectionKey, pep, doseMcg, units } = item;
+
+      // Math toggle
+      div.querySelector('.today-math-btn')?.addEventListener('click', e => {
         e.stopPropagation();
         const detail = document.getElementById(e.currentTarget.dataset.detail);
         if (!detail) return;
         const open = detail.classList.toggle('open');
         e.currentTarget.setAttribute('aria-expanded', open);
       });
-    });
 
-    // Update completed counter
-    if (totalItems > 0) {
-      $counter.textContent = doneItems + ' of ' + totalItems + ' completed';
-    } else {
-      $counter.textContent = '';
+      // Inject / Done toggle
+      div.querySelector('.done-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        if (btn.classList.contains('done')) {
+          removeInjection(injectionKey);
+        } else {
+          saveInjection(injectionKey);
+          removeDoseSkip(injectionKey);
+        }
+        afterAction();
+      });
+
+      // Skip
+      div.querySelector('.today-skip-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        saveDoseSkip(injectionKey);
+        afterAction();
+      });
+
+      // Undo skip
+      div.querySelector('.today-undo-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        removeDoseSkip(injectionKey);
+        afterAction();
+      });
+
+      // Move +1 day: push startDate of that entry forward by 1
+      div.querySelector('.today-move-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        const entryIdx = parseInt(e.currentTarget.dataset.entryIdx);
+        if (isNaN(entryIdx) || !schedule[entryIdx]) return;
+        const entry = schedule[entryIdx];
+        const start = parseLocalDate(entry.startDate);
+        start.setDate(start.getDate() + 1);
+        entry.startDate = formatLocalDate(start);
+        saveSchedule();
+        afterAction();
+      });
+
+      // Detail button
+      div.querySelector('.dose-detail-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        openLogDetailSheet(injectionKey, pep.name, fmtDose(doseMcg), fmtUnits(units));
+      });
     }
 
-    if (!hasItems) {
-      $counter.textContent = '';
-      if (breakPeptides.length > 0) {
-        // Already showing break notices — don't clobber them
-      } else {
+    function afterAction() {
+      renderInjectionHistory();
+      renderVialTracker();
+      renderPeptidesList();
+      renderInjectionLog();
+      updateOverdueBadge();
+      fill();
+    }
+
+    // Render overdue section first
+    if (overdueDoses.length > 0) {
+      const lbl = document.createElement('div');
+      lbl.className = 'overdue-section-lbl';
+      lbl.textContent = `⚠ Overdue (${overdueDoses.length})`;
+      $list.appendChild(lbl);
+      overdueDoses.forEach(item => {
+        const div = buildDoseRow(item, 'overdue');
+        $list.appendChild(div);
+        attachRowHandlers(div, item);
+      });
+    }
+
+    // Due today
+    if (todayDoses.length > 0) {
+      if (overdueDoses.length > 0) {
+        const lbl = document.createElement('div');
+        lbl.className = 'today-section-lbl';
+        lbl.textContent = 'Due Today';
+        $list.appendChild(lbl);
+      }
+      todayDoses.forEach(item => {
+        const div = buildDoseRow(item, 'due');
+        $list.appendChild(div);
+        attachRowHandlers(div, item);
+      });
+    }
+
+    // Done
+    doneDoses.forEach(item => {
+      const div = buildDoseRow(item, 'done');
+      $list.appendChild(div);
+      attachRowHandlers(div, item);
+    });
+
+    // Skipped
+    skippedDoses.forEach(item => {
+      const div = buildDoseRow(item, 'skipped');
+      $list.appendChild(div);
+      attachRowHandlers(div, item);
+    });
+
+    if (totalItems === 0) {
+      $counter.innerHTML = '';
+      if (breakPeptides.length === 0) {
         $list.innerHTML = '<div class="today-empty">Rest day — no injections scheduled.</div>';
       }
     }
-
-    // Done button click handlers (toggle)
-    $list.querySelectorAll('.done-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const injectionKey = btn.getAttribute('data-injection');
-        const row = btn.closest('.today-item');
-
-        if (btn.classList.contains('done')) {
-          // Undo
-          removeInjection(injectionKey);
-          btn.classList.remove('done');
-          row.classList.remove('completed');
-          btn.textContent = 'Inject';
-          // Remove the detail button
-          const existingDetail = row.querySelector('.dose-detail-btn');
-          if (existingDetail) existingDetail.remove();
-        } else {
-          // Mark done — quick log with defaults
-          saveInjection(injectionKey);
-          btn.classList.add('done');
-          row.classList.add('completed');
-          btn.textContent = '✓ Done';
-          btn.style.animation = 'none';
-          btn.offsetHeight; // reflow
-          btn.style.animation = '';
-          // Insert detail button after done-btn
-          if (!row.querySelector('.dose-detail-btn')) {
-            const detailBtn = document.createElement('button');
-            detailBtn.className = 'dose-detail-btn';
-            detailBtn.title = 'Add details';
-            detailBtn.textContent = '✎';
-            detailBtn.dataset.injection = injectionKey;
-            detailBtn.dataset.pep = btn.dataset.pep;
-            detailBtn.dataset.dose = btn.dataset.dose;
-            detailBtn.dataset.units = btn.dataset.units;
-            btn.after(detailBtn);
-            detailBtn.addEventListener('click', (ev) => {
-              ev.stopPropagation();
-              openLogDetailSheet(detailBtn.dataset.injection, detailBtn.dataset.pep, detailBtn.dataset.dose, detailBtn.dataset.units);
-            });
-          }
-        }
-        renderInjectionHistory();
-        renderVialTracker();
-        renderPeptidesList();
-        renderInjectionLog();
-        // Update counter
-        const allBtns = $list.querySelectorAll('.done-btn');
-        const total = allBtns.length;
-        let done = 0;
-        allBtns.forEach(b => { if (b.classList.contains('done')) done++; });
-        $counter.textContent = done + ' of ' + total + ' completed';
-      });
-    });
-
-    // Detail button handlers (for already-logged items rendered on load)
-    $list.querySelectorAll('.dose-detail-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openLogDetailSheet(btn.dataset.injection, btn.dataset.pep, btn.dataset.dose, btn.dataset.units);
-      });
-    });
   }
 
   if (animate) {
@@ -3793,21 +3982,42 @@ function renderInjectionLog() {
 
   // Adherence stats
   if ($adherence) {
-    const { count7, count30, streak, completionRate } = calcAdherence();
-    const rateStr = completionRate !== null ? completionRate + '%' : '—';
+    const { streak, longestStreak, completionRate, missed30, avgWeekly } = calcAdherence();
+    const pct = completionRate !== null ? completionRate : 0;
+    const circ = 2 * Math.PI * 48; // r=48
+    const offset = circ - (pct / 100) * circ;
     $adherence.innerHTML = `
-      <div class="adherence-grid">
-        <div class="adherence-stat">
-          <div class="adherence-num">${count7}</div>
-          <div class="adherence-label">Last 7 days</div>
+      <div class="adh-ring-section">
+        <div class="adh-ring-wrap">
+          <svg class="adh-ring-svg" viewBox="0 0 136 136" aria-label="Adherence ${pct}%">
+            <circle cx="68" cy="68" r="48" fill="none" stroke="var(--surface2)" stroke-width="12"/>
+            <circle cx="68" cy="68" r="48" fill="none" stroke="var(--accent)" stroke-width="12"
+              stroke-linecap="round" stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+              transform="rotate(-90 68 68)" style="transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)"/>
+          </svg>
+          <div class="adh-ring-center">
+            <span class="adh-ring-pct">${completionRate !== null ? pct + '%' : '—'}</span>
+            <span class="adh-ring-lbl">30-day</span>
+          </div>
         </div>
-        <div class="adherence-stat">
-          <div class="adherence-num">${streak}</div>
-          <div class="adherence-label">Day streak</div>
+        <div class="adh-streak-line">${streak > 0 ? '🔥 ' + streak + '-day streak' : streak === 0 && longestStreak > 0 ? '💪 Best: ' + longestStreak + ' days' : 'No streak yet'}</div>
+      </div>
+      <div class="adh-big-stats">
+        <div class="adh-stat-box">
+          <div class="adh-stat-num">${streak}</div>
+          <div class="adh-stat-lbl">Current streak</div>
         </div>
-        <div class="adherence-stat">
-          <div class="adherence-num">${rateStr}</div>
-          <div class="adherence-label">Completion</div>
+        <div class="adh-stat-box">
+          <div class="adh-stat-num">${longestStreak}</div>
+          <div class="adh-stat-lbl">Longest streak</div>
+        </div>
+        <div class="adh-stat-box">
+          <div class="adh-stat-num">${missed30}</div>
+          <div class="adh-stat-lbl">Missed (30d)</div>
+        </div>
+        <div class="adh-stat-box">
+          <div class="adh-stat-num">${avgWeekly !== null ? avgWeekly : '—'}</div>
+          <div class="adh-stat-lbl">Avg / week</div>
         </div>
       </div>
     `;
@@ -3893,6 +4103,7 @@ function renderAll() {
   renderInjectionLog();
   renderStackRecommendations();
   updateAddPeptideVisibility();
+  updateOverdueBadge();
 }
 
 // ── Clear History (Compass tab widget) ─────────────────────
