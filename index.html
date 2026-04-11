@@ -173,6 +173,45 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .history-time{font-size:.65rem;color:var(--text2);margin-top:.1rem}
 .history-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
 
+/* ── Injection Log (History Tab) ─────────────────────────── */
+.adherence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem}
+.adherence-stat{text-align:center;background:var(--surface2);border-radius:8px;padding:.75rem .5rem}
+.adherence-num{font-size:1.5rem;font-weight:700;color:var(--accent);line-height:1}
+.adherence-label{font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-top:.25rem}
+.inj-date-group{margin-bottom:1rem}
+.inj-date-header{font-size:.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em;padding:.2rem 0 .4rem;border-bottom:1px solid var(--border);margin-bottom:.5rem}
+.inj-entry{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem;background:var(--surface2);border-radius:8px;margin-bottom:.35rem}
+.inj-entry:last-child{margin-bottom:0}
+.inj-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--accent);margin-top:.35rem}
+.inj-body{flex:1;min-width:0}
+.inj-name{font-size:.85rem;font-weight:600}
+.inj-meta{font-size:.7rem;color:var(--text2);margin-top:.1rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.inj-site-badge{background:var(--accent-dim);color:var(--accent);border-radius:4px;padding:.1rem .35rem;font-size:.65rem;font-weight:500;white-space:nowrap}
+.inj-notes{font-size:.75rem;color:var(--text2);margin-top:.3rem;font-style:italic;line-height:1.4;word-break:break-word}
+.inj-delete-btn{background:none;border:none;color:var(--text2);cursor:pointer;padding:4px 6px;font-size:.75rem;opacity:.45;transition:opacity .2s;flex-shrink:0;min-height:unset;min-width:unset;line-height:1;border-radius:4px}
+.inj-delete-btn:hover{opacity:1;color:#ef4444}
+/* ── Dose Detail Button (today view) ──────────────────────── */
+.dose-detail-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.35rem .5rem;font-size:.7rem;border-radius:6px;transition:all .15s;min-height:unset;min-width:unset;flex-shrink:0;margin-left:.25rem;white-space:nowrap}
+.dose-detail-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+/* ── Missed Dose Badge ────────────────────────────────────── */
+.missed-badge{display:inline-block;font-size:.6rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:.1rem .35rem;margin-left:.4rem;letter-spacing:.03em;vertical-align:middle}
+/* ── Log Sheet (bottom sheet modal) ──────────────────────── */
+.log-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom);animation:fadeInBg .2s ease}
+@keyframes fadeInBg{from{opacity:0}to{opacity:1}}
+.log-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:80dvh;overflow-y:auto;padding:1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:.85rem;animation:slideUp .25s ease}
+.log-sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto -.1rem}
+.log-sheet-title{font-size:1rem;font-weight:700;text-align:center;margin-top:.25rem}
+.log-sheet-peptide{font-size:.78rem;color:var(--text2);text-align:center;margin-top:-.4rem}
+.log-field{display:flex;flex-direction:column;gap:.3rem}
+.log-field label{font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.07em}
+.log-field input,.log-field select,.log-field textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.55rem .75rem;border-radius:8px;width:100%;font-family:inherit;font-size:16px}
+.log-field textarea{resize:none;height:72px;line-height:1.4}
+.log-sheet-actions{display:flex;gap:.65rem;margin-top:.1rem}
+.log-save-btn{flex:1;background:var(--accent);color:#000;border:none;border-radius:8px;padding:.7rem;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.log-save-btn:hover{background:#2dd4b0}
+.log-cancel-btn{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.log-cancel-btn:hover{border-color:var(--accent);color:var(--text)}
+
 /* ── Vial Tracker ───────────────────────────────────────── */
 .vial-item{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.75rem}
 .vial-item:last-child{margin-bottom:0}
@@ -1695,65 +1734,21 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 
   <!-- Logs View -->
   <div id="logs-view" class="tab-content active">
+    <!-- Adherence Summary -->
     <div class="card animate-in">
-      <div class="section-header">
-        <h2>Daily Logs</h2>
-        <button class="share-btn" style="font-size: .7rem; padding: .4rem .8rem;" id="add-log-btn">+ Add Log</button>
+      <div class="section-header" style="margin-bottom:.5rem">
+        <h2>Adherence</h2>
       </div>
-      <div id="logs-list-logbook" class="logs-list">
-        <div class="empty-state">
-          <div class="icon">📊</div>
-          <h3>No logs yet</h3>
-          <p>Add your first log to track weight, energy, and notes</p>
-        </div>
-      </div>
+      <div id="adherence-stats"></div>
     </div>
 
-    <!-- Add Log Form (hidden by default) -->
-    <div class="card add-log-form" id="add-log-form" style="display: none;">
-      <div class="form-title">Add Daily Log</div>
-      <div class="form-row">
-        <div class="form-field">
-          <label for="logbook-date">Date</label>
-          <input type="date" id="logbook-date" value="">
-        </div>
-        <div class="form-field">
-          <label for="logbook-weight">Weight (lbs)</label>
-          <input type="number" id="logbook-weight" placeholder="e.g., 185" step="0.1">
-        </div>
+    <!-- Injection History -->
+    <div class="card animate-in animate-d1">
+      <div class="section-header">
+        <h2>Injection Log</h2>
+        <button class="clear-btn" id="clear-inj-log">Clear All</button>
       </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label for="logbook-energy">Energy Level (1-5)</label>
-          <select id="logbook-energy">
-            <option value="">Select</option>
-            <option value="1">1 - Very Low</option>
-            <option value="2">2 - Low</option>
-            <option value="3">3 - Moderate</option>
-            <option value="4">4 - Good</option>
-            <option value="5">5 - Excellent</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label for="logbook-sleep">Sleep (hours)</label>
-          <input type="number" id="logbook-sleep" placeholder="e.g., 7.5" step="0.5" min="0" max="24">
-        </div>
-      </div>
-      <div class="form-field">
-        <label for="log-notes">Notes</label>
-        <textarea id="log-notes" placeholder="How are you feeling? Any side effects? Progress notes..."></textarea>
-      </div>
-      <div class="form-field">
-        <label>Tags</label>
-        <div class="tags-input" id="log-tags-input">
-          <!-- Tags will be added here -->
-        </div>
-        <input type="text" id="log-tag-input" placeholder="Type a tag and press Enter" style="margin-top: .5rem;">
-      </div>
-      <div class="btn-row" style="margin-top: 1.5rem;">
-        <button class="btn btn-primary" id="save-log-btn">Save Log</button>
-        <button class="btn btn-secondary" id="cancel-log-btn">Cancel</button>
-      </div>
+      <div id="inj-log-list"></div>
     </div>
   </div>
 
@@ -2244,16 +2239,41 @@ function getInjectionLog() {
   }
 }
 
-function saveInjection(injectionKey) {
+function saveInjection(injectionKey, meta = {}) {
   const log = getInjectionLog();
-  log[injectionKey] = new Date().toISOString();
+  log[injectionKey] = {
+    timestamp: meta.timestamp || new Date().toISOString(),
+    site: meta.site || '',
+    notes: meta.notes || ''
+  };
   localStorage.setItem('injectionLog', JSON.stringify(log));
 
   // Update vial tracking
   const parts = injectionKey.split('_');
-  const dateStr = parts.pop();
+  parts.pop(); // remove date
   const peptideName = parts.join('_');
   incrementVialUsage(peptideName, 1);
+}
+
+function getInjectionEntry(injectionKey) {
+  const log = getInjectionLog();
+  const val = log[injectionKey];
+  if (!val) return null;
+  if (typeof val === 'string') return { timestamp: val, site: '', notes: '' };
+  return val;
+}
+
+function updateInjectionMeta(injectionKey, meta) {
+  const log = getInjectionLog();
+  const existing = log[injectionKey];
+  if (!existing) return;
+  const ts = typeof existing === 'string' ? existing : (existing.timestamp || new Date().toISOString());
+  log[injectionKey] = {
+    timestamp: meta.timestamp || ts,
+    site: meta.site !== undefined ? meta.site : (existing.site || ''),
+    notes: meta.notes !== undefined ? meta.notes : (existing.notes || '')
+  };
+  localStorage.setItem('injectionLog', JSON.stringify(log));
 }
 
 function removeInjection(injectionKey) {
@@ -2582,21 +2602,77 @@ function renderStackRecommendations(goal) {
   }
 }
 
+function getInjectionTimestamp(val) {
+  if (!val) return '';
+  return typeof val === 'string' ? val : (val.timestamp || '');
+}
+
+function calcAdherence() {
+  const log = getInjectionLog();
+  const now = new Date();
+
+  // Counts last 7 / 30 days
+  let count7 = 0, count30 = 0;
+  Object.values(log).forEach(val => {
+    const ts = getInjectionTimestamp(val);
+    if (!ts) return;
+    const diffMs = now - new Date(ts);
+    const diffDays = diffMs / 86400000;
+    if (diffDays < 7) count7++;
+    if (diffDays < 30) count30++;
+  });
+
+  // Streak: consecutive days with at least one logged injection (date part of key)
+  const daysSeen = new Set(Object.keys(log).map(k => {
+    const parts = k.split('_');
+    return parts.pop();
+  }));
+  let streak = 0;
+  const cursor = new Date(now);
+  while (true) {
+    if (daysSeen.has(formatLocalDate(cursor))) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  // Completion rate: logged vs scheduled over last 30 days
+  let scheduled30 = 0, logged30 = 0;
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const dateStr = formatLocalDate(d);
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, d)) return;
+      scheduled30++;
+      const pep = PEPTIDES[entry.peptideIndex];
+      if (log[pep.name + '_' + dateStr]) logged30++;
+    });
+  }
+  const completionRate = scheduled30 > 0 ? Math.round((logged30 / scheduled30) * 100) : null;
+
+  return { count7, count30, streak, completionRate };
+}
+
 function renderInjectionHistory() {
   const $list = document.getElementById('history-list');
   const log = getInjectionLog();
-  const entries = Object.entries(log).sort((a, b) => new Date(b[1]) - new Date(a[1]));
+  const entries = Object.entries(log).sort((a, b) =>
+    new Date(getInjectionTimestamp(b[1])) - new Date(getInjectionTimestamp(a[1])));
 
   if (entries.length === 0) {
     $list.innerHTML = '<div class="history-empty">No injections logged yet</div>';
     return;
   }
 
-  const html = entries.slice(0, 10).map(([key, timestamp]) => {
+  const html = entries.slice(0, 10).map(([key, val]) => {
     const parts = key.split('_');
     parts.pop(); // remove date
     const peptideName = parts.join('_');
-    const date = new Date(timestamp);
+    const ts = getInjectionTimestamp(val);
+    const date = new Date(ts);
     const timeStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
@@ -2916,6 +2992,10 @@ function renderToday(animate) {
       const isDone = !!log[injectionKey];
       if (isDone) doneItems++;
 
+      const now = new Date();
+      const isPast = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const isMissed = isPast && !isDone;
+
       const div = document.createElement('div');
       div.className = 'today-item' + (isDone ? ' completed' : '');
 
@@ -2923,13 +3003,14 @@ function renderToday(animate) {
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
-          <div class="today-name">${pep.name}</div>
+          <div class="today-name">${pep.name}${isMissed ? '<span class="missed-badge">Missed</span>' : ''}</div>
           <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)}</div>
         </div>
         <div class="today-units">${fmtUnits(units)} u</div>
-        <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}">
+        <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">
           ${isDone ? '✓ Done' : 'Inject'}
         </button>
+        ${isDone ? `<button class="dose-detail-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}" title="Add details">✎</button>` : ''}
         <button class="math-toggle today-math-btn" aria-expanded="false" data-detail="${mathId}" type="button">
           <span class="math-chevron">▶</span> Show math
         </button>
@@ -2976,26 +3057,53 @@ function renderToday(animate) {
           btn.classList.remove('done');
           row.classList.remove('completed');
           btn.textContent = 'Inject';
+          // Remove the detail button
+          const existingDetail = row.querySelector('.dose-detail-btn');
+          if (existingDetail) existingDetail.remove();
         } else {
-          // Mark done
+          // Mark done — quick log with defaults
           saveInjection(injectionKey);
           btn.classList.add('done');
           row.classList.add('completed');
           btn.textContent = '✓ Done';
-          // Satisfying pop animation — re-trigger by removing and re-adding class
           btn.style.animation = 'none';
           btn.offsetHeight; // reflow
           btn.style.animation = '';
+          // Insert detail button after done-btn
+          if (!row.querySelector('.dose-detail-btn')) {
+            const detailBtn = document.createElement('button');
+            detailBtn.className = 'dose-detail-btn';
+            detailBtn.title = 'Add details';
+            detailBtn.textContent = '✎';
+            detailBtn.dataset.injection = injectionKey;
+            detailBtn.dataset.pep = btn.dataset.pep;
+            detailBtn.dataset.dose = btn.dataset.dose;
+            detailBtn.dataset.units = btn.dataset.units;
+            btn.after(detailBtn);
+            detailBtn.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              openLogDetailSheet(detailBtn.dataset.injection, detailBtn.dataset.pep, detailBtn.dataset.dose, detailBtn.dataset.units);
+            });
+          }
         }
         renderInjectionHistory();
         renderVialTracker();
         renderPeptidesList();
+        renderInjectionLog();
         // Update counter
         const allBtns = $list.querySelectorAll('.done-btn');
         const total = allBtns.length;
         let done = 0;
         allBtns.forEach(b => { if (b.classList.contains('done')) done++; });
         $counter.textContent = done + ' of ' + total + ' completed';
+      });
+    });
+
+    // Detail button handlers (for already-logged items rendered on load)
+    $list.querySelectorAll('.dose-detail-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openLogDetailSheet(btn.dataset.injection, btn.dataset.pep, btn.dataset.dose, btn.dataset.units);
       });
     });
   }
@@ -3349,20 +3457,191 @@ function printVialLabel(peptideName, strength, waterVolume, dosePerDraw) {
   if (w) { w.document.write(html); w.document.close(); }
 }
 
+// ── Log Detail Sheet ─────────────────────────────────────────
+function openLogDetailSheet(injectionKey, pepName, doseStr, unitsStr) {
+  const existing = getInjectionEntry(injectionKey);
+  const ts = existing ? existing.timestamp : new Date().toISOString();
+  const site = existing ? (existing.site || '') : '';
+  const notes = existing ? (existing.notes || '') : '';
+
+  // Format timestamp for datetime-local input (local time)
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2, '0');
+  const localDT = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+    'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+
+  const SITES = ['Left delt','Right delt','Left glute','Right glute','Left thigh','Right thigh','Abdomen'];
+  const siteOptions = SITES.map(s =>
+    `<option value="${s}"${site === s ? ' selected' : ''}>${s}</option>`
+  ).join('');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'log-sheet-overlay';
+  overlay.innerHTML = `
+    <div class="log-sheet" role="dialog" aria-modal="true">
+      <div class="log-sheet-handle"></div>
+      <div class="log-sheet-title">Log Dose</div>
+      <div class="log-sheet-peptide">${pepName} · ${doseStr} · ${unitsStr} u</div>
+      <div class="log-field">
+        <label for="ls-time">Time</label>
+        <input type="datetime-local" id="ls-time" value="${localDT}">
+      </div>
+      <div class="log-field">
+        <label for="ls-site">Injection site <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <select id="ls-site">
+          <option value="">— Select site —</option>
+          ${siteOptions}
+        </select>
+      </div>
+      <div class="log-field">
+        <label for="ls-notes">Notes <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <textarea id="ls-notes" placeholder="Any observations, reactions, or reminders…">${notes}</textarea>
+      </div>
+      <div class="log-sheet-actions">
+        <button class="log-save-btn">Save</button>
+        <button class="log-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('.log-save-btn').addEventListener('click', () => {
+    const timeVal = overlay.querySelector('#ls-time').value;
+    const siteVal = overlay.querySelector('#ls-site').value;
+    const notesVal = overlay.querySelector('#ls-notes').value.trim();
+    const timestamp = timeVal ? new Date(timeVal).toISOString() : ts;
+    updateInjectionMeta(injectionKey, { timestamp, site: siteVal, notes: notesVal });
+    overlay.remove();
+    renderInjectionHistory();
+    renderInjectionLog();
+  });
+
+  overlay.querySelector('.log-cancel-btn').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+// ── Render Injection Log (History tab) ───────────────────────
+function renderInjectionLog() {
+  const $adherence = document.getElementById('adherence-stats');
+  const $list = document.getElementById('inj-log-list');
+  if (!$adherence && !$list) return;
+
+  // Adherence stats
+  if ($adherence) {
+    const { count7, count30, streak, completionRate } = calcAdherence();
+    const rateStr = completionRate !== null ? completionRate + '%' : '—';
+    $adherence.innerHTML = `
+      <div class="adherence-grid">
+        <div class="adherence-stat">
+          <div class="adherence-num">${count7}</div>
+          <div class="adherence-label">Last 7 days</div>
+        </div>
+        <div class="adherence-stat">
+          <div class="adherence-num">${streak}</div>
+          <div class="adherence-label">Day streak</div>
+        </div>
+        <div class="adherence-stat">
+          <div class="adherence-num">${rateStr}</div>
+          <div class="adherence-label">Completion</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Injection history grouped by date
+  if (!$list) return;
+  const log = getInjectionLog();
+  const entries = Object.entries(log).sort((a, b) =>
+    new Date(getInjectionTimestamp(b[1])) - new Date(getInjectionTimestamp(a[1])));
+
+  if (entries.length === 0) {
+    $list.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">💉</div>
+        <h3>No doses logged yet</h3>
+        <p>Tap <strong>Inject</strong> on today's doses to start tracking</p>
+      </div>`;
+    return;
+  }
+
+  // Group by date (YYYY-MM-DD from key)
+  const groups = {};
+  entries.forEach(([key, val]) => {
+    const parts = key.split('_');
+    const dateStr = parts.pop();
+    const pepName = parts.join('_');
+    if (!groups[dateStr]) groups[dateStr] = [];
+    groups[dateStr].push({ key, pepName, val });
+  });
+
+  const now = new Date();
+  const html = Object.keys(groups).sort((a, b) => b.localeCompare(a)).map(dateStr => {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    const isToday = formatLocalDate(now) === dateStr;
+    const isYesterday = formatLocalDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)) === dateStr;
+    const label = isToday ? 'Today' : isYesterday ? 'Yesterday' :
+      dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+    const itemsHtml = groups[dateStr].map(({ key, pepName, val }) => {
+      const ts = getInjectionTimestamp(val);
+      const timeStr = ts ? new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
+      const siteVal = typeof val === 'object' ? (val.site || '') : '';
+      const notesVal = typeof val === 'object' ? (val.notes || '') : '';
+      const siteBadge = siteVal ? `<span class="inj-site-badge">${siteVal}</span>` : '';
+      const notesHtml = notesVal ? `<div class="inj-notes">${notesVal}</div>` : '';
+      return `
+        <div class="inj-entry">
+          <div class="inj-dot"></div>
+          <div class="inj-body">
+            <div class="inj-name">${pepName}</div>
+            <div class="inj-meta">${timeStr ? '<span>' + timeStr + '</span>' : ''}${siteBadge}</div>
+            ${notesHtml}
+          </div>
+          <button class="inj-delete-btn" data-key="${key}" aria-label="Delete">✕</button>
+        </div>`;
+    }).join('');
+
+    return `<div class="inj-date-group"><div class="inj-date-header">${label}</div>${itemsHtml}</div>`;
+  }).join('');
+
+  $list.innerHTML = html;
+
+  // Delete handlers
+  $list.querySelectorAll('.inj-delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm('Remove this logged dose?')) {
+        removeInjection(btn.dataset.key);
+        renderAll();
+      }
+    });
+  });
+}
+
 // ── Render All ───────────────────────────────────────────────
 function renderAll() {
   renderToday(false);
   renderCalendar();
   renderPeptidesList();
   renderInjectionHistory();
+  renderInjectionLog();
   renderStackRecommendations();
   updateAddPeptideVisibility();
 }
 
-// ── Clear History ───────────────────────────────────────────
-// Clear history moved to DOMContentLoaded
+// ── Clear History (Compass tab widget) ─────────────────────
 document.getElementById('clear-history') && document.getElementById('clear-history').addEventListener('click', () => {
   if (confirm('Clear all injection history?')) {
+    localStorage.removeItem('injectionLog');
+    renderAll();
+  }
+});
+
+// ── Clear Injection Log (History tab) ──────────────────────
+document.getElementById('clear-inj-log') && document.getElementById('clear-inj-log').addEventListener('click', () => {
+  if (confirm('Clear all logged injections?')) {
     localStorage.removeItem('injectionLog');
     renderAll();
   }
@@ -4125,11 +4404,14 @@ function setupLogbookToggle() {
     // Update buttons
     $logsBtn.classList.toggle('active', view === 'logs');
     $journalBtn.classList.toggle('active', view === 'journal');
-    
+
     // Update views
     $logsView.classList.toggle('active', view === 'logs');
     $journalView.classList.toggle('active', view === 'journal');
-    
+
+    // Re-render injection log when switching to it
+    if (view === 'logs') renderInjectionLog();
+
     // Save preference
     localStorage.setItem('logbookView', view);
   }
