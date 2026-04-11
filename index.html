@@ -1346,6 +1346,24 @@ body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;b
 .stack-why summary::-webkit-details-marker{display:none}
 .stack-why-body{margin-top:.3rem;padding:.4rem .5rem;background:var(--card-bg,var(--surface));border-radius:6px;border:1px solid var(--border);line-height:1.5}
 .ev-legend{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0 .75rem}
+/* === First-run progressive disclosure (Issue #84) === */
+body.first-run #today-card,
+body.first-run #calendar-card,
+body.first-run #protocols-quick-section{display:none!important}
+/* Gumroad banner hidden for first-run */
+body.first-run .gumroad-banner{display:none!important}
+/* Step label on guided flow */
+.gs-step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;text-align:center}
+/* Success message after first save */
+#first-save-success{display:none;background:var(--card-bg);border:2px solid #22c55e;border-radius:12px;padding:1rem;text-align:center;margin-bottom:1rem;animation:fadeIn .4s ease}
+#first-save-success .fss-icon{font-size:2rem;margin-bottom:.3rem}
+#first-save-success h3{margin:0 0 .25rem;color:#22c55e;font-size:1rem}
+#first-save-success p{margin:0;font-size:.82rem;color:var(--text-muted)}
+/* Stacks new-user note */
+.stacks-new-user-note{display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:.65rem .75rem;font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem;line-height:1.5}
+body.first-run .stacks-new-user-note{display:block}
+/* "New!" badge for More tab features */
+.more-new-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:4px;vertical-align:middle;margin-left:.3rem;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -1375,11 +1393,23 @@ body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;b
 </div>
 
 <!-- First-Time Welcome Card (hidden by default; shown for new users via JS) -->
-<div class="welcome-card" id="welcome-card" style="display:none">
-  <h2>Welcome to Peptide <span>Compass Pro</span></h2>
-  <p>Your personal peptide injection companion. Let's get you set up.</p>
-  <button class="welcome-cta" id="welcome-cta">＋ Add Your First Peptide</button>
-  <button class="welcome-skip" id="welcome-skip">Skip for now</button>
+<div id="welcome-card" class="card animate-in" style="display:none;text-align:center;padding:1.5rem 1.25rem;border:2px solid var(--accent);position:relative;overflow:hidden">
+  <div style="font-size:2.5rem;margin-bottom:.5rem">🧭</div>
+  <h2 style="margin:0 0 .4rem;font-size:1.2rem">Welcome to Peptide Compass Pro</h2>
+  <p style="margin:0 0 1rem;color:var(--text-muted);font-size:.88rem;line-height:1.5">Let's set up your first protocol. We'll walk you through reconstitution math, scheduling, and saving your setup — step by step.</p>
+  <button id="welcome-cta" class="btn-primary" style="width:100%;max-width:280px;padding:.75rem;font-size:1rem;font-weight:700;border-radius:12px;margin-bottom:.6rem">
+    ＋ Add Your First Peptide
+  </button>
+  <br>
+  <button id="welcome-skip" style="background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;padding:.25rem .5rem;text-decoration:underline">
+    Skip for now
+  </button>
+</div>
+
+<div id="first-save-success">
+  <div class="fss-icon">🎉</div>
+  <h3>Protocol Saved!</h3>
+  <p>Your schedule is ready. Check <strong>Today's Injections</strong> below to see your first dose.</p>
 </div>
 
 <div class="section-label">Your Schedule</div>
@@ -1462,6 +1492,7 @@ body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;b
     <div id="cycle-hint" class="cycle-hint" style="display:none"></div>
 
     <!-- Step Indicator -->
+    <p class="gs-step-label" id="gs-step-label">Step 1 of 4</p>
     <div class="gs-step-indicator" id="gs-indicator">
       <div class="gs-dot active" data-step="1"><span>1</span></div>
       <div class="gs-line" id="gs-line-1"></div>
@@ -1813,6 +1844,9 @@ body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;b
     <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Browse example stacks organized by goal</p>
   </div>
 
+  <div class="stacks-new-user-note">
+    💡 <strong>Tip:</strong> Set up your first protocol on the Compass tab before building stacks — that way your active peptides appear in your current stack automatically.
+  </div>
   <div class="stack-disclaimer">
     ℹ️ <strong>Educational reference only.</strong> Stack examples reflect commonly reported combinations in published literature. They are not personalized recommendations. Consider starting with one compound at a time and consult your healthcare provider before combining compounds.
   </div>
@@ -5675,30 +5709,50 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
 
   // ── First-Time Onboarding ────────────────────────────────────
-  const $welcomeCard = document.getElementById('welcome-card');
-  const $welcomeCta  = document.getElementById('welcome-cta');
+  function isFirstRun() {
+    return !localStorage.getItem('hasOnboarded') && schedule.length === 0;
+  }
+
+  function applyFirstRunState() {
+    if (isFirstRun()) {
+      document.body.classList.add('first-run');
+      const wc = document.getElementById('welcome-card');
+      if (wc) wc.style.display = '';
+    }
+  }
+
+  function exitFirstRun() {
+    document.body.classList.remove('first-run');
+    localStorage.setItem('hasOnboarded', '1');
+    const wc = document.getElementById('welcome-card');
+    if (wc) wc.style.display = 'none';
+  }
+
+  // Keep dismissOnboarding as alias for compatibility with add-confirm handler
+  function dismissOnboarding() { exitFirstRun(); }
+
+  applyFirstRunState();
+
+  const $welcomeCta = document.getElementById('welcome-cta');
   const $welcomeSkip = document.getElementById('welcome-skip');
 
-  function dismissOnboarding() {
-    localStorage.setItem('hasOnboarded', '1');
-    if ($welcomeCard) $welcomeCard.style.display = 'none';
+  if ($welcomeCta) {
+    $welcomeCta.addEventListener('click', () => {
+      exitFirstRun();
+      // Scroll add-peptide card into view and open step 1
+      const addCard = document.getElementById('add-peptide-card');
+      if (addCard) {
+        addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        gsShowStep(1);
+      }
+    });
   }
 
-  // Show welcome card only for brand-new users (no flag and no saved peptides)
-  if ($welcomeCard && !localStorage.getItem('hasOnboarded') && schedule.length === 0) {
-    $welcomeCard.style.display = 'block';
+  if ($welcomeSkip) {
+    $welcomeSkip.addEventListener('click', () => {
+      exitFirstRun();
+    });
   }
-
-  $welcomeCta?.addEventListener('click', () => {
-    dismissOnboarding();
-    // Scroll the Add Peptide card into view and open the panel
-    const $addCard = document.getElementById('add-peptide-card');
-    if ($addCard) $addCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const $addTriggerBtn = document.getElementById('add-trigger');
-    if ($addTriggerBtn) $addTriggerBtn.click();
-  });
-
-  $welcomeSkip?.addEventListener('click', dismissOnboarding);
 
   // ── Guided Stepper (Add Peptide) ───────────────────────────
   let _gsStep = 1;
@@ -5725,6 +5779,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (step === 3) gsInitDose();
     if (step === 4) gsInitSchedule();
     if (step === 'summary') gsRenderSummary();
+    // Update step label
+    const stepLabel = document.getElementById('gs-step-label');
+    if (stepLabel) {
+      const totalSteps = 4;
+      if (step >= 1 && step <= totalSteps) {
+        stepLabel.textContent = `Step ${step} of ${totalSteps}`;
+        stepLabel.style.display = '';
+      } else {
+        stepLabel.style.display = 'none'; // Hide on summary step
+      }
+    }
   }
 
   function gsInitRecon() {
@@ -5986,6 +6051,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     gsReset();
     renderAll();
+
+    // Show first-save success if this was first protocol
+    const successEl = document.getElementById('first-save-success');
+    if (successEl) {
+      successEl.style.display = 'block';
+      // Show today card and calendar now that there's a protocol
+      document.body.classList.remove('first-run');
+      setTimeout(() => {
+        successEl.style.display = 'none';
+      }, 6000);
+    }
   });
   
   // ── Stack Builder ───────────────────────────────────────────
