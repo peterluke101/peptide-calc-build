@@ -432,6 +432,11 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 /* ── Disclaimer ──────────────────────────────────────────── */
 .disclaimer{text-align:center;font-size:.7rem;color:var(--text2);max-width:720px;line-height:1.6;padding:0 .5rem;opacity:.7;margin-top:1rem}
 
+/* ── Warning / Info Cards ────────────────────────────────── */
+.warn-card{display:flex;gap:.5rem;align-items:flex-start;background:rgba(61,232,195,.06);border:1px solid rgba(61,232,195,.2);border-radius:8px;padding:.55rem .75rem;margin:.75rem 0 0;font-size:.7rem;color:var(--text2);line-height:1.45}
+.warn-card .warn-icon{flex-shrink:0;line-height:1.45}
+.warn-card.warn-caution{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.28);color:var(--text2)}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media(max-width:600px){
   .nav{padding:.5rem 0 .25rem;margin-bottom:.25rem}
@@ -1255,6 +1260,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
           <div class="gs-result-value" id="gs-per-unit-display">—</div>
         </div>
       </div>
+      <div class="warn-card">
+        <span class="warn-icon">ℹ️</span>
+        <span>Assumes a standard 100-unit (1mL) insulin syringe where 1U = 10µL. Check your syringe markings — a different size changes the math.</span>
+      </div>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -1268,6 +1277,14 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       <div class="gs-draw-box">
         <div class="gs-draw-label">Draw</div>
         <div><span class="gs-draw-value" id="gs-draw-value">—</span><span class="gs-draw-unit"> units</span></div>
+      </div>
+      <div class="warn-card warn-caution">
+        <span class="warn-icon">⚠️</span>
+        <span>Dose tiers are reference ranges from published research — not a personal prescription. Start low and adjust only with guidance from a healthcare provider.</span>
+      </div>
+      <div class="warn-card warn-caution" id="gs-high-dose-warn" style="display:none">
+        <span class="warn-icon">⚠️</span>
+        <span>High draw volume — double-check your vial size and BAC water amount. If you need more than one syringe per dose, verify the product concentration with your supplier.</span>
       </div>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
@@ -1380,6 +1397,14 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
         <span class="rc-result-unit">ml</span>
       </div>
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
+      <div class="warn-card" style="margin:.6rem 0 0">
+        <span class="warn-icon">ℹ️</span>
+        <span>Assumes stated product concentration and a standard 100-unit (1mL) insulin syringe. Reconstitution math changes if your syringe type or product purity differs — verify with your supplier.</span>
+      </div>
+      <div class="warn-card warn-caution" id="rc-high-water-warn" style="display:none;margin:.4rem 0 0">
+        <span class="warn-icon">⚠️</span>
+        <span>Unusually large water volume — check that your dose and vial size are correct. A result this high often indicates a data-entry error.</span>
+      </div>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
       <button class="btn-add-schedule" id="rc-add-schedule">📅 Add to Schedule</button>
@@ -1481,7 +1506,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
 
 <button id="share-schedule-btn" class="share-btn">📤 Share Schedule</button>
 
-<p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+<p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
 </div> <!-- Close #tab-schedule -->
 
 <!-- Stacks Tab Content -->
@@ -1506,6 +1531,10 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     <div class="stack-suggestions" id="stack-suggestions-logbook">
       <div class="stack-empty">Select a goal above to see Common Stacks</div>
     </div>
+    <div class="warn-card" style="margin-top:.75rem">
+      <span class="warn-icon">ℹ️</span>
+      <span>Stack suggestions are educational references based on published research protocols. Combining multiple peptides increases complexity and risk — start with one and introduce others gradually under healthcare provider guidance.</span>
+    </div>
   </div>
 
   <!-- Current Stack Card -->
@@ -1523,7 +1552,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
   </div>
 
-  <p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
 </div>
 
 <!-- History Tab Content -->
@@ -1684,7 +1713,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
   </div>
 
-  <p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
 </div>
 
 <!-- More Tab Content -->
@@ -1805,7 +1834,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
     </div>
   </div>
 
-  <p class="disclaimer">For educational purposes only. Not medical advice. Consult a healthcare provider.</p>
+  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
 </div>
 
 </div><!-- /.app-content -->
@@ -4019,6 +4048,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const units   = calcUnits(doseMcg, vialMg, waterMl);
       const el = document.getElementById('gs-draw-value');
       if (el) el.textContent = fmtUnits(units);
+      const highWarn = document.getElementById('gs-high-dose-warn');
+      if (highWarn) highWarn.style.display = units > 60 ? 'flex' : 'none';
       // Sync hidden tier select
       const tierSel = document.getElementById('add-tier');
       if (tierSel) tierSel.value = tier;
@@ -4821,6 +4852,8 @@ document.addEventListener('DOMContentLoaded', () => {
         : `${(desiredMcg / 1000).toFixed(3).replace(/\.?0+$/, '')}mg`;
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
+      const rcHighWarn = document.getElementById('rc-high-water-warn');
+      if (rcHighWarn) rcHighWarn.style.display = waterMl > 5 ? 'flex' : 'none';
       updateSyringe(syringeUnits);
     }
 
