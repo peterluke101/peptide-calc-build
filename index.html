@@ -1291,6 +1291,32 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 /* Rename inline input */
 .protocol-rename-input{background:var(--surface);border:1px solid var(--accent);border-radius:6px;color:var(--text);font-family:inherit;font-size:.88rem;font-weight:700;padding:.2rem .45rem;width:100%;box-sizing:border-box}
 .protocol-rename-input:focus{outline:none;box-shadow:0 0 0 2px var(--accent-dim)}
+/* Sprint 11 */
+.summary-period-cards{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
+.summary-period-card{flex:1;min-width:140px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:.75rem;text-align:center}
+.summary-period-card h4{margin:0 0 .5rem;font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.summary-period-card .sp-big{font-size:1.6rem;font-weight:700;color:var(--accent)}
+.summary-period-card .sp-label{font-size:.75rem;color:var(--text2)}
+.dose-change-entry{display:flex;gap:.5rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.dose-change-entry:last-child{border-bottom:none}
+.dose-change-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+.dose-change-meta{font-size:.75rem;color:var(--text2)}
+.trend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:2px}
+.side-effect-entry{padding:.5rem 0;border-bottom:1px solid var(--border);display:flex;gap:.75rem}
+.side-effect-entry:last-child{border-bottom:none}
+.se-date{font-size:.75rem;color:var(--text2);min-width:60px}
+.se-excerpt{font-size:.85rem;flex:1}
+.missed-analytics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-top:.5rem}
+.ma-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem;text-align:center}
+.ma-box .ma-val{font-size:1.3rem;font-weight:700;color:var(--accent)}
+.ma-box .ma-lbl{font-size:.72rem;color:var(--text2);margin-top:.2rem}
+/* Weight chart */
+#weight-chart-wrap{margin:1rem 0;background:var(--surface);border-radius:12px;padding:.75rem;border:1px solid var(--border)}
+#weight-chart-wrap h3{margin:0 0 .5rem;font-size:.9rem;color:var(--text2)}
+#weight-svg{width:100%;overflow:visible}
+/* Sprint 11 collapsible cards */
+.s11-collapsible-body{overflow:hidden;max-height:2000px;transition:max-height .3s ease}
+.s11-collapsible-body.collapsed{max-height:0}
 </style>
 </head>
 <body>
@@ -1817,8 +1843,47 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
       <div id="adherence-stats"></div>
     </div>
 
-    <!-- Injection History -->
+    <!-- Period Summaries -->
     <div class="card animate-in animate-d1">
+      <div class="section-header" style="margin-bottom:.75rem">
+        <h2>📊 Period Summaries</h2>
+        <button class="collapse-toggle" id="period-summaries-toggle" aria-label="Toggle">
+          <span class="collapse-icon">▼</span>
+        </button>
+      </div>
+      <div id="period-summaries-body" class="s11-collapsible-body">
+        <div id="period-summaries-content"></div>
+      </div>
+    </div>
+
+    <!-- Missed-Dose Analytics -->
+    <div class="card animate-in animate-d2">
+      <div class="section-header" style="margin-bottom:.75rem">
+        <h2>📉 Missed-Dose Analytics</h2>
+        <button class="collapse-toggle" id="missed-analytics-toggle" aria-label="Toggle">
+          <span class="collapse-icon">▼</span>
+        </button>
+      </div>
+      <div id="missed-analytics-body" class="s11-collapsible-body">
+        <div id="missed-analytics-content"></div>
+      </div>
+    </div>
+
+    <!-- Dose Change Log -->
+    <div class="card animate-in animate-d3">
+      <div class="section-header" style="margin-bottom:.75rem">
+        <h2>📋 Dose Change Log</h2>
+        <button class="collapse-toggle" id="dose-change-toggle" aria-label="Toggle">
+          <span class="collapse-icon">▼</span>
+        </button>
+      </div>
+      <div id="dose-change-body" class="s11-collapsible-body">
+        <div id="dose-change-content"></div>
+      </div>
+    </div>
+
+    <!-- Injection History -->
+    <div class="card animate-in animate-d4">
       <div class="section-header">
         <h2>Injection Log</h2>
         <button class="clear-btn" id="clear-inj-log">Clear All</button>
@@ -2089,6 +2154,10 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <input type="number" id="weight-current" placeholder="Current weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
     <input type="number" id="weight-goal" placeholder="Goal weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
     <button id="update-weight-btn" class="btn" style="width: 100%;">Update</button>
+  </div>
+  <div id="weight-chart-wrap" style="display:none">
+    <h3>Weight Trend</h3>
+    <svg id="weight-svg" height="180" viewBox="0 0 600 180" preserveAspectRatio="none"></svg>
   </div>
   <div class="card animate-in">
     <div style="display: flex; flex-direction: column; align-items: center; padding: 1rem 0 0.5rem;">
@@ -4302,6 +4371,319 @@ function renderInjectionLog() {
   });
 }
 
+// ── Sprint 11: Period Summaries ──────────────────────────────
+function renderPeriodSummaries() {
+  const $el = document.getElementById('period-summaries-content');
+  if (!$el) return;
+
+  const log = getInjectionLog();
+  const skipLog = getSkipLog();
+  const now = new Date();
+
+  function calcPeriod(days) {
+    let logged = 0, missed = 0, scheduled = 0;
+    const pepCounts = {};
+    for (let i = 0; i < days; i++) {
+      const d = new Date(now); d.setDate(now.getDate() - i); d.setHours(0,0,0,0);
+      const dateStr = formatLocalDate(d);
+      schedule.forEach(entry => {
+        if (!shouldInject(entry, d)) return;
+        scheduled++;
+        const pep = PEPTIDES[entry.peptideIndex];
+        if (!pep) return;
+        const key = pep.name + '_' + dateStr;
+        if (log[key]) { logged++; pepCounts[pep.name] = (pepCounts[pep.name] || 0) + 1; }
+        else if (!skipLog[key]) missed++;
+      });
+    }
+    const pct = scheduled > 0 ? Math.round((logged / scheduled) * 100) : null;
+    const topPep = Object.entries(pepCounts).sort((a,b) => b[1]-a[1])[0]?.[0] || '—';
+    return { logged, missed, pct, topPep };
+  }
+
+  const week  = calcPeriod(7);
+  const month = calcPeriod(30);
+
+  function card(title, data) {
+    return `<div style="flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem;text-align:center">
+      <div style="font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem">${title}</div>
+      <div style="font-size:1.6rem;font-weight:700;color:var(--accent)">${data.pct !== null ? data.pct + '%' : '—'}</div>
+      <div style="font-size:.72rem;color:var(--text2);margin-top:.2rem">adherence</div>
+      <div style="margin-top:.5rem;font-size:.8rem">✅ ${data.logged} logged &nbsp; ❌ ${data.missed} missed</div>
+      <div style="margin-top:.3rem;font-size:.75rem;color:var(--text2)">Top: ${data.topPep}</div>
+    </div>`;
+  }
+
+  $el.innerHTML = `<div style="display:flex;gap:.75rem;flex-wrap:wrap">${card('This Week', week)}${card('This Month', month)}</div>`;
+}
+
+// ── Sprint 11: Missed-Dose Analytics ────────────────────────
+function renderMissedAnalytics() {
+  const $el = document.getElementById('missed-analytics-content');
+  if (!$el) return;
+
+  const log = getInjectionLog();
+  const skipLog = getSkipLog();
+  const now = new Date();
+  const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const dayMisses = {};
+  const pepMisses = {}, pepScheduled = {};
+  let logged7 = 0, scheduled7 = 0, logged_prev7 = 0, scheduled_prev7 = 0;
+
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i); d.setHours(0,0,0,0);
+    const dateStr = formatLocalDate(d);
+    const dow = d.getDay();
+    schedule.forEach(entry => {
+      if (!shouldInject(entry, d)) return;
+      const pep = PEPTIDES[entry.peptideIndex];
+      if (!pep) return;
+      const key = pep.name + '_' + dateStr;
+      const done = !!log[key];
+      const skipped = !!skipLog[key];
+      const missed = !done && !skipped;
+
+      pepScheduled[pep.name] = (pepScheduled[pep.name] || 0) + 1;
+      if (missed) {
+        dayMisses[dow] = (dayMisses[dow] || 0) + 1;
+        pepMisses[pep.name] = (pepMisses[pep.name] || 0) + 1;
+      }
+
+      if (i < 7)       { scheduled7++;      if (done) logged7++; }
+      else if (i < 14) { scheduled_prev7++; if (done) logged_prev7++; }
+    });
+  }
+
+  const worstDay = Object.entries(dayMisses).sort((a,b) => b[1]-a[1])[0];
+  const worstDayName = worstDay ? DAY_NAMES[worstDay[0]] : '—';
+
+  const missRates = Object.entries(pepScheduled).map(([name, sched]) => ({
+    name, rate: sched > 0 ? Math.round(((pepMisses[name]||0)/sched)*100) : 0
+  })).sort((a,b) => b.rate - a.rate);
+  const mostMissedPep = missRates[0] ? missRates[0].name + ' (' + missRates[0].rate + '%)' : '—';
+
+  const rate7    = scheduled7    > 0 ? Math.round((logged7/scheduled7)*100)         : null;
+  const ratePrev = scheduled_prev7 > 0 ? Math.round((logged_prev7/scheduled_prev7)*100) : null;
+  let trend = '—';
+  if (rate7 !== null && ratePrev !== null) {
+    const diff = rate7 - ratePrev;
+    trend = diff > 0 ? '↑ Improving (+' + diff + '%)' : diff < 0 ? '↓ Declining (' + diff + '%)' : '→ Stable';
+  }
+
+  if (!schedule.length) {
+    $el.innerHTML = '<div class="empty-state" style="padding:1rem"><p>No schedule set up yet.</p></div>';
+    return;
+  }
+
+  $el.innerHTML = `<div class="missed-analytics-grid">
+    <div class="ma-box"><div class="ma-val">${worstDayName}</div><div class="ma-lbl">Most-missed day</div></div>
+    <div class="ma-box"><div class="ma-val" style="font-size:1rem">${mostMissedPep}</div><div class="ma-lbl">Most-missed peptide</div></div>
+    <div class="ma-box"><div class="ma-val" style="font-size:1rem">${trend}</div><div class="ma-lbl">7-day trend vs prior 7d</div></div>
+  </div>`;
+}
+
+// ── Sprint 11: Dose Change Log ───────────────────────────────
+function renderDoseChangeLog() {
+  const $el = document.getElementById('dose-change-content');
+  if (!$el) return;
+
+  const log = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+  if (log.length === 0) {
+    $el.innerHTML = '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No dose changes recorded yet.</div>';
+    return;
+  }
+
+  const recent = log.slice().reverse().slice(0, 20);
+  $el.innerHTML = recent.map(e => {
+    const d = new Date(e.timestamp);
+    const dateLabel = d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const timeLabel = d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+    const changeText = e.field === 'added'
+      ? `Added to schedule (${e.newValue})`
+      : `${e.field}: <s style="color:var(--text2)">${e.oldValue}</s> → <strong>${e.newValue}</strong>`;
+    return `<div class="dose-change-entry">
+      <div class="dose-change-dot"></div>
+      <div>
+        <div style="font-size:.85rem"><strong>${e.peptide}</strong> — ${changeText}</div>
+        <div class="dose-change-meta">${dateLabel} at ${timeLabel}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Sprint 11: Weight SVG Chart ──────────────────────────────
+function renderWeightChart() {
+  const $wrap = document.getElementById('weight-chart-wrap');
+  const $svg  = document.getElementById('weight-svg');
+  if (!$wrap || !$svg) return;
+
+  const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+  if (weights.length < 2) { $wrap.style.display = 'none'; return; }
+  $wrap.style.display = 'block';
+
+  const pts = weights.slice(-30);
+  const goal = parseFloat(localStorage.getItem('weightGoal'));
+  const W = 600, H = 180, PAD = { t:16, r:16, b:32, l:40 };
+  const IW = W - PAD.l - PAD.r, IH = H - PAD.t - PAD.b;
+
+  const vals = pts.map(p => p.weight);
+  const allVals = goal ? [...vals, goal] : vals;
+  const minV = Math.min(...allVals) - 2;
+  const maxV = Math.max(...allVals) + 2;
+
+  const xScale = i => PAD.l + (i / (pts.length - 1)) * IW;
+  const yScale = v => PAD.t + IH - ((v - minV) / (maxV - minV)) * IH;
+
+  // Line path
+  const pathD = pts.map((p, i) => (i === 0 ? 'M' : 'L') + xScale(i).toFixed(1) + ',' + yScale(p.weight).toFixed(1)).join(' ');
+
+  // X-axis labels (first, middle, last)
+  const xLabels = [0, Math.floor((pts.length-1)/2), pts.length-1].map(i => {
+    const d = new Date(pts[i].date);
+    const label = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    return `<text x="${xScale(i).toFixed(1)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="var(--text2)">${label}</text>`;
+  }).join('');
+
+  // Y-axis labels
+  const yLabels = [minV+2, (minV+maxV)/2, maxV-2].map(v => `
+    <text x="${PAD.l - 4}" y="${yScale(v).toFixed(1)}" text-anchor="end" dominant-baseline="middle" font-size="10" fill="var(--text2)">${v.toFixed(0)}</text>`).join('');
+
+  // Goal line
+  const goalLine = goal ? `<line x1="${PAD.l}" y1="${yScale(goal).toFixed(1)}" x2="${W - PAD.r}" y2="${yScale(goal).toFixed(1)}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="6,4" opacity=".6"/>
+    <text x="${W - PAD.r + 2}" y="${yScale(goal).toFixed(1)}" dominant-baseline="middle" font-size="9" fill="var(--accent)">goal</text>` : '';
+
+  // Dots
+  const dots = pts.map((p, i) => `<circle cx="${xScale(i).toFixed(1)}" cy="${yScale(p.weight).toFixed(1)}" r="3.5" fill="var(--accent)"/>`).join('');
+
+  $svg.innerHTML = `
+    <line x1="${PAD.l}" y1="${PAD.t}" x2="${PAD.l}" y2="${PAD.t + IH}" stroke="var(--border)" stroke-width="1"/>
+    <line x1="${PAD.l}" y1="${PAD.t + IH}" x2="${W - PAD.r}" y2="${PAD.t + IH}" stroke="var(--border)" stroke-width="1"/>
+    ${yLabels}${xLabels}${goalLine}
+    <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}`;
+}
+
+// ── Sprint 11: Side-Effect Timeline ─────────────────────────
+const SE_KEYWORDS = ['side effect','reaction','nausea','fatigue','headache','pain','dizzy','flush','itch','swell'];
+
+function renderSideEffectTimeline() {
+  const $el = document.getElementById('side-effect-content');
+  if (!$el) return;
+
+  const journal = getJournal();
+  const seEntries = journal.filter(e => {
+    const text = (e.note || '').toLowerCase();
+    return SE_KEYWORDS.some(kw => text.includes(kw));
+  }).slice(0, 20);
+
+  if (seEntries.length === 0) {
+    $el.innerHTML = '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No side effects logged.</div>';
+    return;
+  }
+
+  $el.innerHTML = seEntries.map(e => {
+    const dateLabel = formatDate(e.date);
+    const excerpt = e.note.length > 120 ? e.note.slice(0, 120) + '…' : e.note;
+    const moodBadge = e.mood ? `<span style="margin-left:.35rem">${e.mood}</span>` : '';
+    return `<div class="side-effect-entry">
+      <div class="se-date">${dateLabel}${moodBadge}</div>
+      <div class="se-excerpt">${excerpt}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Sprint 11: Journal Trends ────────────────────────────────
+function renderJournalTrends() {
+  const $el = document.getElementById('journal-trends-content');
+  if (!$el) return;
+
+  const journal = getJournal();
+  if (journal.length === 0) {
+    $el.innerHTML = '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No journal entries yet.</div>';
+    return;
+  }
+
+  // Peptide mention counts & mood
+  const pepStats = {};
+  const pepNames = schedule.map(e => PEPTIDES[e.peptideIndex]?.name).filter(Boolean);
+  journal.forEach(entry => {
+    const text = (entry.note || '').toLowerCase();
+    pepNames.forEach(name => {
+      if (text.includes(name.toLowerCase())) {
+        if (!pepStats[name]) pepStats[name] = { count: 0, moods: [] };
+        pepStats[name].count++;
+        if (entry.mood) pepStats[name].moods.push(entry.mood);
+      }
+    });
+  });
+
+  // Symptom trends: last 4 entries with symptom data
+  const withSymptoms = journal.filter(e => e.symptoms && Object.values(e.symptoms).some(v => v)).slice(0, 4);
+  const SYMPTOM_FIELDS = ['energy','appetite','cravings','sleep'];
+  const SYMPTOM_COLORS = ['#3DE8C3','#f59e0b','#a78bfa','#60a5fa'];
+
+  function trendDots(field) {
+    return withSymptoms.slice().reverse().map(e => {
+      const val = parseInt(e.symptoms?.[field] || 0);
+      const opacity = val > 0 ? (0.2 + (val / 5) * 0.8).toFixed(2) : '0.1';
+      const colorIdx = SYMPTOM_FIELDS.indexOf(field);
+      const color = SYMPTOM_COLORS[colorIdx] || 'var(--accent)';
+      return `<span class="trend-dot" style="background:${color};opacity:${opacity}" title="${field}: ${val||'—'}"></span>`;
+    }).join('');
+  }
+
+  const pepHtml = Object.entries(pepStats).length > 0
+    ? '<div style="margin-bottom:.75rem"><div style="font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Peptide Mentions</div>' +
+      Object.entries(pepStats).sort((a,b) => b[1].count - a[1].count).map(([name, s]) => {
+        const avgMood = s.moods.length > 0 ? s.moods[s.moods.length - 1] : '';
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:.85rem">${name}</span>
+          <span style="font-size:.8rem;color:var(--text2)">${s.count} entr${s.count===1?'y':'ies'} ${avgMood}</span>
+        </div>`;
+      }).join('') + '</div>'
+    : '<div style="color:var(--text2);font-size:.85rem;margin-bottom:.75rem">No peptide names found in entries.</div>';
+
+  const symptomHtml = withSymptoms.length > 0
+    ? '<div><div style="font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Symptom Trend (last ' + withSymptoms.length + ' entries)</div>' +
+      SYMPTOM_FIELDS.map(f => `<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+        <span style="font-size:.8rem;width:68px;color:var(--text2)">${f.charAt(0).toUpperCase()+f.slice(1)}</span>
+        <span>${trendDots(f)}</span>
+      </div>`).join('') + '</div>'
+    : '<div style="color:var(--text2);font-size:.85rem">No symptom data recorded yet.</div>';
+
+  $el.innerHTML = pepHtml + symptomHtml;
+}
+
+// ── Sprint 11: Setup collapsible toggles ─────────────────────
+function setupS11Collapsibles() {
+  [
+    ['period-summaries-toggle',  'period-summaries-body'],
+    ['missed-analytics-toggle',  'missed-analytics-body'],
+    ['dose-change-toggle',       'dose-change-body'],
+    ['side-effect-toggle',       'side-effect-body'],
+    ['journal-trends-toggle',    'journal-trends-body'],
+  ].forEach(([btnId, bodyId]) => {
+    const btn  = document.getElementById(btnId);
+    const body = document.getElementById(bodyId);
+    if (!btn || !body) return;
+    btn.addEventListener('click', () => {
+      const collapsed = body.classList.toggle('collapsed');
+      btn.classList.toggle('collapsed', collapsed);
+    });
+  });
+}
+
+// ── Sprint 11: Render all Sprint 11 widgets ──────────────────
+function renderSprint11() {
+  renderPeriodSummaries();
+  renderMissedAnalytics();
+  renderDoseChangeLog();
+  renderWeightChart();
+  renderSideEffectTimeline();
+  renderJournalTrends();
+}
+
 // ── Render All ───────────────────────────────────────────────
 function renderAll() {
   renderToday(false);
@@ -4314,6 +4696,7 @@ function renderAll() {
   updateOverdueBadge();
   updateMoreAlertDot();
   renderVialTracker();
+  renderSprint11();
 }
 
 // ── Clear History (Compass tab widget) ─────────────────────
@@ -4679,10 +5062,10 @@ function deleteLogEntry(date) {
 }
 
 // ── Journal Entry Functions ──────────────────────────────────
-function addJournalEntry(date, note, mood = '', timestamp = null) {
+function addJournalEntry(date, note, mood = '', timestamp = null, symptoms = {}) {
   const journal = getJournal();
   const entryTimestamp = timestamp || new Date(date).getTime();
-  
+
   // Remove existing entry for same date if exists
   const existingIndex = journal.findIndex(entry => {
     const entryDate = new Date(entry.date);
@@ -4691,11 +5074,12 @@ function addJournalEntry(date, note, mood = '', timestamp = null) {
     compareDate.setHours(0, 0, 0, 0);
     return entryDate.getTime() === compareDate.getTime();
   });
-  
+
   const newEntry = {
     date,
     note: note || '',
     mood: mood || '',
+    symptoms: symptoms || {},
     timestamp: entryTimestamp
   };
   
@@ -4858,6 +5242,30 @@ function renderLogsList() {
       }
     });
   });
+}
+
+// ── Render Standalone Journal List (#tab-journal) ───────────
+function renderStandaloneJournalList() {
+  const $list = document.getElementById('journal-list');
+  if (!$list) return;
+  const journal = getJournal();
+  if (journal.length === 0) {
+    $list.innerHTML = '<div class="empty-state" style="padding:1.5rem 0"><p>No journal entries yet.</p></div>';
+    return;
+  }
+  $list.innerHTML = journal.slice(0, 30).map(e => {
+    const dateLabel = formatDate(e.date);
+    const excerpt = (e.note||'').length > 100 ? e.note.slice(0,100)+'…' : e.note;
+    const moodBadge = e.mood ? `<span style="margin-left:.4rem">${e.mood}</span>` : '';
+    const symKeys = e.symptoms ? Object.entries(e.symptoms).filter(([,v])=>v).map(([k,v])=>`${k}:${v}`).join(' · ') : '';
+    return `<div style="padding:.65rem 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+        <span style="font-size:.78rem;color:var(--text2)">${dateLabel}${moodBadge}</span>
+        ${symKeys ? `<span style="font-size:.7rem;color:var(--text2)">${symKeys}</span>` : ''}
+      </div>
+      <div style="font-size:.88rem">${excerpt}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Render Journal List ──────────────────────────────────────
@@ -5384,6 +5792,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
     const entry = { peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate };
+
+    // Log dose changes
+    const pepName = PEPTIDES[pepIdx]?.name || ('Peptide ' + pepIdx);
+    const doseChangeLog = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    if (existing !== -1) {
+      const old = schedule[existing];
+      [['tier', old.tier, tier], ['vialMg', old.vialMg, vialMg], ['waterMl', old.waterMl, waterMl], ['cycleDays', old.cycleDays, cycleDays]].forEach(([field, oldVal, newVal]) => {
+        if (String(oldVal) !== String(newVal)) {
+          doseChangeLog.push({ date: dateStr, peptide: pepName, field, oldValue: oldVal, newValue: newVal, timestamp: now.getTime() });
+        }
+      });
+    } else {
+      doseChangeLog.push({ date: dateStr, peptide: pepName, field: 'added', oldValue: '', newValue: tier + ' / ' + vialMg + 'mg', timestamp: now.getTime() });
+    }
+    localStorage.setItem('doseChangeLog', JSON.stringify(doseChangeLog));
+
     if (existing !== -1) {
       schedule[existing] = entry;
     } else {
@@ -5538,6 +5964,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tab-' + savedTab)?.classList.add('active');
   }
 
+  // ── Sprint 11 Collapsibles ──────────────────────────────────
+  setupS11Collapsibles();
+
+  // ── Standalone Journal Tab (tab-journal) ────────────────────
+  document.getElementById('journal-add-btn')?.addEventListener('click', () => {
+    const mood = document.getElementById('journal-mood')?.value || '';
+    const note = document.getElementById('journal-note')?.value?.trim();
+    if (!note) { alert('Please write something before saving.'); return; }
+    const today = new Date().toISOString().split('T')[0];
+    addJournalEntry(today, note, mood);
+    document.getElementById('journal-note').value = '';
+    if (document.getElementById('journal-mood')) document.getElementById('journal-mood').value = '';
+    renderStandaloneJournalList();
+    renderSprint11();
+  });
+  renderStandaloneJournalList();
+
   // ── History / Logbook Toggle ────────────────────────────────
   setupLogbookToggle();
 
@@ -5632,7 +6075,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const today = new Date().toISOString().split('T')[0];
-    addJournalEntry(today, note);
+    const symptoms = {
+      energy:   document.getElementById('symptom-energy')?.value || '',
+      appetite: document.getElementById('symptom-appetite')?.value || '',
+      cravings: document.getElementById('symptom-cravings')?.value || '',
+      sleep:    document.getElementById('symptom-sleep')?.value || ''
+    };
+    addJournalEntry(today, note, '', null, symptoms);
     renderJournalList();
     hideJournalForm();
   });
@@ -5702,6 +6151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `).join('');
     }
+    renderWeightChart();
   }
   
   // Load saved goal
@@ -6696,6 +7146,32 @@ renderProtocols();
   </div>
   <div id="journal-list" class="card animate-in">
     <div class="empty-state">No journal entries yet.</div>
+  </div>
+
+  <!-- Side-Effect Timeline -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>⚠️ Side-Effect Timeline</h2>
+      <button class="collapse-toggle" id="side-effect-toggle" aria-label="Toggle">
+        <span class="collapse-icon">▼</span>
+      </button>
+    </div>
+    <div id="side-effect-body" class="s11-collapsible-body">
+      <div id="side-effect-content"></div>
+    </div>
+  </div>
+
+  <!-- Journal Trends -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>🧬 Journal Trends</h2>
+      <button class="collapse-toggle" id="journal-trends-toggle" aria-label="Toggle">
+        <span class="collapse-icon">▼</span>
+      </button>
+    </div>
+    <div id="journal-trends-body" class="s11-collapsible-body">
+      <div id="journal-trends-content"></div>
+    </div>
   </div>
 </div>
 
