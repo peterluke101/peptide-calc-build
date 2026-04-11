@@ -1870,6 +1870,16 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   <div class="card animate-in">
     <div class="more-options">
 
+      <!-- Learn Tab -->
+      <div class="more-option" id="learn-option">
+        <div class="more-icon">🧬</div>
+        <div class="more-text">
+          <div class="more-title">Learn</div>
+          <div class="more-desc">Peptide basics, dosing, and reconstitution explained</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
       <!-- A2) Weight Loss -->
       <div class="more-option" id="weight-loss-option">
         <div class="more-icon">⚖️</div>
@@ -2023,6 +2033,152 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <h4>History</h4>
     <div class="empty-state">No weight entries yet.</div>
   </div>
+</div>
+
+<!-- Learn Tab Content -->
+<div id="tab-learn" class="tab-content">
+  <div class="header">
+    <h1>Learn <span>the Basics</span></h1>
+    <p style="font-size:.9rem;color:var(--text2);margin-top:.5rem;max-width:600px;text-align:center;">Foundational knowledge — educational reference only, not medical advice.</p>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="font-size:.85rem;font-weight:600;margin-bottom:1rem;color:var(--text);">Units &amp; Measurements</h3>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-mg-mcg" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> mg vs mcg vs Units — what's the difference?
+    </button>
+    <div class="math-detail" id="learn-mg-mcg">
+      <p class="math-step"><strong>1 mg = 1,000 mcg.</strong> Most peptides are dosed in micrograms (mcg), not milligrams (mg). A vial labelled "5 mg" contains 5,000 mcg of peptide.</p>
+      <p class="math-step"><strong>Units (IU)</strong> are a completely different measurement used for some hormones and bacteriostatic water syringes. On a 100-unit insulin syringe, each small tick mark = 1 unit = 0.01 mL.</p>
+      <p class="math-step">Mixing up mg and mcg is one of the most common dosing errors — always confirm which unit a dose is stated in before calculating.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-syringe-units" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Syringe unit basics — reading an insulin syringe
+    </button>
+    <div class="math-detail" id="learn-syringe-units">
+      <p class="math-step">Insulin syringes are marked in <strong>units</strong>, not mL. The two most common sizes:</p>
+      <p class="math-step">• <strong>100-unit (1 mL)</strong> syringe — each unit = 0.01 mL. 50 units = 0.5 mL.</p>
+      <p class="math-step">• <strong>50-unit (0.5 mL)</strong> syringe — each unit = 0.01 mL. 25 units = 0.25 mL.</p>
+      <p class="math-step">To convert a volume in mL to syringe units, multiply by 100. For example, 0.25 mL = 25 units on a 100-unit syringe.</p>
+      <p class="math-step">This app's reverse calculator handles this conversion for you — enter your desired dose and it shows the exact syringe mark to draw to.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-concentration" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Understanding dosing — concentration and volume
+    </button>
+    <div class="math-detail" id="learn-concentration">
+      <p class="math-step"><strong>Concentration</strong> = how much peptide is dissolved in how much liquid.</p>
+      <p class="math-step">Example: 5 mg peptide + 2 mL BAC water = <strong>2,500 mcg per mL</strong>.</p>
+      <div class="math-section">Formula</div>
+      <p class="math-step">Concentration (mcg/mL) = (vial size in mg × 1,000) ÷ mL of BAC water added</p>
+      <p class="math-step">Adding more water <em>lowers</em> the concentration — meaning you inject a larger volume to get the same dose. Adding less water <em>raises</em> the concentration — smaller injection volume per dose.</p>
+    </div>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="font-size:.85rem;font-weight:600;margin-bottom:1rem;color:var(--text);">Reconstitution</h3>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-reconstitution" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Reconstitution basics — mixing BAC water with lyophilized powder
+    </button>
+    <div class="math-detail" id="learn-reconstitution">
+      <p class="math-step">Peptides arrive as a dry, freeze-dried (lyophilized) powder. You dissolve them in <strong>bacteriostatic water (BAC water)</strong> before use.</p>
+      <div class="math-section">Steps</div>
+      <p class="math-step"><span class="math-num">1</span> Wipe the rubber stopper on both the peptide vial and the BAC water vial with an alcohol swab. Allow to dry.</p>
+      <p class="math-step"><span class="math-num">2</span> Draw your desired volume of BAC water into the syringe.</p>
+      <p class="math-step"><span class="math-num">3</span> Insert the needle into the peptide vial at an angle and let the water run down the side of the vial — do not squirt directly onto the powder.</p>
+      <p class="math-step"><span class="math-num">4</span> Gently swirl (do not shake) until the powder is fully dissolved. The solution should be clear.</p>
+      <p class="math-step"><span class="math-num">5</span> Refrigerate immediately. Most reconstituted peptides are stable for 4–6 weeks when refrigerated and kept away from light.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-bac-water" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> How BAC water volume affects concentration
+    </button>
+    <div class="math-detail" id="learn-bac-water">
+      <p class="math-step">The amount of BAC water you add determines how concentrated each dose is and how small or large each injection volume will be.</p>
+      <p class="math-step">• <strong>Less BAC water</strong> → higher concentration → smaller injection volume per dose (easier to inject, but less room for error when measuring).</p>
+      <p class="math-step">• <strong>More BAC water</strong> → lower concentration → larger injection volume per dose (easier to measure precisely, but more fluid per injection).</p>
+      <p class="math-step">A common approach for SubQ injections is to target <strong>0.1–0.3 mL per dose</strong>. Work backwards from your target dose to choose how much BAC water to add.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-high-units" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Why high units on a syringe does not mean a high dose
+    </button>
+    <div class="math-detail" id="learn-high-units">
+      <p class="math-step">The number of syringe units you draw is just a <strong>volume measurement</strong>. Whether that volume contains a large or small dose depends entirely on the concentration of your solution.</p>
+      <p class="math-step">Example: 20 units (0.2 mL) from a vial reconstituted with 1 mL BAC water contains twice the dose of 20 units drawn from the same vial reconstituted with 2 mL BAC water.</p>
+      <p class="math-step">Always start from your desired dose in mcg, not from a syringe mark. Use the calculator to find the correct mark for your specific reconstitution.</p>
+    </div>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="font-size:.85rem;font-weight:600;margin-bottom:1rem;color:var(--text);">Injections &amp; Storage</h3>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-injection" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Injection basics — SubQ technique, site rotation, sterile practice
+    </button>
+    <div class="math-detail" id="learn-injection">
+      <p class="math-step"><strong>SubQ (subcutaneous)</strong> injections go into the layer of fat just under the skin — not into muscle. Common sites: abdomen (2 inches from navel), outer thigh, or upper arm.</p>
+      <div class="math-section">Technique</div>
+      <p class="math-step"><span class="math-num">1</span> Wipe the injection site with an alcohol swab and let it dry completely.</p>
+      <p class="math-step"><span class="math-num">2</span> Pinch a small fold of skin. Insert the needle at a <strong>45° angle</strong> (or 90° if using a very short needle).</p>
+      <p class="math-step"><span class="math-num">3</span> Inject slowly and steadily. Do not aspirate (pulling back the plunger is not recommended for SubQ).</p>
+      <p class="math-step"><span class="math-num">4</span> Withdraw the needle and apply light pressure. Do not rub.</p>
+      <p class="math-step"><strong>Site rotation:</strong> Rotate injection sites each time to prevent lipodystrophy (lumpy or thinning skin). Keep a mental map or use the Schedule tab to track sites.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-storage" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Storage &amp; handling — refrigeration, light sensitivity, shelf life
+    </button>
+    <div class="math-detail" id="learn-storage">
+      <p class="math-step"><strong>Lyophilized (unreconstituted) powder:</strong> Store in a cool, dark place. Most peptides remain stable for 1–2 years when kept dry and away from heat and UV light.</p>
+      <p class="math-step"><strong>Reconstituted (mixed) solution:</strong> Refrigerate immediately after mixing. Store away from light. Most peptides are stable for <strong>4–6 weeks</strong> when refrigerated. Avoid repeated freeze-thaw cycles.</p>
+      <p class="math-step"><strong>Tips:</strong> Keep vials upright. Use an opaque bag or wrap vials in foil if your fridge has a light. Do not store next to the fridge door where temperature fluctuates.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-mistakes" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> Common beginner mistakes to avoid
+    </button>
+    <div class="math-detail" id="learn-mistakes">
+      <p class="math-step"><strong>1. Confusing mg and mcg.</strong> A dose of "250" could be 250 mcg or 250 mg — the latter is 1,000× more. Always confirm the unit.</p>
+      <p class="math-step"><strong>2. Shaking the vial.</strong> Shaking can degrade peptides. Always swirl gently.</p>
+      <p class="math-step"><strong>3. Squirting BAC water directly onto the powder.</strong> Aim for the glass wall instead to preserve peptide structure.</p>
+      <p class="math-step"><strong>4. Reading the wrong syringe.</strong> A 50-unit syringe and a 100-unit syringe have different tick-mark scales. Confirm which syringe you have before drawing.</p>
+      <p class="math-step"><strong>5. Not rotating sites.</strong> Repeated injections into the same spot cause tissue damage over time.</p>
+      <p class="math-step"><strong>6. Leaving reconstituted peptide at room temperature.</strong> Refrigerate immediately after mixing to preserve potency.</p>
+    </div>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="font-size:.85rem;font-weight:600;margin-bottom:1rem;color:var(--text);">Using This App</h3>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-reverse-calc" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> How the reverse calculator works
+    </button>
+    <div class="math-detail" id="learn-reverse-calc">
+      <p class="math-step">The reverse calculator starts from your desired dose (in mcg) and works backwards to tell you <em>exactly which mark to draw to</em> on your syringe.</p>
+      <div class="math-section">Inputs needed</div>
+      <p class="math-step">• Vial size (mg) — how much peptide is in the vial</p>
+      <p class="math-step">• BAC water added (mL) — how much you used to reconstitute</p>
+      <p class="math-step">• Desired dose (mcg) — how much peptide you want to inject</p>
+      <p class="math-step">• Syringe size (50-unit or 100-unit) — which syringe you are using</p>
+      <div class="math-section">Output</div>
+      <p class="math-step">The calculator shows the volume in mL and the corresponding syringe unit mark. Use "Show math" to see the full step-by-step calculation.</p>
+    </div>
+
+    <button class="math-toggle learn-toggle" data-detail="learn-scheduling" aria-expanded="false" type="button">
+      <span class="math-chevron">▶</span> How scheduling and stack planning differ
+    </button>
+    <div class="math-detail" id="learn-scheduling">
+      <p class="math-step"><strong>Scheduling</strong> is about timing — which days and times you inject each peptide. The Schedule tab generates a calendar view of your protocol so you never miss a dose or accidentally double-dose.</p>
+      <p class="math-step"><strong>Stack planning</strong> (Stacks tab) is about combination — which peptides you pair together in a protocol, and at what doses. A stack is your full protocol design before it becomes a schedule.</p>
+      <p class="math-step">Typical workflow: design your stack → save it as a protocol → view it on the schedule → log each dose in History.</p>
+    </div>
+  </div>
+
+  <p class="disclaimer">Educational reference only — not medical advice. Content describes general principles, not recommendations for any individual. Always consult a qualified healthcare provider.</p>
 </div>
 
 </div><!-- /.app-content -->
@@ -4897,6 +5053,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Learn option in More tab — show tab-learn
+  document.getElementById('learn-option')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const learnTab = document.getElementById('tab-learn');
+    if (learnTab) learnTab.classList.add('active');
+    localStorage.setItem('activeTab', 'learn');
+  });
+
+  // Learn tab accordion toggles
+  document.querySelectorAll('.learn-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const detail = document.getElementById(btn.dataset.detail);
+      if (!detail) return;
+      const open = detail.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  });
+
   // Weight Loss option in More tab — show tab-weight
   document.getElementById('weight-loss-option')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -4920,7 +5095,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
-  if (tabBtn) tabBtn.click();
+  if (tabBtn) {
+    tabBtn.click();
+  } else if (savedTab === 'weight' || savedTab === 'learn') {
+    // Sub-tabs with no bottom nav button — show content directly
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + savedTab)?.classList.add('active');
+  }
 
   // ── History / Logbook Toggle ────────────────────────────────
   setupLogbookToggle();
