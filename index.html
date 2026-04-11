@@ -4924,46 +4924,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  document.getElementById('journal-add-btn')?.addEventListener('click', () => {
-    const date = document.getElementById('journal-date')?.value || new Date().toISOString().split('T')[0];
-    const mood = document.getElementById('journal-mood')?.value;
-    const note = document.getElementById('journal-note')?.value;
+  // ── Journal Add/Save/Cancel ─────────────────────────────────
+  const $addJournalBtn    = document.getElementById('add-journal-btn');
+  const $addJournalForm   = document.getElementById('add-journal-form');
+  const $saveJournalBtn   = document.getElementById('save-journal-btn');
+  const $cancelJournalBtn = document.getElementById('cancel-journal-btn');
 
-    if (!note) {
-      alert('Please write something in your journal.');
-      return;
-    }
+  function hideJournalForm() {
+    if ($addJournalForm) $addJournalForm.style.display = 'none';
+    if (document.getElementById('journal-content')) document.getElementById('journal-content').value = '';
+    ['symptom-energy','symptom-appetite','symptom-cravings','symptom-sleep'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
 
-    const entries = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
-    entries.push({ date, mood, note, timestamp: Date.now() });
-    localStorage.setItem('peptideJournal', JSON.stringify(entries));
-
-    renderJournalList();
-    document.getElementById('journal-note').value = '';
-    document.getElementById('journal-mood').value = '';
+  $addJournalBtn?.addEventListener('click', () => {
+    if (!$addJournalForm) return;
+    $addJournalForm.style.display = 'block';
+    $addJournalForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
-  function renderJournalList() {
-    const entries = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
-    const $list = document.getElementById('journal-list');
-    if (!$list) return;
-
-    if (entries.length === 0) {
-      $list.innerHTML = '<div class="empty-state">No journal entries yet.</div>';
+  $saveJournalBtn?.addEventListener('click', () => {
+    const note = document.getElementById('journal-content')?.value?.trim();
+    if (!note) {
+      alert('Please write something before saving.');
       return;
     }
+    const today = new Date().toISOString().split('T')[0];
+    addJournalEntry(today, note);
+    renderJournalList();
+    hideJournalForm();
+  });
 
-    $list.innerHTML = entries.slice().reverse().map(entry => `
-      <div class="journal-entry" style="padding: 1rem; border-bottom: 1px solid var(--border);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <span style="font-size: 0.75rem; color: var(--text2);">${new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-          ${entry.mood ? `<span style="font-size: 1.25rem;">${entry.mood}</span>` : ''}
-        </div>
-        <div style="line-height: 1.5;">${entry.note}</div>
-      </div>
-    `).join('');
-  }
-  renderJournalList();
+  $cancelJournalBtn?.addEventListener('click', hideJournalForm);
 
   // ── Weight Tracker Functionality ────────────────────────────
   document.getElementById('update-weight-btn')?.addEventListener('click', () => {
