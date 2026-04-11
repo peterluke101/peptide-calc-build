@@ -1364,6 +1364,22 @@ body.first-run .gumroad-banner{display:none!important}
 body.first-run .stacks-new-user-note{display:block}
 /* "New!" badge for More tab features */
 .more-new-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .3rem;border-radius:4px;vertical-align:middle;margin-left:.3rem;letter-spacing:.04em}
+/* === Insight Dashboard (Issue #85) === */
+.insights-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;padding:.25rem 0}
+.insight-box{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:.65rem .75rem;text-align:center}
+.insight-val{font-size:1.25rem;font-weight:700;color:var(--accent);line-height:1.2}
+.insight-lbl{font-size:.7rem;color:var(--text-muted);margin-top:.2rem;line-height:1.3}
+.trend-up{color:#22c55e}
+.trend-down{color:#ef4444}
+.trend-flat{color:var(--text-muted)}
+.insight-note{font-size:.75rem;color:var(--text-muted);padding:.4rem 0;line-height:1.5;border-top:1px solid var(--border);margin-top:.4rem}
+/* Make injection log collapsible */
+#inj-log-toggle-btn{background:none;border:none;color:var(--accent);font-size:.8rem;cursor:pointer;padding:.1rem .3rem;font-weight:600}
+/* s11-collapsible details/summary style */
+.s11-collapsible{border:none;outline:none}
+.s11-summary{cursor:pointer;font-size:.88rem;font-weight:600;color:var(--accent);padding:.1rem 0;list-style:none;user-select:none}
+.s11-summary::-webkit-details-marker{display:none}
+.s11-body{padding-top:.5rem}
 </style>
 </head>
 <body>
@@ -1914,6 +1930,16 @@ body.first-run .stacks-new-user-note{display:block}
       <div id="adherence-stats"></div>
     </div>
 
+    <!-- Quick Insights Card -->
+    <div class="card animate-in" style="margin-bottom:.75rem">
+      <details class="s11-collapsible" open>
+        <summary class="s11-summary">💡 Quick Insights</summary>
+        <div id="quick-insights-content" class="s11-body">
+          <div class="insights-grid" id="insights-grid"></div>
+        </div>
+      </details>
+    </div>
+
     <!-- Period Summaries -->
     <div class="card animate-in animate-d1">
       <div class="section-header" style="margin-bottom:.75rem">
@@ -1959,7 +1985,12 @@ body.first-run .stacks-new-user-note{display:block}
         <h2>Injection Log</h2>
         <button class="clear-btn" id="clear-inj-log">Clear All</button>
       </div>
-      <div id="inj-log-list"></div>
+      <details id="inj-log-details">
+        <summary style="cursor:pointer;color:var(--accent);font-size:.82rem;font-weight:600;padding:.25rem 0;list-style:none">
+          Show injection log ›
+        </summary>
+        <div id="inj-log-list"></div>
+      </details>
     </div>
   </div>
 
@@ -1977,6 +2008,22 @@ body.first-run .stacks-new-user-note{display:block}
           <p>Add your first entry to track symptoms, thoughts, and progress</p>
         </div>
       </div>
+    </div>
+
+    <!-- Side-Effect Timeline (Sprint 11) -->
+    <div class="card animate-in" style="margin-bottom:.75rem">
+      <details class="s11-collapsible" open>
+        <summary class="s11-summary">⚠️ Side-Effect Timeline</summary>
+        <div id="side-effect-content" class="s11-body"></div>
+      </details>
+    </div>
+
+    <!-- Journal Trends by Peptide (Sprint 11) -->
+    <div class="card animate-in" style="margin-bottom:.75rem">
+      <details class="s11-collapsible" open>
+        <summary class="s11-summary">🧬 Journal Trends</summary>
+        <div id="journal-trends-content" class="s11-body"></div>
+      </details>
     </div>
 
     <!-- Add Journal Form (hidden by default) -->
@@ -4742,10 +4789,27 @@ function renderWeightChart() {
   // Dots
   const dots = pts.map((p, i) => `<circle cx="${xScale(i).toFixed(1)}" cy="${yScale(p.weight).toFixed(1)}" r="3.5" fill="var(--accent)"/>`).join('');
 
+  // Protocol start markers
+  let svgExtra = '';
+  try {
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const seenStarts = new Set();
+    sched.forEach(entry => {
+      const sd = entry.startDate;
+      if (!sd || seenStarts.has(sd)) return;
+      seenStarts.add(sd);
+      const idx = pts.findIndex(p => p.date >= sd);
+      if (idx < 0) return;
+      const px = xScale(idx).toFixed(1);
+      svgExtra += `<line x1="${px}" y1="${PAD.t}" x2="${px}" y2="${PAD.t + IH}" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>` +
+        `<text x="${parseFloat(px)+3}" y="${PAD.t + 10}" font-size="9" fill="#a78bfa" opacity="0.85">▶ Start</text>`;
+    });
+  } catch(e) {}
+
   $svg.innerHTML = `
     <line x1="${PAD.l}" y1="${PAD.t}" x2="${PAD.l}" y2="${PAD.t + IH}" stroke="var(--border)" stroke-width="1"/>
     <line x1="${PAD.l}" y1="${PAD.t + IH}" x2="${W - PAD.r}" y2="${PAD.t + IH}" stroke="var(--border)" stroke-width="1"/>
-    ${yLabels}${xLabels}${goalLine}
+    ${yLabels}${xLabels}${goalLine}${svgExtra}
     <path d="${pathD}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
     ${dots}`;
 }
@@ -4860,8 +4924,149 @@ function setupS11Collapsibles() {
   });
 }
 
+// ── Issue #85: Quick Insights Dashboard ──────────────────────
+function renderQuickInsights() {
+  const el = document.getElementById('insights-grid');
+  if (!el) return;
+
+  const today = new Date();
+  const toDateStr = d => d.toISOString().slice(0,10);
+
+  // --- Most consistent week in last 90 days ---
+  let bestWeekLabel = '—', bestWeekRate = null;
+  try {
+    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    if (sched.length > 0) {
+      const weekBuckets = {};
+      for (let i = 89; i >= 0; i--) {
+        const d = new Date(today); d.setDate(today.getDate() - i);
+        const ds = toDateStr(d);
+        const dow = d.getDay();
+        const weekStart = new Date(d); weekStart.setDate(d.getDate() - ((dow + 6) % 7));
+        const wk = toDateStr(weekStart);
+        if (!weekBuckets[wk]) weekBuckets[wk] = { logged: 0, expected: 0 };
+        sched.forEach(entry => {
+          if (typeof shouldInject === 'function' && shouldInject(entry, ds)) weekBuckets[wk].expected++;
+        });
+        Object.keys(log).forEach(k => {
+          if (k.startsWith(ds + '|')) weekBuckets[wk].logged++;
+        });
+      }
+      let bestRate = -1;
+      Object.entries(weekBuckets).forEach(([wk, b]) => {
+        if (b.expected > 0) {
+          const rate = b.logged / b.expected;
+          if (rate > bestRate) { bestRate = rate; bestWeekLabel = wk; bestWeekRate = rate; }
+        }
+      });
+      if (bestWeekRate !== null) {
+        const d = new Date(bestWeekLabel + 'T12:00:00');
+        bestWeekLabel = d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+      }
+    }
+  } catch(e) {}
+
+  // --- Weight trend since first entry ---
+  let weightTrendHTML = '<span class="trend-flat">→ No data</span>';
+  let weightDeltaLabel = '—';
+  try {
+    const wt = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    if (wt.length >= 2) {
+      const sorted = [...wt].sort((a,b) => a.date < b.date ? -1 : 1);
+      const first = parseFloat(sorted[0].weight);
+      const last = parseFloat(sorted[sorted.length-1].weight);
+      const delta = last - first;
+      const abs = Math.abs(delta).toFixed(1);
+      if (Math.abs(delta) < 0.5) {
+        weightTrendHTML = '<span class="trend-flat">→ Stable</span>';
+        weightDeltaLabel = '±0 lbs';
+      } else if (delta < 0) {
+        weightTrendHTML = `<span class="trend-up">↓ ${abs} lbs</span>`;
+        weightDeltaLabel = `−${abs} lbs`;
+      } else {
+        weightTrendHTML = `<span class="trend-down">↑ ${abs} lbs</span>`;
+        weightDeltaLabel = `+${abs} lbs`;
+      }
+    }
+  } catch(e) {}
+
+  // --- Missed doses this month vs last month ---
+  let missedThisMonth = 0, missedLastMonth = 0;
+  let missedTrendHTML = '<span class="trend-flat">→</span>';
+  try {
+    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const skipLog = JSON.parse(localStorage.getItem('skipLog') || '{}');
+    const now = new Date();
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    for (let i = 0; i < 60; i++) {
+      const d = new Date(now); d.setDate(now.getDate() - i);
+      const ds = toDateStr(d);
+      sched.forEach(entry => {
+        if (typeof shouldInject === 'function' && shouldInject(entry, ds)) {
+          const logged = Object.keys(log).some(k => k.startsWith(ds+'|'));
+          const skipped = Object.keys(skipLog).some(k => k.startsWith(ds+'|'));
+          if (!logged && !skipped) {
+            if (d >= thisMonthStart) missedThisMonth++;
+            else if (d >= lastMonthStart && d <= lastMonthEnd) missedLastMonth++;
+          }
+        }
+      });
+    }
+    if (missedThisMonth < missedLastMonth) missedTrendHTML = '<span class="trend-up">↑ improving</span>';
+    else if (missedThisMonth > missedLastMonth) missedTrendHTML = '<span class="trend-down">↓ more missed</span>';
+  } catch(e) {}
+
+  // --- Weekday with most misses ---
+  let worstDayName = '—';
+  try {
+    const log2 = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const skipLog2 = JSON.parse(localStorage.getItem('skipLog') || '{}');
+    const sched2 = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const dayMisses = [0,0,0,0,0,0,0];
+    for (let i = 1; i <= 90; i++) {
+      const d = new Date(today); d.setDate(today.getDate() - i);
+      const ds = toDateStr(d);
+      sched2.forEach(entry => {
+        if (typeof shouldInject === 'function' && shouldInject(entry, ds)) {
+          const logged = Object.keys(log2).some(k => k.startsWith(ds+'|'));
+          const skipped = Object.keys(skipLog2).some(k => k.startsWith(ds+'|'));
+          if (!logged && !skipped) dayMisses[d.getDay()]++;
+        }
+      });
+    }
+    const maxIdx = dayMisses.indexOf(Math.max(...dayMisses));
+    if (dayMisses[maxIdx] > 0) worstDayName = DAY_NAMES[maxIdx];
+  } catch(e) {}
+
+  // --- Render insight boxes ---
+  el.innerHTML = `
+    <div class="insight-box">
+      <div class="insight-val">${bestWeekRate !== null ? Math.round(bestWeekRate*100)+'%' : '—'}</div>
+      <div class="insight-lbl">Best week<br><span style="font-size:.65rem">${bestWeekLabel !== '—' ? 'w/o '+bestWeekLabel : '—'}</span></div>
+    </div>
+    <div class="insight-box">
+      <div class="insight-val">${weightDeltaLabel}</div>
+      <div class="insight-lbl">Weight since<br>first entry ${weightTrendHTML}</div>
+    </div>
+    <div class="insight-box">
+      <div class="insight-val">${missedThisMonth}</div>
+      <div class="insight-lbl">Missed this month<br>${missedTrendHTML}</div>
+    </div>
+    <div class="insight-box">
+      <div class="insight-val">${worstDayName}</div>
+      <div class="insight-lbl">Most-missed<br>day of week</div>
+    </div>
+  `;
+}
+
 // ── Sprint 11: Render all Sprint 11 widgets ──────────────────
 function renderSprint11() {
+  renderQuickInsights();
   renderPeriodSummaries();
   renderMissedAnalytics();
   renderDoseChangeLog();
