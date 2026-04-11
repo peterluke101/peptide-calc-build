@@ -1825,9 +1825,9 @@ function shortName(name) {
 
 function getWeekStart(offset) {
   const now = new Date();
-  const day = now.getDay();
   const start = new Date(now);
-  start.setDate(now.getDate() - day + (offset * 7));
+  // Center today in the 7-day strip (3 days before today)
+  start.setDate(now.getDate() - 3 + (offset * 7));
   start.setHours(0, 0, 0, 0);
   return start;
 }
@@ -2675,6 +2675,12 @@ function renderCalendar() {
       <div class="cal-events-wrap">${eventsHtml}</div>
     `;
     $grid.appendChild(col);
+  }
+
+  // Scroll today into view (mobile horizontal strip)
+  if (weekOffset === 0) {
+    const todayEl = $grid.querySelector('.cal-day.today');
+    if (todayEl) todayEl.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
   }
 }
 
