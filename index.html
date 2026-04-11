@@ -213,24 +213,56 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .log-cancel-btn:hover{border-color:var(--accent);color:var(--text)}
 
 /* ── Vial Tracker ───────────────────────────────────────── */
-.vial-item{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.75rem}
+.vial-item{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.75rem;transition:border-color .2s}
 .vial-item:last-child{margin-bottom:0}
-.vial-item.low{border:1px solid #f59e0b;background:rgba(245,158,11,.08)}
+.vial-item.low{border:1px solid #f59e0b;background:rgba(245,158,11,.07)}
+.vial-item.critical{border:1px solid #ef4444;background:rgba(239,68,68,.07)}
 .vial-item.empty{border:1px solid #ef4444;background:rgba(239,68,68,.08)}
+.vial-item.expired{border:2px solid #ef4444;background:rgba(239,68,68,.1)}
 .vial-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
 .vial-name{font-size:.9rem;font-weight:600}
 .vial-specs{font-size:.7rem;color:var(--text2)}
-.vial-progress{background:var(--bg);border-radius:3px;height:6px;margin-bottom:.5rem;overflow:hidden}
-.vial-progress-fill{height:100%;background:var(--accent);transition:width .3s;border-radius:3px}
+.vial-progress{background:var(--bg);border-radius:3px;height:7px;margin:.55rem 0;overflow:hidden}
+.vial-progress-fill{height:100%;background:var(--accent);transition:width .4s ease;border-radius:3px}
 .vial-progress-fill.low{background:#f59e0b}
+.vial-progress-fill.critical{background:#ef4444}
 .vial-progress-fill.empty{background:#ef4444}
-.vial-stats{display:flex;justify-content:space-between;align-items:center}
+.vial-stats{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.25rem}
 .vial-doses{font-size:.75rem;color:var(--text2)}
 .vial-warning{font-size:.7rem;font-weight:600;color:#f59e0b}
 .vial-warning.empty-warn{color:#ef4444}
 .vial-reset-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:.2rem .4rem;font-size:.6rem;font-weight:500;cursor:pointer;transition:all .2s;margin-left:.5rem}
 .vial-reset-btn:hover{border-color:var(--accent);color:var(--accent)}
 .vial-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
+/* Lifecycle metadata row */
+.vial-lifecycle{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.45rem}
+.vial-lc-chip{display:inline-flex;align-items:center;gap:.25rem;font-size:.65rem;font-weight:500;color:var(--text2);background:var(--bg);border-radius:5px;padding:.15rem .45rem;border:1px solid var(--border)}
+.vial-lc-chip.green{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
+.vial-lc-chip.amber{color:#f59e0b;border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.07)}
+.vial-lc-chip.red{color:#ef4444;border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.07)}
+/* Expired banner */
+.vial-expired-banner{font-size:.75rem;font-weight:700;color:#ef4444;background:rgba(239,68,68,.12);border-radius:6px;padding:.35rem .6rem;margin-top:.4rem;text-align:center;letter-spacing:.04em}
+/* Cycle coverage chip */
+.vial-coverage{font-size:.7rem;font-weight:600;border-radius:5px;padding:.2rem .5rem;margin-top:.35rem;display:inline-block}
+.vial-coverage.ok{color:#22c55e;background:rgba(34,197,94,.1)}
+.vial-coverage.warn{color:#f59e0b;background:rgba(245,158,11,.1)}
+/* Inventory summary banner */
+.inv-summary{background:var(--surface2);border-radius:10px;padding:.8rem 1rem;margin-bottom:.85rem}
+.inv-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
+.inv-summary-stat{font-size:1.1rem;font-weight:800;color:var(--text)}
+.inv-summary-lbl{font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
+.inv-low-banner{font-size:.75rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:7px;padding:.4rem .75rem;margin-bottom:.6rem}
+/* Alert dot on More nav */
+.more-alert-dot{position:absolute;top:-4px;right:-5px;width:9px;height:9px;background:#ef4444;border-radius:50%;display:none;pointer-events:none}
+/* Vial action row */
+.vial-actions{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
+.vial-new-btn{flex:1;background:var(--accent);color:#000;border:none;border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
+.vial-new-btn:hover{opacity:.82}
+/* Light mode */
+body.light-mode .vial-item{background:var(--surface2)}
+body.light-mode .vial-lc-chip{background:#f5f5f5;color:var(--text2)}
+body.light-mode .inv-summary{background:var(--surface2)}
+body.light-mode .vial-progress{background:#e0e0e0}
 
 /* ── Calendar Grid ───────────────────────────────────────── */
 .calendar-nav{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
@@ -1910,6 +1942,16 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   <div class="card animate-in">
     <div class="more-options">
 
+      <!-- Inventory -->
+      <div class="more-option" id="inventory-option">
+        <div class="more-icon">🧪</div>
+        <div class="more-text">
+          <div class="more-title">Vial Inventory</div>
+          <div class="more-desc">Lifecycle tracking, discard dates, stock alerts</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
       <!-- Learn Tab -->
       <div class="more-option" id="learn-option">
         <div class="more-icon">🧬</div>
@@ -2017,6 +2059,21 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   </div>
 
   <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+</div>
+
+<!-- Inventory Tab Content -->
+<div id="tab-inventory" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem;">
+    <button id="inv-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Vial <span>Inventory</span></h1>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Reconstitution dates, discard timelines, stock levels</p>
+  </div>
+  <div class="card animate-in" id="inv-card">
+    <div id="inv-summary"></div>
+    <div id="vial-list"></div>
+  </div>
 </div>
 
 <!-- Weight Loss Tab Content -->
@@ -2238,8 +2295,9 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <span class="overdue-badge" id="overdue-badge"></span>
     <span class="tab-label">History</span>
   </button>
-  <button class="tab-btn" data-tab="more">
+  <button class="tab-btn" data-tab="more" style="position:relative">
     <span class="tab-icon">⚙️</span>
+    <span class="more-alert-dot" id="more-alert-dot"></span>
     <span class="tab-label">More</span>
   </button>
 </div>
@@ -2509,6 +2567,22 @@ function saveInjection(injectionKey, meta = {}) {
   parts.pop(); // remove date
   const peptideName = parts.join('_');
   incrementVialUsage(peptideName, 1);
+
+  // Toast: show remaining doses after decrement
+  const entry = schedule.find(e => PEPTIDES[e.peptideIndex].name === peptideName);
+  if (entry) {
+    const vialData = getVialData();
+    const vial = vialData[getVialKey(entry)];
+    if (vial) {
+      const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
+      const msg = remaining <= 0
+        ? `${peptideName} vial: empty — open a new vial`
+        : remaining <= 3
+          ? `${peptideName} vial: ${remaining} dose${remaining !== 1 ? 's' : ''} left ⚠`
+          : `${peptideName} vial: ${remaining} doses remaining`;
+      showVialToast(msg);
+    }
+  }
 }
 
 function getInjectionEntry(injectionKey) {
@@ -2620,17 +2694,34 @@ function ensureVialEntry(entry) {
   const key = getVialKey(entry);
   if (!vialData[key]) {
     const pep = PEPTIDES[entry.peptideIndex];
+    const today = formatLocalDate(new Date());
     vialData[key] = {
       peptideName: pep.name,
       vialMg: entry.vialMg,
       waterMl: entry.waterMl,
       totalDoses: calculateTotalDoses(entry),
       usedDoses: 0,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      reconstitutionDate: today,
+      discardByDate: addDays(today, 28)
     };
     saveVialData(vialData);
+  } else {
+    // Backfill lifecycle fields for existing entries
+    const v = vialData[key];
+    if (!v.reconstitutionDate) {
+      v.reconstitutionDate = formatLocalDate(new Date(v.createdAt || Date.now()));
+      v.discardByDate = addDays(v.reconstitutionDate, 28);
+      saveVialData(vialData);
+    }
   }
   return vialData[key];
+}
+
+function addDays(dateStr, n) {
+  const d = parseLocalDate(dateStr);
+  d.setDate(d.getDate() + n);
+  return formatLocalDate(d);
 }
 
 function incrementVialUsage(peptideName, delta) {
@@ -2649,8 +2740,11 @@ function incrementVialUsage(peptideName, delta) {
 function resetSingleVial(key) {
   const vialData = getVialData();
   if (vialData[key]) {
+    const today = formatLocalDate(new Date());
     vialData[key].usedDoses = 0;
     vialData[key].createdAt = new Date().toISOString();
+    vialData[key].reconstitutionDate = today;
+    vialData[key].discardByDate = addDays(today, 28);
     saveVialData(vialData);
   }
   renderAll();
@@ -3042,80 +3136,194 @@ function startNewVial(scheduleIdx) {
   if (!entry) return;
   const vialData = getVialData();
   const key = getVialKey(entry);
+  const today = formatLocalDate(new Date());
   if (vialData[key]) {
     vialData[key].usedDoses = 0;
     vialData[key].createdAt = new Date().toISOString();
+    vialData[key].reconstitutionDate = today;
+    vialData[key].discardByDate = addDays(today, 28);
     saveVialData(vialData);
   } else {
     ensureVialEntry(entry);
   }
   renderPeptidesList();
+  updateMoreAlertDot();
+}
+
+function vialDiscardInfo(vial) {
+  const today = formatLocalDate(new Date());
+  const discardDate = vial.discardByDate || addDays(vial.reconstitutionDate || today, 28);
+  const todayD = parseLocalDate(today);
+  const discardD = parseLocalDate(discardDate);
+  const daysLeft = Math.round((discardD - todayD) / 86400000);
+  const expired = daysLeft < 0;
+  const color = expired ? 'red' : daysLeft <= 2 ? 'red' : daysLeft <= 7 ? 'amber' : 'green';
+  const label = expired
+    ? `Expired ${Math.abs(daysLeft)}d ago`
+    : daysLeft === 0 ? 'Discard today'
+    : `Discard in ${daysLeft}d`;
+  return { daysLeft, expired, color, label, discardDate };
+}
+
+function updateMoreAlertDot() {
+  const dot = document.getElementById('more-alert-dot');
+  if (!dot) return;
+  const vialData = getVialData();
+  let hasCritical = false;
+  const today = formatLocalDate(new Date());
+  Object.values(vialData).forEach(vial => {
+    const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
+    const { expired, daysLeft } = vialDiscardInfo(vial);
+    if (remaining <= 1 || expired || daysLeft < 0) hasCritical = true;
+  });
+  dot.style.display = hasCritical ? 'block' : 'none';
+}
+
+function showVialToast(msg) {
+  let toast = document.getElementById('vial-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'vial-toast';
+    toast.className = 'rc-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 function renderVialTracker() {
   const $list = document.getElementById('vial-list');
-  if (!$list) return; // Vial tracker removed from UI
+  const $summary = document.getElementById('inv-summary');
+  if (!$list) return;
 
   // Ensure all scheduled peptides have vial entries
   schedule.forEach(entry => ensureVialEntry(entry));
 
   const vialData = getVialData();
-  const entries = Object.entries(vialData).sort((a, b) => new Date(b[1].createdAt) - new Date(a[1].createdAt));
+  // Sort: oldest reconstitution first (FIFO for active tracking)
+  const entries = Object.entries(vialData).sort((a, b) => {
+    const da = a[1].reconstitutionDate || a[1].createdAt || '';
+    const db = b[1].reconstitutionDate || b[1].createdAt || '';
+    return da.localeCompare(db);
+  });
 
   if (entries.length === 0) {
+    if ($summary) $summary.innerHTML = '';
     $list.innerHTML = '<div class="vial-empty">No vials tracked yet. Add peptides to your schedule to track vial usage.</div>';
     return;
   }
 
-  const html = entries.map(([key, vial]) => {
+  const today = formatLocalDate(new Date());
+
+  // Build summary stats
+  let totalActive = 0, expiringSoon = 0, lowStock = 0;
+  entries.forEach(([, vial]) => {
     const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
-    const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
-    const isLow = remaining > 0 && remaining < 5;
-    const isEmpty = remaining <= 0;
+    if (remaining > 0) totalActive++;
+    const { daysLeft } = vialDiscardInfo(vial);
+    if (daysLeft >= 0 && daysLeft <= 7) expiringSoon++;
+    if (remaining > 0 && remaining <= 3) lowStock++;
+  });
 
-    let statusClass = '';
-    let warningHtml = '';
-
-    if (isEmpty) {
-      statusClass = 'empty';
-      warningHtml = '<div class="vial-warning empty-warn">Vial empty — replace</div>';
-    } else if (isLow) {
-      statusClass = 'low';
-      warningHtml = '<div class="vial-warning">Reorder soon</div>';
-    }
-
-    return `
-      <div class="vial-item ${statusClass}">
-        <div class="vial-header">
-          <div class="vial-name">${vial.peptideName}</div>
-          <div style="display:flex;align-items:center;gap:.4rem">
-            <div class="vial-specs">${vial.vialMg}mg · ${vial.waterMl}mL</div>
-            <button class="vial-reset-btn" data-vial-key="${key}">Reset vial</button>
+  if ($summary) {
+    const lowBanner = lowStock > 0
+      ? `<div class="inv-low-banner">⚠ ${lowStock} vial${lowStock !== 1 ? 's' : ''} running low on doses — reorder soon</div>`
+      : '';
+    $summary.innerHTML = `
+      ${lowBanner}
+      <div class="inv-summary">
+        <div class="inv-summary-grid">
+          <div>
+            <div class="inv-summary-stat">${totalActive}</div>
+            <div class="inv-summary-lbl">Active vials</div>
+          </div>
+          <div>
+            <div class="inv-summary-stat" style="color:${expiringSoon > 0 ? '#f59e0b' : 'var(--text)'}">${expiringSoon}</div>
+            <div class="inv-summary-lbl">Expiring ≤7d</div>
+          </div>
+          <div>
+            <div class="inv-summary-stat" style="color:${lowStock > 0 ? '#ef4444' : 'var(--text)'}">${lowStock}</div>
+            <div class="inv-summary-lbl">Low stock</div>
           </div>
         </div>
-        <div class="vial-progress">
-          <div class="vial-progress-fill ${statusClass}" style="width: ${usedPct}%"></div>
-        </div>
-        <div class="vial-stats">
-          <div class="vial-doses">Vial: ${vial.usedDoses} of ${vial.totalDoses} doses used</div>
-          ${warningHtml}
-        </div>
+      </div>`;
+  }
+
+  // Render each vial card
+  $list.innerHTML = '';
+  entries.forEach(([key, vial]) => {
+    const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
+    const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
+    const isEmpty = remaining <= 0;
+    const isCritical = !isEmpty && remaining <= 1;
+    const isLow = !isEmpty && !isCritical && remaining <= 3;
+    const { daysLeft, expired, color: discardColor, label: discardLabel } = vialDiscardInfo(vial);
+
+    let statusClass = expired ? 'expired' : isEmpty ? 'empty' : isCritical ? 'critical' : isLow ? 'low' : '';
+    const fillClass = isEmpty || isCritical ? 'critical' : isLow ? 'low' : '';
+
+    // Runout estimate
+    const schedEntry = schedule.find(e => PEPTIDES[e.peptideIndex].name === vial.peptideName);
+    let coverageHtml = '';
+    if (schedEntry && remaining > 0) {
+      const daysToRunout = estimateDaysLeft(schedEntry, remaining);
+      const runoutDate = new Date();
+      runoutDate.setDate(runoutDate.getDate() + daysToRunout);
+      const runoutStr = runoutDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const coversProtocol = daysToRunout >= 30;
+      coverageHtml = coversProtocol
+        ? `<div class="vial-coverage ok">✓ Covers next 30 days</div>`
+        : `<div class="vial-coverage warn">Will run out ~${runoutStr}</div>`;
+    }
+
+    // Dose stock badge
+    let stockBadge = '';
+    if (isEmpty) stockBadge = '<span class="vial-empty-badge">Empty — replace</span>';
+    else if (isCritical) stockBadge = '<span class="vial-empty-badge">⚠ 1 dose left</span>';
+    else if (isLow) stockBadge = '<span class="vial-low-badge">⚠ Low stock</span>';
+
+    const reconLabel = vial.reconstitutionDate
+      ? parseLocalDate(vial.reconstitutionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      : '—';
+
+    const div = document.createElement('div');
+    div.className = `vial-item ${statusClass}`;
+    div.innerHTML = `
+      <div class="vial-header">
+        <div class="vial-name">${vial.peptideName}</div>
+        <div class="vial-specs">${vial.vialMg}mg · ${vial.waterMl}mL</div>
+      </div>
+      ${expired ? '<div class="vial-expired-banner">⛔ EXPIRED — Do not use</div>' : ''}
+      <div class="vial-progress">
+        <div class="vial-progress-fill ${fillClass}" style="width:${100 - usedPct}%"></div>
+      </div>
+      <div class="vial-stats">
+        <div class="vial-doses">${remaining} of ${vial.totalDoses} doses remaining</div>
+        ${stockBadge}
+      </div>
+      <div class="vial-lifecycle">
+        <span class="vial-lc-chip">🧪 Mixed ${reconLabel}</span>
+        <span class="vial-lc-chip ${discardColor}">🗓 ${discardLabel}</span>
+      </div>
+      ${coverageHtml}
+      <div class="vial-actions">
+        <button class="vial-new-btn" data-vial-key="${key}">New Vial (reset)</button>
       </div>
     `;
-  }).join('');
 
-  $list.innerHTML = html;
-
-  // Per-vial reset buttons
-  $list.querySelectorAll('.vial-reset-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    div.querySelector('.vial-new-btn').addEventListener('click', e => {
       e.stopPropagation();
-      const key = btn.dataset.vialKey;
-      if (confirm('Reset this vial? (Use when opening a new vial)')) {
+      if (confirm(`Open a new vial of ${vial.peptideName}? This resets the dose counter and sets today as the reconstitution date.`)) {
         resetSingleVial(key);
       }
     });
+
+    $list.appendChild(div);
   });
+
+  updateMoreAlertDot();
 }
 
 // ── Cycle status for a given date ────────────────────────────
@@ -4104,6 +4312,8 @@ function renderAll() {
   renderStackRecommendations();
   updateAddPeptideVisibility();
   updateOverdueBadge();
+  updateMoreAlertDot();
+  renderVialTracker();
 }
 
 // ── Clear History (Compass tab widget) ─────────────────────
@@ -5284,6 +5494,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Weight Loss option in More tab — show tab-weight
+  document.getElementById('inventory-option')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-inventory')?.classList.add('active');
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'inventory');
+    renderVialTracker();
+  });
+
+  document.getElementById('inv-back-btn')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-more')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'more');
+  });
+
   document.getElementById('weight-loss-option')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -5295,7 +5522,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
