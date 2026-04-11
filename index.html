@@ -1969,6 +1969,62 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
 </div>
 
+<!-- Weight Loss Tab Content -->
+<div id="tab-weight" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem;">
+    <button onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-more').classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.tab-btn[data-tab=more]').classList.add('active');localStorage.setItem('activeTab','more');" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Weight <span>Loss</span></h1>
+  </div>
+  <div class="card animate-in">
+    <h3>Track Progress</h3>
+    <input type="number" id="weight-current" placeholder="Current weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
+    <input type="number" id="weight-goal" placeholder="Goal weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
+    <button id="update-weight-btn" class="btn" style="width: 100%;">Update</button>
+  </div>
+  <div class="card animate-in">
+    <div style="display: flex; flex-direction: column; align-items: center; padding: 1rem 0 0.5rem;">
+      <!-- Circular progress ring (r=80, circumference≈502.65) -->
+      <svg id="weight-ring" width="190" height="190" viewBox="0 0 200 200" aria-label="Weight loss progress ring">
+        <!-- Track -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--surface2)" stroke-width="18"/>
+        <!-- Progress arc — starts at 12 o'clock via rotate(-90) -->
+        <circle id="weight-ring-arc" cx="100" cy="100" r="80" fill="none"
+          stroke="var(--accent)" stroke-width="18" stroke-linecap="round"
+          stroke-dasharray="502.65" stroke-dashoffset="502.65"
+          transform="rotate(-90 100 100)"
+          style="transition: stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1);"/>
+        <!-- Center percentage -->
+        <text id="weight-ring-pct" x="100" y="92" text-anchor="middle"
+          font-family="Inter,system-ui,sans-serif" font-size="38" font-weight="700"
+          fill="var(--text)">0%</text>
+        <text x="100" y="122" text-anchor="middle"
+          font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="500"
+          fill="var(--text2)">to goal</text>
+      </svg>
+      <div style="display: flex; justify-content: space-around; text-align: center; width: 100%; margin-top: 1rem; padding-bottom: 0.5rem;">
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Current</div>
+          <div id="stat-current" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
+        </div>
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Goal</div>
+          <div id="stat-goal" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
+        </div>
+        <div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Lost</div>
+          <div id="stat-progress" style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: .2rem;">--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="weight-history" class="card animate-in">
+    <h4>History</h4>
+    <div class="empty-state">No weight entries yet.</div>
+  </div>
+</div>
+
 </div><!-- /.app-content -->
 
 <!-- Bottom Navigation Tabs -->
@@ -4855,6 +4911,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   if (savedTab === 'logs' || savedTab === 'journal' || savedTab === 'logbook') savedTab = 'history';
   if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
+  // 'weight' is a sub-tab of 'more' — restore it directly
+  if (savedTab === 'weight') {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-weight')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    return;
+  }
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
   if (tabBtn) tabBtn.click();
 
@@ -5992,59 +6056,6 @@ renderProtocols();
   </div>
   <div id="logs-list" class="card animate-in">
     <div class="empty-state">No logs yet. Add your first entry above.</div>
-  </div>
-</div>
-
-<!-- Weight Loss Tab Content -->
-<div id="tab-weight" class="tab-content">
-  <div class="header">
-    <h1>Weight <span>Loss</span></h1>
-  </div>
-  <div class="card animate-in">
-    <h3>Track Progress</h3>
-    <input type="number" id="weight-current" placeholder="Current weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
-    <input type="number" id="weight-goal" placeholder="Goal weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
-    <button id="update-weight-btn" class="btn" style="width: 100%;">Update</button>
-  </div>
-  <div class="card animate-in">
-    <div style="display: flex; flex-direction: column; align-items: center; padding: 1rem 0 0.5rem;">
-      <!-- Circular progress ring (r=80, circumference≈502.65) -->
-      <svg id="weight-ring" width="190" height="190" viewBox="0 0 200 200" aria-label="Weight loss progress ring">
-        <!-- Track -->
-        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--surface2)" stroke-width="18"/>
-        <!-- Progress arc — starts at 12 o'clock via rotate(-90) -->
-        <circle id="weight-ring-arc" cx="100" cy="100" r="80" fill="none"
-          stroke="var(--accent)" stroke-width="18" stroke-linecap="round"
-          stroke-dasharray="502.65" stroke-dashoffset="502.65"
-          transform="rotate(-90 100 100)"
-          style="transition: stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1);"/>
-        <!-- Center percentage -->
-        <text id="weight-ring-pct" x="100" y="92" text-anchor="middle"
-          font-family="Inter,system-ui,sans-serif" font-size="38" font-weight="700"
-          fill="var(--text)">0%</text>
-        <text x="100" y="122" text-anchor="middle"
-          font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="500"
-          fill="var(--text2)">to goal</text>
-      </svg>
-      <div style="display: flex; justify-content: space-around; text-align: center; width: 100%; margin-top: 1rem; padding-bottom: 0.5rem;">
-        <div>
-          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Current</div>
-          <div id="stat-current" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
-        </div>
-        <div>
-          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Goal</div>
-          <div id="stat-goal" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
-        </div>
-        <div>
-          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Lost</div>
-          <div id="stat-progress" style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: .2rem;">--</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="weight-history" class="card animate-in">
-    <h4>History</h4>
-    <div class="empty-state">No weight entries yet.</div>
   </div>
 </div>
 
