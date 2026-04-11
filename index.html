@@ -507,6 +507,9 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 
 /* ── Disclaimer ──────────────────────────────────────────── */
 .disclaimer{text-align:center;font-size:.7rem;color:var(--text2);max-width:720px;line-height:1.6;padding:0 .5rem;opacity:.7;margin-top:1rem}
+.calc-disclaimer{font-size:.75rem;color:var(--text-muted);margin:.5rem 0 0;line-height:1.4;font-style:italic}
+.stack-disclaimer{font-size:.78rem;color:var(--text2);background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;line-height:1.5}
+.learn-disclaimer{font-size:.78rem;color:var(--text2);background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;line-height:1.5}
 
 /* ── Warning / Info Cards ────────────────────────────────── */
 .warn-card{display:flex;gap:.5rem;align-items:flex-start;background:rgba(61,232,195,.06);border:1px solid rgba(61,232,195,.2);border-radius:8px;padding:.55rem .75rem;margin:.75rem 0 0;font-size:.7rem;color:var(--text2);line-height:1.45}
@@ -1481,6 +1484,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
         <span class="warn-icon">ℹ️</span>
         <span>Assumes a standard 100-unit (1mL) insulin syringe where 1U = 10µL. Check your syringe markings — a different size changes the math.</span>
       </div>
+      <p class="calc-disclaimer">ℹ️ Standard reconstitution math for educational reference. Verify all calculations independently — supplier concentrations and labeling may vary.</p>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -1747,7 +1751,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <div style="font-size:1.4rem;flex-shrink:0">🧬</div>
     <div style="flex:1;min-width:0">
       <div style="font-size:.85rem;font-weight:600;color:var(--text)">Stack Builder</div>
-      <div style="font-size:.72rem;color:var(--text2);margin-top:.1rem">Browse recommended stacks by goal</div>
+      <div style="font-size:.72rem;color:var(--text2);margin-top:.1rem">Browse example stacks by goal</div>
     </div>
     <div style="color:var(--text2);font-size:1.1rem">›</div>
   </div>
@@ -1778,7 +1782,11 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 <div id="tab-stacks" class="tab-content">
   <div class="header">
     <h1>Peptide <span>Stacks</span></h1>
-    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Build your optimal peptide stack based on goals</p>
+    <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Browse example stacks organized by goal</p>
+  </div>
+
+  <div class="stack-disclaimer">
+    ℹ️ <strong>Educational reference only.</strong> Stack examples reflect commonly reported combinations in published literature. They are not personalized recommendations. Consider starting with one compound at a time and consult your healthcare provider before combining compounds.
   </div>
 
   <!-- Stack Builder Card -->
@@ -1983,6 +1991,12 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
     <p style="font-size: .9rem; color: var(--text2); margin-top: .5rem; max-width: 600px; text-align: center;">Tools, preferences, and additional features</p>
   </div>
 
+  <div class="card animate-in" style="border-left:3px solid var(--accent);margin-bottom:1rem">
+    <p style="font-size:.8rem;color:var(--text2);margin:0;line-height:1.5">
+      ℹ️ <strong>About this app:</strong> Peptide Compass Pro is an educational reference and protocol tracking tool. It is not a medical device, does not provide medical advice, and is not a substitute for professional healthcare guidance. All calculations are mathematical tools for educational purposes. Always consult a qualified healthcare provider before starting, changing, or stopping any protocol.
+    </p>
+  </div>
+
   <!-- Saved Protocols Management Card -->
   <div class="card animate-in" id="protocols-more-section">
     <div class="section-header">
@@ -2120,6 +2134,16 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
         <div class="more-arrow">›</div>
       </div>
 
+      <!-- I) How It Works -->
+      <div class="more-option" id="methodology-option">
+        <div class="more-icon">📐</div>
+        <div class="more-text">
+          <div class="more-title">How It Works</div>
+          <div class="more-desc">Math, assumptions, and limitations</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
     </div>
   </div>
 
@@ -2206,6 +2230,10 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   <div class="header">
     <h1>Learn <span>the Basics</span></h1>
     <p style="font-size:.9rem;color:var(--text2);margin-top:.5rem;max-width:600px;text-align:center;">Foundational knowledge — educational reference only, not medical advice.</p>
+  </div>
+
+  <div class="learn-disclaimer">
+    ℹ️ <strong>Educational reference only.</strong> Content in this section is for informational purposes. Evidence quality varies — check confidence badges. This is not medical advice.
   </div>
 
   <div class="card animate-in">
@@ -2345,6 +2373,74 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
   </div>
 
   <p class="disclaimer">Educational reference only — not medical advice. Content describes general principles, not recommendations for any individual. Always consult a qualified healthcare provider.</p>
+</div>
+
+<!-- How It Works / Methodology tab -->
+<div id="tab-methodology" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
+    <button id="methodology-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
+  </div>
+  <div class="header">
+    <h1>How It <span>Works</span></h1>
+    <p class="subtitle">Math, assumptions, and limitations</p>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="margin:0 0 .5rem;color:var(--accent)">📐 Reconstitution Calculator</h3>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--text2)">
+      The reconstitution calculator uses the standard formula:<br>
+      <strong style="color:var(--text)">Concentration (mg/mL) = Peptide Amount (mg) ÷ BAC Water Added (mL)</strong><br><br>
+      Draw volume is then calculated as:<br>
+      <strong style="color:var(--text)">Draw Volume (mL) = Desired Dose (mg) ÷ Concentration (mg/mL)</strong><br><br>
+      These are standard mathematical conversions used in compounding references. They are not dosing recommendations.
+    </p>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="margin:0 0 .5rem;color:var(--accent)">🔄 Reverse Calculator</h3>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--text2)">
+      The reverse calculator works backwards from a desired syringe draw volume:<br>
+      <strong style="color:var(--text)">Required Concentration = Desired Dose ÷ Draw Volume</strong><br><br>
+      This helps determine how much BAC water to add to achieve a target concentration for a specific syringe size.
+    </p>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="margin:0 0 .5rem;color:var(--accent)">⚠️ Assumptions</h3>
+    <ul style="font-size:.85rem;line-height:1.8;color:var(--text2);padding-left:1.2rem;margin:0">
+      <li>All calculations assume accurate supplier labeling of peptide content</li>
+      <li>Actual peptide purity and content may vary by manufacturer</li>
+      <li>BAC water volume is user-entered and assumed to be accurate</li>
+      <li>Syringe graduations vary by size — always verify your specific syringe can measure the calculated volume accurately</li>
+      <li>Draw volumes below 0.01 mL may not be measurable with standard insulin syringes</li>
+    </ul>
+  </div>
+
+  <div class="card animate-in">
+    <h3 style="margin:0 0 .5rem;color:var(--accent)">🚫 Limitations</h3>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--text2)">This tool does not account for:</p>
+    <ul style="font-size:.85rem;line-height:1.8;color:var(--text2);padding-left:1.2rem;margin:0">
+      <li>Peptide degradation over time or under varying storage conditions</li>
+      <li>Individual biological variation in absorption or response</li>
+      <li>Drug interactions or contraindications</li>
+      <li>Medical conditions that affect peptide metabolism</li>
+      <li>Changes in peptide potency after reconstitution</li>
+    </ul>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.75rem">This is a math tool, not a clinical tool.</p>
+  </div>
+
+  <div class="card animate-in" style="margin-bottom:2rem">
+    <h3 style="margin:0 0 .5rem;color:var(--accent)">👤 Who This Is For</h3>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--text2)">
+      <strong style="color:var(--text)">Designed for:</strong> Adults working with a healthcare provider who want to organize their protocol tracking, log adherence, and reference standard reconstitution math.
+    </p>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--text2);margin-top:.5rem">
+      <strong style="color:var(--text)">Not designed for:</strong> Self-diagnosis, self-treatment, or making medical decisions without professional guidance. Not intended for minors. Does not replace medical advice, clinical testing, or professional oversight.
+    </p>
+    <p style="font-size:.85rem;line-height:1.6;color:var(--accent);margin-top:.5rem;font-weight:600">
+      🚨 Not for emergencies. If you are experiencing a medical emergency, contact emergency services immediately.
+    </p>
+  </div>
 </div>
 
 </div><!-- /.app-content -->
@@ -2892,7 +2988,7 @@ function getTitrationData(peptideName, startDate) {
 const PEPTIDE_STACKS = {
   healing: {
     title: 'Healing & Recovery',
-    description: 'Accelerate tissue repair, reduce inflammation, and enhance recovery',
+    description: 'Commonly associated with tissue repair support, inflammation reduction, and recovery',
     categories: {
       'Core Foundation': [
         { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'featured', featured: true, benefit: 'Accelerates healing of tendons, ligaments, gut lining, and muscle tissue' },
@@ -2903,13 +2999,13 @@ const PEPTIDE_STACKS = {
         { name: 'IGF-1 LR3', dose: '20-40 mcg daily', priority: 'synergistic', benefit: 'Promotes tissue growth and repair' }
       ],
       'Support Stack': [
-        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Boosts immune function during recovery' }
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune function support during recovery' }
       ]
     }
   },
   fatloss: {
     title: 'Fat Loss & Body Composition',
-    description: 'Optimize metabolic rate, appetite control, and body composition',
+    description: 'Commonly associated with metabolic support, appetite regulation, and body composition',
     categories: {
       'Metabolic Core': [
         { name: 'Retatrutide', dose: '1-12 mg weekly', priority: 'featured', featured: true, benefit: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available' },
@@ -2917,8 +3013,8 @@ const PEPTIDE_STACKS = {
         { name: 'Tirzepatide', dose: '2.5-15 mg weekly', priority: 'core', benefit: 'Dual GIP/GLP-1 action for enhanced fat loss' }
       ],
       'Growth Hormone': [
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Increases natural GH production and fat oxidation' },
-        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Synergizes with CJC for better body composition' }
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with natural GH production and fat oxidation pathways' },
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'synergistic', benefit: 'Commonly combined with CJC for body composition support' }
       ],
       'Advanced Options': [
         { name: 'AOD-9604', dose: '300 mcg daily', priority: 'optional', benefit: 'Fat-burning fragment of growth hormone' }
@@ -2927,44 +3023,44 @@ const PEPTIDE_STACKS = {
   },
   muscle: {
     title: 'Muscle Growth & Performance',
-    description: 'Maximize muscle protein synthesis, strength, and athletic performance',
+    description: 'Commonly associated with muscle protein synthesis, strength support, and athletic performance',
     categories: {
       'Anabolic Foundation': [
-        { name: 'CJC-1295 no DAC + Ipamorelin', dose: '200 mcg each 3x/week', priority: 'featured', featured: true, benefit: 'Classic GH combo — promotes lean muscle, deep sleep, and recovery' },
-        { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Powerful muscle building and satellite cell activation' },
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Increases natural GH for muscle growth' }
+        { name: 'CJC-1295 no DAC + Ipamorelin', dose: '200 mcg each 3x/week', priority: 'featured', featured: true, benefit: 'Classic GH combo — commonly associated with lean muscle support, sleep quality, and recovery' },
+        { name: 'IGF-1 LR3', dose: '20-100 mcg daily', priority: 'core', benefit: 'Associated with muscle protein synthesis and satellite cell activity' },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'core', benefit: 'Associated with natural GH production and muscle growth support' }
       ],
       'Recovery & Repair': [
         { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'synergistic', benefit: 'Accelerates recovery between training sessions' },
         { name: 'PEG-MGF', dose: '200-400 mcg post-workout', priority: 'synergistic', benefit: 'Mechano Growth Factor for localized muscle growth' }
       ],
       'Performance Stack': [
-        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Synergizes with CJC for GH release' },
-        { name: 'GHRP-2', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Strong GH release and appetite stimulation' }
+        { name: 'Ipamorelin', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Commonly combined with CJC for GH release support' },
+        { name: 'GHRP-2', dose: '100-300 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH release and appetite stimulation' }
       ]
     }
   },
   longevity: {
     title: 'Longevity & Anti-Aging',
-    description: 'Promote cellular regeneration, cognitive health, and healthy aging',
+    description: 'Commonly associated with cellular regeneration, cognitive health, and healthy aging',
     categories: {
       'Cellular Health': [
         { name: 'Epitalon', dose: '5-10 mg for 10-20 days', priority: 'featured', featured: true, benefit: 'Telomerase activation and circadian rhythm regulation — the most researched anti-aging peptide' },
-        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Cellular energy and DNA repair mechanism' }
+        { name: 'NAD+', dose: '50-200 mg 3x/week', priority: 'core', benefit: 'Associated with cellular energy and DNA repair mechanisms' }
       ],
       'Growth Hormone Axis': [
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Maintains youthful GH levels' },
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'synergistic', benefit: 'Associated with GH level support' },
         { name: 'Tesamorelin', dose: '1-2 mg daily', priority: 'synergistic', benefit: 'Specifically targets visceral fat and GH release' }
       ],
       'Cognitive & Immune': [
-        { name: 'Semax', dose: '300-800 mcg daily', priority: 'optional', benefit: 'Cognitive enhancement and neuroprotection' },
-        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Immune system optimization' }
+        { name: 'Semax', dose: '300-800 mcg daily', priority: 'optional', benefit: 'Research suggests cognitive and neuroprotective effects' },
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'optional', benefit: 'Commonly associated with immune system support' }
       ]
     }
   },
   skin: {
     title: 'Skin Health & Beauty',
-    description: 'Improve skin texture, reduce aging signs, and enhance appearance',
+    description: 'Commonly associated with skin texture support, reduced aging signs, and appearance improvement',
     categories: {
       'Collagen & Repair': [
         { name: 'GHK-Cu', dose: '200-300 mcg daily', priority: 'featured', featured: true, benefit: 'Stimulates collagen and elastin production, reduces wrinkles, and promotes hair growth' },
@@ -2976,7 +3072,7 @@ const PEPTIDE_STACKS = {
       ],
       'Enhanced Results': [
         { name: 'Melanotan II', dose: '250-500 mcg as needed', priority: 'optional', benefit: 'Tanning and potential skin protection' },
-        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'GH benefits for skin thickness and quality' }
+        { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH pathways and skin thickness support' }
       ]
     }
   }
@@ -3016,11 +3112,11 @@ function renderStackRecommendations(goal) {
   }).join('');
 
   const FEATURED_PICKS = {
-    healing: { name: 'BPC-157', desc: 'The gold standard healing peptide — accelerates tissue repair, gut healing, and injury recovery' },
-    fatloss:  { name: 'Retatrutide', desc: 'Triple agonist (GIP/GLP-1/Glucagon) — the most advanced weight loss peptide available. Outperforms semaglutide and tirzepatide in clinical trials.' },
-    muscle:   { name: 'CJC-1295 no DAC + Ipamorelin', desc: 'The classic growth hormone stack — promotes lean muscle, recovery, and deep sleep' },
-    longevity:{ name: 'Epitalon', desc: 'Telomerase activator — the most researched anti-aging peptide for cellular longevity' },
-    skin:     { name: 'GHK-Cu', desc: 'The Glow Stack essential — stimulates collagen, reduces wrinkles, and promotes hair growth' }
+    healing: { name: 'BPC-157', desc: 'Widely studied healing peptide — research suggests tissue repair, gut lining, and injury recovery support' },
+    fatloss:  { name: 'Retatrutide', desc: 'Triple agonist (GIP/GLP-1/Glucagon) — investigational peptide associated with weight management in clinical research.' },
+    muscle:   { name: 'CJC-1295 no DAC + Ipamorelin', desc: 'Classic GH combination — commonly associated with lean muscle support, recovery, and sleep quality' },
+    longevity:{ name: 'Epitalon', desc: 'Research suggests telomerase activation — among the most studied peptides for cellular longevity' },
+    skin:     { name: 'GHK-Cu', desc: 'Glow Stack essential — research suggests collagen support, skin texture improvement, and hair growth' }
   };
 
   const pick = FEATURED_PICKS[goal];
@@ -5937,6 +6033,20 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('activeTab', 'more');
   });
 
+  document.getElementById('methodology-back-btn')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-more')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'more');
+  });
+
+  document.getElementById('methodology-option')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-methodology')?.classList.add('active');
+    localStorage.setItem('activeTab', 'methodology');
+  });
+
   document.getElementById('weight-loss-option')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -5948,7 +6058,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
