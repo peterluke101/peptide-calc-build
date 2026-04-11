@@ -1380,6 +1380,25 @@ body.first-run .stacks-new-user-note{display:block}
 .s11-summary{cursor:pointer;font-size:.88rem;font-weight:600;color:var(--accent);padding:.1rem 0;list-style:none;user-select:none}
 .s11-summary::-webkit-details-marker{display:none}
 .s11-body{padding-top:.5rem}
+/* === Missed-dose & schedule resilience (Issue #87) === */
+.today-late-btn{background:none;border:1px solid #f59e0b;color:#f59e0b;border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer;transition:background .15s}
+.today-late-btn:hover{background:#f59e0b22}
+.today-snooze-btn{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:.2rem .45rem;font-size:.8rem;cursor:pointer}
+.today-reschedule-btn{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer}
+.late-badge{display:inline-block;background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;border-radius:4px;font-size:.65rem;padding:.05rem .3rem;font-weight:600;vertical-align:middle;margin-left:.25rem}
+.today-conflict-banner{background:#fef3c7;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:.4rem .65rem;font-size:.78rem;color:#92400e;margin-bottom:.5rem;line-height:1.4}
+body:not(.light-mode) .today-conflict-banner{background:#451a0344;color:#fcd34d;border-color:#f59e0b}
+#cycle-end-banners{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.5rem}
+.cycle-end-banner{border-radius:10px;padding:.55rem .75rem;font-size:.82rem;line-height:1.5}
+.cycle-end-warning{background:#fef3c722;border:1px solid #f59e0b;color:#92400e}
+.cycle-end-complete{background:#d1fae522;border:1px solid #22c55e;color:#065f46}
+body:not(.light-mode) .cycle-end-warning{background:#451a0344;color:#fcd34d;border-color:#f59e0b}
+body:not(.light-mode) .cycle-end-complete{background:#05280e44;color:#86efac;border-color:#22c55e}
+.cycle-end-actions{display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap}
+.cycle-act-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.25rem .5rem;font-size:.75rem;cursor:pointer}
+.cycle-act-muted{opacity:.7}
+#impact-note{background:var(--card-bg);border:1px solid var(--accent);border-radius:8px;padding:.4rem .65rem;font-size:.78rem;color:var(--accent);margin-top:.5rem;transition:opacity .3s}
+.impact-note-visible{opacity:1}
 </style>
 </head>
 <body>
@@ -1430,6 +1449,7 @@ body.first-run .stacks-new-user-note{display:block}
 
 <div class="section-label">Your Schedule</div>
 
+<div id="cycle-end-banners"></div>
 
 <!-- Today's Injections -->
 <div class="card animate-in" id="today-card">
@@ -1437,8 +1457,10 @@ body.first-run .stacks-new-user-note{display:block}
     <h2>Today's Injections</h2>
     <span class="today-date" id="today-date"></span>
   </div>
+  <div id="today-conflict-warning" style="display:none"></div>
   <div class="completed-counter" id="completed-counter"></div>
   <div id="today-list"></div>
+  <div id="impact-note" style="display:none"></div>
 </div>
 
 <!-- Weekly Calendar -->
@@ -2854,7 +2876,8 @@ function saveInjection(injectionKey, meta = {}) {
   log[injectionKey] = {
     timestamp: meta.timestamp || new Date().toISOString(),
     site: meta.site || '',
-    notes: meta.notes || ''
+    notes: meta.notes || '',
+    late: meta.late || false
   };
   localStorage.setItem('injectionLog', JSON.stringify(log));
 
@@ -2929,6 +2952,27 @@ function removeDoseSkip(injectionKey) {
 }
 function isDoseSkipped(injectionKey) {
   return !!getSkipLog()[injectionKey];
+}
+
+// ── Snooze Log ───────────────────────────────────────────────
+function getSnoozeLog() {
+  try { return JSON.parse(localStorage.getItem('snoozeLog') || '{}'); } catch { return {}; }
+}
+function saveDoseSnooze(injectionKey, untilISO) {
+  const log = getSnoozeLog();
+  log[injectionKey] = { until: untilISO };
+  localStorage.setItem('snoozeLog', JSON.stringify(log));
+}
+function clearDoseSnooze(injectionKey) {
+  const log = getSnoozeLog();
+  delete log[injectionKey];
+  localStorage.setItem('snoozeLog', JSON.stringify(log));
+}
+function isDoseSnoozed(injectionKey) {
+  const log = getSnoozeLog();
+  const entry = log[injectionKey];
+  if (!entry) return false;
+  return new Date(entry.until) > new Date();
 }
 
 // ── Overdue Badge ────────────────────────────────────────────
@@ -3863,8 +3907,21 @@ function renderToday(animate) {
       if (isDone) doneDoses.push(item);
       else if (isSkipped) skippedDoses.push(item);
       else if (isPastDate) overdueDoses.push(item);
+      else if (isDoseSnoozed(injectionKey)) { /* snoozed — hidden until snooze expires */ }
       else todayDoses.push(item);
     });
+
+    // Conflict warning
+    const totalToday = todayDoses.length + doneDoses.length + skippedDoses.length;
+    const conflictEl = document.getElementById('today-conflict-warning');
+    if (conflictEl) {
+      if (totalToday >= 3) {
+        conflictEl.style.display = '';
+        conflictEl.innerHTML = `<div class="today-conflict-banner">⚠️ ${totalToday} injections scheduled today — consider spacing them out throughout the day.</div>`;
+      } else {
+        conflictEl.style.display = 'none';
+      }
+    }
 
     const totalItems = overdueDoses.length + todayDoses.length + doneDoses.length + skippedDoses.length;
     const doneItems = doneDoses.length;
@@ -3911,10 +3968,16 @@ function renderToday(animate) {
       } else {
         // due or overdue
         const moveBtn = !isPastDate || status === 'overdue' ? `<button class="today-move-btn" data-injection="${injectionKey}" data-entry-idx="${schedule.indexOf(entry)}">Move +1d</button>` : '';
+        const snoozeBtn = status === 'due' ? `<button class="today-snooze-btn" data-injection="${injectionKey}">🕐</button>` : '';
+        const lateBtn = `<button class="today-late-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">Late</button>`;
+        const rescheduleBtn = status === 'overdue' ? `<button class="today-reschedule-btn" data-injection="${injectionKey}" data-entry-idx="${schedule.indexOf(entry)}">Reschedule</button>` : '';
         actionsHtml = `<div class="today-actions">
           <button class="done-btn" data-injection="${injectionKey}" data-pep="${pep.name}" data-dose="${fmtDose(doseMcg)}" data-units="${fmtUnits(units)}">Inject</button>
           <button class="today-skip-btn" data-injection="${injectionKey}">Skip</button>
+          ${lateBtn}
           ${moveBtn}
+          ${rescheduleBtn}
+          ${snoozeBtn}
         </div>`;
       }
 
@@ -3986,6 +4049,49 @@ function renderToday(animate) {
         start.setDate(start.getDate() + 1);
         entry.startDate = formatLocalDate(start);
         saveSchedule();
+        afterAction();
+      });
+
+      // Late
+      div.querySelector('.today-late-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        const key = e.currentTarget.dataset.injection;
+        const timeStr = prompt('Time taken (HH:MM, 24h):', new Date().toTimeString().slice(0, 5));
+        if (timeStr === null) return; // cancelled
+        const [hh, mm] = (timeStr || '').split(':').map(Number);
+        const ts = new Date();
+        if (!isNaN(hh) && !isNaN(mm)) { ts.setHours(hh, mm, 0, 0); }
+        saveInjection(key, { timestamp: ts.toISOString(), late: true });
+        removeDoseSkip(key);
+        showImpactNote('Logged as taken late. Counts toward adherence.');
+        afterAction();
+      });
+
+      // Snooze
+      div.querySelector('.today-snooze-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        const key = e.currentTarget.dataset.injection;
+        openSnoozeSheet(key);
+      });
+
+      // Reschedule overdue
+      div.querySelector('.today-reschedule-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        const entryIdx = parseInt(e.currentTarget.dataset.entryIdx);
+        if (isNaN(entryIdx) || !schedule[entryIdx]) return;
+        const entry = schedule[entryIdx];
+        const pepName = PEPTIDES[entry.peptideIndex]?.name || '';
+        const today = formatLocalDate(new Date());
+        const oldStart = entry.startDate;
+        entry.startDate = today;
+        try {
+          const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+          dcl.push({ date: today, peptide: pepName, field: 'startDate (reschedule)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
+          if (dcl.length > 100) dcl.splice(0, dcl.length - 100);
+          localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+        } catch(e) {}
+        saveSchedule();
+        showImpactNote('Schedule adjusted — next dose starts today.');
         afterAction();
       });
 
@@ -4573,14 +4679,16 @@ function renderInjectionLog() {
       const timeStr = ts ? new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : '';
       const siteVal = typeof val === 'object' ? (val.site || '') : '';
       const notesVal = typeof val === 'object' ? (val.notes || '') : '';
+      const isLate = typeof val === 'object' && !!val.late;
       const siteBadge = siteVal ? `<span class="inj-site-badge">${siteVal}</span>` : '';
+      const lateBadge = isLate ? `<span class="late-badge">Late</span>` : '';
       const notesHtml = notesVal ? `<div class="inj-notes">${notesVal}</div>` : '';
       return `
         <div class="inj-entry">
           <div class="inj-dot"></div>
           <div class="inj-body">
             <div class="inj-name">${pepName}</div>
-            <div class="inj-meta">${timeStr ? '<span>' + timeStr + '</span>' : ''}${siteBadge}</div>
+            <div class="inj-meta">${timeStr ? '<span>' + timeStr + '</span>' : ''}${lateBadge}${siteBadge}</div>
             ${notesHtml}
           </div>
           <button class="inj-delete-btn" data-key="${key}" aria-label="Delete">✕</button>
@@ -5076,6 +5184,131 @@ function renderSprint11() {
 }
 
 // ── Render All ───────────────────────────────────────────────
+// ── Impact Note ──────────────────────────────────────────────
+function showImpactNote(msg) {
+  const el = document.getElementById('impact-note');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = '';
+  el.classList.add('impact-note-visible');
+  setTimeout(() => {
+    el.classList.remove('impact-note-visible');
+    setTimeout(() => { el.style.display = 'none'; }, 300);
+  }, 4000);
+}
+
+// ── Snooze Sheet ─────────────────────────────────────────────
+function openSnoozeSheet(injectionKey) {
+  const overlay = document.createElement('div');
+  overlay.className = 'log-sheet-overlay';
+  const now = new Date();
+  const endOfDay = new Date(now); endOfDay.setHours(23, 59, 59, 0);
+  const opt1 = new Date(now.getTime() + 60 * 60 * 1000);
+  const opt2 = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+  overlay.innerHTML = `
+    <div class="log-sheet" role="dialog" aria-modal="true" style="padding-bottom:2rem">
+      <div class="log-sheet-handle"></div>
+      <div class="log-sheet-title">🕐 Snooze Dose</div>
+      <p style="font-size:.82rem;color:var(--text-muted);margin:.25rem 0 1rem;text-align:center">Remind me again in...</p>
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <button class="snooze-opt" data-until="${opt1.toISOString()}" style="padding:.65rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--border);color:var(--text);font-size:.95rem;cursor:pointer">1 hour (${opt1.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})})</button>
+        <button class="snooze-opt" data-until="${opt2.toISOString()}" style="padding:.65rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--border);color:var(--text);font-size:.95rem;cursor:pointer">2 hours (${opt2.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})})</button>
+        <button class="snooze-opt" data-until="${endOfDay.toISOString()}" style="padding:.65rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--border);color:var(--text);font-size:.95rem;cursor:pointer">Later today (11:59 PM)</button>
+        <button class="snooze-cancel" style="padding:.55rem;border-radius:10px;background:none;border:1px solid var(--border);color:var(--text-muted);font-size:.85rem;cursor:pointer;margin-top:.25rem">Cancel</button>
+      </div>
+    </div>`;
+  overlay.querySelectorAll('.snooze-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      saveDoseSnooze(injectionKey, btn.dataset.until);
+      overlay.remove();
+      showImpactNote('Snoozed — will reappear at ' + new Date(btn.dataset.until).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
+      renderToday(true);
+    });
+  });
+  overlay.querySelector('.snooze-cancel')?.addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+// ── Cycle End Banners ────────────────────────────────────────
+function renderCycleEndBanners() {
+  const el = document.getElementById('cycle-end-banners');
+  if (!el) return;
+  const today = formatLocalDate(new Date());
+  const todayDate = new Date(today + 'T12:00:00');
+  const banners = [];
+  schedule.forEach((entry, idx) => {
+    if (!entry.cycleDays || entry.cycleDays <= 0) return;
+    const pep = PEPTIDES[entry.peptideIndex];
+    if (!pep) return;
+    const start = parseLocalDate(entry.startDate);
+    const endDate = new Date(start);
+    endDate.setDate(start.getDate() + entry.cycleDays - 1);
+    const endStr = formatLocalDate(endDate);
+    const daysLeft = Math.round((endDate - todayDate) / 86400000);
+    if (daysLeft < 0) {
+      banners.push(`
+        <div class="cycle-end-banner cycle-end-complete">
+          <span>✅ <strong>${pep.name}</strong> protocol complete!</span>
+          <div class="cycle-end-actions">
+            <button class="cycle-act-btn" onclick="restartCycle(${idx})">🔄 Restart</button>
+            <button class="cycle-act-btn" onclick="extendCycle(${idx})">➕ Extend 4w</button>
+            <button class="cycle-act-btn cycle-act-muted" onclick="archiveCycle(${idx})">📦 Archive</button>
+          </div>
+        </div>`);
+    } else if (daysLeft <= 7) {
+      banners.push(`
+        <div class="cycle-end-banner cycle-end-warning">
+          ⏳ <strong>${pep.name}</strong> protocol ends in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong> (${endStr})
+        </div>`);
+    }
+  });
+  el.innerHTML = banners.join('');
+}
+
+function restartCycle(entryIdx) {
+  if (!schedule[entryIdx]) return;
+  const entry = schedule[entryIdx];
+  const pep = PEPTIDES[entry.peptideIndex];
+  const today = formatLocalDate(new Date());
+  const oldStart = entry.startDate;
+  entry.startDate = today;
+  try {
+    const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    dcl.push({ date: today, peptide: pep?.name || '', field: 'startDate (restart)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
+    localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+  } catch(e) {}
+  saveSchedule();
+  showImpactNote(`${pep?.name || 'Protocol'} restarted from today with same settings.`);
+  renderAll();
+}
+
+function extendCycle(entryIdx) {
+  if (!schedule[entryIdx]) return;
+  const entry = schedule[entryIdx];
+  const pep = PEPTIDES[entry.peptideIndex];
+  const old = entry.cycleDays;
+  entry.cycleDays = (entry.cycleDays || 28) + 28;
+  try {
+    const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    const today = formatLocalDate(new Date());
+    dcl.push({ date: today, peptide: pep?.name || '', field: 'cycleDays (extend)', oldValue: old, newValue: entry.cycleDays, timestamp: Date.now() });
+    localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+  } catch(e) {}
+  saveSchedule();
+  showImpactNote(`${pep?.name || 'Protocol'} extended by 4 weeks.`);
+  renderAll();
+}
+
+function archiveCycle(entryIdx) {
+  if (!confirm('Archive this protocol? It will be removed from your active schedule.')) return;
+  const pep = PEPTIDES[schedule[entryIdx]?.peptideIndex];
+  schedule.splice(entryIdx, 1);
+  saveSchedule();
+  showImpactNote(`${pep?.name || 'Protocol'} archived.`);
+  renderAll();
+}
+
 function renderAll() {
   renderToday(false);
   renderCalendar();
@@ -5088,6 +5321,7 @@ function renderAll() {
   updateMoreAlertDot();
   renderVialTracker();
   renderSprint11();
+  renderCycleEndBanners();
 }
 
 // ── Clear History (Compass tab widget) ─────────────────────
