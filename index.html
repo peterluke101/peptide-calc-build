@@ -1049,6 +1049,52 @@ body.light-mode .rc-syr-tick-label{fill:#666}
 body.light-mode .rc-syr-needle-tip{fill:#999}
 /* App tagline */
 .app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
+
+/* ── Add Peptide Wizard ──────────────────────────────────── */
+.wizard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:999;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.wizard-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:92dvh;overflow-y:auto;padding:1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;animation:slideUp .3s ease}
+.wizard-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .85rem;flex-shrink:0}
+.wizard-dots{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1rem;flex-shrink:0}
+.wizard-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .25s;flex-shrink:0}
+.wizard-dot.active{background:var(--accent);transform:scale(1.35)}
+.wizard-dot.done{background:var(--accent);opacity:.45}
+.wizard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-shrink:0}
+.wizard-title{font-size:1rem;font-weight:700;text-align:center;flex:1;letter-spacing:-.01em}
+.wizard-back,.wizard-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .15s;flex-shrink:0}
+.wizard-back:hover,.wizard-close:hover{color:var(--text);background:var(--surface2)}
+.wizard-step-body{flex:1}
+.wizard-popular-label{font-size:.62rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.wizard-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.wizard-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.3rem .7rem;font-size:.78rem;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit;min-height:32px}
+.wizard-chip:hover{border-color:var(--accent);color:var(--accent)}
+.wizard-chip.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.wizard-field{margin-bottom:1.1rem}
+.wizard-field label{display:block;font-size:.68rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem}
+.wizard-field select,.wizard-field input[type="date"]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);transition:border-color .2s,box-shadow .2s;color-scheme:dark}
+.wizard-field select:focus,.wizard-field input[type="date"]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.wizard-field select option{background:var(--surface2);color:var(--text)}
+.wizard-calc-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.75rem;text-align:center}
+.wizard-calc-label{font-size:.62rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem}
+.wizard-calc-value{font-size:1.7rem;font-weight:700;color:var(--accent);letter-spacing:-.02em;line-height:1.1}
+.wizard-calc-sub{font-size:.7rem;color:var(--text2);margin-top:.3rem}
+.wiz-tier-buttons{display:flex;gap:.4rem;margin-bottom:.5rem}
+.wiz-tier-btn{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.65rem;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;text-align:center;min-height:40px}
+.wiz-tier-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.wiz-tier-btn:hover:not(.active){border-color:var(--text2);color:var(--text)}
+.wizard-dose-range{font-size:.73rem;color:var(--text2);text-align:center;margin-bottom:.75rem}
+.wizard-timing-box{background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:10px;padding:.85rem;margin-top:.75rem;font-size:.82rem;color:var(--text);line-height:1.5}
+.wizard-summary-header{text-align:center;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.wizard-summary-peptide{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:.3rem}
+.wizard-summary-timing{font-size:.75rem;color:var(--text2);line-height:1.4}
+.wizard-summary-row{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border)}
+.wizard-summary-row:last-child{border-bottom:none}
+.wizard-summary-label{font-size:.72rem;color:var(--text2);font-weight:500}
+.wizard-summary-val{font-size:.85rem;font-weight:600;color:var(--text);text-align:right;max-width:65%}
+.wizard-footer{margin-top:1.25rem;flex-shrink:0}
+.wizard-footer .btn{width:100%}
+body.light-mode .wizard-field select,body.light-mode .wizard-field input[type="date"]{background:#f5f5f5;color-scheme:light}
+body.light-mode .wizard-calc-box,body.light-mode .wizard-chip,body.light-mode .wiz-tier-btn{background:#f0f0f0}
+body.light-mode .wizard-field select option{background:#f5f5f5}
 </style>
 </head>
 <body>
@@ -3753,31 +3799,63 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  if ($addTrigger && $addPanel) {
+  // Add Peptide button → open wizard
+  if ($addTrigger) {
     $addTrigger.addEventListener('click', () => {
       const addSection = document.getElementById('add-peptide-card');
-      const isCompact = addSection?.classList.contains('compact');
-      
-      if (isCompact) {
-        // Expand from compact mode
-        addSection.classList.remove('compact');
-        $addPanel.style.display = 'block';
-        if ($addPep) autoPopulateCycle(parseInt($addPep.value));
-      } else {
-        // Toggle panel visibility
-        const isVisible = $addPanel.style.display === 'block';
-        $addPanel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible && $addPep) {
-          const pepIdx = parseInt($addPep.value);
-          const existing = schedule.find(e => e.peptideIndex === pepIdx);
-          if ($addStartDate) {
-            $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
-          }
-          autoPopulateCycle(pepIdx);
-        }
-      }
+      if (addSection?.classList.contains('compact')) addSection.classList.remove('compact');
+      openPeptideWizard();
     });
   }
+
+  // ── Wizard Event Listeners ──────────────────────────────────
+  const wizOverlay   = document.getElementById('wizard-overlay');
+  const wizCloseBtn  = document.getElementById('wizard-close');
+  const wizBackBtn   = document.getElementById('wizard-back');
+  const wizNextBtn   = document.getElementById('wizard-next');
+  const $wizPep      = document.getElementById('wiz-peptide');
+  const $wizVial     = document.getElementById('wiz-vial');
+  const $wizWater    = document.getElementById('wiz-water');
+  const $wizCycle    = document.getElementById('wiz-cycle');
+  const $wizStart    = document.getElementById('wiz-start-date');
+
+  wizOverlay?.addEventListener('click', e => { if (e.target === wizOverlay) wizClose(); });
+  wizCloseBtn?.addEventListener('click', wizClose);
+  wizBackBtn?.addEventListener('click', () => { if (wizStep > 1) wizGoToStep(wizStep - 1); });
+
+  wizNextBtn?.addEventListener('click', () => {
+    // Collect current step values before advancing
+    if (wizStep === 1) {
+      wizData.pepIdx = parseInt($wizPep?.value ?? 0);
+      wizData.vialMg = parseFloat($wizVial?.value ?? 5);
+    } else if (wizStep === 2) {
+      wizData.waterMl = parseFloat($wizWater?.value ?? 2);
+    } else if (wizStep === 4) {
+      wizData.cycleDays = parseInt($wizCycle?.value ?? 56);
+      wizData.startDate = $wizStart?.value || new Date().toISOString().split('T')[0];
+    } else if (wizStep === 5) {
+      wizSave();
+      return;
+    }
+    wizGoToStep(wizStep + 1);
+  });
+
+  $wizPep?.addEventListener('change', () => {
+    wizData.pepIdx = parseInt($wizPep.value);
+    document.querySelectorAll('.wizard-chip').forEach(c => c.classList.toggle('active', parseInt(c.dataset.idx) === wizData.pepIdx));
+    wizSetDefaultVial();
+  });
+  $wizVial?.addEventListener('change', () => { wizData.vialMg = parseFloat($wizVial.value); });
+  $wizWater?.addEventListener('change', () => { wizData.waterMl = parseFloat($wizWater.value); if (wizStep === 2) wizRefreshStep2(); });
+  $wizCycle?.addEventListener('change', () => { wizData.cycleDays = parseInt($wizCycle.value); });
+  $wizStart?.addEventListener('change', () => { wizData.startDate = $wizStart.value; });
+
+  document.querySelectorAll('.wiz-tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      wizData.tier = btn.dataset.tier;
+      if (wizStep === 3) wizRefreshStep3();
+    });
+  });
   
   // ── Cancel and Confirm Buttons ─────────────────────────────
   document.getElementById('add-cancel')?.addEventListener('click', () => {
@@ -4714,6 +4792,231 @@ function importCompassCSV(text) {
     });
   }
 }
+
+// ── Add Peptide Wizard ──────────────────────────────────────
+const WIZ_POPULAR = ['BPC-157', 'Semaglutide', 'Tirzepatide', 'TB-500', 'Ipamorelin', 'CJC-1295 no DAC + Ipamorelin'];
+const WIZ_TITLES  = ['Select Peptide', 'Reconstitution', 'Dose', 'Schedule', 'Summary'];
+let wizStep = 1;
+let wizData = { pepIdx: 0, vialMg: 5, waterMl: 2, tier: 'standard', cycleDays: 56, startDate: '' };
+
+function openPeptideWizard(pepIdx) {
+  wizStep = 1;
+  wizData = {
+    pepIdx: (pepIdx !== undefined ? pepIdx : 0),
+    vialMg: 5,
+    waterMl: 2,
+    tier: 'standard',
+    cycleDays: 56,
+    startDate: new Date().toISOString().split('T')[0]
+  };
+  wizPopulateDropdowns();
+  wizGoToStep(1);
+  const overlay = document.getElementById('wizard-overlay');
+  if (overlay) { overlay.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+}
+
+function wizClose() {
+  const overlay = document.getElementById('wizard-overlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function wizPopulateDropdowns() {
+  const $wizPep   = document.getElementById('wiz-peptide');
+  const $wizVial  = document.getElementById('wiz-vial');
+  const $wizWater = document.getElementById('wiz-water');
+  const $chips    = document.getElementById('wiz-popular-chips');
+
+  if ($wizPep && $wizPep.options.length === 0) {
+    PEPTIDES.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = p.name;
+      $wizPep.appendChild(o);
+    });
+  }
+  if ($wizVial && $wizVial.options.length === 0) {
+    VIALS.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = v + ' mg';
+      $wizVial.appendChild(o);
+    });
+  }
+  if ($wizWater && $wizWater.options.length === 0) {
+    WATER.forEach(w => {
+      const o = document.createElement('option');
+      o.value = w; o.textContent = w + ' mL';
+      $wizWater.appendChild(o);
+    });
+  }
+  if ($chips && $chips.children.length === 0) {
+    WIZ_POPULAR.forEach(name => {
+      const idx = PEPTIDES.findIndex(p => p.name === name);
+      if (idx === -1) return;
+      const chip = document.createElement('button');
+      chip.className = 'wizard-chip';
+      chip.textContent = name;
+      chip.dataset.idx = idx;
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.wizard-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        wizData.pepIdx = idx;
+        if ($wizPep) $wizPep.value = idx;
+        wizSetDefaultVial();
+      });
+      $chips.appendChild(chip);
+    });
+  }
+
+  if ($wizPep)   $wizPep.value   = wizData.pepIdx;
+  if ($wizVial)  $wizVial.value  = wizData.vialMg;
+  if ($wizWater) $wizWater.value = wizData.waterMl;
+
+  document.querySelectorAll('.wizard-chip').forEach(c => {
+    c.classList.toggle('active', parseInt(c.dataset.idx) === wizData.pepIdx);
+  });
+  wizSetDefaultVial();
+}
+
+function wizSetDefaultVial() {
+  const pep = PEPTIDES[wizData.pepIdx];
+  if (!pep) return;
+  const $wizVial = document.getElementById('wiz-vial');
+  if (!$wizVial) return;
+  // Pick vial that provides ~20-30 doses at standard dose
+  const targetMg = (pep.stdMcg / 1000) * 25;
+  const closestVial = VIALS.reduce((a, b) => Math.abs(b - targetMg) < Math.abs(a - targetMg) ? b : a);
+  $wizVial.value = closestVial;
+  wizData.vialMg = closestVial;
+}
+
+function wizAutoSetCycle() {
+  const pep = PEPTIDES[wizData.pepIdx];
+  const $wizCycle = document.getElementById('wiz-cycle');
+  if (!pep || !$wizCycle) return;
+  if (pep.cycleWeeks > 0) {
+    const days = pep.cycleWeeks * 7;
+    const opts = Array.from($wizCycle.options).map(o => parseInt(o.value)).filter(v => v > 0);
+    const closest = opts.reduce((a, b) => Math.abs(b - days) < Math.abs(a - days) ? b : a);
+    $wizCycle.value = String(closest);
+    wizData.cycleDays = closest;
+  } else {
+    $wizCycle.value = '0';
+    wizData.cycleDays = 0;
+  }
+}
+
+function wizGoToStep(step) {
+  wizStep = step;
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('wdot-' + i);
+    if (dot) { dot.classList.remove('active', 'done'); if (i === step) dot.classList.add('active'); else if (i < step) dot.classList.add('done'); }
+    const panel = document.getElementById('wstep-' + i);
+    if (panel) panel.style.display = i === step ? '' : 'none';
+  }
+  const title = document.getElementById('wizard-title');
+  if (title) title.textContent = WIZ_TITLES[step - 1];
+  const backBtn = document.getElementById('wizard-back');
+  if (backBtn) backBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('wizard-next');
+  if (nextBtn) nextBtn.textContent = step === 5 ? 'Save to Schedule' : 'Continue';
+  if (step === 2) wizRefreshStep2();
+  if (step === 3) wizRefreshStep3();
+  if (step === 4) wizRefreshStep4();
+  if (step === 5) wizRefreshStep5();
+  const sheet = document.getElementById('wizard-sheet');
+  if (sheet) sheet.scrollTop = 0;
+}
+
+function wizRefreshStep2() {
+  const $water = document.getElementById('wiz-water');
+  if ($water) $water.value = wizData.waterMl;
+  const concMcgPerUnit = (wizData.vialMg * 1000) / (wizData.waterMl * 100);
+  const concEl  = document.getElementById('wiz-conc-value');
+  if (concEl) concEl.textContent = concMcgPerUnit > 0 ? fmtDose(Math.round(concMcgPerUnit)) : '—';
+  const pep = PEPTIDES[wizData.pepIdx];
+  const dosesEl  = document.getElementById('wiz-doses-value');
+  const dosesSub = document.getElementById('wiz-doses-sub');
+  if (pep && dosesEl) {
+    const totalDoses = Math.floor((wizData.vialMg * 1000) / pep.stdMcg);
+    dosesEl.textContent = totalDoses;
+    if (dosesSub) dosesSub.textContent = 'doses at ' + fmtDose(pep.stdMcg) + ' each';
+  }
+}
+
+function wizRefreshStep3() {
+  const pep = PEPTIDES[wizData.pepIdx];
+  if (!pep) return;
+  // Sync tier buttons
+  document.querySelectorAll('.wiz-tier-btn').forEach(b => b.classList.toggle('active', b.dataset.tier === wizData.tier));
+  const doseMcg = getDoseMcg(pep, wizData.tier);
+  const units   = calcUnits(doseMcg, wizData.vialMg, wizData.waterMl);
+  const doseEl  = document.getElementById('wiz-dose-value');
+  const doseSub = document.getElementById('wiz-dose-sub');
+  const drawEl  = document.getElementById('wiz-draw-value');
+  const rangeEl = document.getElementById('wiz-dose-range');
+  if (doseEl)  doseEl.textContent  = fmtDose(doseMcg);
+  if (doseSub) doseSub.textContent = wizData.tier.charAt(0).toUpperCase() + wizData.tier.slice(1) + ' dose';
+  if (drawEl)  drawEl.textContent  = fmtUnits(units) + ' units';
+  if (rangeEl) rangeEl.textContent = 'Range: ' + pep.rangeLabel;
+}
+
+function wizRefreshStep4() {
+  wizAutoSetCycle();
+  const $startDate = document.getElementById('wiz-start-date');
+  if ($startDate) $startDate.value = wizData.startDate || new Date().toISOString().split('T')[0];
+  const pep = PEPTIDES[wizData.pepIdx];
+  const box = document.getElementById('wiz-timing-box');
+  if (box && pep) {
+    box.style.display = '';
+    box.textContent = '';
+    const icon = document.createElement('span');
+    icon.style.cssText = 'font-size:1.1rem;margin-right:.4rem';
+    icon.textContent = pep.timingIcon || '☀️';
+    box.appendChild(icon);
+    box.appendChild(document.createTextNode(pep.timingNote));
+  }
+}
+
+function wizRefreshStep5() {
+  const pep = PEPTIDES[wizData.pepIdx];
+  if (!pep) return;
+  const doseMcg = getDoseMcg(pep, wizData.tier);
+  const units   = calcUnits(doseMcg, wizData.vialMg, wizData.waterMl);
+  const concMcgPerUnit = (wizData.vialMg * 1000) / (wizData.waterMl * 100);
+  const nameEl   = document.getElementById('wsum-name');
+  const timingEl = document.getElementById('wsum-timing');
+  const rowsEl   = document.getElementById('wiz-summary-rows');
+  if (nameEl)   nameEl.textContent   = pep.name;
+  if (timingEl) timingEl.textContent = pep.timingNote;
+  if (rowsEl) {
+    const cycleTxt = wizData.cycleDays === 0 ? 'Ongoing' : wizData.cycleDays + ' days';
+    rowsEl.innerHTML = [
+      ['Vial Size',      wizData.vialMg + ' mg'],
+      ['BAC Water',      wizData.waterMl + ' mL'],
+      ['Concentration',  fmtDose(Math.round(concMcgPerUnit)) + ' / unit'],
+      ['Dose Tier',      wizData.tier.charAt(0).toUpperCase() + wizData.tier.slice(1)],
+      ['Dose',           fmtDose(doseMcg)],
+      ['Draw',           fmtUnits(units) + ' units'],
+      ['Cycle',          cycleTxt],
+      ['Start Date',     wizData.startDate],
+    ].map(([lbl, val]) =>
+      `<div class="wizard-summary-row"><span class="wizard-summary-label">${lbl}</span><span class="wizard-summary-val">${val}</span></div>`
+    ).join('');
+  }
+}
+
+function wizSave() {
+  const pepIdx = wizData.pepIdx;
+  const entry = { peptideIndex: pepIdx, tier: wizData.tier, vialMg: wizData.vialMg, waterMl: wizData.waterMl, cycleDays: wizData.cycleDays, startDate: wizData.startDate };
+  const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
+  if (existing !== -1) schedule[existing] = entry; else schedule.push(entry);
+  saveSchedule();
+  renderAll();
+  wizClose();
+}
+
+// Expose globally so the DOMContentLoaded trigger can call it
+window.openPeptideWizard = openPeptideWizard;
 </script>
 
 <!-- Logs Tab Content -->
@@ -4814,6 +5117,117 @@ function importCompassCSV(text) {
   </div>
   <div id="journal-list" class="card animate-in">
     <div class="empty-state">No journal entries yet.</div>
+  </div>
+</div>
+
+<!-- Add Peptide Wizard Overlay -->
+<div id="wizard-overlay" class="wizard-overlay" style="display:none" role="dialog" aria-modal="true" aria-label="Add Peptide Wizard">
+  <div class="wizard-sheet" id="wizard-sheet">
+    <div class="wizard-handle"></div>
+    <div class="wizard-dots">
+      <div class="wizard-dot active" id="wdot-1"></div>
+      <div class="wizard-dot" id="wdot-2"></div>
+      <div class="wizard-dot" id="wdot-3"></div>
+      <div class="wizard-dot" id="wdot-4"></div>
+      <div class="wizard-dot" id="wdot-5"></div>
+    </div>
+    <div class="wizard-header">
+      <button class="wizard-back" id="wizard-back" aria-label="Back">←</button>
+      <div class="wizard-title" id="wizard-title">Select Peptide</div>
+      <button class="wizard-close" id="wizard-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Step 1: Peptide + Vial Size -->
+    <div class="wizard-step-body" id="wstep-1">
+      <div class="wizard-popular-label">Popular</div>
+      <div class="wizard-chips" id="wiz-popular-chips"></div>
+      <div class="wizard-field">
+        <label for="wiz-peptide">All Peptides</label>
+        <select id="wiz-peptide"></select>
+      </div>
+      <div class="wizard-field">
+        <label for="wiz-vial">Vial Size</label>
+        <select id="wiz-vial"></select>
+      </div>
+    </div>
+
+    <!-- Step 2: Reconstitution -->
+    <div class="wizard-step-body" id="wstep-2" style="display:none">
+      <div class="wizard-field">
+        <label for="wiz-water">Bacteriostatic Water (mL)</label>
+        <select id="wiz-water"></select>
+      </div>
+      <div class="wizard-calc-box">
+        <div class="wizard-calc-label">Concentration</div>
+        <div class="wizard-calc-value" id="wiz-conc-value">—</div>
+        <div class="wizard-calc-sub" id="wiz-conc-sub">per unit on 100-unit syringe</div>
+      </div>
+      <div class="wizard-calc-box">
+        <div class="wizard-calc-label">Total Doses in Vial</div>
+        <div class="wizard-calc-value" id="wiz-doses-value">—</div>
+        <div class="wizard-calc-sub" id="wiz-doses-sub">at standard dose</div>
+      </div>
+    </div>
+
+    <!-- Step 3: Dose -->
+    <div class="wizard-step-body" id="wstep-3" style="display:none">
+      <div class="wizard-field">
+        <label>Dose Tier</label>
+        <div class="wiz-tier-buttons">
+          <button class="wiz-tier-btn" data-tier="low">Low</button>
+          <button class="wiz-tier-btn active" data-tier="standard">Standard</button>
+          <button class="wiz-tier-btn" data-tier="high">High</button>
+        </div>
+      </div>
+      <div class="wizard-calc-box">
+        <div class="wizard-calc-label">Dose</div>
+        <div class="wizard-calc-value" id="wiz-dose-value">—</div>
+        <div class="wizard-calc-sub" id="wiz-dose-sub">standard dose</div>
+      </div>
+      <div class="wizard-calc-box">
+        <div class="wizard-calc-label">Draw</div>
+        <div class="wizard-calc-value" id="wiz-draw-value">—</div>
+        <div class="wizard-calc-sub">units on a 100-unit syringe</div>
+      </div>
+      <div class="wizard-dose-range" id="wiz-dose-range"></div>
+    </div>
+
+    <!-- Step 4: Schedule -->
+    <div class="wizard-step-body" id="wstep-4" style="display:none">
+      <div class="wizard-field">
+        <label for="wiz-cycle">Cycle Length</label>
+        <select id="wiz-cycle">
+          <option value="7">7 days (1 week)</option>
+          <option value="14">14 days (2 weeks)</option>
+          <option value="21">21 days (3 weeks)</option>
+          <option value="28">28 days (4 weeks)</option>
+          <option value="35">35 days (5 weeks)</option>
+          <option value="42">42 days (6 weeks)</option>
+          <option value="56" selected>56 days (8 weeks)</option>
+          <option value="84">84 days (12 weeks)</option>
+          <option value="112">112 days (16 weeks)</option>
+          <option value="0">Ongoing (no end)</option>
+        </select>
+      </div>
+      <div class="wizard-field">
+        <label for="wiz-start-date">Start Date</label>
+        <input type="date" id="wiz-start-date">
+      </div>
+      <div class="wizard-timing-box" id="wiz-timing-box" style="display:none"></div>
+    </div>
+
+    <!-- Step 5: Summary -->
+    <div class="wizard-step-body" id="wstep-5" style="display:none">
+      <div class="wizard-summary-header">
+        <div class="wizard-summary-peptide" id="wsum-name">—</div>
+        <div class="wizard-summary-timing" id="wsum-timing">—</div>
+      </div>
+      <div id="wiz-summary-rows"></div>
+    </div>
+
+    <div class="wizard-footer">
+      <button class="btn btn-primary" id="wizard-next">Continue</button>
+    </div>
   </div>
 </div>
 
