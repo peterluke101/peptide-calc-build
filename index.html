@@ -1443,7 +1443,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
 
   <div class="header">
     <h1>Peptide <span>Compass Pro</span></h1>
-    <p class="app-tagline">Plan doses, calculate units, track injections, and organize your peptide schedule — all in one place.</p>
+    <p class="app-tagline">Track protocols, understand reconstitution math, and organize your schedule — educational tracking and reference companion.</p>
   </div>
 
 <!-- A2HS / WhatsApp Banner -->
@@ -2198,7 +2198,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
       <div class="guides-promo-icon">📚</div>
       <div class="guides-promo-text">
         <div class="guides-promo-title">Premium Guides</div>
-        <div class="guides-promo-desc">Expert guides on peptides, supplements, nootropics, TRT &amp; more</div>
+        <div class="guides-promo-desc">Reference guides on peptide protocols and related topics</div>
         <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Browse Guides →</a>
       </div>
     </div>
@@ -2440,6 +2440,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-mg-mcg" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> mg vs mcg vs Units — what's the difference?
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard unit conversion reference</p>
     <div class="math-detail" id="learn-mg-mcg">
       <p class="math-step"><strong>1 mg = 1,000 mcg.</strong> Most peptides are dosed in micrograms (mcg), not milligrams (mg). A vial labelled "5 mg" contains 5,000 mcg of peptide.</p>
       <p class="math-step"><strong>Units (IU)</strong> are a completely different measurement used for some hormones and bacteriostatic water syringes. On a 100-unit insulin syringe, each small tick mark = 1 unit = 0.01 mL.</p>
@@ -2449,17 +2450,19 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-syringe-units" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Syringe unit basics — reading an insulin syringe
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard unit conversion reference</p>
     <div class="math-detail" id="learn-syringe-units">
       <p class="math-step">Insulin syringes are marked in <strong>units</strong>, not mL. The two most common sizes:</p>
       <p class="math-step">• <strong>100-unit (1 mL)</strong> syringe — each unit = 0.01 mL. 50 units = 0.5 mL.</p>
       <p class="math-step">• <strong>50-unit (0.5 mL)</strong> syringe — each unit = 0.01 mL. 25 units = 0.25 mL.</p>
       <p class="math-step">To convert a volume in mL to syringe units, multiply by 100. For example, 0.25 mL = 25 units on a 100-unit syringe.</p>
-      <p class="math-step">This app's reverse calculator handles this conversion for you — enter your desired dose and it shows the exact syringe mark to draw to.</p>
+      <p class="math-step">The reverse calculator performs this conversion based on your entered values — enter your desired dose and it shows the corresponding syringe volume based on the entered assumptions.</p>
     </div>
 
     <button class="math-toggle learn-toggle" data-detail="learn-concentration" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Understanding dosing — concentration and volume
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard reconstitution math reference</p>
     <div class="math-detail" id="learn-concentration">
       <p class="math-step"><strong>Concentration</strong> = how much peptide is dissolved in how much liquid.</p>
       <p class="math-step">Example: 5 mg peptide + 2 mL BAC water = <strong>2,500 mcg per mL</strong>.</p>
@@ -2475,6 +2478,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-reconstitution" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Reconstitution basics — mixing BAC water with lyophilized powder
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📚 General handling principles — verify with your supplier's instructions</p>
     <div class="math-detail" id="learn-reconstitution">
       <p class="math-step">Peptides arrive as a dry, freeze-dried (lyophilized) powder. You dissolve them in <strong>bacteriostatic water (BAC water)</strong> before use.</p>
       <div class="math-section">Steps</div>
@@ -2482,12 +2486,14 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
       <p class="math-step"><span class="math-num">2</span> Draw your desired volume of BAC water into the syringe.</p>
       <p class="math-step"><span class="math-num">3</span> Insert the needle into the peptide vial at an angle and let the water run down the side of the vial — do not squirt directly onto the powder.</p>
       <p class="math-step"><span class="math-num">4</span> Gently swirl (do not shake) until the powder is fully dissolved. The solution should be clear.</p>
-      <p class="math-step"><span class="math-num">5</span> Refrigerate immediately. Most reconstituted peptides are stable for 4–6 weeks when refrigerated and kept away from light.</p>
+      <p class="math-step"><span class="math-num">5</span> Refrigerate promptly after mixing. Keep away from light. Storage stability varies by peptide and supplier — always check your supplier's specific handling instructions.</p>
+      <p class="math-step" style="font-size:.75rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.25rem">ℹ️ This is a general reference workflow. Follow your supplier's specific handling instructions and consult your clinician for guidance on your particular compound.</p>
     </div>
 
     <button class="math-toggle learn-toggle" data-detail="learn-bac-water" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> How BAC water volume affects concentration
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard reconstitution math reference</p>
     <div class="math-detail" id="learn-bac-water">
       <p class="math-step">The amount of BAC water you add determines how concentrated each dose is and how small or large each injection volume will be.</p>
       <p class="math-step">• <strong>Less BAC water</strong> → higher concentration → smaller injection volume per dose (easier to inject, but less room for error when measuring).</p>
@@ -2498,6 +2504,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-high-units" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Why high units on a syringe does not mean a high dose
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard unit conversion reference</p>
     <div class="math-detail" id="learn-high-units">
       <p class="math-step">The number of syringe units you draw is just a <strong>volume measurement</strong>. Whether that volume contains a large or small dose depends entirely on the concentration of your solution.</p>
       <p class="math-step">Example: 20 units (0.2 mL) from a vial reconstituted with 1 mL BAC water contains twice the dose of 20 units drawn from the same vial reconstituted with 2 mL BAC water.</p>
@@ -2511,6 +2518,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-injection" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Injection basics — SubQ technique, site rotation, sterile practice
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📚 General practice reference — consult your clinician for personal guidance</p>
     <div class="math-detail" id="learn-injection">
       <p class="math-step"><strong>SubQ (subcutaneous)</strong> injections go into the layer of fat just under the skin — not into muscle. Common sites: abdomen (2 inches from navel), outer thigh, or upper arm.</p>
       <div class="math-section">Technique</div>
@@ -2524,15 +2532,17 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-storage" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Storage &amp; handling — refrigeration, light sensitivity, shelf life
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📚 General handling reference — stability varies by product; check supplier instructions</p>
     <div class="math-detail" id="learn-storage">
       <p class="math-step"><strong>Lyophilized (unreconstituted) powder:</strong> Store in a cool, dark place. Most peptides remain stable for 1–2 years when kept dry and away from heat and UV light.</p>
-      <p class="math-step"><strong>Reconstituted (mixed) solution:</strong> Refrigerate immediately after mixing. Store away from light. Most peptides are stable for <strong>4–6 weeks</strong> when refrigerated. Avoid repeated freeze-thaw cycles.</p>
+      <p class="math-step"><strong>Reconstituted (mixed) solution:</strong> Refrigerate promptly after mixing. Store away from light. Avoid repeated freeze-thaw cycles. Storage stability and shelf life vary by peptide and manufacturer — always check your supplier's instructions for specific guidance.</p>
       <p class="math-step"><strong>Tips:</strong> Keep vials upright. Use an opaque bag or wrap vials in foil if your fridge has a light. Do not store next to the fridge door where temperature fluctuates.</p>
     </div>
 
     <button class="math-toggle learn-toggle" data-detail="learn-mistakes" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> Common beginner mistakes to avoid
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📚 General practice reference — consult your clinician for personal guidance</p>
     <div class="math-detail" id="learn-mistakes">
       <p class="math-step"><strong>1. Confusing mg and mcg.</strong> A dose of "250" could be 250 mcg or 250 mg — the latter is 1,000× more. Always confirm the unit.</p>
       <p class="math-step"><strong>2. Shaking the vial.</strong> Shaking can degrade peptides. Always swirl gently.</p>
@@ -2549,8 +2559,9 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-reverse-calc" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> How the reverse calculator works
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 Standard reconstitution math reference</p>
     <div class="math-detail" id="learn-reverse-calc">
-      <p class="math-step">The reverse calculator starts from your desired dose (in mcg) and works backwards to tell you <em>exactly which mark to draw to</em> on your syringe.</p>
+      <p class="math-step">The reverse calculator starts from your desired dose (in mcg) and works backwards to show the calculated syringe volume based on your entered values.</p>
       <div class="math-section">Inputs needed</div>
       <p class="math-step">• Vial size (mg) — how much peptide is in the vial</p>
       <p class="math-step">• BAC water added (mL) — how much you used to reconstitute</p>
@@ -2563,6 +2574,7 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
     <button class="math-toggle learn-toggle" data-detail="learn-scheduling" aria-expanded="false" type="button">
       <span class="math-chevron">▶</span> How scheduling and stack planning differ
     </button>
+    <p class="ev-source" style="margin:-.1rem 0 .4rem .1rem">📐 App reference — how this tool organizes protocols</p>
     <div class="math-detail" id="learn-scheduling">
       <p class="math-step"><strong>Scheduling</strong> is about timing — which days and times you inject each peptide. The Schedule tab generates a calendar view of your protocol so you never miss a dose or accidentally double-dose.</p>
       <p class="math-step"><strong>Stack planning</strong> (Stacks tab) is about combination — which peptides you pair together in a protocol, and at what doses. A stack is your full protocol design before it becomes a schedule.</p>
