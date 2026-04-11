@@ -1015,6 +1015,11 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
 .btn-print-label-sm:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
 .rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
 .rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
+.rc-add-schedule-btn{width:100%;margin-top:.75rem;background:var(--accent);color:#000;font-weight:700;border:none;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;font-family:inherit;letter-spacing:.03em;cursor:pointer;transition:opacity .2s}
+.rc-add-schedule-btn:hover{opacity:.82}
+.rc-add-schedule-hint{font-size:.7rem;color:var(--text2);text-align:center;margin-top:.4rem;opacity:.65}
+.rc-toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;z-index:9999;white-space:nowrap}
+.rc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 body.light-mode .btn-print-label,.btn-print-label-sm{background:rgba(43,186,160,.12)}
 /* Peptide select */
 .rc-pep-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-family:inherit;font-size:.85rem;font-weight:500;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;-webkit-appearance:none;appearance:none}
@@ -1227,6 +1232,8 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
+      <button class="rc-add-schedule-btn" id="rc-add-schedule-btn">+ Add to Schedule</button>
+      <div class="rc-add-schedule-hint" id="rc-add-schedule-hint">Select a peptide above to add to schedule</div>
     </div>
     <!-- Syringe Graphic — sleek redesign -->
     <div class="rc-syringe-wrap">
@@ -4484,6 +4491,49 @@ document.addEventListener('DOMContentLoaded', () => {
         doseSlider.value = mgVal; doseNum.value = mgVal;
       }
       calcAndRender();
+    });
+
+    // Add to Schedule from Reverse Calc
+    const addSchedBtn  = document.getElementById('rc-add-schedule-btn');
+    const addSchedHint = document.getElementById('rc-add-schedule-hint');
+
+    function updateAddSchedState() {
+      addSchedHint.style.display = pepSelect.value === '' ? 'block' : 'none';
+    }
+    updateAddSchedState();
+    pepSelect.addEventListener('change', updateAddSchedState);
+
+    addSchedBtn.addEventListener('click', () => {
+      const idx = parseInt(pepSelect.value);
+      if (isNaN(idx)) {
+        addSchedHint.style.display = 'block';
+        return;
+      }
+      const vialMg     = parseFloat(vialNum.value) || 5;
+      const desiredMcg = getDesiredMcg();
+      const waterMl    = parseFloat(((vialMg * 1000 / desiredMcg) * syringeUnits / 100).toFixed(2));
+      const startDate  = new Date().toISOString().split('T')[0];
+
+      const existing = schedule.findIndex(e => e.peptideIndex === idx);
+      if (existing !== -1) {
+        schedule[existing] = { peptideIndex: idx, tier: 'standard', vialMg, waterMl, cycleDays: schedule[existing].cycleDays || 56, startDate };
+      } else {
+        schedule.push({ peptideIndex: idx, tier: 'standard', vialMg, waterMl, cycleDays: 56, startDate });
+      }
+      saveSchedule();
+      renderAll();
+
+      let toast = document.getElementById('rc-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'rc-toast';
+        toast.className = 'rc-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = '\u2713 ' + PEPTIDES[idx].name + ' added to schedule';
+      toast.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.remove('show'), 2500);
     });
 
     // Print label from Reverse Calc
