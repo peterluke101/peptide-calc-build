@@ -370,6 +370,41 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
   display: flex;
 }
 
+/* ── Guided Stepper ──────────────────────────────────────── */
+.gs-step-indicator{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:1.25rem;padding:.25rem 0}
+.gs-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);color:var(--text2);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;position:relative;z-index:1}
+.gs-dot.active{border-color:var(--accent);background:var(--accent);color:#000}
+.gs-dot.done{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.gs-line{flex:1;height:2px;background:var(--border);transition:background .3s;max-width:48px}
+.gs-line.done{background:var(--accent)}
+.gs-step-panel{display:none}
+.gs-step-panel.active{display:block}
+.gs-step-heading{font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.9rem}
+/* Reconstitution result box */
+.gs-recon-result{background:var(--accent-dim);border:1px solid rgba(61,232,195,.2);border-radius:8px;padding:.75rem 1rem;margin:.75rem 0;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.gs-result-label{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.2rem}
+.gs-result-value{font-size:.95rem;font-weight:700;color:var(--accent)}
+/* Dose tier buttons */
+.gs-tier-group{display:flex;gap:.5rem;margin-bottom:.75rem}
+.gs-tier-btn{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:.6rem .4rem;text-align:center;cursor:pointer;transition:all .2s;font-family:inherit;-webkit-appearance:none}
+.gs-tier-btn:hover{border-color:var(--accent)}
+.gs-tier-btn.active{border-color:var(--accent);background:var(--accent-dim)}
+.gs-tier-label{display:block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:.25rem}
+.gs-tier-btn.active .gs-tier-label{color:var(--accent)}
+.gs-tier-dose{display:block;font-size:.8rem;font-weight:600;color:var(--text)}
+/* Draw result box */
+.gs-draw-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;text-align:center;margin:.75rem 0}
+.gs-draw-label{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.35rem}
+.gs-draw-value{font-size:1.6rem;font-weight:700;color:var(--text)}
+.gs-draw-unit{font-size:.8rem;color:var(--text2);margin-left:.2rem}
+/* Summary grid */
+.gs-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.25rem}
+.gs-summary-item{background:var(--surface2);border-radius:8px;padding:.6rem .75rem}
+.gs-summary-item.full{grid-column:1/-1}
+.gs-summary-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.2rem}
+.gs-summary-val{font-size:.85rem;font-weight:600;color:var(--text)}
+/* Field styles reuse add-panel field styles via .add-panel .field */
+
 
 
 /* ── A2HS / WhatsApp Banner ──────────────────────────────── */
@@ -1147,53 +1182,139 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
   <div class="first-time-help" id="first-time-help">Add your first peptide to build your weekly schedule</div>
   <button class="btn-add-trigger" id="add-trigger"><span class="plus">+</span> Add Peptide</button>
   <div class="add-panel" id="add-panel" style="display:none">
-    <div class="field">
-      <label for="add-peptide">Peptide</label>
-      <select id="add-peptide"></select>
+    <!-- Hidden elements populated by existing page-load code -->
+    <select id="add-peptide" style="display:none"></select>
+    <select id="add-tier" style="display:none">
+      <option value="low">Low</option>
+      <option value="standard" selected>Standard</option>
+      <option value="high">High</option>
+    </select>
+    <select id="add-vial" style="display:none"></select>
+    <select id="add-water" style="display:none"></select>
+    <select id="add-cycle" style="display:none">
+      <option value="7">7 days (1 week)</option>
+      <option value="10">10 days</option>
+      <option value="14">14 days (2 weeks)</option>
+      <option value="20">20 days</option>
+      <option value="21">21 days (3 weeks)</option>
+      <option value="28">28 days (4 weeks)</option>
+      <option value="35">35 days (5 weeks)</option>
+      <option value="42">42 days (6 weeks)</option>
+      <option value="49">49 days (7 weeks)</option>
+      <option value="56" selected>56 days (8 weeks)</option>
+      <option value="84">84 days (12 weeks)</option>
+      <option value="112">112 days (16 weeks)</option>
+      <option value="0">Ongoing (no end)</option>
+    </select>
+    <input type="date" id="add-start-date" style="display:none">
+    <div id="cycle-hint" class="cycle-hint" style="display:none"></div>
+
+    <!-- Step Indicator -->
+    <div class="gs-step-indicator" id="gs-indicator">
+      <div class="gs-dot active" data-step="1"><span>1</span></div>
+      <div class="gs-line" id="gs-line-1"></div>
+      <div class="gs-dot" data-step="2"><span>2</span></div>
+      <div class="gs-line" id="gs-line-2"></div>
+      <div class="gs-dot" data-step="3"><span>3</span></div>
+      <div class="gs-line" id="gs-line-3"></div>
+      <div class="gs-dot" data-step="4"><span>4</span></div>
     </div>
-    <div class="field" style="display:none">
-      <label for="add-tier">Dose Tier</label>
-      <select id="add-tier">
-        <option value="low">Low</option>
-        <option value="standard" selected>Standard</option>
-        <option value="high">High</option>
-      </select>
+
+    <!-- Step 1: Peptide & Vial -->
+    <div class="gs-step-panel active" data-step="1">
+      <div class="gs-step-heading">Select Peptide</div>
+      <div class="field">
+        <label for="gs-peptide-sel">Peptide</label>
+        <select id="gs-peptide-sel"></select>
+      </div>
+      <div class="field">
+        <label for="gs-vial-sel">Vial Size</label>
+        <select id="gs-vial-sel"></select>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" data-gs-next>Next →</button>
+        <button class="btn btn-secondary" id="add-cancel">Cancel</button>
+      </div>
     </div>
-    <div class="field">
-      <label for="add-vial">Vial Size</label>
-      <select id="add-vial"></select>
+
+    <!-- Step 2: Reconstitution -->
+    <div class="gs-step-panel" data-step="2">
+      <div class="gs-step-heading">Reconstitution</div>
+      <div class="field">
+        <label for="gs-water-sel">Bacteriostatic Water</label>
+        <select id="gs-water-sel"></select>
+      </div>
+      <div class="gs-recon-result">
+        <div>
+          <div class="gs-result-label">Concentration</div>
+          <div class="gs-result-value" id="gs-conc-display">—</div>
+        </div>
+        <div>
+          <div class="gs-result-label">Per unit (100µL)</div>
+          <div class="gs-result-value" id="gs-per-unit-display">—</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-gs-back>← Back</button>
+        <button class="btn btn-primary" data-gs-next>Next →</button>
+      </div>
     </div>
-    <div class="field">
-      <label for="add-water">Bacteriostatic Water</label>
-      <select id="add-water"></select>
+
+    <!-- Step 3: Dose -->
+    <div class="gs-step-panel" data-step="3">
+      <div class="gs-step-heading">Dose</div>
+      <div class="gs-tier-group" id="gs-tier-btns"></div>
+      <div class="gs-draw-box">
+        <div class="gs-draw-label">Draw</div>
+        <div><span class="gs-draw-value" id="gs-draw-value">—</span><span class="gs-draw-unit"> units</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-gs-back>← Back</button>
+        <button class="btn btn-primary" data-gs-next>Next →</button>
+      </div>
     </div>
-    <div class="field">
-      <label for="add-cycle">Cycle Length (days)</label>
-      <select id="add-cycle">
-        <option value="7">7 days (1 week)</option>
-        <option value="10">10 days</option>
-        <option value="14">14 days (2 weeks)</option>
-        <option value="20">20 days</option>
-        <option value="21">21 days (3 weeks)</option>
-        <option value="28">28 days (4 weeks)</option>
-        <option value="35">35 days (5 weeks)</option>
-        <option value="42">42 days (6 weeks)</option>
-        <option value="49">49 days (7 weeks)</option>
-        <option value="56" selected>56 days (8 weeks)</option>
-        <option value="84">84 days (12 weeks)</option>
-        <option value="112">112 days (16 weeks)</option>
-        <option value="0">Ongoing (no end)</option>
-      </select>
-      <div id="cycle-hint" class="cycle-hint" style="display:none"></div>
+
+    <!-- Step 4: Schedule -->
+    <div class="gs-step-panel" data-step="4">
+      <div class="gs-step-heading">Schedule</div>
+      <div class="field">
+        <label for="gs-cycle-sel">Cycle Length</label>
+        <select id="gs-cycle-sel">
+          <option value="7">7 days (1 week)</option>
+          <option value="10">10 days</option>
+          <option value="14">14 days (2 weeks)</option>
+          <option value="20">20 days</option>
+          <option value="21">21 days (3 weeks)</option>
+          <option value="28">28 days (4 weeks)</option>
+          <option value="35">35 days (5 weeks)</option>
+          <option value="42">42 days (6 weeks)</option>
+          <option value="49">49 days (7 weeks)</option>
+          <option value="56" selected>56 days (8 weeks)</option>
+          <option value="84">84 days (12 weeks)</option>
+          <option value="112">112 days (16 weeks)</option>
+          <option value="0">Ongoing (no end)</option>
+        </select>
+        <div class="cycle-hint" id="gs-cycle-hint" style="display:none"></div>
+      </div>
+      <div class="field">
+        <label for="gs-start-date">Start Date</label>
+        <input type="date" id="gs-start-date">
+        <div class="helper-text">When did you start this peptide?</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-gs-back>← Back</button>
+        <button class="btn btn-primary" data-gs-next>Review →</button>
+      </div>
     </div>
-    <div class="field">
-      <label for="add-start-date">Start Date</label>
-      <input type="date" id="add-start-date">
-      <div class="helper-text">When did you start this peptide?</div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="add-confirm">Add to Schedule</button>
-      <button class="btn btn-secondary" id="add-cancel">Cancel</button>
+
+    <!-- Summary -->
+    <div class="gs-step-panel" data-step="summary">
+      <div class="gs-step-heading">Ready to start!</div>
+      <div class="gs-summary-grid" id="gs-summary-grid"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-gs-back>← Edit</button>
+        <button class="btn btn-primary" id="add-confirm">Save & Start ✓</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2222,25 +2343,26 @@ function renderStackRecommendations(goal) {
     ${categoriesHtml}
   `;
 
-  // Wire Add to Stack button — pre-selects the featured peptide in the Add Peptide form
+  // Wire Add to Stack button — pre-selects the featured peptide and opens guided flow
   const addBtn = $recommendations.querySelector('[data-featured-peptide]');
   if (addBtn) {
     addBtn.addEventListener('click', () => {
       const pepName = addBtn.dataset.featuredPeptide;
-      const pepSelect = document.getElementById('add-peptide');
-      if (pepSelect) {
-        const idx = Array.from(pepSelect.options).findIndex(o => o.text === pepName);
-        if (idx >= 0) {
-          pepSelect.value = pepSelect.options[idx].value;
-          pepSelect.dispatchEvent(new Event('change'));
-        }
-      }
+      // Sync both hidden and visible peptide selects
+      [document.getElementById('add-peptide'), document.getElementById('gs-peptide-sel')].forEach(sel => {
+        if (!sel) return;
+        const idx = Array.from(sel.options).findIndex(o => o.text === pepName);
+        if (idx >= 0) sel.value = sel.options[idx].value;
+      });
       const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
       if (scheduleTab) scheduleTab.click();
       setTimeout(() => {
         const addPanel = document.getElementById('add-panel');
         const addTrigger = document.getElementById('add-trigger');
-        if (addPanel) addPanel.style.display = 'block';
+        if (addPanel) {
+          addPanel.style.display = 'block';
+          gsShowStep(1);
+        }
         if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 120);
     });
@@ -2435,27 +2557,42 @@ function shouldInject(entry, date) {
 }
 
 // ── Populate Add-Peptide Dropdowns ───────────────────────────
-const $addPep = document.getElementById('add-peptide');
-const $addVial = document.getElementById('add-vial');
+// Hidden elements (backward-compat) + visible stepper elements
+const $addPep   = document.getElementById('add-peptide');
+const $addVial  = document.getElementById('add-vial');
 const $addWater = document.getElementById('add-water');
+const $gsPepSel   = document.getElementById('gs-peptide-sel');
+const $gsVialSel  = document.getElementById('gs-vial-sel');
+const $gsWaterSel = document.getElementById('gs-water-sel');
 
 PEPTIDES.forEach((p, i) => {
-  const o = document.createElement('option');
-  o.value = i; o.textContent = p.name;
-  $addPep.appendChild(o);
+  [$addPep, $gsPepSel].forEach(sel => {
+    if (!sel) return;
+    const o = document.createElement('option');
+    o.value = i; o.textContent = p.name;
+    sel.appendChild(o);
+  });
 });
 VIALS.forEach(v => {
-  const o = document.createElement('option');
-  o.value = v; o.textContent = v + ' mg';
-  $addVial.appendChild(o);
+  [$addVial, $gsVialSel].forEach(sel => {
+    if (!sel) return;
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v + ' mg';
+    sel.appendChild(o);
+  });
 });
 WATER.forEach(w => {
-  const o = document.createElement('option');
-  o.value = w; o.textContent = w + ' mL';
-  $addWater.appendChild(o);
+  [$addWater, $gsWaterSel].forEach(sel => {
+    if (!sel) return;
+    const o = document.createElement('option');
+    o.value = w; o.textContent = w + ' mL';
+    sel.appendChild(o);
+  });
 });
-$addVial.value = '5';
-$addWater.value = '2';
+if ($addVial)  $addVial.value  = '5';
+if ($addWater) $addWater.value = '2';
+if ($gsVialSel)  $gsVialSel.value  = '5';
+if ($gsWaterSel) $gsWaterSel.value = '2';
 
 // Note: Add peptide initialization moved to DOMContentLoaded
 
@@ -3809,81 +3946,248 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $welcomeSkip?.addEventListener('click', dismissOnboarding);
 
-  // ── Add Peptide Initialization ─────────────────────────────
-  const $addStartDate = document.getElementById('add-start-date');
-  if ($addStartDate) {
-    $addStartDate.value = new Date().toISOString().split('T')[0];
-  }
-  
-  const $addPep = document.getElementById('add-peptide');
-  const $addPanel = document.getElementById('add-panel');
-  const $addTrigger = document.getElementById('add-trigger');
-  
-  if ($addPep) {
-    $addPep.addEventListener('change', () => {
-      const pepIdx = parseInt($addPep.value);
-      const existing = schedule.find(e => e.peptideIndex === pepIdx);
-      if ($addStartDate) {
-        if (existing) {
-          $addStartDate.value = existing.startDate;
-        } else {
-          $addStartDate.value = new Date().toISOString().split('T')[0];
-        }
-      }
-      autoPopulateCycle(pepIdx);
+  // ── Guided Stepper (Add Peptide) ───────────────────────────
+  let _gsStep = 1;
+
+  function gsShowStep(step) {
+    _gsStep = step;
+    document.querySelectorAll('.gs-step-panel').forEach(p => {
+      p.classList.toggle('active', p.dataset.step == step);
     });
+    // Dots: active = current step number, done = past steps
+    document.querySelectorAll('#gs-indicator .gs-dot').forEach(dot => {
+      const n = parseInt(dot.dataset.step);
+      const cur = typeof step === 'number' ? step : 5;
+      dot.classList.toggle('active', n === step);
+      dot.classList.toggle('done', n < cur);
+      dot.innerHTML = (n < cur) ? '<span>✓</span>' : `<span>${n}</span>`;
+    });
+    // Lines: done when step after them is reached
+    ['gs-line-1','gs-line-2','gs-line-3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('done', typeof step === 'number' ? step > i + 1 : true);
+    });
+    if (step === 2) gsInitRecon();
+    if (step === 3) gsInitDose();
+    if (step === 4) gsInitSchedule();
+    if (step === 'summary') gsRenderSummary();
   }
-  
+
+  function gsInitRecon() {
+    const updateRecon = () => {
+      const vialMg  = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+      const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+      const concMgMl    = vialMg / waterMl;
+      const mcgPerUnit  = (vialMg * 1000) / (waterMl * 100);
+      const concEl = document.getElementById('gs-conc-display');
+      const unitEl = document.getElementById('gs-per-unit-display');
+      if (concEl) concEl.textContent = concMgMl.toFixed(2) + ' mg/mL';
+      if (unitEl) unitEl.textContent = mcgPerUnit.toFixed(1) + ' mcg/unit';
+    };
+    document.getElementById('gs-water-sel')?.addEventListener('input', updateRecon);
+    updateRecon();
+  }
+
+  function gsInitDose() {
+    const pepIdx = parseInt(document.getElementById('gs-peptide-sel')?.value);
+    const pep = PEPTIDES[pepIdx];
+    const container = document.getElementById('gs-tier-btns');
+    if (!pep || !container) return;
+
+    const tiers = [
+      { key: 'low',      label: 'Low',      dose: pep.lowMcg },
+      { key: 'standard', label: 'Standard', dose: pep.stdMcg },
+      { key: 'high',     label: 'High',     dose: pep.highMcg }
+    ];
+    const activeTier = document.getElementById('add-tier')?.value || 'standard';
+    container.innerHTML = tiers.map(t => `
+      <button class="gs-tier-btn${t.key === activeTier ? ' active' : ''}" data-tier="${t.key}" type="button">
+        <span class="gs-tier-label">${t.label}</span>
+        <span class="gs-tier-dose">${fmtDose(t.dose)}</span>
+      </button>
+    `).join('');
+
+    const calcDraw = () => {
+      const tier    = container.querySelector('.gs-tier-btn.active')?.dataset.tier || 'standard';
+      const vialMg  = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+      const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+      const doseMcg = tier === 'low' ? pep.lowMcg : tier === 'high' ? pep.highMcg : pep.stdMcg;
+      const units   = calcUnits(doseMcg, vialMg, waterMl);
+      const el = document.getElementById('gs-draw-value');
+      if (el) el.textContent = fmtUnits(units);
+      // Sync hidden tier select
+      const tierSel = document.getElementById('add-tier');
+      if (tierSel) tierSel.value = tier;
+    };
+
+    container.querySelectorAll('.gs-tier-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.gs-tier-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        calcDraw();
+      });
+    });
+    calcDraw();
+  }
+
+  function gsInitSchedule() {
+    const pepIdx = parseInt(document.getElementById('gs-peptide-sel')?.value);
+    const pep = PEPTIDES[pepIdx];
+    const cycleSel = document.getElementById('gs-cycle-sel');
+    const hintEl   = document.getElementById('gs-cycle-hint');
+
+    if (pep && cycleSel) {
+      const days = pep.cycleWeeks > 0 ? pep.cycleWeeks * 7 : 0;
+      const opts = Array.from(cycleSel.options).map(o => parseInt(o.value));
+      if (opts.includes(days)) {
+        cycleSel.value = String(days);
+      } else if (days > 0) {
+        const closest = opts.filter(v => v > 0).reduce((a, b) => Math.abs(b - days) < Math.abs(a - days) ? b : a);
+        cycleSel.value = String(closest);
+      } else {
+        cycleSel.value = '0';
+      }
+      if (hintEl) {
+        hintEl.textContent = pep.cycleWeeks > 0
+          ? `Recommended: ${pep.cycleWeeks} week${pep.cycleWeeks !== 1 ? 's' : ''}`
+          : 'Recommended: ongoing (no fixed end date)';
+        hintEl.style.display = 'block';
+      }
+    }
+
+    // Set start date
+    const startInput = document.getElementById('gs-start-date');
+    if (startInput) {
+      const existing = schedule.find(e => e.peptideIndex === pepIdx);
+      startInput.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
+    }
+  }
+
+  function gsRenderSummary() {
+    const pepIdx  = parseInt(document.getElementById('gs-peptide-sel')?.value);
+    const pep     = PEPTIDES[pepIdx];
+    const vialMg  = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+    const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+    const tier    = document.getElementById('add-tier')?.value || 'standard';
+    const cycleDays = parseInt(document.getElementById('gs-cycle-sel')?.value) || 0;
+    const startDate = document.getElementById('gs-start-date')?.value || new Date().toISOString().split('T')[0];
+
+    const doseMcg   = !pep ? 0 : tier === 'low' ? pep.lowMcg : tier === 'high' ? pep.highMcg : pep.stdMcg;
+    const units     = calcUnits(doseMcg, vialMg, waterMl);
+    const conc      = (vialMg / waterMl).toFixed(2);
+    const cycleLabel = cycleDays === 0 ? 'Ongoing' : cycleDays + ' days';
+    const freqLabel  = pep ? (pep.frequency || 'daily') : '—';
+
+    const grid = document.getElementById('gs-summary-grid');
+    if (!grid) return;
+    grid.innerHTML = `
+      <div class="gs-summary-item full">
+        <div class="gs-summary-lbl">Peptide</div>
+        <div class="gs-summary-val">${pep ? pep.name : '—'}</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Vial</div>
+        <div class="gs-summary-val">${vialMg} mg</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">BAC Water</div>
+        <div class="gs-summary-val">${waterMl} mL</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Concentration</div>
+        <div class="gs-summary-val">${conc} mg/mL</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Dose (${tier})</div>
+        <div class="gs-summary-val">${fmtDose(doseMcg)}</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Draw</div>
+        <div class="gs-summary-val">${fmtUnits(units)} units</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Frequency</div>
+        <div class="gs-summary-val">${freqLabel}</div>
+      </div>
+      <div class="gs-summary-item">
+        <div class="gs-summary-lbl">Cycle</div>
+        <div class="gs-summary-val">${cycleLabel}</div>
+      </div>
+    `;
+  }
+
+  function gsReset() {
+    gsShowStep(1);
+    // Reset tier to standard
+    const tierSel = document.getElementById('add-tier');
+    if (tierSel) tierSel.value = 'standard';
+  }
+
+  // ── Trigger button opens stepper ───────────────────────────
+  const $addPanel  = document.getElementById('add-panel');
+  const $addTrigger = document.getElementById('add-trigger');
+
   if ($addTrigger && $addPanel) {
     $addTrigger.addEventListener('click', () => {
       const addSection = document.getElementById('add-peptide-card');
-      const isCompact = addSection?.classList.contains('compact');
-      
-      if (isCompact) {
-        // Expand from compact mode
+      if (addSection?.classList.contains('compact')) {
         addSection.classList.remove('compact');
-        $addPanel.style.display = 'block';
-        if ($addPep) autoPopulateCycle(parseInt($addPep.value));
+      }
+      const isVisible = $addPanel.style.display === 'block';
+      if (isVisible) {
+        $addPanel.style.display = 'none';
       } else {
-        // Toggle panel visibility
-        const isVisible = $addPanel.style.display === 'block';
-        $addPanel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible && $addPep) {
-          const pepIdx = parseInt($addPep.value);
-          const existing = schedule.find(e => e.peptideIndex === pepIdx);
-          if ($addStartDate) {
-            $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
-          }
-          autoPopulateCycle(pepIdx);
-        }
+        $addPanel.style.display = 'block';
+        gsReset();
       }
     });
   }
-  
-  // ── Cancel and Confirm Buttons ─────────────────────────────
-  document.getElementById('add-cancel')?.addEventListener('click', () => {
-    document.getElementById('add-panel').style.display = 'none';
-  });
-  
-  document.getElementById('add-confirm')?.addEventListener('click', () => {
-    const $addPep = document.getElementById('add-peptide');
-    const $addPanel = document.getElementById('add-panel');
-    const $addStartDate = document.getElementById('add-start-date');
-    
-    if (!$addPep) return;
-    
-    const pepIdx = parseInt($addPep.value);
-    const tier = document.getElementById('add-tier')?.value || 'standard';
-    const vialMg = parseFloat(document.getElementById('add-vial')?.value) || 10;
-    const waterMl = parseFloat(document.getElementById('add-water')?.value) || 1;
-    const cycleDays = parseInt(document.getElementById('add-cycle')?.value) || 0;
-    const startDate = $addStartDate?.value || new Date().toISOString().split('T')[0];
 
-    if (schedule.some(e => e.peptideIndex === pepIdx)) {
-      const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
-      schedule[existing] = { peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate };
+  // ── Stepper navigation (event delegation on add-panel) ─────
+  $addPanel?.addEventListener('click', e => {
+    const nextBtn = e.target.closest('[data-gs-next]');
+    const backBtn = e.target.closest('[data-gs-back]');
+    if (!nextBtn && !backBtn) return;
+
+    const activePanel = $addPanel.querySelector('.gs-step-panel.active');
+    const curStep = activePanel?.dataset.step;
+
+    if (nextBtn) {
+      if (curStep === '1') { gsShowStep(2); }
+      else if (curStep === '2') { gsShowStep(3); }
+      else if (curStep === '3') { gsShowStep(4); }
+      else if (curStep === '4') { gsShowStep('summary'); }
     } else {
-      schedule.push({ peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate });
+      if (curStep === '2')       { gsShowStep(1); }
+      else if (curStep === '3')  { gsShowStep(2); }
+      else if (curStep === '4')  { gsShowStep(3); }
+      else if (curStep === 'summary') { gsShowStep(4); }
+    }
+  });
+
+  // ── Cancel button ──────────────────────────────────────────
+  document.getElementById('add-cancel')?.addEventListener('click', () => {
+    if ($addPanel) $addPanel.style.display = 'none';
+    gsReset();
+  });
+
+  // ── Save & Start (confirm) ─────────────────────────────────
+  document.getElementById('add-confirm')?.addEventListener('click', () => {
+    const pepIdx    = parseInt(document.getElementById('gs-peptide-sel')?.value);
+    const vialMg    = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+    const waterMl   = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+    const tier      = document.getElementById('add-tier')?.value || 'standard';
+    const cycleDays = parseInt(document.getElementById('gs-cycle-sel')?.value) || 0;
+    const startDate = document.getElementById('gs-start-date')?.value || new Date().toISOString().split('T')[0];
+
+    if (isNaN(pepIdx)) return;
+
+    const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
+    const entry = { peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate };
+    if (existing !== -1) {
+      schedule[existing] = entry;
+    } else {
+      schedule.push(entry);
     }
 
     saveSchedule();
@@ -3894,7 +4198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (schedule.length >= 3) {
       document.getElementById('add-peptide-card')?.classList.add('compact');
     }
-    
+    gsReset();
     renderAll();
   });
   
