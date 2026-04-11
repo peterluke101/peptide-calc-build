@@ -1015,8 +1015,8 @@ body.light-mode .rc-result{background:linear-gradient(135deg,rgba(43,186,160,.1)
 .btn-print-label-sm:hover{background:rgba(61,232,195,.25);border-color:var(--accent)}
 .rc-print-hint{font-size:.6rem;color:var(--text2);margin-top:.3rem}
 .rc-print-hint a{color:var(--text2);text-decoration:underline;opacity:.7}
-.rc-add-schedule-btn{width:100%;margin-top:.75rem;background:var(--accent);color:#000;font-weight:700;border:none;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;font-family:inherit;letter-spacing:.03em;cursor:pointer;transition:opacity .2s}
-.rc-add-schedule-btn:hover{opacity:.82}
+.btn-add-schedule{width:100%;margin-top:10px;background:var(--accent);color:#1a1a2e;font-weight:700;border:none;border-radius:10px;padding:12px;font-size:.85rem;font-family:inherit;letter-spacing:.03em;cursor:pointer;transition:opacity .2s}
+.btn-add-schedule:hover{opacity:.82}
 .rc-add-schedule-hint{font-size:.7rem;color:var(--text2);text-align:center;margin-top:.4rem;opacity:.65}
 .rc-toast{position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;z-index:9999;white-space:nowrap}
 .rc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -1232,7 +1232,7 @@ body.light-mode .rc-syr-needle-tip{fill:#999}
       <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
       <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
       <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
-      <button class="rc-add-schedule-btn" id="rc-add-schedule-btn">+ Add to Schedule</button>
+      <button class="btn-add-schedule" id="rc-add-schedule">📅 Add to Schedule</button>
       <div class="rc-add-schedule-hint" id="rc-add-schedule-hint">Select a peptide above to add to schedule</div>
     </div>
     <!-- Syringe Graphic — sleek redesign -->
@@ -4494,7 +4494,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add to Schedule from Reverse Calc
-    const addSchedBtn  = document.getElementById('rc-add-schedule-btn');
+    const addSchedBtn  = document.getElementById('rc-add-schedule');
     const addSchedHint = document.getElementById('rc-add-schedule-hint');
 
     function updateAddSchedState() {
