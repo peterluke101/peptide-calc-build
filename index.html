@@ -193,6 +193,40 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Dose Detail Button (today view) ──────────────────────── */
 .dose-detail-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.35rem .5rem;font-size:.7rem;border-radius:6px;transition:all .15s;min-height:unset;min-width:unset;flex-shrink:0;margin-left:.25rem;white-space:nowrap}
 .dose-detail-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+/* ── Injection Sites Tab ─────────────────────────────────── */
+.site-view-toggle{display:flex;gap:.25rem}
+.site-view-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.3rem .65rem;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.site-view-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.site-body-map{position:relative;width:100%;max-width:280px;margin:0 auto;touch-action:manipulation}
+.site-body-svg{width:100%;height:auto;display:block}
+.site-dot{cursor:pointer;transition:all .2s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+.site-dot circle{transition:fill .3s,stroke .3s}
+.site-dot:hover circle{stroke-width:3}
+.site-dot.fresh circle{fill:#22c55e;stroke:#16a34a}
+.site-dot.recent circle{fill:#f59e0b;stroke:#d97706}
+.site-dot.used-today circle{fill:#ef4444;stroke:#dc2626}
+.site-dot.never circle{fill:var(--surface2);stroke:var(--border)}
+.site-dot text{fill:var(--text);font-size:7px;font-family:inherit;pointer-events:none;font-weight:600}
+.site-suggestion{display:flex;align-items:center;gap:.75rem;padding:.1rem 0}
+.site-suggestion-icon{font-size:1.4rem;flex-shrink:0}
+.site-suggestion-body{flex:1;min-width:0}
+.site-suggestion-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.site-suggestion-sub{font-size:.75rem;color:var(--text2)}
+.site-history-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .25rem;border-bottom:1px solid var(--border)}
+.site-history-item:last-child{border-bottom:none}
+.site-history-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.site-history-name{font-size:.82rem;font-weight:600;flex:1}
+.site-history-time{font-size:.7rem;color:var(--text2)}
+.site-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom);animation:fadeInBg .18s ease}
+.site-popup{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:420px;padding:1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));animation:slideUp .22s ease}
+.site-popup-title{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.site-popup-sub{font-size:.8rem;color:var(--text2);margin-bottom:1.1rem}
+.site-popup-actions{display:flex;gap:.6rem}
+.site-popup-confirm{flex:1;padding:.75rem;background:var(--accent);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+.site-popup-cancel{padding:.75rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer}
+/* ── Demo Mode ───────────────────────────────────────────── */
+.btn-demo-try{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.65rem 1.25rem;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+.btn-demo-try:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 /* ── Missed Dose Badge ────────────────────────────────────── */
 .missed-badge{display:inline-block;font-size:.6rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:.1rem .35rem;margin-left:.4rem;letter-spacing:.03em;vertical-align:middle}
 /* ── Log Sheet (bottom sheet modal) ──────────────────────── */
@@ -1172,6 +1206,10 @@ body.light-mode .timeline-step.future .timeline-step-dot { background: var(--sur
 /* More tab rows */
 body.light-mode .more-option { background: var(--surface2); }
 body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
+body.light-mode .site-view-btn { background: var(--surface2); border-color: var(--border); color: var(--text); }
+body.light-mode .site-dot.never circle { fill: var(--surface2); stroke: var(--border); }
+body.light-mode .site-popup { background: var(--surface); }
+body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
 /* Guides promo card */
 body.light-mode .guides-promo-card { background: linear-gradient(135deg,rgba(43,186,160,.1),rgba(100,120,255,.06)); border-color: rgba(43,186,160,.3); }
 /* Toggle switch off-state */
@@ -1723,6 +1761,9 @@ body.simple-mode #journal-trends-body{ display:none !important}
 </style>
 </head>
 <body>
+<div id="demo-badge" style="display:none;position:fixed;top:max(env(safe-area-inset-top),10px);right:12px;z-index:9999;display:none;align-items:center;gap:.4rem;background:#f59e0b;color:#000;border-radius:20px;padding:.25rem .6rem;font-size:.65rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+  DEMO <button id="exit-demo-btn" style="background:rgba(0,0,0,.15);border:none;color:#000;border-radius:10px;padding:.1rem .3rem;font-size:.6rem;font-weight:700;cursor:pointer;margin-left:.1rem;font-family:inherit">✕ Exit</button>
+</div>
 <div class="app-content">
 
 <!-- Tab Content Containers -->
@@ -1785,6 +1826,9 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
   <div class="fr-skip-link">
     <button id="fr-already-know">I already know what I'm doing — show everything</button>
+  </div>
+  <div style="text-align:center;margin-top:.5rem">
+    <button id="fr-see-demo" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.78rem;cursor:pointer;text-decoration:underline;padding:.25rem">or explore with demo data →</button>
   </div>
 </div>
 
@@ -2730,6 +2774,16 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="card animate-in">
     <div class="more-options">
 
+      <!-- Injection Sites -->
+      <div class="more-option" id="sites-option">
+        <div class="more-icon">💉</div>
+        <div class="more-text">
+          <div class="more-title">Injection Sites</div>
+          <div class="more-desc">Rotation tracker, body map, site history</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
       <!-- Inventory -->
       <div class="more-option" id="inventory-option">
         <div class="more-icon">🧪</div>
@@ -2869,6 +2923,12 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
   </div>
 
+  <!-- Demo Mode -->
+  <div class="card animate-in" id="demo-mode-card" style="text-align:center;padding:1rem">
+    <p style="font-size:.78rem;color:var(--text2);margin-bottom:.65rem;line-height:1.5">Load sample data to explore all features without entering your own info.</p>
+    <button class="btn-demo-try" id="try-demo-btn">Try Demo Mode</button>
+  </div>
+
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
@@ -2884,6 +2944,39 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="card animate-in" id="inv-card">
     <div id="inv-summary"></div>
     <div id="vial-list"></div>
+  </div>
+</div>
+
+<!-- Injection Sites Tab Content -->
+<div id="tab-sites" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
+    <button id="sites-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Injection <span>Sites</span></h1>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Rotate sites to prevent tissue damage</p>
+  </div>
+  <!-- Suggestion card -->
+  <div class="card animate-in" id="sites-suggestion-card">
+    <div id="sites-suggestion"></div>
+  </div>
+  <!-- Body map card -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:1rem">
+      <h2>Body Map</h2>
+      <div class="site-view-toggle">
+        <button class="site-view-btn active" data-view="front">Front</button>
+        <button class="site-view-btn" data-view="back">Back</button>
+      </div>
+    </div>
+    <div id="sites-body-map">
+      <!-- Rendered by renderSitesTab() -->
+    </div>
+  </div>
+  <!-- History card -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:.75rem"><h2>Recent Sites</h2></div>
+    <div id="sites-history"></div>
   </div>
 </div>
 
@@ -5345,6 +5438,20 @@ function openLogDetailSheet(injectionKey, pepName, doseStr, unitsStr) {
     const notesVal = overlay.querySelector('#ls-notes').value.trim();
     const timestamp = timeVal ? new Date(timeVal).toISOString() : ts;
     updateInjectionMeta(injectionKey, { timestamp, site: siteVal, notes: notesVal });
+    // Mirror site to injection sites rotation tracker
+    if (siteVal) {
+      // Map display name to site key
+      const siteKeyMap = {
+        'Left delt': 'deltoid-left', 'Right delt': 'deltoid-right',
+        'Left glute': 'glute-left', 'Right glute': 'glute-right',
+        'Left thigh': 'thigh-left', 'Right thigh': 'thigh-right',
+        'Abdomen': 'abdomen-left',
+        'Left Abdomen': 'abdomen-left', 'Right Abdomen': 'abdomen-right',
+        'Left Flank': 'flank-left', 'Right Flank': 'flank-right'
+      };
+      const siteKey = siteKeyMap[siteVal];
+      if (siteKey) saveInjectionSite(siteKey);
+    }
     overlay.remove();
     renderInjectionHistory();
     renderInjectionLog();
@@ -7059,6 +7166,308 @@ function setupLogbookToggle() {
   switchToView(savedView);
 }
 
+// ── Injection Sites ───────────────────────────────────────
+const SITE_LABELS = {
+  'abdomen-left': 'Left Abdomen', 'abdomen-right': 'Right Abdomen',
+  'thigh-left': 'Left Thigh', 'thigh-right': 'Right Thigh',
+  'deltoid-left': 'Left Delt', 'deltoid-right': 'Right Delt',
+  'glute-left': 'Left Glute', 'glute-right': 'Right Glute',
+  'flank-left': 'Left Flank', 'flank-right': 'Right Flank'
+};
+const ALL_SITES = Object.keys(SITE_LABELS);
+
+function getInjectionSites() {
+  try { return JSON.parse(localStorage.getItem('injectionSites') || '[]'); } catch { return []; }
+}
+function saveInjectionSite(siteKey) {
+  const sites = getInjectionSites();
+  sites.unshift({ site: siteKey, date: new Date().toISOString() });
+  // Keep only last 50 entries
+  localStorage.setItem('injectionSites', JSON.stringify(sites.slice(0, 50)));
+}
+function getSiteLastUsed(siteKey) {
+  const entry = getInjectionSites().find(s => s.site === siteKey);
+  return entry ? new Date(entry.date) : null;
+}
+function getSiteStatus(siteKey) {
+  const last = getSiteLastUsed(siteKey);
+  if (!last) return 'never';
+  const diffDays = (Date.now() - last.getTime()) / 86400000;
+  if (diffDays < 1) return 'used-today';
+  if (diffDays < 3) return 'recent';
+  return 'fresh';
+}
+function getSuggestedSite() {
+  const sites = getInjectionSites();
+  if (sites.length === 0) return null;
+  // Find site with oldest last-use date
+  const lastUsedMap = {};
+  sites.forEach(s => { if (!lastUsedMap[s.site]) lastUsedMap[s.site] = new Date(s.date); });
+  let oldest = null, oldestDate = null;
+  ALL_SITES.forEach(key => {
+    if (!lastUsedMap[key]) { oldest = key; oldestDate = null; return; }
+    if (!oldestDate || lastUsedMap[key] < oldestDate) { oldest = key; oldestDate = lastUsedMap[key]; }
+  });
+  return oldest ? { key: oldest, lastUsed: oldestDate } : null;
+}
+
+function renderSitesTab() {
+  // Suggestion card
+  const $sug = document.getElementById('sites-suggestion');
+  if ($sug) {
+    const suggestion = getSuggestedSite();
+    if (!suggestion) {
+      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">💉</div><div class="site-suggestion-body"><div class="site-suggestion-title">Tap a site to start tracking</div><div class="site-suggestion-sub">Rotate injection sites to prevent tissue damage and improve absorption.</div></div></div>`;
+    } else {
+      const label = SITE_LABELS[suggestion.key];
+      const daysAgo = suggestion.lastUsed ? Math.round((Date.now() - suggestion.lastUsed.getTime()) / 86400000) : null;
+      const sub = daysAgo === null ? 'Never used — best choice!' : `Last used ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
+      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">✅</div><div class="site-suggestion-body"><div class="site-suggestion-title">Suggested: ${label}</div><div class="site-suggestion-sub">${sub}</div></div></div>`;
+    }
+  }
+
+  // Body map
+  const $map = document.getElementById('sites-body-map');
+  if ($map) {
+    const activeView = $map.dataset.view || 'front';
+    renderBodyMap($map, activeView);
+  }
+
+  // History
+  const $hist = document.getElementById('sites-history');
+  if ($hist) {
+    const sites = getInjectionSites().slice(0, 10);
+    if (sites.length === 0) {
+      $hist.innerHTML = '<div class="today-empty">No sites logged yet</div>';
+    } else {
+      const statusColors = { 'used-today': '#ef4444', 'recent': '#f59e0b', 'fresh': '#22c55e', 'never': 'var(--border)' };
+      $hist.innerHTML = sites.map(s => {
+        const label = SITE_LABELS[s.site] || s.site;
+        const diff = (Date.now() - new Date(s.date).getTime()) / 86400000;
+        const timeStr = diff < 0.5 ? 'Today' : diff < 1.5 ? 'Yesterday' : Math.round(diff) + ' days ago';
+        const status = getSiteStatus(s.site);
+        return `<div class="site-history-item">
+          <div class="site-history-dot" style="background:${statusColors[status]}"></div>
+          <div class="site-history-name">${label}</div>
+          <div class="site-history-time">${timeStr}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+function renderBodyMap($container, view) {
+  $container.dataset.view = view;
+
+  // Site positions in SVG coordinate space (viewBox 0 0 160 320)
+  const frontSites = [
+    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
+    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
+    { key: 'flank-left',    cx: 38,  cy: 138, label: 'L Flank' },
+    { key: 'flank-right',   cx: 122, cy: 138, label: 'R Flank' },
+    { key: 'abdomen-left',  cx: 62,  cy: 150, label: 'L Abd' },
+    { key: 'abdomen-right', cx: 98,  cy: 150, label: 'R Abd' },
+    { key: 'thigh-left',    cx: 58,  cy: 230, label: 'L Thigh' },
+    { key: 'thigh-right',   cx: 102, cy: 230, label: 'R Thigh' },
+  ];
+  const backSites = [
+    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
+    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
+    { key: 'glute-left',    cx: 58,  cy: 175, label: 'L Glute' },
+    { key: 'glute-right',   cx: 102, cy: 175, label: 'R Glute' },
+    { key: 'thigh-left',    cx: 58,  cy: 240, label: 'L Thigh' },
+    { key: 'thigh-right',   cx: 102, cy: 240, label: 'R Thigh' },
+  ];
+  const sites = view === 'front' ? frontSites : backSites;
+
+  // Simple body outline paths
+  const frontBody = `
+    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
+  `;
+  const backBody = `
+    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
+    <ellipse cx="58" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
+    <ellipse cx="102" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
+  `;
+
+  const dotsHtml = sites.map(s => {
+    const status = getSiteStatus(s.key);
+    const fillColors = { 'fresh': '#22c55e', 'recent': '#f59e0b', 'used-today': '#ef4444', 'never': 'var(--surface2)' };
+    const strokeColors = { 'fresh': '#16a34a', 'recent': '#d97706', 'used-today': '#dc2626', 'never': 'var(--border)' };
+    return `<g class="site-dot ${status}" data-site="${s.key}" data-label="${SITE_LABELS[s.key]}" role="button" aria-label="${SITE_LABELS[s.key]}">
+      <circle cx="${s.cx}" cy="${s.cy}" r="11" fill="${fillColors[status]}" stroke="${strokeColors[status]}" stroke-width="2"/>
+      <text x="${s.cx}" y="${s.cy + 3}" text-anchor="middle">${s.label}</text>
+    </g>`;
+  }).join('');
+
+  const legendHtml = `<div style="display:flex;gap:.75rem;justify-content:center;margin-top:.75rem;flex-wrap:wrap">
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block"></span>Fresh (3+ days)</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Recent (1-2 days)</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Today</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-block"></span>Never used</span>
+  </div>`;
+
+  $container.innerHTML = `
+    <div class="site-body-map">
+      <svg class="site-body-svg" viewBox="0 0 160 310" xmlns="http://www.w3.org/2000/svg" style="color:var(--text2)">
+        ${view === 'front' ? frontBody : backBody}
+        ${dotsHtml}
+      </svg>
+    </div>
+    ${legendHtml}
+  `;
+
+  // Attach click handlers to dots
+  $container.querySelectorAll('.site-dot').forEach(dot => {
+    dot.style.cursor = 'pointer';
+    dot.addEventListener('click', () => {
+      openSitePopup(dot.dataset.site, dot.dataset.label);
+    });
+  });
+}
+
+function openSitePopup(siteKey, siteLabel) {
+  const overlay = document.createElement('div');
+  overlay.className = 'site-popup-overlay';
+  overlay.innerHTML = `
+    <div class="site-popup">
+      <div style="width:32px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .75rem"></div>
+      <div class="site-popup-title">Log injection here?</div>
+      <div class="site-popup-sub">${siteLabel}</div>
+      <div class="site-popup-actions">
+        <button class="site-popup-confirm">✓ Confirm</button>
+        <button class="site-popup-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('.site-popup-confirm').addEventListener('click', () => {
+    saveInjectionSite(siteKey);
+    overlay.remove();
+    renderSitesTab();
+    // Brief toast
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;z-index:9999;pointer-events:none;animation:fadeUp .2s ease';
+    toast.textContent = 'Logged: ' + siteLabel;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
+  overlay.querySelector('.site-popup-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+// ── Demo Mode ─────────────────────────────────────────────
+function isDemoMode() {
+  return localStorage.getItem('demoMode') === 'true';
+}
+
+function loadDemoData() {
+  // Find peptide indices
+  const bpcIdx = PEPTIDES.findIndex(p => p.name === 'BPC-157');
+  const tb500Idx = PEPTIDES.findIndex(p => p.name === 'TB-500');
+  if (bpcIdx === -1 || tb500Idx === -1) { alert('Demo data: peptide not found'); return; }
+
+  const now = new Date();
+  const daysAgo = n => { const d = new Date(now); d.setDate(d.getDate() - n); return d; };
+  const isoAgo = n => daysAgo(n).toISOString();
+  const dateStrAgo = n => { const d = daysAgo(n); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+
+  // Schedule: BPC-157 + TB-500
+  const demoSchedule = [
+    { peptideIndex: bpcIdx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: 'daily' },
+    { peptideIndex: tb500Idx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: '3x-week' }
+  ];
+  localStorage.setItem('peptide-schedule', JSON.stringify(demoSchedule));
+
+  // Injection log: 12 entries over 14 days, some days skipped for realism
+  const injLog = {};
+  const loggedDays = [0,1,2,4,5,6,7,9,10,11,12,13]; // skip days 3, 8
+  loggedDays.forEach(d => {
+    const dateStr = dateStrAgo(d);
+    const ts = daysAgo(d); ts.setHours(8, 15, 0, 0);
+    injLog['BPC-157_' + dateStr] = { timestamp: ts.toISOString(), site: ['abdomen-left','abdomen-right','thigh-left','thigh-right','flank-left','flank-right'][d % 6], notes: d === 4 ? 'Feeling more flexible today' : d === 10 ? 'Knee pain noticeably less' : '' };
+  });
+  // TB-500: 3x/week pattern
+  [1,4,6,8,11,13].forEach(d => {
+    const dateStr = dateStrAgo(d);
+    const ts = daysAgo(d); ts.setHours(9, 0, 0, 0);
+    injLog['TB-500_' + dateStr] = { timestamp: ts.toISOString(), site: ['deltoid-left','deltoid-right','glute-left','glute-right'][d % 4], notes: '' };
+  });
+  localStorage.setItem('injectionLog', JSON.stringify(injLog));
+  // Mark first dose logged
+  localStorage.setItem('hasLoggedDose', '1');
+
+  // Journal entries (peptideLogs key)
+  const journalEntries = [
+    { date: dateStrAgo(1), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: 'Feeling more flexible today. Recovery seems faster.' },
+    { date: dateStrAgo(3), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: '' },
+    { date: dateStrAgo(5), mood: 4, energy: 4, sleep: 4, cravings: 'low', notes: 'Great energy today. Knee pain noticeably less.' },
+    { date: dateStrAgo(7), mood: 3, energy: 2, sleep: 3, cravings: 'high', notes: 'Bit tired. Skipped morning workout.' },
+    { date: dateStrAgo(9), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: '' },
+    { date: dateStrAgo(11), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: 'Noticing improved sleep quality.' },
+    { date: dateStrAgo(12), mood: 3, energy: 2, sleep: 2, cravings: 'moderate', notes: 'First week, adjusting.' },
+    { date: dateStrAgo(14), mood: 3, energy: 3, sleep: 3, cravings: 'low', notes: 'Started protocol today.' },
+  ];
+  localStorage.setItem('peptideJournal', JSON.stringify(journalEntries));
+
+  // Vial inventory
+  const vialData = {
+    'BPC-157_5_2': { totalDoses: 20, usedDoses: 5, reconDate: isoAgo(10) },
+    'TB-500_5_2': { totalDoses: 12, usedDoses: 4, reconDate: isoAgo(5) }
+  };
+  localStorage.setItem('vialData', JSON.stringify(vialData));
+
+  // Injection sites history
+  const sitesLog = [
+    { site: 'abdomen-left', date: isoAgo(0) },
+    { site: 'thigh-right', date: isoAgo(1) },
+    { site: 'abdomen-right', date: isoAgo(2) },
+    { site: 'deltoid-left', date: isoAgo(3) },
+    { site: 'thigh-left', date: isoAgo(4) },
+    { site: 'deltoid-right', date: isoAgo(6) },
+  ];
+  localStorage.setItem('injectionSites', JSON.stringify(sitesLog));
+
+  // Weight entries
+  const weights = [185, 184.5, 184.2, 183.8, 183.5, 183.2, 182.8, 182.5, 182.2, 182];
+  const weightLog = weights.map((w, i) => ({ value: w, date: dateStrAgo(13 - i), unit: 'lbs' }));
+  localStorage.setItem('weightTracker', JSON.stringify(weightLog));
+
+  // Mark demo active
+  localStorage.setItem('demoMode', 'true');
+  localStorage.setItem('hasOnboarded', '1');
+  localStorage.setItem('hasSeenResult', '1');
+  localStorage.setItem('hasSavedProtocol', '1');
+  localStorage.setItem('activeTab', 'schedule');
+
+  // Reload to apply
+  window.location.reload();
+}
+
+function clearDemoData() {
+  if (!confirm('This will clear all demo data and reset to a clean state. Continue?')) return;
+  const keysToRemove = [
+    'demoMode','peptide-schedule','injectionLog','hasLoggedDose','vialData',
+    'injectionSites','weightTracker','peptideJournal','hasOnboarded',
+    'hasSeenResult','hasSavedProtocol','activeTab'
+  ];
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+  window.location.reload();
+}
+
+function applyDemoBadge() {
+  const badge = document.getElementById('demo-badge');
+  if (!badge) return;
+  if (isDemoMode()) {
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 // ── Initialize on DOM Ready ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
@@ -8166,10 +8575,48 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('activeTab', 'weight');
   });
 
+  // Sites option in More tab
+  document.getElementById('sites-option')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-sites')?.classList.add('active');
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'sites');
+    renderSitesTab();
+  });
+
+  // Sites back button
+  document.getElementById('sites-back-btn')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-more')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'more');
+  });
+
+  // Front/Back toggle on body map
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.site-view-btn');
+    if (!btn) return;
+    const view = btn.dataset.view;
+    document.querySelectorAll('.site-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    const $map = document.getElementById('sites-body-map');
+    if ($map) renderBodyMap($map, view);
+  });
+
+  // Demo mode
+  document.getElementById('try-demo-btn')?.addEventListener('click', loadDemoData);
+  document.getElementById('fr-see-demo')?.addEventListener('click', loadDemoData);
+  document.getElementById('exit-demo-btn')?.addEventListener('click', clearDemoData);
+
+  // Apply demo badge on load
+  applyDemoBadge();
+
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology', 'sites'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
