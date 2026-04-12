@@ -1585,6 +1585,48 @@ body.simple-mode #tab-weight,
 body.simple-mode #dose-change-body,
 body.simple-mode #side-effect-body,
 body.simple-mode #journal-trends-body{ display:none !important}
+
+/* ── Demo Mode ───────────────────────────────────────────────── */
+.demo-banner{position:fixed;top:0;left:0;right:0;z-index:950;display:flex;align-items:center;gap:.6rem;padding:.5rem 1rem;background:linear-gradient(135deg,rgba(30,20,60,.97),rgba(20,14,50,.97));border-bottom:1px solid rgba(61,232,195,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding-top:max(.5rem,env(safe-area-inset-top))}
+.demo-badge{background:var(--accent);color:#000;font-size:.55rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;border-radius:4px;flex-shrink:0}
+.demo-banner-text{flex:1;font-size:.75rem;color:rgba(255,255,255,.75);line-height:1.3}
+.demo-banner-actions{display:flex;gap:.4rem;flex-shrink:0}
+.demo-banner-btn{background:none;border:1px solid rgba(61,232,195,.4);color:var(--accent);font-family:inherit;font-size:.68rem;font-weight:600;padding:.3rem .65rem;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.demo-banner-btn:hover{background:rgba(61,232,195,.1)}
+.demo-banner-btn.demo-exit{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.6)}
+.demo-banner-btn.demo-exit:hover{background:rgba(255,255,255,.08);color:#fff}
+/* Push app content down when demo banner is visible */
+body.demo-active .app-content{padding-top:calc(max(env(safe-area-inset-top),18px) + 44px) !important}
+/* Demo banner visible hint on walkthrough */
+body.demo-active .bottom-nav{z-index:800}
+
+/* ── Guided Walkthrough ──────────────────────────────────────── */
+.wt-overlay{position:fixed;inset:0;z-index:1000;pointer-events:none}
+.wt-overlay.active{pointer-events:auto}
+.wt-dim{position:absolute;inset:0;background:rgba(0,0,0,.75);transition:opacity .25s}
+.wt-spotlight{position:absolute;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.75);pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.wt-tooltip{position:absolute;background:var(--surface);border:1px solid rgba(61,232,195,.35);border-radius:14px;padding:1.1rem 1.1rem 1rem;max-width:min(320px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.6);pointer-events:auto;animation:fadeUp .25s ease both}
+.wt-step-label{font-size:.6rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.wt-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.45rem;line-height:1.25}
+.wt-text{font-size:.82rem;color:var(--text2);line-height:1.55;margin-bottom:.9rem}
+.wt-actions{display:flex;align-items:center;gap:.5rem}
+.wt-btn{background:var(--accent);color:#000;border:none;font-family:inherit;font-size:.78rem;font-weight:700;padding:.55rem 1.1rem;border-radius:8px;cursor:pointer;transition:all .15s;flex-shrink:0}
+.wt-btn:hover{background:#2dd4b0}
+.wt-btn-sec{background:none;border:1px solid var(--border);color:var(--text2);font-family:inherit;font-size:.78rem;font-weight:500;padding:.55rem .9rem;border-radius:8px;cursor:pointer;flex-shrink:0}
+.wt-btn-sec:hover{border-color:var(--accent);color:var(--accent)}
+.wt-progress{display:flex;gap:4px;margin-left:auto;flex-shrink:0}
+.wt-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .2s}
+.wt-dot.active{background:var(--accent)}
+/* Walkthrough center modal (no spotlight) */
+.wt-modal-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1.5rem;pointer-events:auto}
+/* "Start Guided Demo" prompt banner */
+.demo-guide-prompt{background:linear-gradient(135deg,rgba(61,232,195,.12),rgba(61,232,195,.06));border:1px solid rgba(61,232,195,.25);border-radius:10px;padding:.85rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;width:100%;max-width:720px;cursor:pointer;transition:all .2s}
+.demo-guide-prompt:hover{border-color:rgba(61,232,195,.5);background:rgba(61,232,195,.15)}
+.demo-guide-icon{font-size:1.2rem;flex-shrink:0}
+.demo-guide-text{flex:1}
+.demo-guide-headline{font-size:.82rem;font-weight:700;color:var(--accent);margin-bottom:.15rem}
+.demo-guide-sub{font-size:.72rem;color:var(--text2)}
+.demo-guide-arrow{color:var(--accent);font-size:1rem;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -2616,6 +2658,16 @@ body.simple-mode #journal-trends-body{ display:none !important}
         <div class="more-arrow">›</div>
       </div>
 
+      <!-- Try Demo Mode -->
+      <div class="more-option" id="demo-mode-option">
+        <div class="more-icon">🧪</div>
+        <div class="more-text">
+          <div class="more-title">Try Demo Mode</div>
+          <div class="more-desc">Explore with a pre-loaded sample protocol</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
       <!-- F) Reset All Data -->
       <div class="more-option" id="reset-data-option">
         <div class="more-icon">🗑️</div>
@@ -3082,8 +3134,12 @@ const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// ── Demo Mode Helpers ────────────────────────────────────────
+function isDemoMode() { return localStorage.getItem('demoMode') === 'true'; }
+function storageKey(k) { return isDemoMode() ? 'demo_' + k : k; }
+
 // ── State ────────────────────────────────────────────────────
-let schedule = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+let schedule = JSON.parse(localStorage.getItem(storageKey('peptide-schedule')) || '[]');
 let weekOffset = 0;
 let selectedDate = new Date();
 selectedDate.setHours(0,0,0,0);
@@ -3091,7 +3147,7 @@ selectedDate.setHours(0,0,0,0);
 const FULL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function saveSchedule() {
-  localStorage.setItem('peptide-schedule', JSON.stringify(schedule));
+  localStorage.setItem(storageKey('peptide-schedule'), JSON.stringify(schedule));
   updateAddPeptideVisibility();
 }
 
@@ -3267,7 +3323,7 @@ function formatLocalDate(date) {
 // ── Injection Log Functions ─────────────────────────────────
 function getInjectionLog() {
   try {
-    return JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    return JSON.parse(localStorage.getItem(storageKey('injectionLog')) || '{}');
   } catch {
     return {};
   }
@@ -3281,7 +3337,7 @@ function saveInjection(injectionKey, meta = {}) {
     notes: meta.notes || '',
     late: meta.late || false
   };
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('injectionLog'), JSON.stringify(log));
 
   // Update vial tracking
   const parts = injectionKey.split('_');
@@ -3324,13 +3380,13 @@ function updateInjectionMeta(injectionKey, meta) {
     site: meta.site !== undefined ? meta.site : (existing.site || ''),
     notes: meta.notes !== undefined ? meta.notes : (existing.notes || '')
   };
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('injectionLog'), JSON.stringify(log));
 }
 
 function removeInjection(injectionKey) {
   const log = getInjectionLog();
   delete log[injectionKey];
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('injectionLog'), JSON.stringify(log));
 
   const parts = injectionKey.split('_');
   const dateStr = parts.pop();
@@ -3340,17 +3396,17 @@ function removeInjection(injectionKey) {
 
 // ── Skip Log ────────────────────────────────────────────────
 function getSkipLog() {
-  try { return JSON.parse(localStorage.getItem('skipLog') || '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem(storageKey('skipLog')) || '{}'); } catch { return {}; }
 }
 function saveDoseSkip(injectionKey) {
   const log = getSkipLog();
   log[injectionKey] = { skippedAt: new Date().toISOString() };
-  localStorage.setItem('skipLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('skipLog'), JSON.stringify(log));
 }
 function removeDoseSkip(injectionKey) {
   const log = getSkipLog();
   delete log[injectionKey];
-  localStorage.setItem('skipLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('skipLog'), JSON.stringify(log));
 }
 function isDoseSkipped(injectionKey) {
   return !!getSkipLog()[injectionKey];
@@ -3358,17 +3414,17 @@ function isDoseSkipped(injectionKey) {
 
 // ── Snooze Log ───────────────────────────────────────────────
 function getSnoozeLog() {
-  try { return JSON.parse(localStorage.getItem('snoozeLog') || '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem(storageKey('snoozeLog')) || '{}'); } catch { return {}; }
 }
 function saveDoseSnooze(injectionKey, untilISO) {
   const log = getSnoozeLog();
   log[injectionKey] = { until: untilISO };
-  localStorage.setItem('snoozeLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('snoozeLog'), JSON.stringify(log));
 }
 function clearDoseSnooze(injectionKey) {
   const log = getSnoozeLog();
   delete log[injectionKey];
-  localStorage.setItem('snoozeLog', JSON.stringify(log));
+  localStorage.setItem(storageKey('snoozeLog'), JSON.stringify(log));
 }
 function isDoseSnoozed(injectionKey) {
   const log = getSnoozeLog();
@@ -3409,14 +3465,14 @@ function updateOverdueBadge() {
 // ── Vial Tracking Functions ─────────────────────────────────
 function getVialData() {
   try {
-    return JSON.parse(localStorage.getItem('vialData') || '{}');
+    return JSON.parse(localStorage.getItem(storageKey('vialData')) || '{}');
   } catch {
     return {};
   }
 }
 
 function saveVialData(data) {
-  localStorage.setItem('vialData', JSON.stringify(data));
+  localStorage.setItem(storageKey('vialData'), JSON.stringify(data));
 }
 
 function getVialKey(entry) {
@@ -5425,7 +5481,7 @@ function renderWeightChart() {
   // Protocol start markers
   let svgExtra = '';
   try {
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const sched = JSON.parse(localStorage.getItem(storageKey('peptide-schedule')) || '[]');
     const seenStarts = new Set();
     sched.forEach(entry => {
       const sd = entry.startDate;
@@ -5568,8 +5624,8 @@ function renderQuickInsights() {
   // --- Most consistent week in last 90 days ---
   let bestWeekLabel = '—', bestWeekRate = null;
   try {
-    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const log = JSON.parse(localStorage.getItem(storageKey('injectionLog')) || '{}');
+    const sched = JSON.parse(localStorage.getItem(storageKey('peptide-schedule')) || '[]');
     if (sched.length > 0) {
       const weekBuckets = {};
       for (let i = 89; i >= 0; i--) {
@@ -5628,9 +5684,9 @@ function renderQuickInsights() {
   let missedThisMonth = 0, missedLastMonth = 0;
   let missedTrendHTML = '<span class="trend-flat">→</span>';
   try {
-    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
-    const skipLog = JSON.parse(localStorage.getItem('skipLog') || '{}');
+    const log = JSON.parse(localStorage.getItem(storageKey('injectionLog')) || '{}');
+    const sched = JSON.parse(localStorage.getItem(storageKey('peptide-schedule')) || '[]');
+    const skipLog = JSON.parse(localStorage.getItem(storageKey('skipLog')) || '{}');
     const now = new Date();
     const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
@@ -5656,9 +5712,9 @@ function renderQuickInsights() {
   // --- Weekday with most misses ---
   let worstDayName = '—';
   try {
-    const log2 = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const skipLog2 = JSON.parse(localStorage.getItem('skipLog') || '{}');
-    const sched2 = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const log2 = JSON.parse(localStorage.getItem(storageKey('injectionLog')) || '{}');
+    const skipLog2 = JSON.parse(localStorage.getItem(storageKey('skipLog')) || '{}');
+    const sched2 = JSON.parse(localStorage.getItem(storageKey('peptide-schedule')) || '[]');
     const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const dayMisses = [0,0,0,0,0,0,0];
     for (let i = 1; i <= 90; i++) {
@@ -5847,6 +5903,325 @@ function renderAll() {
   renderVialTracker();
   renderSprint11();
   renderCycleEndBanners();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ── DEMO MODE v2 ────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+
+// ── Demo Data ───────────────────────────────────────────────
+// BPC-157 is PEPTIDES[4]: stdMcg=300, daily, color #3DE8C3
+const DEMO_SCHEDULE = [
+  { peptideIndex: 4, tier: 'standard', vialMg: 5, waterMl: 2, cycleDays: 56, startDate: '2026-03-29' }
+];
+
+function buildDemoInjectionLog() {
+  const log = {};
+  // Skip 2 days out of 14 for realistic ~85% adherence
+  const skipDates = new Set(['2026-04-05', '2026-04-09']);
+  const sites = ['Left abdomen', 'Right abdomen', 'Left thigh', 'Right thigh'];
+  const noteMap = {
+    '2026-04-01': 'Noticing less joint soreness already',
+    '2026-04-07': 'Sleep feels deeper — good sign',
+    '2026-04-10': 'Energy noticeably better this week'
+  };
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(2026, 2, 29); // March 29 2026
+    d.setDate(d.getDate() + i);
+    const dateStr = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    if (skipDates.has(dateStr)) continue;
+    const hr = 7 + (i % 3); // 7–9 AM rotation
+    const mn = [15, 30, 0][i % 3];
+    const injTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hr, mn, 0);
+    log['BPC-157_' + dateStr] = {
+      timestamp: injTime.toISOString(),
+      site: sites[i % 4],
+      notes: noteMap[dateStr] || '',
+      late: false
+    };
+  }
+  return log;
+}
+
+// floor(5000mcg / 300mcg) = 16 doses total; 12 used (14 days − 2 skipped)
+const DEMO_VIAL_DATA = {
+  'BPC-157_5_2': {
+    peptideName: 'BPC-157',
+    vialMg: 5,
+    waterMl: 2,
+    totalDoses: 16,
+    usedDoses: 12,
+    createdAt: new Date(2026, 2, 29).toISOString(),
+    reconstitutionDate: '2026-03-29',
+    discardByDate: '2026-04-26'
+  }
+};
+
+// ── Enter / Exit / Reset Demo ────────────────────────────────
+function enterDemoMode() {
+  localStorage.setItem('demoMode', 'true');
+  localStorage.setItem('demo_peptide-schedule', JSON.stringify(DEMO_SCHEDULE));
+  localStorage.setItem('demo_injectionLog', JSON.stringify(buildDemoInjectionLog()));
+  localStorage.setItem('demo_vialData', JSON.stringify(DEMO_VIAL_DATA));
+  localStorage.removeItem('demo_skipLog');
+  localStorage.removeItem('demo_snoozeLog');
+  schedule = [...DEMO_SCHEDULE];
+  document.body.classList.add('demo-active');
+  renderDemoBanner();
+  document.querySelector('.tab-btn[data-tab="schedule"]')?.click();
+  renderAll();
+  setTimeout(showDemoGuidePrompt, 700);
+}
+
+function exitDemoMode() {
+  exitWalkthrough();
+  localStorage.removeItem('demoMode');
+  Object.keys(localStorage)
+    .filter(k => k.startsWith('demo_'))
+    .forEach(k => localStorage.removeItem(k));
+  schedule = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+  document.body.classList.remove('demo-active');
+  removeDemoBanner();
+  removeDemoGuidePrompt();
+  document.querySelector('.tab-btn[data-tab="schedule"]')?.click();
+  renderAll();
+}
+
+function resetDemoMode() {
+  localStorage.setItem('demo_peptide-schedule', JSON.stringify(DEMO_SCHEDULE));
+  localStorage.setItem('demo_injectionLog', JSON.stringify(buildDemoInjectionLog()));
+  localStorage.setItem('demo_vialData', JSON.stringify(DEMO_VIAL_DATA));
+  localStorage.removeItem('demo_skipLog');
+  localStorage.removeItem('demo_snoozeLog');
+  schedule = [...DEMO_SCHEDULE];
+  exitWalkthrough();
+  document.querySelector('.tab-btn[data-tab="schedule"]')?.click();
+  renderAll();
+  setTimeout(showDemoGuidePrompt, 700);
+}
+
+// ── Demo Banner ──────────────────────────────────────────────
+function renderDemoBanner() {
+  removeDemoBanner();
+  const banner = document.createElement('div');
+  banner.id = 'demo-banner';
+  banner.className = 'demo-banner';
+  banner.innerHTML = `
+    <span class="demo-badge">DEMO</span>
+    <span class="demo-banner-text">Exploring with a sample BPC-157 protocol</span>
+    <div class="demo-banner-actions">
+      <button class="demo-banner-btn" id="demo-reset-btn">↺ Reset</button>
+      <button class="demo-banner-btn demo-exit" id="demo-exit-btn">Exit</button>
+    </div>`;
+  document.body.appendChild(banner);
+  document.getElementById('demo-reset-btn').addEventListener('click', resetDemoMode);
+  document.getElementById('demo-exit-btn').addEventListener('click', exitDemoMode);
+}
+
+function removeDemoBanner() {
+  document.getElementById('demo-banner')?.remove();
+}
+
+// ── "Start Guided Demo" Prompt ───────────────────────────────
+function showDemoGuidePrompt() {
+  removeDemoGuidePrompt();
+  const appContent = document.querySelector('.app-content');
+  if (!appContent) return;
+  const prompt = document.createElement('div');
+  prompt.id = 'demo-guide-prompt';
+  prompt.className = 'demo-guide-prompt';
+  prompt.innerHTML = `
+    <div class="demo-guide-icon">🗺️</div>
+    <div class="demo-guide-text">
+      <div class="demo-guide-headline">Take the guided tour</div>
+      <div class="demo-guide-sub">5-step walkthrough of the key features</div>
+    </div>
+    <div class="demo-guide-arrow">›</div>`;
+  prompt.addEventListener('click', startWalkthrough);
+  appContent.insertBefore(prompt, appContent.firstChild);
+  appContent.scrollTop = 0;
+}
+
+function removeDemoGuidePrompt() {
+  document.getElementById('demo-guide-prompt')?.remove();
+}
+
+// ── Walkthrough Steps ────────────────────────────────────────
+const WT_STEPS = [
+  {
+    title: 'Welcome to Demo Mode',
+    text: "You have a realistic BPC-157 protocol loaded — 14 days of injections, vial tracking, and adherence data. Let's explore the key features together.",
+    target: null, tab: null, btnLabel: 'Start Tour'
+  },
+  {
+    title: "Today's Injections",
+    text: "This card shows what to inject today, the calculated dose, and exactly how many units to draw. Tap 'Log' to record a dose.",
+    target: '#today-card', tab: 'schedule', btnLabel: 'Next'
+  },
+  {
+    title: 'Your Protocol',
+    text: 'Your active peptides are listed here with dose, draw amount, and frequency. Tap any peptide to edit or print a vial label.',
+    target: '#peptides-list', tab: 'schedule', btnLabel: 'Next'
+  },
+  {
+    title: 'Injection History',
+    text: 'The History tab shows every logged injection, your adherence rate, and patterns over time. The demo has 12 injections from the past 2 weeks.',
+    target: null, tab: 'history', btnLabel: 'Next', preNav: 'history'
+  },
+  {
+    title: 'Vial Inventory',
+    text: 'Inventory tracks remaining doses, your reconstitution date, and when to discard the vial. The sample vial has 4 doses remaining.',
+    target: '#inv-card', tab: 'inventory', btnLabel: 'Next', preNav: 'inventory'
+  },
+  {
+    title: "You're all set!",
+    text: "That's the tour. Exit Demo when ready to add your own protocol — all demo data is isolated and won't touch your real data.",
+    target: null, tab: null, btnLabel: 'Exit Demo', isLast: true
+  }
+];
+
+let wtCurrentStep = -1;
+
+function startWalkthrough() {
+  removeDemoGuidePrompt();
+  wtCurrentStep = 0;
+  showWtStep(0);
+}
+
+function exitWalkthrough() {
+  wtCurrentStep = -1;
+  document.getElementById('wt-overlay')?.remove();
+}
+
+function createWtOverlay() {
+  let overlay = document.getElementById('wt-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'wt-overlay';
+    document.body.appendChild(overlay);
+  }
+  return overlay;
+}
+
+function showWtStep(n) {
+  const step = WT_STEPS[n];
+  const overlay = createWtOverlay();
+  overlay.className = 'wt-overlay active';
+  overlay.innerHTML = '';
+
+  // Navigate to the right tab before rendering tooltip
+  if (step.preNav === 'history') {
+    document.querySelector('.tab-btn[data-tab="history"]')?.click();
+  } else if (step.preNav === 'inventory') {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-inventory')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'inventory');
+    renderVialTracker();
+  } else if (step.tab === 'schedule') {
+    document.querySelector('.tab-btn[data-tab="schedule"]')?.click();
+  }
+
+  const dots = WT_STEPS.map((_, i) =>
+    `<div class="wt-dot${i === n ? ' active' : ''}"></div>`).join('');
+
+  const tooltipInner = `
+    <div class="wt-step-label">Step ${n + 1} of ${WT_STEPS.length}</div>
+    <div class="wt-title">${step.title}</div>
+    <div class="wt-text">${step.text}</div>
+    <div class="wt-actions">
+      ${n > 0 ? '<button class="wt-btn-sec" id="wt-back">Back</button>' : ''}
+      <button class="wt-btn" id="wt-next">${step.btnLabel}</button>
+      <div class="wt-progress">${dots}</div>
+    </div>`;
+
+  // Build layout based on whether there's a spotlight target
+  const targetEl = step.target ? document.querySelector(step.target) : null;
+
+  if (!targetEl) {
+    // Centered modal — dim entire screen
+    const dim = document.createElement('div');
+    dim.className = 'wt-dim';
+    overlay.appendChild(dim);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'wt-modal-wrap';
+    const tooltip = document.createElement('div');
+    tooltip.className = 'wt-tooltip';
+    tooltip.innerHTML = tooltipInner;
+    wrap.appendChild(tooltip);
+    overlay.appendChild(wrap);
+  } else {
+    // Spotlight: scroll element into view, then position spotlight + tooltip
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    requestAnimationFrame(() => {
+      const rect = targetEl.getBoundingClientRect();
+      const pad = 8;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const margin = 12;
+
+      const spotlight = document.createElement('div');
+      spotlight.className = 'wt-spotlight';
+      spotlight.style.cssText =
+        `top:${rect.top - pad}px;left:${rect.left - pad}px;` +
+        `width:${rect.width + pad * 2}px;height:${rect.height + pad * 2}px;`;
+      overlay.appendChild(spotlight);
+
+      const tooltip = document.createElement('div');
+      tooltip.className = 'wt-tooltip';
+      tooltip.innerHTML = tooltipInner;
+      // Temporarily place off-screen to measure
+      tooltip.style.cssText = 'top:-9999px;left:-9999px;position:absolute;';
+      overlay.appendChild(tooltip);
+
+      requestAnimationFrame(() => {
+        const ttH = tooltip.offsetHeight;
+        const ttW = tooltip.offsetWidth;
+        const spotBottom = rect.bottom + pad + margin;
+        const spotTop = rect.top - pad - margin;
+
+        let top = (spotBottom + ttH < vh) ? spotBottom : Math.max(margin, spotTop - ttH);
+        let left = rect.left + rect.width / 2 - ttW / 2;
+        left = Math.max(margin, Math.min(left, vw - ttW - margin));
+
+        tooltip.style.top = top + 'px';
+        tooltip.style.left = left + 'px';
+      });
+    });
+  }
+
+  // Wire buttons (use setTimeout to let DOM settle)
+  setTimeout(() => {
+    document.getElementById('wt-next')?.addEventListener('click', () => {
+      if (step.isLast) { exitWalkthrough(); exitDemoMode(); return; }
+      wtCurrentStep++;
+      showWtStep(wtCurrentStep);
+    });
+    document.getElementById('wt-back')?.addEventListener('click', () => {
+      wtCurrentStep--;
+      showWtStep(wtCurrentStep);
+    });
+  }, 50);
+}
+
+// ── More tab: "Try Demo" click handler ───────────────────────
+document.getElementById('demo-mode-option')?.addEventListener('click', () => {
+  if (isDemoMode()) {
+    if (confirm('Already in Demo Mode. Reset to fresh sample data?')) resetDemoMode();
+    return;
+  }
+  enterDemoMode();
+});
+
+// ── On load: re-attach banner if demo was active ─────────────
+if (isDemoMode()) {
+  document.body.classList.add('demo-active');
+  renderDemoBanner();
 }
 
 // ── Clear History (Compass tab widget) ─────────────────────
