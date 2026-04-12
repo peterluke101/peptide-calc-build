@@ -1518,6 +1518,37 @@ body.simple-mode .advanced-tools-label,
 body.simple-mode #advanced-tools-section{display:none!important}
 #advanced-tools-section{width:100%;max-width:720px;margin:0 auto}
 
+/* ── Progressive UX States (#135-#138) ─────────────────────── */
+/* Stage-based visibility */
+/* beginner = first-run (handled by body.first-run already) */
+/* Compact card padding app-wide */
+.card{padding:14px 16px}
+/* Zone spacing */
+.homepage-zone-sep{margin:1.5rem 0 .5rem}
+/* Protocol summary card (#136) */
+#proto-summary-card{background:var(--surface2);border-radius:10px;padding:.875rem 1rem;margin-bottom:.5rem;border:1px solid var(--border);display:none}
+#proto-summary-card.showing{display:block}
+.psc-name{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem}
+.psc-meta{display:flex;gap:.75rem;font-size:.75rem;color:var(--text2);flex-wrap:wrap}
+.psc-meta span{display:flex;align-items:center;gap:.25rem}
+/* Tools collapsible (#136) */
+#tools-zone-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:.35rem 0;user-select:none}
+#tools-zone-header .tools-count{font-size:.65rem;color:var(--text2);margin-left:.35rem;font-weight:400}
+#tools-zone-toggle-icon{font-size:.8rem;color:var(--text2);transition:transform .2s}
+#tools-zone-panel{overflow:hidden;transition:max-height .25s ease}
+#tools-zone-panel.collapsed{max-height:0!important}
+/* stage-first-result: nudge to save protocol */
+body.stage-first-result #wiz-save-protocol{animation:pulse-accent 2s 1}
+@keyframes pulse-accent{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 3px rgba(61,232,195,.35)}}
+/* New badge for milestone-unlocked sections */
+.new-section-badge{display:inline-block;background:var(--accent);color:#000;font-size:.55rem;font-weight:800;padding:.15rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;vertical-align:middle;margin-left:.35rem}
+/* Consolidated inline warning under result */
+.result-inline-warn{font-size:.72rem;color:var(--text2);text-align:center;margin-top:.3rem;line-height:1.4}
+/* Tighter warn-card */
+.warn-card{padding:.4rem .65rem!important;font-size:.72rem!important;line-height:1.4!important}
+/* stage-active: dashboard-first */
+body.stage-active #proto-summary-card.showing{display:block}
+
 /* ── Beginner Onboarding (#132) ─────────────────────────────── */
 #onboarding-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:9990;overflow-y:auto;padding:1.5rem 1rem 6rem;-webkit-overflow-scrolling:touch}
 #onboarding-overlay.showing{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
@@ -1930,6 +1961,15 @@ body.simple-mode #journal-trends-body{ display:none !important}
 
 <div class="homepage-zone-sep">Your Dashboard</div>
 
+<!-- Protocol Summary Card (#136/#138: shown when stage-active or stage-power) -->
+<div id="proto-summary-card">
+  <div class="psc-name" id="psc-name">—</div>
+  <div class="psc-meta">
+    <span id="psc-next-dose">—</span>
+    <span id="psc-adherence"></span>
+  </div>
+</div>
+
 <div id="cycle-end-banners"></div>
 
 <!-- Today's Injections -->
@@ -1956,7 +1996,11 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="cal-grid" id="cal-grid"></div>
 </div>
 
-<div class="homepage-zone-sep">Your Tools</div>
+<div class="homepage-zone-sep" style="cursor:pointer" id="tools-zone-header">
+  <span>Your Tools<span class="tools-count" id="tools-count"></span></span>
+  <span id="tools-zone-toggle-icon">▼</span>
+</div>
+<div id="tools-zone-panel">
 
 <!-- Saved Protocols Quick-Load (hidden when empty) -->
 <div id="protocols-quick-section" style="display:none" class="card animate-in">
@@ -2056,11 +2100,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
           <div class="gs-result-value" id="gs-per-unit-display">—</div>
         </div>
       </div>
-      <div class="warn-card">
-        <span class="warn-icon">ℹ️</span>
-        <span>Syringe markings vary. Always verify with your actual syringe before drawing.</span>
-      </div>
-      <p class="calc-disclaimer">ℹ️ Standard reconstitution math for educational reference. Verify all calculations independently — supplier concentrations and labeling may vary.</p>
+      <p class="result-inline-warn">ℹ️ Syringe markings vary — verify with your actual syringe before drawing.</p>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -2082,15 +2122,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
         </button>
       </div>
       <div class="math-detail" id="gs-math-detail"></div>
-      <div class="warn-card warn-caution">
-        <span class="warn-icon">⚠️</span>
-        <span>Dose tiers are reference ranges from published research — not a personal prescription. Start low and adjust only with guidance from a healthcare provider.</span>
-      </div>
-      <p class="ev-source" style="margin:.3rem 0 .1rem">Common reference ranges — evidence base varies by compound</p>
-      <div class="warn-card warn-caution" id="gs-high-dose-warn" style="display:none">
-        <span class="warn-icon">⚠️</span>
-        <span>High draw volume — double-check your vial size and BAC water amount. If you need more than one syringe per dose, verify the product concentration with your supplier.</span>
-      </div>
+      <p class="result-inline-warn">⚠️ Reference ranges only — not a prescription. Start low, adjust with provider guidance.</p>
+      <p class="result-inline-warn" id="gs-high-dose-warn" style="display:none">⚠️ High draw volume — double-check vial size and BAC water amount.</p>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -2407,6 +2440,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
 </div>
 
 
+
+</div><!-- /#tools-zone-panel -->
 
 <button id="share-schedule-btn" class="share-btn">📤 Share Schedule</button>
 
@@ -3485,6 +3520,12 @@ function saveInjection(injectionKey, meta = {}) {
     late: meta.late || false
   };
   localStorage.setItem('injectionLog', JSON.stringify(log));
+  // Milestone: first dose logged (#138)
+  if (!localStorage.getItem('hasLoggedDose')) {
+    localStorage.setItem('hasLoggedDose', '1');
+    // applyStage is defined inside DOMContentLoaded — call if available
+    if (typeof applyStage === 'function') applyStage();
+  }
 
   // Update vial tracking
   const parts = injectionKey.split('_');
@@ -7064,6 +7105,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyFirstRunState();
 
+  // ── Progressive UX States (#135/#138) ──────────────────────
+  function getUserStage() {
+    const isAdvanced = localStorage.getItem('appMode') === 'advanced';
+    if (isAdvanced) return 'power';
+    const hasDose    = localStorage.getItem('hasLoggedDose');
+    const journal    = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    if (hasDose && journal.length >= 5) return 'power';
+    const hasProto   = localStorage.getItem('hasSavedProtocol');
+    if (hasProto) return 'active';
+    const hasCalc    = localStorage.getItem('hasCalculated');
+    if (hasCalc) return 'first-result';
+    return 'beginner';
+  }
+
+  window.applyStage = function applyStage() {
+    const stage = getUserStage();
+    ['stage-beginner','stage-first-result','stage-active','stage-power'].forEach(c => document.body.classList.remove(c));
+    document.body.classList.add('stage-' + stage);
+
+    // Protocol summary card (#136)
+    const protocols = getSavedProtocols();
+    const $psc = document.getElementById('proto-summary-card');
+    if ($psc) {
+      if (protocols.length > 0 && (stage === 'active' || stage === 'power')) {
+        const p = protocols[0];
+        const $name = document.getElementById('psc-name');
+        if ($name) $name.textContent = p.name || 'My Protocol';
+        // Next dose from schedule
+        const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+        const $next = document.getElementById('psc-next-dose');
+        if ($next) {
+          if (sched.length > 0) {
+            $next.innerHTML = '📅 Schedule active';
+          } else {
+            $next.innerHTML = '📅 No schedule yet';
+          }
+        }
+        // Adherence from stats
+        const $adh = document.getElementById('psc-adherence');
+        if ($adh) {
+          const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+          const total = Object.keys(injLog).length;
+          if (total > 0) $adh.textContent = '✓ ' + total + ' dose' + (total !== 1 ? 's' : '') + ' logged';
+        }
+        $psc.classList.add('showing');
+      } else {
+        $psc.classList.remove('showing');
+      }
+    }
+  }
+
+  applyStage();
+
+  // ── Tools zone collapsible (#136) ───────────────────────────
+  (function() {
+    const $header = document.getElementById('tools-zone-header');
+    const $panel  = document.getElementById('tools-zone-panel');
+    const $icon   = document.getElementById('tools-zone-toggle-icon');
+    const $count  = document.getElementById('tools-count');
+    if (!$header || !$panel) return;
+
+    // Count visible tool cards in panel
+    function updateCount() {
+      const n = $panel.querySelectorAll('.card:not([style*="display: none"]):not([style*="display:none"])').length;
+      if ($count) $count.textContent = n ? ' (' + n + ')' : '';
+    }
+    updateCount();
+
+    // Start collapsed for non-power users
+    const stage = getUserStage();
+    let open = (stage === 'power' || stage === 'active');
+    function setOpen(val) {
+      open = val;
+      if (open) {
+        $panel.style.maxHeight = $panel.scrollHeight + 'px';
+        $panel.classList.remove('collapsed');
+        if ($icon) $icon.style.transform = 'rotate(0deg)';
+      } else {
+        $panel.style.maxHeight = $panel.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          $panel.style.maxHeight = '0';
+          $panel.classList.add('collapsed');
+        });
+        if ($icon) $icon.style.transform = 'rotate(-90deg)';
+      }
+    }
+    // Init without animation
+    if (!open) {
+      $panel.style.maxHeight = '0';
+      $panel.classList.add('collapsed');
+      if ($icon) $icon.style.transform = 'rotate(-90deg)';
+    }
+    $header.addEventListener('click', () => setOpen(!open));
+  })();
+
   // ── Upsell unlock (#130) ────────────────────────────────────
   function applyUpsellUnlock() {
     const hasResult   = localStorage.getItem('hasSeenResult');
@@ -7214,6 +7350,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($appModeToggle) {
     $appModeToggle.addEventListener('change', () => {
       setAppMode($appModeToggle.checked ? 'advanced' : 'simple');
+      applyStage();
     });
   }
 
@@ -7378,7 +7515,9 @@ document.addEventListener('DOMContentLoaded', () => {
     wizShowStep(4);
     localStorage.setItem('hasCompletedWizard', '1');
     localStorage.setItem('hasSeenResult', '1');
+    localStorage.setItem('hasCalculated', '1');
     document.body.classList.add('upsell-unlocked');
+    applyStage && applyStage();
   });
   document.getElementById('wiz-back-4')?.addEventListener('click', () => wizShowStep(3));
 
@@ -7435,6 +7574,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     saveSavedProtocols(protocols);
     renderProtocols && renderProtocols();
+    localStorage.setItem('hasSavedProtocol', '1');
+    applyStage();
     showProtoSaveOverlay(name.trim() || 'My Protocol', doseMcg, units);
   });
 
@@ -7639,7 +7780,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const el = document.getElementById('gs-draw-value');
       if (el) el.textContent = fmtUnits(units);
       const highWarn = document.getElementById('gs-high-dose-warn');
-      if (highWarn) highWarn.style.display = units > 60 ? 'flex' : 'none';
+      if (highWarn) highWarn.style.display = units > 60 ? 'block' : 'none';
       // Sync hidden tier select
       const tierSel = document.getElementById('add-tier');
       if (tierSel) tierSel.value = tier;
@@ -7838,6 +7979,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     saveSchedule();
+    localStorage.setItem('hasSavedProtocol', '1');
+    applyStage && applyStage();
     dismissOnboarding();
     if ($addPanel) $addPanel.style.display = 'none';
 
@@ -8668,10 +8811,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // rc-result-value now shows syringe units (not mL) — update it
       if (resultVal) resultVal.textContent = syringeUnits;
 
-      // Mark first result seen for upsell unlock (#130)
+      // Mark first result seen for upsell unlock (#130) and stage milestone (#138)
       if (!localStorage.getItem('hasSeenResult')) {
         localStorage.setItem('hasSeenResult', '1');
         document.body.classList.add('upsell-unlocked');
+      }
+      if (!localStorage.getItem('hasCalculated')) {
+        localStorage.setItem('hasCalculated', '1');
+        applyStage && applyStage();
       }
 
       // Validation warnings
@@ -9258,6 +9405,8 @@ document.getElementById('gs-save-protocol')?.addEventListener('click', () => {
   });
   saveSavedProtocols(protocols);
   renderProtocols();
+  localStorage.setItem('hasSavedProtocol', '1');
+  if (typeof applyStage === 'function') applyStage();
 
   // Brief feedback
   const btn = document.getElementById('gs-save-protocol');
