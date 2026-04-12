@@ -642,7 +642,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
-  padding: .5rem 0 max(env(safe-area-inset-bottom), .5rem);
+  padding: .2rem 0 max(env(safe-area-inset-bottom), .2rem);
   z-index: 1000;
   box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.3);
 }
@@ -655,7 +655,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   justify-content: center;
   background: none;
   border: none;
-  padding: .5rem 0;
+  padding: .25rem 0;
   color: var(--text2);
   font-size: .7rem;
   font-weight: 500;
@@ -670,8 +670,8 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 }
 
 .tab-icon {
-  font-size: 1.2rem;
-  margin-bottom: .2rem;
+  font-size: 1.1rem;
+  margin-bottom: .15rem;
   transition: transform .2s;
 }
 
@@ -680,7 +680,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 }
 
 .tab-label {
-  font-size: .65rem;
+  font-size: .62rem;
   letter-spacing: .02em;
 }
 
@@ -1162,6 +1162,7 @@ body.light-mode .delete-journal:active {
 .more-title-danger { color: #e05252 !important; }
 
 /* Light mode */
+html.light-mode { background: #f0f0f0; }
 body.light-mode {
   --bg: #f0f0f0;
   --surface: #ffffff;
@@ -1881,201 +1882,10 @@ body.simple-mode #dose-change-body,
 body.simple-mode #side-effect-body,
 body.simple-mode #journal-trends-body{ display:none !important}
 
-/* ── Demo Mode v2 ─────────────────────────────────────────────── */
-#demo-banner {
-  display: none;
-  position: sticky;
-  top: 0;
-  z-index: 7000;
-  background: linear-gradient(90deg, rgba(61,232,195,.15), rgba(61,232,195,.08));
-  border-bottom: 1px solid rgba(61,232,195,.3);
-  padding: .45rem 1rem;
-  align-items: center;
-  gap: .5rem;
-  width: 100%;
-  font-size: .75rem;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: .04em;
-  flex-shrink: 0;
-}
-#demo-banner .demo-badge {
-  background: var(--accent);
-  color: #000;
-  font-size: .6rem;
-  font-weight: 800;
-  padding: .15rem .4rem;
-  border-radius: 4px;
-  letter-spacing: .06em;
-  flex-shrink: 0;
-}
-#demo-banner .demo-banner-label { flex: 1; }
-#demo-banner .demo-banner-btns { display: flex; gap: .4rem; flex-shrink: 0; }
-.demo-banner-btn {
-  background: none;
-  border: 1px solid rgba(61,232,195,.4);
-  color: var(--accent);
-  font-family: inherit;
-  font-size: .68rem;
-  font-weight: 600;
-  padding: .25rem .6rem;
-  border-radius: 6px;
-  cursor: pointer;
-  min-height: 28px;
-  transition: background .15s;
-}
-.demo-banner-btn:hover { background: var(--accent-dim); }
-.demo-banner-btn.exit-btn { border-color: rgba(255,100,100,.4); color: #ff8080; }
-.demo-banner-btn.exit-btn:hover { background: rgba(255,100,100,.1); }
-
-/* Walkthrough offer banner */
-#demo-walkthrough-offer {
-  display: none;
-  background: var(--surface2);
-  border: 1px solid rgba(61,232,195,.25);
-  border-radius: var(--radius);
-  padding: .75rem 1rem;
-  margin: 0 auto .75rem;
-  max-width: 720px;
-  width: 100%;
-  align-items: center;
-  gap: .75rem;
-  font-size: .82rem;
-}
-#demo-walkthrough-offer .wt-icon { font-size: 1.4rem; flex-shrink: 0; }
-#demo-walkthrough-offer .wt-text { flex: 1; color: var(--text2); line-height: 1.4; }
-#demo-walkthrough-offer .wt-text strong { color: var(--text); display: block; margin-bottom: .15rem; }
-#demo-walkthrough-offer .wt-actions { display: flex; gap: .4rem; flex-shrink: 0; flex-direction: column; align-items: flex-end; }
-.wt-start-btn {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  padding: .45rem .9rem;
-  font-family: inherit;
-  font-size: .78rem;
-  font-weight: 700;
-  cursor: pointer;
-  min-height: 36px;
-  transition: background .15s;
-}
-.wt-start-btn:hover { background: #2dd4b0; }
-.wt-dismiss-btn {
-  background: none;
-  border: none;
-  color: var(--text2);
-  font-family: inherit;
-  font-size: .68rem;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  min-height: 0;
-}
-
-/* Walkthrough overlay */
-#demo-wt-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9000;
-  pointer-events: none;
-}
-#demo-wt-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-#demo-wt-tooltip {
-  display: none;
-  position: fixed;
-  z-index: 9001;
-  background: var(--surface);
-  border: 1px solid rgba(61,232,195,.35);
-  border-radius: var(--radius);
-  padding: 1rem 1.1rem;
-  max-width: min(340px, calc(100vw - 2rem));
-  box-shadow: var(--shadow);
-  pointer-events: all;
-}
-.wt-tooltip-step { font-size: .65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .3rem; }
-.wt-tooltip-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: .4rem; }
-.wt-tooltip-text { font-size: .82rem; color: var(--text2); line-height: 1.5; margin-bottom: .9rem; }
-.wt-tooltip-nav { display: flex; align-items: center; gap: .5rem; }
-.wt-tooltip-nav .wt-back-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  font-family: inherit;
-  font-size: .75rem;
-  font-weight: 600;
-  padding: .4rem .8rem;
-  border-radius: 8px;
-  cursor: pointer;
-  min-height: 36px;
-}
-.wt-tooltip-nav .wt-next-btn {
-  background: var(--accent);
-  border: none;
-  color: #000;
-  font-family: inherit;
-  font-size: .78rem;
-  font-weight: 700;
-  padding: .4rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  min-height: 36px;
-  flex: 1;
-}
-.wt-tooltip-nav .wt-exit-wt-btn {
-  background: none;
-  border: none;
-  color: var(--text2);
-  font-family: inherit;
-  font-size: .68rem;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-  min-height: 0;
-  margin-left: auto;
-}
-.wt-progress-dots { display: flex; gap: .35rem; margin-bottom: .75rem; }
-.wt-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background .2s; }
-.wt-dot.active { background: var(--accent); }
-.wt-dot.done { background: rgba(61,232,195,.4); }
-
-/* Demo link in welcome card */
-.demo-try-link {
-  display: block;
-  margin: .5rem auto 0;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: .75rem;
-  color: var(--text2);
-  cursor: pointer;
-  padding: .25rem .5rem;
-  text-decoration: none;
-  transition: color .15s;
-}
-.demo-try-link:hover { color: var(--accent); }
-.demo-try-link span { color: var(--accent); }
-
-body.demo-mode #demo-banner { display: flex !important; }
-body.demo-mode #demo-walkthrough-offer { display: flex !important; }
 </style>
 </head>
 <body>
-<!-- Demo Mode Banner -->
-<div id="demo-banner">
-  <span class="demo-badge">DEMO</span>
-  <span class="demo-banner-label">Exploring with sample data</span>
-  <div class="demo-banner-btns">
-    <button class="demo-banner-btn" id="demo-reset-btn">Reset</button>
-    <button class="demo-banner-btn exit-btn" id="demo-exit-btn">Exit Demo</button>
-  </div>
-</div>
+
 <div class="app-content">
 
 <!-- Tab Content Containers -->
@@ -2090,18 +1900,6 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     <p class="app-tagline">Track protocols, understand reconstitution math, and organize your schedule — educational tracking and reference companion.</p>
   </div>
 
-<!-- Demo Walkthrough Offer -->
-<div id="demo-walkthrough-offer">
-  <span class="wt-icon">🧭</span>
-  <div class="wt-text">
-    <strong>Take the guided tour</strong>
-    See how the key features work — takes about 60 seconds.
-  </div>
-  <div class="wt-actions">
-    <button class="wt-start-btn" id="demo-start-wt-btn">Start Tour →</button>
-    <button class="wt-dismiss-btn" id="demo-dismiss-wt-btn">Not now</button>
-  </div>
-</div>
 
 <!-- A2HS / WhatsApp Banner -->
 <div class="install-banner" id="install-banner">
@@ -2127,9 +1925,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <button id="welcome-skip" style="background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;padding:.25rem .5rem;text-decoration:underline">
     Skip for now
   </button>
-  <button id="welcome-demo-link" class="demo-try-link">
-    or <span>explore with sample data</span> →
-  </button>
+
 </div>
 
 <!-- First-Run 3-Choice Beginner Screen (#123) -->
@@ -2156,9 +1952,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <div class="fr-skip-link">
     <button id="fr-already-know">I already know what I'm doing — show everything</button>
   </div>
-  <div style="text-align:center;margin-top:.5rem">
-    <button id="fr-see-demo" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.78rem;cursor:pointer;text-decoration:underline;padding:.25rem">or explore with demo data →</button>
-  </div>
+
 </div>
 
 <!-- Task Picker (#103, #128) -->
@@ -3209,12 +3003,12 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
         <div class="more-arrow">›</div>
       </div>
 
-      <!-- Demo Mode -->
-      <div class="more-option" id="demo-mode-option">
-        <div class="more-icon">🎭</div>
+      <!-- Replay Onboarding -->
+      <div class="more-option" id="rerun-onboarding-option">
+        <div class="more-icon">🧭</div>
         <div class="more-text">
-          <div class="more-title">Demo Mode</div>
-          <div class="more-desc">Explore the app with pre-filled sample data</div>
+          <div class="more-title">Replay Setup Guide</div>
+          <div class="more-desc">Walk through the onboarding flow again from the start</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
@@ -3629,7 +3423,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
       <p class="ob3-sub" style="text-align:center;margin:0 auto 2rem">Reconstitution math, dosing schedules, and injection logs — all in one place. Takes about 2 minutes to set up.</p>
       <button class="ob3-btn-primary" id="ob3-start">Get Started →</button>
       <button class="ob3-expert-link" id="ob3-expert">I'm experienced — show me everything</button>
-      <button class="ob3-expert-link" id="ob3-demo-link" style="margin-top:.1rem;font-size:.75rem;opacity:.7">Try demo mode →</button>
+
     </div>
   </div>
 
@@ -7812,8 +7606,6 @@ function openSitePopup(siteKey, siteLabel) {
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
 }
 
-// (v1 demo mode removed — see DemoMode object below)
-
 // ── Initialize on DOM Ready ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
@@ -9286,13 +9078,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if ($map) renderBodyMap($map, view);
   });
 
-  // Demo mode entry points → v2 DemoMode
-  document.getElementById('fr-see-demo')?.addEventListener('click', () => DemoMode.enter());
-  document.getElementById('ob3-demo-link')?.addEventListener('click', () => {
-    document.getElementById('onboarding-overlay')?.classList.remove('showing');
-    DemoMode.enter();
-  });
-
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more'];
@@ -9526,23 +9311,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const darkToggle = document.getElementById('dark-mode-toggle');
   if (darkToggle) {
     // Light mode is default; toggle ON = dark, OFF = light
+    function applyTheme(dark) {
+      if (dark) {
+        document.body.classList.remove('light-mode');
+        document.documentElement.classList.remove('light-mode');
+      } else {
+        document.body.classList.add('light-mode');
+        document.documentElement.classList.add('light-mode');
+      }
+    }
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
-      document.body.classList.remove('light-mode');
+      applyTheme(true);
       darkToggle.checked = true;
     } else {
       // No saved theme or explicitly 'light' → default to light
-      document.body.classList.add('light-mode');
+      applyTheme(false);
       darkToggle.checked = false;
     }
     darkToggle.addEventListener('change', () => {
-      if (darkToggle.checked) {
-        document.body.classList.remove('light-mode');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.body.classList.add('light-mode');
-        localStorage.setItem('theme', 'light');
-      }
+      const dark = darkToggle.checked;
+      applyTheme(dark);
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
     });
   }
 
@@ -10221,49 +10011,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ── Demo Mode v2 ──────────────────────────────────────────
-  DemoMode.init();
-
-  document.getElementById('demo-exit-btn')?.addEventListener('click', () => {
-    if (confirm('Exit demo mode? Your real data will be restored.')) {
-      DemoMode.exit();
+  // ── Replay Onboarding ────────────────────────────────────────
+  document.getElementById('rerun-onboarding-option')?.addEventListener('click', () => {
+    localStorage.removeItem('hasOnboarded');
+    localStorage.removeItem('onboardingStep');
+    const $ov = document.getElementById('onboarding-overlay');
+    if ($ov) {
+      $ov.classList.add('showing', 'ob3-hero', 'ob3-step-0');
+      // reset to step 0
+      document.querySelectorAll('.ob3-step').forEach(s => s.classList.remove('active'));
+      const step0 = document.getElementById('ob3-step-0');
+      if (step0) step0.classList.add('active');
+      for (let i = 0; i <= 7; i++) $ov.classList.remove('ob3-step-' + i);
+      $ov.classList.add('ob3-step-0');
     }
   });
 
-  document.getElementById('demo-reset-btn')?.addEventListener('click', () => {
-    if (confirm('Reset demo data back to the beginning?')) {
-      DemoMode.reset();
-    }
-  });
-
-  document.getElementById('welcome-demo-link')?.addEventListener('click', () => {
-    DemoMode.enter();
-  });
-
-  document.getElementById('demo-mode-option')?.addEventListener('click', () => {
-    if (DemoMode.isActive()) {
-      if (confirm('Exit demo mode? Your real data will be restored.')) {
-        DemoMode.exit();
-      }
-    } else {
-      DemoMode.enter();
-    }
-  });
-
-  document.getElementById('demo-start-wt-btn')?.addEventListener('click', () => {
-    const offer = document.getElementById('demo-walkthrough-offer');
-    if (offer) offer.style.display = 'none';
-    DemoWalkthrough.start();
-  });
-
-  document.getElementById('demo-dismiss-wt-btn')?.addEventListener('click', () => {
-    const offer = document.getElementById('demo-walkthrough-offer');
-    if (offer) offer.style.display = 'none';
-  });
-
-  document.getElementById('wt-next-btn')?.addEventListener('click', () => DemoWalkthrough.next());
-  document.getElementById('wt-back-btn')?.addEventListener('click', () => DemoWalkthrough.back());
-  document.getElementById('wt-exit-btn')?.addEventListener('click', () => DemoWalkthrough.exit());
 });
 
 // ── CSV parser — handles quoted fields with embedded newlines/commas ──
@@ -10713,513 +10476,7 @@ renderProtocols();
   </div>
 </div>
 
-<script>
-// ── Demo Mode v2 ──────────────────────────────────────────────
 
-const DEMO_BACKUP_PREFIX = 'demo-backup-';
-const DEMO_ACTIVE_KEY = 'demoModeActive';
-
-const DEMO_KEYS = [
-  'peptide-schedule', 'injectionLog', 'skipLog', 'snoozeLog',
-  'doseChangeLog', 'vialData', 'peptideLogs', 'peptideJournal',
-  'peptideNotes', 'hasOnboarded', 'hasAddedPeptide', 'hasCompletedWizard',
-  'addSectionCollapsed', 'appMode', 'peptidesCollapsed'
-];
-
-const DemoMode = {
-  isActive() {
-    return localStorage.getItem(DEMO_ACTIVE_KEY) === '1';
-  },
-
-  _buildData() {
-    const bpc157Idx = PEPTIDES.findIndex(p => p.name === 'BPC-157');
-    const tb500Idx = PEPTIDES.findIndex(p => p.name === 'TB-500');
-
-    const today = new Date();
-    function daysAgo(n) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - n);
-      return d.toISOString().slice(0, 10);
-    }
-
-    const startDate = daysAgo(14);
-
-    const demoSchedule = [
-      {
-        peptideIndex: bpc157Idx,
-        tier: 'std',
-        vialMg: 5,
-        waterMl: 2,
-        startDate,
-        frequency: 'daily',
-        cycleDays: 56,
-        doseMcg: 250
-      },
-      {
-        peptideIndex: tb500Idx,
-        tier: 'std',
-        vialMg: 5,
-        waterMl: 2,
-        startDate,
-        frequency: '2x/week',
-        cycleDays: 56,
-        doseMcg: 2500
-      }
-    ];
-
-    const injLog = {};
-    const bpcName = 'BPC-157';
-    const tbName = 'TB-500';
-    const sites = ['Abdomen (L)', 'Abdomen (R)', 'Thigh (L)', 'Thigh (R)'];
-
-    // BPC-157: daily for 14 days, missed days 4 and 9
-    for (let i = 14; i >= 1; i--) {
-      if (i === 4 || i === 9) continue;
-      const dateStr = daysAgo(i);
-      const notes = i === 14 ? 'Starting BPC-157 — 250mcg daily for gut health & joint recovery'
-                  : i === 7  ? 'Week 1 complete — noticing less joint stiffness'
-                  : '';
-      injLog[`${bpcName}_${dateStr}`] = {
-        timestamp: new Date(dateStr + 'T07:30:00').toISOString(),
-        site: sites[i % 4],
-        notes,
-        late: false
-      };
-    }
-
-    // TB-500: 2x/week — days 13, 11, 8, 6, 3 (skipped day 1)
-    const tbDays = [13, 11, 8, 6, 3];
-    for (const d of tbDays) {
-      const dateStr = daysAgo(d);
-      injLog[`${tbName}_${dateStr}`] = {
-        timestamp: new Date(dateStr + 'T08:00:00').toISOString(),
-        site: 'Abdomen (L)',
-        notes: d === 13 ? 'Starting TB-500 — 2.5mg for tissue repair' : '',
-        late: false
-      };
-    }
-
-    // Skip log: BPC-157 was skipped on day 4
-    const skipLog = {
-      [`${bpcName}_${daysAgo(4)}`]: { skippedAt: new Date(daysAgo(4) + 'T09:00:00').toISOString() }
-    };
-
-    // Vial data
-    const bpcVialKey = `${bpcName}_5_2`;
-    const tbVialKey = `${tbName}_5_2`;
-    const vialData = {
-      [bpcVialKey]: {
-        peptideName: bpcName,
-        vialMg: 5,
-        waterMl: 2,
-        totalDoses: 20,
-        usedDoses: 12,
-        createdAt: new Date(startDate + 'T09:00:00').toISOString(),
-        reconstitutionDate: startDate,
-        discardByDate: addDays(startDate, 28)
-      },
-      [tbVialKey]: {
-        peptideName: tbName,
-        vialMg: 5,
-        waterMl: 2,
-        totalDoses: 2,
-        usedDoses: 1,
-        createdAt: new Date(startDate + 'T09:00:00').toISOString(),
-        reconstitutionDate: startDate,
-        discardByDate: addDays(startDate, 28)
-      }
-    };
-
-    // Activity logs
-    const peptideLogs = [];
-    for (let i = 14; i >= 0; i -= 2) {
-      const energy = Math.min(5, 2 + Math.round((14 - i) / 3.5));
-      const notes = i === 14 ? 'Day 1: Starting BPC-157 + TB-500 stack'
-                  : i === 8  ? 'Noticing less joint discomfort after workouts'
-                  : i === 2  ? 'Energy and recovery significantly improved'
-                  : '';
-      peptideLogs.push({
-        date: daysAgo(i),
-        weight: 0,
-        energy,
-        symptoms: [],
-        notes,
-        timestamp: new Date(daysAgo(i)).getTime()
-      });
-    }
-
-    // Journal entries
-    const peptideJournal = [
-      {
-        date: daysAgo(14),
-        note: 'Starting my peptide protocol today. BPC-157 for gut health and joint recovery, TB-500 for tissue repair. Feeling hopeful.',
-        mood: '😐',
-        symptoms: { energy: 3, appetite: 3, cravings: 3, sleep: 3 },
-        timestamp: new Date(daysAgo(14)).getTime()
-      },
-      {
-        date: daysAgo(8),
-        note: 'One week in. My knee discomfort has reduced noticeably. Sleep feels deeper. No side effects so far.',
-        mood: '🙂',
-        symptoms: { energy: 4, appetite: 4, cravings: 3, sleep: 4 },
-        timestamp: new Date(daysAgo(8)).getTime()
-      },
-      {
-        date: daysAgo(2),
-        note: 'Feeling the BPC-157 strongly now. Recovery from gym sessions is much faster. Will continue week 3 as planned.',
-        mood: '😄',
-        symptoms: { energy: 5, appetite: 4, cravings: 2, sleep: 5 },
-        timestamp: new Date(daysAgo(2)).getTime()
-      }
-    ];
-
-    const doseChangeLog = [
-      { date: startDate, peptide: bpcName, field: 'added', oldValue: null, newValue: { vialMg: 5, waterMl: 2, tier: 'std' }, timestamp: new Date(startDate).getTime() },
-      { date: startDate, peptide: tbName,  field: 'added', oldValue: null, newValue: { vialMg: 5, waterMl: 2, tier: 'std' }, timestamp: new Date(startDate).getTime() }
-    ];
-
-    return {
-      'peptide-schedule': demoSchedule,
-      injectionLog: injLog,
-      skipLog,
-      snoozeLog: {},
-      doseChangeLog,
-      vialData,
-      peptideLogs,
-      peptideJournal,
-      hasOnboarded: '1',
-      hasAddedPeptide: 'true',
-      hasCompletedWizard: '1',
-      appMode: 'simple'
-    };
-  },
-
-  _applyData(data) {
-    for (const [key, val] of Object.entries(data)) {
-      localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
-    }
-  },
-
-  _reloadSchedule() {
-    schedule.length = 0;
-    JSON.parse(localStorage.getItem('peptide-schedule') || '[]').forEach(e => schedule.push(e));
-  },
-
-  enter() {
-    // Backup real data
-    for (const key of DEMO_KEYS) {
-      const val = localStorage.getItem(key);
-      localStorage.setItem(DEMO_BACKUP_PREFIX + key, val !== null ? val : '\x00');
-    }
-    // Seed demo data
-    this._applyData(this._buildData());
-    localStorage.setItem(DEMO_ACTIVE_KEY, '1');
-    this._reloadSchedule();
-    document.body.classList.add('demo-mode');
-    document.body.classList.remove('first-run');
-    // Apply simple mode
-    document.body.classList.add('simple-mode');
-    document.body.classList.remove('advanced-mode');
-    const mt = document.getElementById('app-mode-toggle');
-    if (mt) mt.checked = false;
-    renderAll();
-    // Scroll to top
-    const ac = document.querySelector('.app-content');
-    if (ac) ac.scrollTop = 0;
-    // Navigate to schedule tab
-    this._switchTab('schedule');
-  },
-
-  exit() {
-    // Restore backed-up data
-    for (const key of DEMO_KEYS) {
-      const backup = localStorage.getItem(DEMO_BACKUP_PREFIX + key);
-      if (backup === null || backup === '\x00') {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, backup);
-      }
-      localStorage.removeItem(DEMO_BACKUP_PREFIX + key);
-    }
-    localStorage.removeItem(DEMO_ACTIVE_KEY);
-    document.body.classList.remove('demo-mode');
-    this._reloadSchedule();
-    renderAll();
-    // Restore first-run state if needed
-    if (!localStorage.getItem('hasOnboarded') && schedule.length === 0) {
-      document.body.classList.add('first-run');
-      const wc = document.getElementById('welcome-card');
-      if (wc) wc.style.display = '';
-    }
-    // Re-apply real app mode
-    const realMode = localStorage.getItem('appMode') || 'simple';
-    if (realMode === 'advanced') {
-      document.body.classList.add('advanced-mode');
-      document.body.classList.remove('simple-mode');
-    } else {
-      document.body.classList.add('simple-mode');
-      document.body.classList.remove('advanced-mode');
-    }
-    const mt = document.getElementById('app-mode-toggle');
-    if (mt) mt.checked = (realMode === 'advanced');
-    // Dismiss walkthrough if active
-    DemoWalkthrough.exit();
-    this._dismissWalkthroughOffer();
-  },
-
-  reset() {
-    this._applyData(this._buildData());
-    this._reloadSchedule();
-    renderAll();
-    const ac = document.querySelector('.app-content');
-    if (ac) ac.scrollTop = 0;
-    // Re-show walkthrough offer
-    const offer = document.getElementById('demo-walkthrough-offer');
-    if (offer) offer.style.display = 'flex';
-    DemoWalkthrough.exit();
-  },
-
-  _dismissWalkthroughOffer() {
-    const offer = document.getElementById('demo-walkthrough-offer');
-    if (offer) offer.style.display = 'none';
-  },
-
-  _switchTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const tabEl = document.getElementById('tab-' + tabName);
-    if (tabEl) tabEl.classList.add('active');
-    const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
-    if (btn) btn.classList.add('active');
-    localStorage.setItem('activeTab', tabName);
-    const ac = document.querySelector('.app-content');
-    if (ac) ac.scrollTop = 0;
-  },
-
-  init() {
-    if (this.isActive()) {
-      document.body.classList.add('demo-mode');
-      document.body.classList.remove('first-run');
-      this._reloadSchedule();
-    }
-  }
-};
-
-// ── Demo Walkthrough ──────────────────────────────────────────
-
-const DemoWalkthrough = {
-  currentStep: -1,
-  steps: [
-    {
-      stepLabel: 'Step 1 of 6',
-      title: 'Your active protocol',
-      text: 'These are your active peptides — BPC-157 and TB-500. Each shows your vial setup, dose, and daily schedule.',
-      targetId: 'peptides-card',
-      tab: 'schedule'
-    },
-    {
-      stepLabel: 'Step 2 of 6',
-      title: "Today's injections",
-      text: "This card shows what's due today. Tap 'Log Dose' to record an injection — it tracks the site, time, and any notes.",
-      targetId: 'today-card',
-      tab: 'schedule'
-    },
-    {
-      stepLabel: 'Step 3 of 6',
-      title: 'Weekly calendar',
-      text: 'Your dosing calendar shows the full week at a glance. Green = logged, orange = due today, gray = upcoming.',
-      targetId: 'calendar-card',
-      tab: 'schedule'
-    },
-    {
-      stepLabel: 'Step 4 of 6',
-      title: 'Injection history & adherence',
-      text: 'Your complete log lives here — adherence rates, streaks, missed doses, and dose change history.',
-      targetId: null,
-      tab: 'history'
-    },
-    {
-      stepLabel: 'Step 5 of 6',
-      title: 'Add or adjust a protocol',
-      text: "Use this to add a new peptide, change your dose, or modify your BAC water ratio. The math updates instantly.",
-      targetId: 'add-peptide-card',
-      tab: 'schedule'
-    },
-    {
-      stepLabel: 'Step 6 of 6',
-      title: 'Vial inventory',
-      text: "Track each vial's reconstitution date, doses remaining, and 28-day expiry. Never lose track of your stock.",
-      targetId: null,
-      tab: 'inventory'
-    }
-  ],
-
-  start() {
-    this.currentStep = 0;
-    document.getElementById('demo-wt-overlay').style.display = 'block';
-    document.getElementById('demo-wt-tooltip').style.display = 'block';
-    this._render();
-  },
-
-  exit() {
-    this.currentStep = -1;
-    const overlay = document.getElementById('demo-wt-overlay');
-    const tooltip = document.getElementById('demo-wt-tooltip');
-    if (overlay) overlay.style.display = 'none';
-    if (tooltip) tooltip.style.display = 'none';
-    this._clearSpotlight();
-  },
-
-  next() {
-    if (this.currentStep < this.steps.length - 1) {
-      this.currentStep++;
-      this._render();
-    } else {
-      this.exit();
-    }
-  },
-
-  back() {
-    if (this.currentStep > 0) {
-      this.currentStep--;
-      this._render();
-    }
-  },
-
-  _render() {
-    const step = this.steps[this.currentStep];
-    const total = this.steps.length;
-
-    // Switch tab if needed
-    DemoMode._switchTab(step.tab);
-
-    // Update dots
-    const dotsEl = document.getElementById('wt-dots');
-    if (dotsEl) {
-      dotsEl.innerHTML = Array.from({ length: total }, (_, i) => {
-        const cls = i < this.currentStep ? 'done' : i === this.currentStep ? 'active' : '';
-        return `<span class="wt-dot ${cls}"></span>`;
-      }).join('');
-    }
-
-    document.getElementById('wt-step-label').textContent = step.stepLabel;
-    document.getElementById('wt-title').textContent = step.title;
-    document.getElementById('wt-text').textContent = step.text;
-
-    const nextBtn = document.getElementById('wt-next-btn');
-    const backBtn = document.getElementById('wt-back-btn');
-    if (nextBtn) nextBtn.textContent = this.currentStep === total - 1 ? 'Finish ✓' : 'Next →';
-    if (backBtn) backBtn.style.visibility = this.currentStep === 0 ? 'hidden' : 'visible';
-
-    // Wait for tab switch and scroll, then spotlight
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        this._spotlight(step);
-      });
-    });
-  },
-
-  _clearSpotlight() {
-    const hole = document.getElementById('demo-wt-hole');
-    if (hole) { hole.setAttribute('x', 0); hole.setAttribute('y', 0); hole.setAttribute('width', 0); hole.setAttribute('height', 0); }
-  },
-
-  _spotlight(step) {
-    const tooltip = document.getElementById('demo-wt-tooltip');
-
-    let rect = null;
-    if (step.targetId) {
-      const el = document.getElementById(step.targetId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        rect = el.getBoundingClientRect();
-      }
-    }
-
-    if (rect && rect.width > 0) {
-      const pad = 8;
-      const x = Math.max(0, rect.left - pad);
-      const y = Math.max(0, rect.top - pad);
-      const w = rect.width + pad * 2;
-      const h = rect.height + pad * 2;
-
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const pctX = (x / vw) * 100;
-      const pctY = (y / vh) * 100;
-      const pctW = (w / vw) * 100;
-      const pctH = (h / vh) * 100;
-
-      const hole = document.getElementById('demo-wt-hole');
-      if (hole) {
-        hole.setAttribute('x', pctX);
-        hole.setAttribute('y', pctY);
-        hole.setAttribute('width', pctW);
-        hole.setAttribute('height', pctH);
-        hole.setAttribute('rx', 1.5);
-      }
-
-      this._positionTooltip(tooltip, rect);
-    } else {
-      this._clearSpotlight();
-      if (tooltip) {
-        tooltip.style.top = '50%';
-        tooltip.style.left = '50%';
-        tooltip.style.transform = 'translate(-50%, -50%)';
-        tooltip.style.bottom = '';
-        tooltip.style.right = '';
-      }
-    }
-  },
-
-  _positionTooltip(tooltip, targetRect) {
-    if (!tooltip) return;
-    tooltip.style.transform = '';
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const ttH = 200;
-    const ttW = Math.min(340, vw - 32);
-    const margin = 12;
-
-    if (targetRect.bottom + ttH + margin < vh) {
-      tooltip.style.top = (targetRect.bottom + margin) + 'px';
-      tooltip.style.bottom = '';
-    } else {
-      tooltip.style.bottom = (vh - targetRect.top + margin) + 'px';
-      tooltip.style.top = '';
-    }
-
-    let left = targetRect.left + (targetRect.width - ttW) / 2;
-    left = Math.max(16, Math.min(left, vw - ttW - 16));
-    tooltip.style.left = left + 'px';
-    tooltip.style.right = '';
-  }
-};
-</script>
-
-<!-- Demo Walkthrough Overlay -->
-<div id="demo-wt-overlay">
-  <svg id="demo-wt-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-    <defs>
-      <mask id="demo-wt-mask">
-        <rect width="100%" height="100%" fill="white"/>
-        <rect id="demo-wt-hole" x="0" y="0" width="0" height="0" rx="8" fill="black"/>
-      </mask>
-    </defs>
-    <rect width="100%" height="100%" fill="rgba(0,0,0,0.72)" mask="url(#demo-wt-mask)"/>
-  </svg>
-</div>
-<div id="demo-wt-tooltip">
-  <div class="wt-progress-dots" id="wt-dots"></div>
-  <div class="wt-tooltip-step" id="wt-step-label"></div>
-  <div class="wt-tooltip-title" id="wt-title"></div>
-  <div class="wt-tooltip-text" id="wt-text"></div>
-  <div class="wt-tooltip-nav">
-    <button class="wt-back-btn" id="wt-back-btn">← Back</button>
-    <button class="wt-next-btn" id="wt-next-btn">Next →</button>
-    <button class="wt-exit-wt-btn" id="wt-exit-btn">Exit tour</button>
-  </div>
-</div>
 
 <script>
 // ── Service Worker ───────────────────────────────────────────
