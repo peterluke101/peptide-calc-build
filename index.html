@@ -7211,6 +7211,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyUpsellUnlock();
 
+  // ── Open Add Peptide Form (used by first-run CTAs) ──────────
+  function openAddPeptideForm() {
+    // 1. Expand the tools zone panel if it's collapsed
+    const $panel = document.getElementById('tools-zone-panel');
+    const $icon  = document.getElementById('tools-zone-toggle-icon');
+    if ($panel && $panel.classList.contains('collapsed')) {
+      $panel.classList.remove('collapsed');
+      $panel.style.maxHeight = $panel.scrollHeight + 'px';
+      if ($icon) $icon.style.transform = 'rotate(0deg)';
+    }
+    // 2. Scroll the add card into view
+    const addCard = document.getElementById('add-peptide-card');
+    if (addCard) {
+      setTimeout(() => addCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
+    // 3. Open the add form (show add-panel and start at step 1)
+    const addPanel = document.getElementById('add-panel');
+    if (addPanel && addPanel.style.display !== 'block') {
+      addPanel.style.display = 'block';
+      gsReset();
+    }
+  }
+
   // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
   // ── Beginner Onboarding (#132) ──────────────────────────────
   const TOP_PEPTIDES = ['BPC-157','Semaglutide','Tirzepatide','TB-500','Retatrutide','Ipamorelin','PT-141 (Bremelanotide)','Sermorelin','NAD+','GHK-Cu'];
@@ -7299,11 +7322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('fr-setup-protocol')?.addEventListener('click', () => {
     exitFirstRun(false);
-    const addCard = document.getElementById('add-peptide-card');
-    if (addCard) {
-      addCard.style.display = '';
-      addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    openAddPeptideForm();
   });
 
   document.getElementById('fr-already-know')?.addEventListener('click', () => {
@@ -7676,12 +7695,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($welcomeCta) {
     $welcomeCta.addEventListener('click', () => {
       exitFirstRun();
-      // Scroll add-peptide card into view and open step 1
-      const addCard = document.getElementById('add-peptide-card');
-      if (addCard) {
-        addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        gsShowStep(1);
-      }
+      openAddPeptideForm();
     });
   }
 
