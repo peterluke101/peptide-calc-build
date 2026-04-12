@@ -1482,6 +1482,42 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
 .stacks-one-at-a-time{background:var(--card-bg);border:1px solid var(--accent);border-radius:10px;padding:.65rem .75rem;margin-bottom:.75rem;font-size:.82rem;color:var(--text-muted);line-height:1.5;position:relative}
 .stacks-one-at-a-time .dismiss-btn{position:absolute;top:.4rem;right:.5rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;padding:.1rem .25rem}
 
+/* ── P1 UX Polish (#106-#109) ──────────────────────────────── */
+/* Advanced Tools section label (#106) */
+.advanced-tools-label{display:flex;align-items:center;gap:.65rem;margin:.75rem 0 .5rem;color:var(--text2);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;max-width:720px;width:100%}
+.advanced-tools-label::before,.advanced-tools-label::after{content:'';flex:1;height:1px;background:var(--border)}
+body.simple-mode .advanced-tools-label,
+body.simple-mode #advanced-tools-section{display:none!important}
+#advanced-tools-section{width:100%;max-width:720px;margin:0 auto}
+/* "Need reverse calc?" link (#106) */
+.rc-entry-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;color:var(--text2);background:none;border:none;font-family:inherit;cursor:pointer;padding:.25rem 0;text-decoration:underline;transition:color .15s}
+.rc-entry-link:hover{color:var(--accent)}
+/* Section headers lighter (#109) */
+.section-label{font-size:.58rem!important;font-weight:600!important;opacity:.7}
+/* Button hierarchy (#109): btn-secondary as outline */
+.btn-secondary{background:transparent!important;color:var(--accent)!important;border:1px solid rgba(61,232,195,.4)!important}
+.btn-secondary:hover{background:rgba(61,232,195,.07)!important;border-color:var(--accent)!important}
+body.light-mode .btn-secondary{background:transparent!important;color:#1a9e88!important;border-color:rgba(43,186,160,.4)!important}
+/* "Add to Schedule" as primary, Print Label as secondary-quiet (#109) */
+.btn-print-label{background:transparent!important;border:1px solid rgba(61,232,195,.25)!important;color:var(--text2)!important;font-size:.72rem!important}
+.btn-print-label:hover{border-color:var(--accent)!important;color:var(--accent)!important;background:rgba(61,232,195,.06)!important}
+/* RC result simplified (#107) */
+.rc-result-summary{background:var(--surface);border-radius:10px;padding:.85rem 1rem;margin:.6rem 0 .5rem;text-align:center}
+.rc-result-summary .rc-result-value{font-size:3rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.rc-result-summary .rc-result-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:.3rem}
+.rc-result-secondary{display:flex;gap:.5rem;margin:.4rem 0}
+.rc-result-secondary-item{flex:1;background:var(--surface);border-radius:8px;padding:.45rem .6rem;text-align:center}
+.rc-result-secondary-item .label{font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.rc-result-secondary-item .val{font-size:.88rem;font-weight:600;color:var(--text);margin-top:.15rem}
+/* Collapsible expander sections in result (#107) */
+.rc-expander{border-top:1px solid var(--border);margin-top:.4rem}
+.rc-expander-btn{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;color:var(--text2);font-family:inherit;font-size:.78rem;font-weight:500;padding:.55rem 0;cursor:pointer;transition:color .15s}
+.rc-expander-btn:hover{color:var(--text)}
+.rc-expander-btn .chev{font-size:.7rem;transition:transform .2s;flex-shrink:0}
+.rc-expander-btn[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.rc-expander-body{display:none;padding:.25rem 0 .5rem}
+.rc-expander-body.open{display:block}
+
 /* ── Task Picker (#103) ─────────────────────────────────────── */
 #task-picker{width:100%;max-width:720px;margin:0 auto 1rem}
 .task-picker-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:.5rem;padding:0 .25rem}
@@ -1659,7 +1695,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <div class="wiz-step" data-step="2">
       <div class="wiz-step-num">Step 2 of 4</div>
       <h3>How much diluent did you add?</h3>
-      <p>Enter the volume of BAC water added to the vial</p>
+      <p>Enter the volume of diluent (BAC water) added to the vial</p>
       <input class="wiz-input" type="number" id="wiz-water" min="0.1" step="0.1" placeholder="2" value="2">
       <div class="wiz-unit-label">mL</div>
       <div class="wiz-nav">
@@ -1752,7 +1788,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="cal-grid" id="cal-grid"></div>
 </div>
 
-<div class="section-label">More Tools</div>
+<div class="section-label">Your Tools</div>
 
 <!-- Saved Protocols Quick-Load (hidden when empty) -->
 <div id="protocols-quick-section" style="display:none" class="card animate-in">
@@ -1826,7 +1862,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
         <select id="gs-peptide-sel"></select>
       </div>
       <div class="field">
-        <label for="gs-vial-sel">Vial Size</label>
+        <label for="gs-vial-sel">Vial Strength</label>
         <select id="gs-vial-sel"></select>
       </div>
       <div class="btn-row">
@@ -1839,7 +1875,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <div class="gs-step-panel" data-step="2">
       <div class="gs-step-heading">Reconstitution</div>
       <div class="field">
-        <label for="gs-water-sel">Bacteriostatic Water</label>
+        <label for="gs-water-sel">Diluent Added (BAC water)</label>
         <select id="gs-water-sel"></select>
       </div>
       <div class="gs-recon-result">
@@ -1940,6 +1976,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
 </div>
 
 <!-- Reverse Calc Card -->
+<div class="advanced-tools-label">Advanced Tools</div>
+<div id="advanced-tools-section">
 <div class="card animate-in" id="reverse-calc-card">
   <div class="rc-toggle-row">
     <div class="rc-toggle-label">
@@ -1970,7 +2008,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
     <!-- Vial Size -->
     <div class="rc-field">
-      <label for="rc-vial-slider">Vial Size
+      <label for="rc-vial-slider">Vial Strength
         <span class="rc-hint">Total peptide powder in your vial</span>
         <span class="rc-example">Common: BPC-157 = 5mg · Semaglutide = 5mg · NAD+ = 500mg</span>
       </label>
@@ -2002,7 +2040,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <!-- Syringe Units -->
     <div class="rc-field">
       <label>Syringe Units
-        <span class="rc-hint">How many units you'll draw per injection (on a 100-unit insulin syringe)</span>
+        <span class="rc-hint">Target syringe units to draw per injection (on a 100-unit insulin syringe)</span>
         <span class="rc-example">Most protocols use 10 units · small doses may need 5 units for precision</span>
       </label>
       <div class="rc-seg" id="rc-seg">
@@ -2022,54 +2060,91 @@ body.simple-mode #journal-trends-body{ display:none !important}
         <button class="rc-sz-btn active" data-sz="100">1.0 mL<br><span style="font-size:.65rem">100 unit</span></button>
       </div>
     </div>
-    <!-- Result -->
+    <!-- Result — simplified layout (#107) -->
     <div class="rc-result">
-      <div class="rc-result-label">BAC Water to Add</div>
-      <div>
-        <span class="rc-result-value" id="rc-result-value">2.00</span>
-        <span class="rc-result-unit">ml</span>
+      <!-- Primary: units to draw (big) + secondary row -->
+      <div class="rc-result-summary">
+        <div class="rc-result-label">Units to draw</div>
+        <div>
+          <span class="rc-result-value" id="rc-result-value">—</span>
+          <span class="rc-result-unit" style="font-size:1.1rem;color:var(--text2);margin-left:.3rem">units</span>
+        </div>
       </div>
-      <div id="rc-instruction" class="rc-instruction">Add <strong>2.00 mL</strong> of BAC water to your vial, then draw <strong>10 units</strong> to get <strong>250 mcg</strong> per injection.</div>
-      <div class="rc-result-breakdown" id="rc-result-breakdown">5mg vial ÷ 250mcg dose × 10 units = 2.00 ml</div>
-      <div style="text-align:center">
-        <button class="math-toggle" id="rc-math-toggle" aria-expanded="false" type="button">
-          <span class="math-chevron">▶</span> Show math
-        </button>
+      <div class="rc-result-secondary">
+        <div class="rc-result-secondary-item">
+          <div class="label">Desired dose</div>
+          <div class="val" id="rc-result-dose-display">—</div>
+        </div>
+        <div class="rc-result-secondary-item">
+          <div class="label">Diluent to add</div>
+          <div class="val"><span id="rc-result-value-ml">—</span> mL</div>
+        </div>
+        <div class="rc-result-secondary-item">
+          <div class="label">Concentration</div>
+          <div class="val" id="rc-result-conc">—</div>
+        </div>
       </div>
-      <div class="math-detail" id="rc-math-detail"></div>
-      <div class="rc-tradeoff" id="rc-tradeoff">
-        <b>More water</b> → easier to measure small doses, but more volume per injection.<br>
-        <b>Less water</b> → more concentrated, but harder to measure precisely.
-      </div>
-      <div class="warn-card" style="margin:.6rem 0 0">
-        <span class="warn-icon">ℹ️</span>
-        <span>Assumes stated product concentration and a standard 100-unit (1mL) insulin syringe. Reconstitution math changes if your syringe type or product purity differs — verify with your supplier.</span>
-      </div>
-      <div class="warn-card warn-caution" id="rc-low-water-warn" style="display:none;margin:.4rem 0 0">
-        <span class="warn-icon">⚠️</span>
-        <span>Very concentrated mix — less than 0.1 mL makes dosing extremely difficult to measure accurately. Consider adding more water or adjusting your dose.</span>
-      </div>
-      <div class="warn-card warn-caution" id="rc-high-water-warn" style="display:none;margin:.4rem 0 0">
-        <span class="warn-icon">⚠️</span>
-        <span>Unusually large water volume — more than 10 mL means a very dilute mix. Check your dose and vial size are correct.</span>
-      </div>
-      <div class="warn-card warn-caution" id="rc-dose-over-warn" style="display:none;margin:.4rem 0 0">
-        <span class="warn-icon">⚠️</span>
-        <span>Desired dose exceeds total vial content — you can't draw more peptide than is in the vial. Reduce your dose or use a larger vial.</span>
-      </div>
-      <!-- Draw volume warnings -->
-      <div class="rc-warn-red" id="rc-draw-warn-red">⚠️ <strong>Extremely small draw volume.</strong> This is very difficult to measure accurately. Consider using more BAC water to get a larger, more measurable draw.</div>
-      <div class="rc-warn-amber" id="rc-draw-warn-amber">⚠️ <strong>Small draw volume.</strong> For better accuracy, consider adjusting your reconstitution to achieve a larger draw.</div>
-      <div class="rc-warn-info" id="rc-draw-warn-info">ℹ️ Small draw volumes are more sensitive to measurement error. Take extra care with your measurement.</div>
-      <div class="rc-warn-red" id="rc-capacity-warn" style="display:none">⚠️ <strong>Draw exceeds syringe capacity.</strong> Use a larger syringe or reconstitute with less BAC water to reduce the draw volume.</div>
-      <div class="rc-warn-info" id="rc-between-marks" style="display:none">ℹ️ This exact amount falls between syringe marks — you'll need to estimate between <span id="rc-mark-lower">—</span> and <span id="rc-mark-upper">—</span> units.</div>
+      <div id="rc-instruction" class="rc-instruction" style="display:none"></div>
+
+      <!-- Draw volume warnings (stay visible) -->
+      <div class="rc-warn-red" id="rc-draw-warn-red">⚠️ <strong>Extremely small draw volume.</strong> Very difficult to measure accurately. Consider adding more diluent.</div>
+      <div class="rc-warn-amber" id="rc-draw-warn-amber">⚠️ <strong>Small draw volume.</strong> For better accuracy, adjust your reconstitution.</div>
+      <div class="rc-warn-info" id="rc-draw-warn-info">ℹ️ Small draw volumes are more sensitive to measurement error.</div>
+      <div class="rc-warn-red" id="rc-capacity-warn" style="display:none">⚠️ <strong>Draw exceeds syringe capacity.</strong> Use a larger syringe or add less diluent.</div>
+      <div class="rc-warn-info" id="rc-between-marks" style="display:none">ℹ️ Falls between syringe marks — estimate between <span id="rc-mark-lower">—</span> and <span id="rc-mark-upper">—</span> units.</div>
       <div class="rc-nearest-mark" id="rc-nearest-mark" style="display:none">Nearest measurable mark: <strong id="rc-nearest-val">—</strong> units (<span id="rc-nearest-ml">—</span> mL) on your <span id="rc-nearest-sz">—</span> syringe</div>
-      <!-- Supplier note -->
-      <p class="rc-supplier-note">⚠️ Always verify your peptide's concentration matches the supplier's label. Concentrations vary between manufacturers and batches.</p>
-      <button class="btn-print-label" id="rc-print-label-btn">🏷️ Print Label</button>
-      <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
-      <button class="btn-add-schedule" id="rc-add-schedule">📅 Add to Schedule</button>
+      <div class="warn-card warn-caution" id="rc-low-water-warn" style="display:none;margin:.4rem 0 0"><span class="warn-icon">⚠️</span><span>Very concentrated mix — less than 0.1 mL makes accurate dosing difficult.</span></div>
+      <div class="warn-card warn-caution" id="rc-high-water-warn" style="display:none;margin:.4rem 0 0"><span class="warn-icon">⚠️</span><span>Unusually large diluent volume — check your dose and vial strength are correct.</span></div>
+      <div class="warn-card warn-caution" id="rc-dose-over-warn" style="display:none;margin:.4rem 0 0"><span class="warn-icon">⚠️</span><span>Desired dose exceeds total vial content — reduce your dose or use a larger vial.</span></div>
+
+      <!-- Save to Schedule — primary CTA -->
+      <button class="btn-add-schedule" id="rc-add-schedule" style="margin-top:.75rem">📅 Save to Schedule</button>
       <div class="rc-add-schedule-hint" id="rc-add-schedule-hint">Select a peptide above to add to schedule</div>
+
+      <!-- Expander: Show math -->
+      <div class="rc-expander">
+        <button class="rc-expander-btn" id="rc-exp-math-btn" aria-expanded="false" type="button">
+          Show math <span class="chev">›</span>
+        </button>
+        <div class="rc-expander-body" id="rc-exp-math-body">
+          <div class="rc-result-breakdown" id="rc-result-breakdown" style="margin-bottom:.5rem"></div>
+          <div style="text-align:left">
+            <button class="math-toggle" id="rc-math-toggle" aria-expanded="false" type="button">
+              <span class="math-chevron">▶</span> Full step-by-step
+            </button>
+          </div>
+          <div class="math-detail" id="rc-math-detail"></div>
+        </div>
+      </div>
+
+      <!-- Expander: Reconstitution details -->
+      <div class="rc-expander">
+        <button class="rc-expander-btn" id="rc-exp-recon-btn" aria-expanded="false" type="button">
+          Reconstitution details <span class="chev">›</span>
+        </button>
+        <div class="rc-expander-body" id="rc-exp-recon-body">
+          <div class="rc-tradeoff">
+            <b>More diluent</b> → easier to measure small doses, but more volume per injection.<br>
+            <b>Less diluent</b> → more concentrated, but harder to measure precisely.
+          </div>
+          <button class="btn-print-label" id="rc-print-label-btn" style="margin-top:.5rem">🏷️ Print Label</button>
+          <div class="rc-print-hint">Recommended: <a href="https://www.niimbot.com" target="_blank" rel="noopener">Niimbot D11</a> · 40×20mm</div>
+        </div>
+      </div>
+
+      <!-- Expander: Safety note -->
+      <div class="rc-expander">
+        <button class="rc-expander-btn" id="rc-exp-safety-btn" aria-expanded="false" type="button">
+          Safety note <span class="chev">›</span>
+        </button>
+        <div class="rc-expander-body" id="rc-exp-safety-body">
+          <div class="warn-card" style="margin:0">
+            <span class="warn-icon">ℹ️</span>
+            <span>Assumes stated product concentration and a standard 100-unit (1 mL) insulin syringe. Math changes if your syringe type or product purity differs — verify with your supplier.</span>
+          </div>
+          <p class="rc-supplier-note" style="margin:.5rem 0 0">⚠️ Always verify your peptide's concentration matches the supplier's label. Concentrations vary between manufacturers and batches.</p>
+        </div>
+      </div>
     </div>
     <!-- Syringe Graphic — sleek redesign -->
     <div class="rc-syringe-wrap">
@@ -2116,6 +2191,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
   </div>
 </div>
+</div><!-- /#advanced-tools-section -->
 
 <!-- My Peptides -->
 <div class="card animate-in animate-d3" id="peptides-card">
@@ -7962,11 +8038,15 @@ document.addEventListener('DOMContentLoaded', () => {
       breakdown.textContent =
         `${vialMg}mg vial ÷ ${doseDisplay} dose × ${syringeUnits} units = ${display} ml`;
 
-      // Instruction-style output
-      const rcInstruction = document.getElementById('rc-instruction');
-      if (rcInstruction) {
-        rcInstruction.innerHTML = `Add <strong>${display} mL</strong> of BAC water to your vial, then draw <strong>${syringeUnits} units</strong> to get <strong>${doseDisplay}</strong> per injection.`;
-      }
+      // Update simplified result secondary fields (#107)
+      const rcResultMl   = document.getElementById('rc-result-value-ml');
+      const rcResultConc = document.getElementById('rc-result-conc');
+      const rcResultDose = document.getElementById('rc-result-dose-display');
+      if (rcResultMl)   rcResultMl.textContent   = display;
+      if (rcResultConc) rcResultConc.textContent  = `${((vialMg * 1000) / waterMl).toFixed(0)} mcg/mL`;
+      if (rcResultDose) rcResultDose.textContent  = doseDisplay;
+      // rc-result-value now shows syringe units (not mL) — update it
+      if (resultVal) resultVal.textContent = syringeUnits;
 
       // Validation warnings
       const rcLowWarn  = document.getElementById('rc-low-water-warn');
@@ -8203,6 +8283,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calcAndRender();
     initMathToggle('rc-math-toggle', 'rc-math-detail');
+
+    // RC result expanders (#107)
+    [
+      ['rc-exp-math-btn',   'rc-exp-math-body'],
+      ['rc-exp-recon-btn',  'rc-exp-recon-body'],
+      ['rc-exp-safety-btn', 'rc-exp-safety-body'],
+    ].forEach(([btnId, bodyId]) => {
+      const btn  = document.getElementById(btnId);
+      const body = document.getElementById(bodyId);
+      if (!btn || !body) return;
+      btn.addEventListener('click', () => {
+        const open = body.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open);
+      });
+    });
   })();
 });
 
