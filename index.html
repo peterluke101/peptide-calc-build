@@ -10326,6 +10326,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
+  // ── Auto-select on focus for number inputs ─────────────────
+  // Prevents "append" behaviour when tapping a pre-filled field on mobile.
+  document.addEventListener('focusin', e => {
+    if (e.target.matches('input[type="number"]')) {
+      e.target.select();
+    }
+  });
+
   // ── Demo Mode v2 ──────────────────────────────────────────
   DemoMode.init();
 
