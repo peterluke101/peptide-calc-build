@@ -3262,12 +3262,6 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     </div>
   </div>
 
-  <!-- Demo Mode -->
-  <div class="card animate-in" id="demo-mode-card" style="text-align:center;padding:1rem">
-    <p style="font-size:.78rem;color:var(--text2);margin-bottom:.65rem;line-height:1.5">Load sample data to explore all features without entering your own info.</p>
-    <button class="btn-demo-try" id="try-demo-btn">Try Demo Mode</button>
-  </div>
-
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
@@ -3635,6 +3629,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
       <p class="ob3-sub" style="text-align:center;margin:0 auto 2rem">Reconstitution math, dosing schedules, and injection logs — all in one place. Takes about 2 minutes to set up.</p>
       <button class="ob3-btn-primary" id="ob3-start">Get Started →</button>
       <button class="ob3-expert-link" id="ob3-expert">I'm experienced — show me everything</button>
+      <button class="ob3-expert-link" id="ob3-demo-link" style="margin-top:.1rem;font-size:.75rem;opacity:.7">Try demo mode →</button>
     </div>
   </div>
 
@@ -7817,114 +7812,7 @@ function openSitePopup(siteKey, siteLabel) {
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
 }
 
-// ── Demo Mode ─────────────────────────────────────────────
-function isDemoMode() {
-  return localStorage.getItem('demoMode') === 'true';
-}
-
-function loadDemoData() {
-  // Find peptide indices
-  const bpcIdx = PEPTIDES.findIndex(p => p.name === 'BPC-157');
-  const tb500Idx = PEPTIDES.findIndex(p => p.name === 'TB-500');
-  if (bpcIdx === -1 || tb500Idx === -1) { alert('Demo data: peptide not found'); return; }
-
-  const now = new Date();
-  const daysAgo = n => { const d = new Date(now); d.setDate(d.getDate() - n); return d; };
-  const isoAgo = n => daysAgo(n).toISOString();
-  const dateStrAgo = n => { const d = daysAgo(n); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
-
-  // Schedule: BPC-157 + TB-500
-  const demoSchedule = [
-    { peptideIndex: bpcIdx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: 'daily' },
-    { peptideIndex: tb500Idx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: '3x-week' }
-  ];
-  localStorage.setItem('peptide-schedule', JSON.stringify(demoSchedule));
-
-  // Injection log: 12 entries over 14 days, some days skipped for realism
-  const injLog = {};
-  const loggedDays = [0,1,2,4,5,6,7,9,10,11,12,13]; // skip days 3, 8
-  loggedDays.forEach(d => {
-    const dateStr = dateStrAgo(d);
-    const ts = daysAgo(d); ts.setHours(8, 15, 0, 0);
-    injLog['BPC-157_' + dateStr] = { timestamp: ts.toISOString(), site: ['abdomen-left','abdomen-right','thigh-left','thigh-right','flank-left','flank-right'][d % 6], notes: d === 4 ? 'Feeling more flexible today' : d === 10 ? 'Knee pain noticeably less' : '' };
-  });
-  // TB-500: 3x/week pattern
-  [1,4,6,8,11,13].forEach(d => {
-    const dateStr = dateStrAgo(d);
-    const ts = daysAgo(d); ts.setHours(9, 0, 0, 0);
-    injLog['TB-500_' + dateStr] = { timestamp: ts.toISOString(), site: ['deltoid-left','deltoid-right','glute-left','glute-right'][d % 4], notes: '' };
-  });
-  localStorage.setItem('injectionLog', JSON.stringify(injLog));
-  // Mark first dose logged
-  localStorage.setItem('hasLoggedDose', '1');
-
-  // Journal entries (peptideLogs key)
-  const journalEntries = [
-    { date: dateStrAgo(1), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: 'Feeling more flexible today. Recovery seems faster.' },
-    { date: dateStrAgo(3), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: '' },
-    { date: dateStrAgo(5), mood: 4, energy: 4, sleep: 4, cravings: 'low', notes: 'Great energy today. Knee pain noticeably less.' },
-    { date: dateStrAgo(7), mood: 3, energy: 2, sleep: 3, cravings: 'high', notes: 'Bit tired. Skipped morning workout.' },
-    { date: dateStrAgo(9), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: '' },
-    { date: dateStrAgo(11), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: 'Noticing improved sleep quality.' },
-    { date: dateStrAgo(12), mood: 3, energy: 2, sleep: 2, cravings: 'moderate', notes: 'First week, adjusting.' },
-    { date: dateStrAgo(14), mood: 3, energy: 3, sleep: 3, cravings: 'low', notes: 'Started protocol today.' },
-  ];
-  localStorage.setItem('peptideJournal', JSON.stringify(journalEntries));
-
-  // Vial inventory
-  const vialData = {
-    'BPC-157_5_2': { totalDoses: 20, usedDoses: 5, reconDate: isoAgo(10) },
-    'TB-500_5_2': { totalDoses: 12, usedDoses: 4, reconDate: isoAgo(5) }
-  };
-  localStorage.setItem('vialData', JSON.stringify(vialData));
-
-  // Injection sites history
-  const sitesLog = [
-    { site: 'abdomen-left', date: isoAgo(0) },
-    { site: 'thigh-right', date: isoAgo(1) },
-    { site: 'abdomen-right', date: isoAgo(2) },
-    { site: 'deltoid-left', date: isoAgo(3) },
-    { site: 'thigh-left', date: isoAgo(4) },
-    { site: 'deltoid-right', date: isoAgo(6) },
-  ];
-  localStorage.setItem('injectionSites', JSON.stringify(sitesLog));
-
-  // Weight entries
-  const weights = [185, 184.5, 184.2, 183.8, 183.5, 183.2, 182.8, 182.5, 182.2, 182];
-  const weightLog = weights.map((w, i) => ({ value: w, date: dateStrAgo(13 - i), unit: 'lbs' }));
-  localStorage.setItem('weightTracker', JSON.stringify(weightLog));
-
-  // Mark demo active
-  localStorage.setItem('demoMode', 'true');
-  localStorage.setItem('hasOnboarded', '1');
-  localStorage.setItem('hasSeenResult', '1');
-  localStorage.setItem('hasSavedProtocol', '1');
-  localStorage.setItem('activeTab', 'schedule');
-
-  // Reload to apply
-  window.location.reload();
-}
-
-function clearDemoData() {
-  if (!confirm('This will clear all demo data and reset to a clean state. Continue?')) return;
-  const keysToRemove = [
-    'demoMode','peptide-schedule','injectionLog','hasLoggedDose','vialData',
-    'injectionSites','weightTracker','peptideJournal','hasOnboarded',
-    'hasSeenResult','hasSavedProtocol','activeTab'
-  ];
-  keysToRemove.forEach(k => localStorage.removeItem(k));
-  window.location.reload();
-}
-
-function applyDemoBadge() {
-  const badge = document.getElementById('demo-badge');
-  if (!badge) return;
-  if (isDemoMode()) {
-    badge.style.display = 'flex';
-  } else {
-    badge.style.display = 'none';
-  }
-}
+// (v1 demo mode removed — see DemoMode object below)
 
 // ── Initialize on DOM Ready ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -9398,13 +9286,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if ($map) renderBodyMap($map, view);
   });
 
-  // Demo mode
-  document.getElementById('try-demo-btn')?.addEventListener('click', loadDemoData);
-  document.getElementById('fr-see-demo')?.addEventListener('click', loadDemoData);
-  document.getElementById('exit-demo-btn')?.addEventListener('click', clearDemoData);
-
-  // Apply demo badge on load
-  applyDemoBadge();
+  // Demo mode entry points → v2 DemoMode
+  document.getElementById('fr-see-demo')?.addEventListener('click', () => DemoMode.enter());
+  document.getElementById('ob3-demo-link')?.addEventListener('click', () => {
+    document.getElementById('onboarding-overlay')?.classList.remove('showing');
+    DemoMode.enter();
+  });
 
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
