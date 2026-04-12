@@ -47,15 +47,6 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
 .share-btn:active{transform:translateY(0)}
 
-/* Gumroad Banner */
-.gumroad-banner{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.08));border:1px solid rgba(61,232,195,.2);border-radius:var(--radius);padding:1.25rem;margin:0 auto 2rem;max-width:720px;width:100%}
-.banner-content{display:flex;align-items:center;gap:1rem}
-.banner-icon{font-size:1.5rem;flex-shrink:0}
-.banner-text{flex:1;min-width:0}
-.banner-text h3{font-size:.9rem;font-weight:600;margin-bottom:.25rem;color:var(--text)}
-.banner-text p{font-size:.75rem;color:var(--text2);line-height:1.4}
-.banner-btn{background:var(--accent);color:#000;text-decoration:none;padding:.5rem .85rem;border-radius:6px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;transition:all .2s;flex-shrink:0}
-.banner-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
 
 /* ── Card ────────────────────────────────────────────────── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1rem;transition:box-shadow .3s}
@@ -589,7 +580,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   .nav{padding:.5rem 0 .25rem;margin-bottom:.25rem}
   .header{margin-bottom:1.25rem}
   .share-btn{width:100%;justify-content:center}
-  .gumroad-banner,.install-banner{padding:1rem}
+  .install-banner{padding:1rem}
   .banner-content{align-items:flex-start;flex-wrap:wrap}
   .banner-btn{width:100%;text-align:center}
   .section-header{gap:.75rem;flex-wrap:wrap}
@@ -621,7 +612,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   .form-row{flex-wrap:wrap}
   .tab-content{width:100%;max-width:100%}
   .card{max-width:100%}
-  .nav,.header,.gumroad-banner,.install-banner,.disclaimer{max-width:100%}
+  .nav,.header,.install-banner,.disclaimer{max-width:100%}
 }
 @media(min-width:520px){
   .app-content{padding-left:1.5rem;padding-right:1.5rem}
@@ -1079,48 +1070,6 @@ body.light-mode .delete-journal:active {
   font-size: .8rem;
 }
 
-/* Premium Guides promo card */
-.guides-promo-card {
-  border-radius: 12px;
-  padding: 1.25rem;
-  background: linear-gradient(135deg, rgba(43,186,160,.12), rgba(100,120,255,.1));
-  border: 1px solid rgba(43,186,160,.35);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: .25rem;
-}
-.guides-promo-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-}
-.guides-promo-text {
-  flex: 1;
-}
-.guides-promo-title {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--text);
-}
-.guides-promo-desc {
-  font-size: .72rem;
-  color: var(--text2);
-  margin-top: .2rem;
-  line-height: 1.4;
-}
-.guides-promo-btn {
-  margin-top: .75rem;
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-size: .78rem;
-  font-weight: 600;
-  padding: .45rem 1rem;
-  border-radius: 20px;
-  text-decoration: none;
-  transition: opacity .2s;
-}
-.guides-promo-btn:hover { opacity: .85; }
 
 /* Dark mode toggle row */
 .more-option-toggle {
@@ -1232,12 +1181,9 @@ body.light-mode .site-view-btn { background: var(--surface2); border-color: var(
 body.light-mode .site-dot.never circle { fill: var(--surface2); stroke: var(--border); }
 body.light-mode .site-popup { background: var(--surface); }
 body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
-/* Guides promo card */
-body.light-mode .guides-promo-card { background: linear-gradient(135deg,rgba(43,186,160,.1),rgba(100,120,255,.06)); border-color: rgba(43,186,160,.3); }
 /* Toggle switch off-state */
 body.light-mode .toggle-slider { background: #bbb; }
-/* Gumroad banner + install banner */
-body.light-mode .gumroad-banner,
+/* Install banner */
 body.light-mode .install-banner { background: linear-gradient(135deg,rgba(43,186,160,.08),rgba(43,186,160,.04)); border-color: rgba(43,186,160,.2); }
 /* Section title divider */
 body.light-mode .section-title::after { background: var(--border); }
@@ -1485,13 +1431,7 @@ body.first-run #stack-card,
 /* Share Schedule button */
 body.first-run #share-schedule-btn,
 /* Add to Home Screen install banner */
-body.first-run #install-banner,
-/* Gumroad banner */
-body.first-run .gumroad-banner{display:none!important}
-/* #130: hide upsell until first value moment */
-.upsell-gated{display:none}
-body.upsell-unlocked .upsell-gated{display:block}
-body.upsell-unlocked .card.upsell-gated{display:block}
+body.first-run #install-banner{display:none!important}
 /* Step label on guided flow */
 .gs-step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;text-align:center}
 /* Success message after first save */
@@ -2587,20 +2527,6 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 </div>
 
-<!-- Gumroad Banner (#130: shown after first value moment) -->
-<div class="gumroad-banner upsell-gated">
-  <div class="banner-content">
-    <div class="banner-icon">📚</div>
-    <div class="banner-text">
-      <h3>Want to go deeper?</h3>
-      <p>Save more protocols, unlock advanced tracking, and access the education library — explore Navigator.</p>
-    </div>
-    <a href="https://peterlukedigital.gumroad.com/l/fkhwu" target="_blank" class="banner-btn">
-      Explore Navigator →
-    </a>
-  </div>
-</div>
-
 
 
 </div><!-- /#tools-zone-panel -->
@@ -2880,18 +2806,6 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
     <div id="protocols-more-list"></div>
     <div class="protocols-empty" id="protocols-empty-state">No saved protocols yet. Complete the Add Peptide flow and save your setup for quick reuse.</div>
-  </div>
-
-  <!-- A) Premium Guides promo card (#130: shown after first value moment) -->
-  <div class="card animate-in upsell-gated">
-    <div class="guides-promo-card">
-      <div class="guides-promo-icon">🚀</div>
-      <div class="guides-promo-text">
-        <div class="guides-promo-title">Unlock Navigator</div>
-        <div class="guides-promo-desc">Save more protocols and unlock advanced tracking, scheduling, and the education library.</div>
-        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Explore Navigator →</a>
-      </div>
-    </div>
   </div>
 
   <div class="card animate-in">
@@ -7746,16 +7660,6 @@ document.addEventListener('DOMContentLoaded', () => {
     $header.addEventListener('click', () => setOpen(!open));
   })();
 
-  // ── Upsell unlock (#130) ────────────────────────────────────
-  function applyUpsellUnlock() {
-    const hasResult   = localStorage.getItem('hasSeenResult');
-    const hasProtocol = getSavedProtocols().length > 0;
-    const onboarded   = localStorage.getItem('hasOnboarded');
-    if (hasResult || hasProtocol || onboarded) {
-      document.body.classList.add('upsell-unlocked');
-    }
-  }
-  applyUpsellUnlock();
 
   // ── Open Add Peptide Form (used by CTAs after onboarding) ───
   function openAddPeptideForm() {
@@ -8414,7 +8318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('hasCompletedWizard', '1');
     localStorage.setItem('hasSeenResult', '1');
     localStorage.setItem('hasCalculated', '1');
-    document.body.classList.add('upsell-unlocked');
     applyStage && applyStage();
   });
   document.getElementById('wiz-back-4')?.addEventListener('click', () => wizShowStep(3));
@@ -9744,8 +9647,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Mark first result seen for upsell unlock (#130) and stage milestone (#138)
       if (!localStorage.getItem('hasSeenResult')) {
         localStorage.setItem('hasSeenResult', '1');
-        document.body.classList.add('upsell-unlocked');
-      }
+          }
       if (!localStorage.getItem('hasCalculated')) {
         localStorage.setItem('hasCalculated', '1');
         applyStage && applyStage();
