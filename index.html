@@ -1481,6 +1481,74 @@ body:not(.light-mode) .complexity-veryhigh{background:#450a0a;color:#fca5a5;bord
 body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#fcd34d}
 .stacks-one-at-a-time{background:var(--card-bg);border:1px solid var(--accent);border-radius:10px;padding:.65rem .75rem;margin-bottom:.75rem;font-size:.82rem;color:var(--text-muted);line-height:1.5;position:relative}
 .stacks-one-at-a-time .dismiss-btn{position:absolute;top:.4rem;right:.5rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.9rem;padding:.1rem .25rem}
+
+/* ── Task Picker (#103) ─────────────────────────────────────── */
+#task-picker{width:100%;max-width:720px;margin:0 auto 1rem}
+.task-picker-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:.5rem;padding:0 .25rem}
+.task-card-list{display:flex;flex-direction:column;gap:.5rem}
+.task-card{display:flex;align-items:center;gap:.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s;min-height:56px;text-align:left;width:100%;font-family:inherit;color:var(--text);-webkit-appearance:none;appearance:none}
+.task-card:hover,.task-card:active{background:var(--surface);border-color:rgba(61,232,195,.35)}
+.task-card-icon{font-size:1.25rem;flex-shrink:0;width:28px;text-align:center}
+.task-card-text{flex:1;min-width:0}
+.task-card-title{font-size:.9rem;font-weight:600;color:var(--text)}
+.task-card-desc{font-size:.72rem;color:var(--text2);margin-top:.1rem}
+.task-card-arrow{color:var(--text2);font-size:1.1rem;flex-shrink:0}
+/* Compact layout for returning users */
+body:not(.first-run) #task-picker .task-picker-label{display:none}
+body:not(.first-run) .task-card-list{flex-direction:row;overflow-x:auto;gap:.5rem;scrollbar-width:none;padding-bottom:.25rem}
+body:not(.first-run) .task-card-list::-webkit-scrollbar{display:none}
+body:not(.first-run) .task-card{flex-direction:column;min-width:86px;max-width:100px;padding:.55rem .5rem;min-height:64px;align-items:center;gap:.25rem;text-align:center;flex-shrink:0}
+body:not(.first-run) .task-card-icon{width:auto;font-size:1.4rem}
+body:not(.first-run) .task-card-title{font-size:.68rem;font-weight:600}
+body:not(.first-run) .task-card-desc,body:not(.first-run) .task-card-arrow{display:none}
+
+/* ── Guided Calc Wizard (#105) ──────────────────────────────── */
+#calc-wizard{width:100%;max-width:720px;margin:0 auto 1rem;display:none}
+#calc-wizard.active{display:block}
+.wiz-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.25rem}
+.wiz-step{display:none}
+.wiz-step.active{display:block}
+.wiz-progress{height:3px;background:var(--border);border-radius:2px;margin-bottom:1.25rem;overflow:hidden}
+.wiz-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s ease}
+.wiz-step-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.3rem}
+.wiz-step h3{font-size:1.1rem;font-weight:700;color:var(--text);margin:0 0 .25rem}
+.wiz-step p{font-size:.82rem;color:var(--text2);margin:0 0 1.1rem;line-height:1.5}
+.wiz-input{width:100%;font-size:1.75rem;font-weight:700;text-align:center;background:var(--surface);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;padding:.6rem .5rem;transition:border-color .2s;box-sizing:border-box}
+.wiz-input:focus{outline:none;border-color:var(--accent)}
+.wiz-unit-label{text-align:center;font-size:.8rem;color:var(--text2);margin:.3rem 0 1.1rem;font-weight:600}
+.wiz-unit-toggle{display:flex;justify-content:center;gap:.5rem;margin-bottom:1.1rem}
+.wiz-unit-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:inherit;font-size:.8rem;padding:.35rem .75rem;cursor:pointer;transition:all .15s}
+.wiz-unit-btn.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.wiz-nav{display:flex;gap:.6rem;margin-top:1rem}
+.wiz-btn-back{background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.85rem;cursor:pointer;flex:0 0 auto;transition:all .15s}
+.wiz-btn-back:hover{border-color:var(--text2);color:var(--text)}
+.wiz-btn-next{background:var(--accent);border:none;color:#000;border-radius:8px;padding:.6rem 1.25rem;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;flex:1;transition:background .15s}
+.wiz-btn-next:hover{background:#2dd4b0}
+.wiz-result-units{font-size:3.5rem;font-weight:800;color:var(--accent);line-height:1;text-align:center;padding:.5rem 0 .25rem}
+.wiz-result-units-label{font-size:.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;text-align:center;font-weight:600;margin-bottom:1rem}
+.wiz-result-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-radius:8px;padding:.55rem .85rem;margin:.4rem 0}
+.wiz-result-row-label{font-size:.78rem;color:var(--text2)}
+.wiz-result-row-val{font-size:.85rem;font-weight:600;color:var(--text)}
+.wiz-result-actions{margin-top:1rem;display:flex;flex-direction:column;gap:.5rem}
+.wiz-full-link{text-align:center;margin-top:.5rem;font-size:.75rem;color:var(--text2)}
+.wiz-full-link button{background:none;border:none;color:var(--text2);font-family:inherit;font-size:.75rem;text-decoration:underline;cursor:pointer;padding:0}
+body.light-mode .wiz-input{background:#f8f8f8}
+body.light-mode .wiz-card{background:var(--surface2)}
+
+/* ── Simple/Advanced Mode (#104) ──────────────────────────────*/
+.app-mode-badge{display:inline-flex;align-items:center;gap:.3rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.2rem .65rem;font-size:.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:background .15s;margin-top:.4rem}
+.app-mode-badge:hover{border-color:var(--accent);color:var(--accent)}
+body.advanced-mode .app-mode-badge{background:rgba(61,232,195,.1);border-color:rgba(61,232,195,.25);color:var(--accent)}
+/* Elements hidden in simple mode */
+body.simple-mode #reverse-calc-card,
+body.simple-mode #stack-card,
+body.simple-mode #inventory-option,
+body.simple-mode #tab-inventory,
+body.simple-mode #weight-loss-option,
+body.simple-mode #tab-weight,
+body.simple-mode #dose-change-body,
+body.simple-mode #side-effect-body,
+body.simple-mode #journal-trends-body{ display:none !important}
 </style>
 </head>
 <body>
@@ -1521,6 +1589,133 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
   <button id="welcome-skip" style="background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;padding:.25rem .5rem;text-decoration:underline">
     Skip for now
   </button>
+</div>
+
+<!-- Task Picker (#103) -->
+<div id="task-picker">
+  <div class="task-picker-label">What would you like to do?</div>
+  <div class="task-card-list">
+    <button class="task-card" id="task-calc-dose">
+      <span class="task-card-icon">💉</span>
+      <span class="task-card-text">
+        <span class="task-card-title">Calculate a dose</span>
+        <span class="task-card-desc">Find how much BAC water to add and units to draw</span>
+      </span>
+      <span class="task-card-arrow">›</span>
+    </button>
+    <button class="task-card" id="task-reconstitute">
+      <span class="task-card-icon">🧪</span>
+      <span class="task-card-text">
+        <span class="task-card-title">Reconstitute a vial</span>
+        <span class="task-card-desc">Calculate how much diluent to add</span>
+      </span>
+      <span class="task-card-arrow">›</span>
+    </button>
+    <button class="task-card" id="task-reverse-calc">
+      <span class="task-card-icon">🔁</span>
+      <span class="task-card-text">
+        <span class="task-card-title">Reverse-calculate from units</span>
+        <span class="task-card-desc">Know your units drawn? Find the dose</span>
+      </span>
+      <span class="task-card-arrow">›</span>
+    </button>
+    <button class="task-card" id="task-schedule">
+      <span class="task-card-icon">🗓️</span>
+      <span class="task-card-text">
+        <span class="task-card-title">Build a schedule</span>
+        <span class="task-card-desc">Create a dosing calendar for your protocol</span>
+      </span>
+      <span class="task-card-arrow">›</span>
+    </button>
+    <button class="task-card" id="task-track">
+      <span class="task-card-icon">📋</span>
+      <span class="task-card-text">
+        <span class="task-card-title">Track a protocol</span>
+        <span class="task-card-desc">Log doses, view adherence, and monitor progress</span>
+      </span>
+      <span class="task-card-arrow">›</span>
+    </button>
+  </div>
+</div>
+
+<!-- Guided Calc Wizard (#105) -->
+<div id="calc-wizard">
+  <div class="wiz-card">
+    <div class="wiz-progress"><div class="wiz-progress-fill" id="wiz-progress-fill" style="width:25%"></div></div>
+
+    <!-- Step 1: Vial strength -->
+    <div class="wiz-step active" data-step="1">
+      <div class="wiz-step-num">Step 1 of 4</div>
+      <h3>What's your vial strength?</h3>
+      <p>Enter the total amount of peptide powder in your vial</p>
+      <input class="wiz-input" type="number" id="wiz-vial" min="0.1" step="0.1" placeholder="5" value="5">
+      <div class="wiz-unit-label">mg</div>
+      <div class="wiz-nav">
+        <button class="wiz-btn-next" id="wiz-next-1">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Diluent added -->
+    <div class="wiz-step" data-step="2">
+      <div class="wiz-step-num">Step 2 of 4</div>
+      <h3>How much diluent did you add?</h3>
+      <p>Enter the volume of BAC water added to the vial</p>
+      <input class="wiz-input" type="number" id="wiz-water" min="0.1" step="0.1" placeholder="2" value="2">
+      <div class="wiz-unit-label">mL</div>
+      <div class="wiz-nav">
+        <button class="wiz-btn-back" id="wiz-back-2">← Back</button>
+        <button class="wiz-btn-next" id="wiz-next-2">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Desired dose -->
+    <div class="wiz-step" data-step="3">
+      <div class="wiz-step-num">Step 3 of 4</div>
+      <h3>What dose do you want?</h3>
+      <p>Enter your desired dose per injection</p>
+      <input class="wiz-input" type="number" id="wiz-dose" min="1" step="1" placeholder="250" value="250">
+      <div class="wiz-unit-toggle">
+        <button class="wiz-unit-btn active" id="wiz-unit-mcg">mcg</button>
+        <button class="wiz-unit-btn" id="wiz-unit-mg">mg</button>
+      </div>
+      <div class="wiz-nav">
+        <button class="wiz-btn-back" id="wiz-back-3">← Back</button>
+        <button class="wiz-btn-next" id="wiz-next-3">See Result →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Result -->
+    <div class="wiz-step" data-step="4">
+      <div class="wiz-step-num">Your result</div>
+      <h3 style="text-align:center;margin-bottom:.75rem">Draw this amount</h3>
+      <div class="wiz-result-units" id="wiz-result-units">—</div>
+      <div class="wiz-result-units-label">units on a 100-unit syringe</div>
+      <div class="wiz-result-row">
+        <span class="wiz-result-row-label">Desired dose</span>
+        <span class="wiz-result-row-val" id="wiz-r-dose">—</span>
+      </div>
+      <div class="wiz-result-row">
+        <span class="wiz-result-row-label">Concentration</span>
+        <span class="wiz-result-row-val" id="wiz-r-conc">—</span>
+      </div>
+      <div class="wiz-result-row">
+        <span class="wiz-result-row-label">Volume to draw</span>
+        <span class="wiz-result-row-val" id="wiz-r-vol">—</span>
+      </div>
+      <!-- Show math expander -->
+      <button class="math-toggle" id="wiz-math-toggle" aria-expanded="false" type="button" style="margin-top:.75rem">
+        <span class="math-chevron">▶</span> Show math
+      </button>
+      <div class="math-detail" id="wiz-math-detail"></div>
+      <div class="wiz-result-actions">
+        <button class="wiz-btn-back" id="wiz-back-4" style="width:100%">← Change values</button>
+      </div>
+    </div>
+
+    <div class="wiz-full-link">
+      <button id="wiz-switch-full">Switch to full calculator</button>
+    </div>
+  </div>
 </div>
 
 <div id="first-save-success">
@@ -2287,6 +2482,19 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
           <div class="more-desc">Track progress toward your weight goal</div>
         </div>
         <div class="more-arrow">›</div>
+      </div>
+
+      <!-- Simple/Advanced Mode toggle -->
+      <div class="more-option more-option-toggle" style="cursor:default;">
+        <div class="more-icon">🎛️</div>
+        <div class="more-text">
+          <div class="more-title">Advanced Mode</div>
+          <div class="more-desc">Show inventory, stacks, reverse calc, and deep tracking</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="app-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
 
       <!-- B) Dark/Light Mode toggle -->
@@ -6412,6 +6620,230 @@ document.addEventListener('DOMContentLoaded', () => {
   function dismissOnboarding() { exitFirstRun(); }
 
   applyFirstRunState();
+
+  // ── Simple / Advanced Mode (#104) ──────────────────────────
+  function getAppMode() {
+    return localStorage.getItem('appMode') || 'simple';
+  }
+  function setAppMode(mode) {
+    localStorage.setItem('appMode', mode);
+    if (mode === 'advanced') {
+      document.body.classList.add('advanced-mode');
+      document.body.classList.remove('simple-mode');
+    } else {
+      document.body.classList.add('simple-mode');
+      document.body.classList.remove('advanced-mode');
+    }
+    const toggle = document.getElementById('app-mode-toggle');
+    if (toggle) toggle.checked = (mode === 'advanced');
+  }
+  // Apply on load
+  setAppMode(getAppMode());
+
+  const $appModeToggle = document.getElementById('app-mode-toggle');
+  if ($appModeToggle) {
+    $appModeToggle.addEventListener('change', () => {
+      setAppMode($appModeToggle.checked ? 'advanced' : 'simple');
+    });
+  }
+
+  // ── Task Picker (#103) ──────────────────────────────────────
+  function scrollToAndReveal(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = '';
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const taskCalcDose = document.getElementById('task-calc-dose');
+  if (taskCalcDose) {
+    taskCalcDose.addEventListener('click', () => {
+      if (isFirstRun()) exitFirstRun();
+      const wizardDone = localStorage.getItem('hasCompletedWizard');
+      if (!wizardDone) {
+        // Show guided wizard
+        const wizard = document.getElementById('calc-wizard');
+        if (wizard) {
+          wizard.classList.add('active');
+          wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          wizShowStep(1);
+        }
+      } else {
+        // Go to full reverse calc
+        const rcCard = document.getElementById('reverse-calc-card');
+        if (rcCard) {
+          rcCard.style.display = '';
+          document.body.classList.remove('simple-mode');
+          rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  }
+
+  const taskReconstitute = document.getElementById('task-reconstitute');
+  if (taskReconstitute) {
+    taskReconstitute.addEventListener('click', () => {
+      if (isFirstRun()) exitFirstRun();
+      const wizardDone = localStorage.getItem('hasCompletedWizard');
+      if (!wizardDone) {
+        const wizard = document.getElementById('calc-wizard');
+        if (wizard) {
+          wizard.classList.add('active');
+          wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          wizShowStep(1);
+        }
+      } else {
+        const rcCard = document.getElementById('reverse-calc-card');
+        if (rcCard) {
+          rcCard.style.display = '';
+          document.body.classList.remove('simple-mode');
+          rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  }
+
+  const taskReverseCalc = document.getElementById('task-reverse-calc');
+  if (taskReverseCalc) {
+    taskReverseCalc.addEventListener('click', () => {
+      if (isFirstRun()) exitFirstRun();
+      // Always go to full reverse calc
+      const rcCard = document.getElementById('reverse-calc-card');
+      if (rcCard) {
+        rcCard.style.display = '';
+        document.body.classList.remove('simple-mode');
+        rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Open the toggle if closed
+        const toggle = document.getElementById('reverse-calc-toggle');
+        const panel = document.getElementById('rc-panel');
+        if (toggle && panel && !toggle.checked) {
+          toggle.checked = true;
+          panel.style.display = '';
+        }
+      }
+    });
+  }
+
+  const taskSchedule = document.getElementById('task-schedule');
+  if (taskSchedule) {
+    taskSchedule.addEventListener('click', () => {
+      if (isFirstRun()) exitFirstRun();
+      window.location.href = 'schedule.html';
+    });
+  }
+
+  const taskTrack = document.getElementById('task-track');
+  if (taskTrack) {
+    taskTrack.addEventListener('click', () => {
+      if (isFirstRun()) exitFirstRun();
+      // Switch to History tab
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      const histTab = document.getElementById('tab-history');
+      if (histTab) histTab.classList.add('active');
+      const histBtn = document.querySelector('.tab-btn[data-tab="history"]');
+      if (histBtn) histBtn.classList.add('active');
+      localStorage.setItem('activeTab', 'history');
+    });
+  }
+
+  // ── Guided Calc Wizard (#105) ────────────────────────────────
+  let wizDoseUnitMcg = true;
+
+  function wizShowStep(step) {
+    document.querySelectorAll('#calc-wizard .wiz-step').forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.step) === step);
+    });
+    const fills = { 1: '25%', 2: '50%', 3: '75%', 4: '100%' };
+    const fill = document.getElementById('wiz-progress-fill');
+    if (fill) fill.style.width = fills[step] || '25%';
+    // Scroll wizard into view
+    const wizard = document.getElementById('calc-wizard');
+    if (wizard) wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function wizCalcResult() {
+    const vialMg  = parseFloat(document.getElementById('wiz-vial')?.value) || 5;
+    const waterMl = parseFloat(document.getElementById('wiz-water')?.value) || 2;
+    const doseRaw = parseFloat(document.getElementById('wiz-dose')?.value) || 250;
+    const doseMcg = wizDoseUnitMcg ? doseRaw : doseRaw * 1000;
+
+    const concMcgMl = (vialMg * 1000) / waterMl;
+    const volMl = doseMcg / concMcgMl;
+    const units = volMl * 100;
+
+    document.getElementById('wiz-result-units').textContent = units.toFixed(1);
+    document.getElementById('wiz-r-dose').textContent = wizDoseUnitMcg ? `${doseMcg} mcg` : `${doseRaw} mg`;
+    document.getElementById('wiz-r-conc').textContent = `${concMcgMl.toFixed(0)} mcg/mL`;
+    document.getElementById('wiz-r-vol').textContent = `${volMl.toFixed(3)} mL`;
+
+    // Math detail
+    const mathEl = document.getElementById('wiz-math-detail');
+    if (mathEl) {
+      mathEl.innerHTML = `
+        <div class="math-section">Concentration</div>
+        <div class="math-step">${vialMg}mg × 1,000 = <strong>${(vialMg*1000).toLocaleString()} mcg</strong> total in vial</div>
+        <div class="math-step">${(vialMg*1000).toLocaleString()} mcg ÷ ${waterMl} mL = <strong>${concMcgMl.toFixed(0)} mcg/mL</strong></div>
+        <div class="math-section">Volume to draw</div>
+        <div class="math-step">${doseMcg} mcg ÷ ${concMcgMl.toFixed(0)} mcg/mL = <strong>${volMl.toFixed(4)} mL</strong></div>
+        <div class="math-section">Syringe units (100-unit syringe)</div>
+        <div class="math-step">${volMl.toFixed(4)} mL × 100 = <strong>${units.toFixed(1)} units</strong></div>
+      `;
+    }
+  }
+
+  // Wire up wizard buttons
+  document.getElementById('wiz-next-1')?.addEventListener('click', () => wizShowStep(2));
+  document.getElementById('wiz-back-2')?.addEventListener('click', () => wizShowStep(1));
+  document.getElementById('wiz-next-2')?.addEventListener('click', () => wizShowStep(3));
+  document.getElementById('wiz-back-3')?.addEventListener('click', () => wizShowStep(2));
+  document.getElementById('wiz-next-3')?.addEventListener('click', () => {
+    wizCalcResult();
+    wizShowStep(4);
+    localStorage.setItem('hasCompletedWizard', '1');
+  });
+  document.getElementById('wiz-back-4')?.addEventListener('click', () => wizShowStep(3));
+
+  // Wizard unit toggle
+  document.getElementById('wiz-unit-mcg')?.addEventListener('click', () => {
+    wizDoseUnitMcg = true;
+    document.getElementById('wiz-unit-mcg')?.classList.add('active');
+    document.getElementById('wiz-unit-mg')?.classList.remove('active');
+    const doseInput = document.getElementById('wiz-dose');
+    if (doseInput) { doseInput.placeholder = '250'; doseInput.step = '1'; }
+  });
+  document.getElementById('wiz-unit-mg')?.addEventListener('click', () => {
+    wizDoseUnitMcg = false;
+    document.getElementById('wiz-unit-mg')?.classList.add('active');
+    document.getElementById('wiz-unit-mcg')?.classList.remove('active');
+    const doseInput = document.getElementById('wiz-dose');
+    if (doseInput) { doseInput.placeholder = '0.25'; doseInput.step = '0.01'; }
+  });
+
+  // Wizard show math toggle
+  document.getElementById('wiz-math-toggle')?.addEventListener('click', () => {
+    const detail = document.getElementById('wiz-math-detail');
+    if (!detail) return;
+    const open = detail.classList.toggle('open');
+    document.getElementById('wiz-math-toggle')?.setAttribute('aria-expanded', open);
+  });
+
+  // Switch to full calculator
+  document.getElementById('wiz-switch-full')?.addEventListener('click', () => {
+    const wizard = document.getElementById('calc-wizard');
+    if (wizard) { wizard.classList.remove('active'); wizard.style.display = 'none'; }
+    // Show full reverse calc
+    const rcCard = document.getElementById('reverse-calc-card');
+    if (rcCard) {
+      rcCard.style.display = '';
+      document.body.classList.remove('simple-mode');
+      rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const toggle = document.getElementById('reverse-calc-toggle');
+      const panel = document.getElementById('rc-panel');
+      if (toggle && panel && !toggle.checked) { toggle.checked = true; panel.style.display = ''; }
+    }
+    localStorage.setItem('hasCompletedWizard', '1');
+  });
 
   const $welcomeCta = document.getElementById('welcome-cta');
   const $welcomeSkip = document.getElementById('welcome-skip');
