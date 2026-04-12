@@ -8140,10 +8140,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('ob3-finish')?.addEventListener('click', () => {
     exitFirstRun(true);
-    // Set stage to active
     localStorage.setItem('hasSavedProtocol', '1');
+
+    // Add the completed onboarding protocol to peptide-schedule so the
+    // weekly calendar shows it immediately after the user taps "I'm done".
+    if (ob3.pepIdx >= 0) {
+      const pep = PEPTIDES[ob3.pepIdx];
+      const today = new Date().toISOString().split('T')[0];
+      // Derive tier from the dose the user entered
+      let tier = 'standard';
+      if (pep && ob3.doseMcg > 0) {
+        if (ob3.doseMcg <= pep.lowMcg) tier = 'low';
+        else if (ob3.doseMcg >= pep.highMcg) tier = 'high';
+      }
+      const entry = {
+        peptideIndex: ob3.pepIdx,
+        tier,
+        vialMg: ob3.vialMg || 5,
+        waterMl: ob3.waterMl || 2,
+        cycleDays: pep && pep.cycleWeeks > 0 ? pep.cycleWeeks * 7 : 0,
+        startDate: today,
+      };
+      const existing = schedule.findIndex(e => e.peptideIndex === ob3.pepIdx);
+      if (existing !== -1) {
+        schedule[existing] = entry;
+      } else {
+        schedule.push(entry);
+      }
+      saveSchedule();
+      localStorage.setItem('hasAddedPeptide', '1');
+    }
+
     if (typeof applyStage === 'function') applyStage();
-    renderProtocolsQuick && renderProtocolsQuick();
+    renderAll();
     document.querySelector('.app-content').scrollTop = 0;
   });
 
