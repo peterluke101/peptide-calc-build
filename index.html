@@ -1633,6 +1633,12 @@ body.first-run #more-tools-expander{display:none}
 #more-tools-toggle-btn:hover{opacity:.8}
 #more-tools-panel{display:none}
 #more-tools-panel.open{display:block}
+#more-tools-panel .task-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-bottom:0}
+#more-tools-panel .task-card{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.65rem .5rem;gap:.3rem;min-height:64px}
+#more-tools-panel .task-card-icon{font-size:1.25rem;width:auto}
+#more-tools-panel .task-card-title{font-size:.78rem;font-weight:600}
+#more-tools-panel .task-card-desc{display:none}
+#more-tools-panel .task-card-arrow{display:none}
 /* Dominant primary task card for returning users */
 body:not(.first-run) #task-calc-dose{background:var(--accent);border-color:var(--accent);color:#000;flex:0 0 100%;max-width:100%;flex-direction:row;min-height:52px;align-items:center;gap:.75rem;padding:.75rem 1rem;margin-bottom:.25rem}
 body:not(.first-run) #task-calc-dose .task-card-icon{font-size:1.3rem;width:auto}
@@ -1851,7 +1857,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
 <div id="more-tools-expander">
   <button id="more-tools-toggle-btn">More tools ›</button>
   <div id="more-tools-panel">
-    <div class="task-card-list" style="flex-direction:column;overflow:visible;padding-bottom:0">
+    <div class="task-card-grid">
       <button class="task-card" id="task-reconstitute">
         <span class="task-card-icon">🧪</span>
         <span class="task-card-text">
@@ -1863,7 +1869,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
       <button class="task-card" id="task-reverse-calc">
         <span class="task-card-icon">🔁</span>
         <span class="task-card-text">
-          <span class="task-card-title">BAC Water Calculator</span>
+          <span class="task-card-title">BAC Water Calc</span>
           <span class="task-card-desc">Know your dose? Find how much BAC water to add</span>
         </span>
         <span class="task-card-arrow">›</span>
@@ -1879,7 +1885,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
       <button class="task-card" id="task-track">
         <span class="task-card-icon">📋</span>
         <span class="task-card-text">
-          <span class="task-card-title">Log doses and progress</span>
+          <span class="task-card-title">Log a dose</span>
           <span class="task-card-desc">View adherence and monitor your results</span>
         </span>
         <span class="task-card-arrow">›</span>
@@ -7737,14 +7743,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── More Tools Expander (#128) ──────────────────────────────
-  document.getElementById('more-tools-toggle-btn')?.addEventListener('click', () => {
-    const panel = document.getElementById('more-tools-panel');
-    const btn   = document.getElementById('more-tools-toggle-btn');
-    if (!panel) return;
-    const open = panel.classList.toggle('open');
-    if (btn) btn.textContent = open ? 'Less tools ↑' : 'More tools ›';
-  });
-
   // Clear new-dot when user visits the tab
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -7779,12 +7777,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── More Tools toggle ───────────────────────────────────────
+  document.getElementById('more-tools-toggle-btn')?.addEventListener('click', () => {
+    const panel = document.getElementById('more-tools-panel');
+    const btn   = document.getElementById('more-tools-toggle-btn');
+    if (!panel) return;
+    const open = panel.classList.toggle('open');
+    if (btn) btn.textContent = open ? 'Less tools ↑' : 'More tools ›';
+  });
+
   // ── Task Picker (#103) ──────────────────────────────────────
   function scrollToAndReveal(id) {
     const el = document.getElementById(id);
     if (!el) return;
     el.style.display = '';
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Expand tools-zone-panel if collapsed, then run callback
+  function expandToolsZone(cb) {
+    const panel = document.getElementById('tools-zone-panel');
+    const icon  = document.getElementById('tools-zone-toggle-icon');
+    if (panel && panel.classList.contains('collapsed')) {
+      panel.classList.remove('collapsed');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      if (icon) icon.style.transform = 'rotate(180deg)';
+    }
+    if (cb) setTimeout(cb, 50);
   }
 
   // Clear new-dot when schedule link clicked
@@ -7798,7 +7817,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isFirstRun()) exitFirstRun(true);
       const wizardDone = localStorage.getItem('hasCompletedWizard');
       if (!wizardDone) {
-        // Show guided wizard
         const wizard = document.getElementById('calc-wizard');
         if (wizard) {
           wizard.classList.add('active');
@@ -7806,17 +7824,19 @@ document.addEventListener('DOMContentLoaded', () => {
           wizShowStep(1);
         }
       } else {
-        // Go to full reverse calc
-        const rcCard = document.getElementById('reverse-calc-card');
-        if (rcCard) {
-          rcCard.style.display = '';
-          document.body.classList.remove('simple-mode');
-          rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        expandToolsZone(() => {
+          const rcCard = document.getElementById('reverse-calc-card');
+          if (rcCard) {
+            rcCard.style.display = '';
+            document.body.classList.remove('simple-mode');
+            rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       }
     });
   }
 
+  // "Mix my vial" → wizard step 2 (diluent), or expand reconstitution section in calc
   const taskReconstitute = document.getElementById('task-reconstitute');
   if (taskReconstitute) {
     taskReconstitute.addEventListener('click', () => {
@@ -7827,40 +7847,56 @@ document.addEventListener('DOMContentLoaded', () => {
         if (wizard) {
           wizard.classList.add('active');
           wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          wizShowStep(1);
+          wizShowStep(2);
         }
       } else {
-        const rcCard = document.getElementById('reverse-calc-card');
-        if (rcCard) {
+        expandToolsZone(() => {
+          const rcCard = document.getElementById('reverse-calc-card');
+          if (!rcCard) return;
           rcCard.style.display = '';
           document.body.classList.remove('simple-mode');
+          // Open the rc-panel toggle
+          const toggle = document.getElementById('reverse-calc-toggle');
+          const panel  = document.getElementById('rc-panel');
+          if (toggle && panel && !toggle.checked) {
+            toggle.checked = true;
+            panel.style.display = '';
+          }
+          // Expand the reconstitution subsection
+          const reconBtn  = document.getElementById('rc-exp-recon-btn');
+          const reconBody = document.getElementById('rc-exp-recon-body');
+          if (reconBtn && reconBody && reconBtn.getAttribute('aria-expanded') !== 'true') {
+            reconBtn.setAttribute('aria-expanded', 'true');
+            reconBody.style.display = '';
+          }
           rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        });
       }
     });
   }
 
+  // "BAC Water Calculator" → open tools zone + reverse calc panel directly
   const taskReverseCalc = document.getElementById('task-reverse-calc');
   if (taskReverseCalc) {
     taskReverseCalc.addEventListener('click', () => {
       if (isFirstRun()) exitFirstRun(true);
-      // Always go to full reverse calc
-      const rcCard = document.getElementById('reverse-calc-card');
-      if (rcCard) {
+      expandToolsZone(() => {
+        const rcCard = document.getElementById('reverse-calc-card');
+        if (!rcCard) return;
         rcCard.style.display = '';
         document.body.classList.remove('simple-mode');
-        rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Open the toggle if closed
         const toggle = document.getElementById('reverse-calc-toggle');
-        const panel = document.getElementById('rc-panel');
+        const panel  = document.getElementById('rc-panel');
         if (toggle && panel && !toggle.checked) {
           toggle.checked = true;
           panel.style.display = '';
         }
-      }
+        rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
   }
 
+  // "Set up reminders" → navigate to schedule page
   const taskSchedule = document.getElementById('task-schedule');
   if (taskSchedule) {
     taskSchedule.addEventListener('click', () => {
@@ -7869,19 +7905,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // "Log a dose" → switch to History tab and scroll to log section
   const taskTrack = document.getElementById('task-track');
   if (taskTrack) {
     taskTrack.addEventListener('click', () => {
       if (isFirstRun()) exitFirstRun(true);
-      // Switch to History tab
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       const histTab = document.getElementById('tab-history');
       if (histTab) histTab.classList.add('active');
       const histBtn = document.querySelector('.tab-btn[data-tab="history"]');
       if (histBtn) histBtn.classList.add('active');
-      document.querySelector('.app-content').scrollTop = 0;
       localStorage.setItem('activeTab', 'history');
+      // Scroll to the log entry form
+      const logForm = document.getElementById('log-entry-form') || document.getElementById('tab-history');
+      if (logForm) logForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
@@ -8845,13 +8883,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Dark / Light Mode ────────────────────────────────────────
   const darkToggle = document.getElementById('dark-mode-toggle');
   if (darkToggle) {
-    // Dark mode is default; toggle is ON = dark, OFF = light
+    // Light mode is default; toggle ON = dark, OFF = light
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
+    if (savedTheme === 'dark') {
+      document.body.classList.remove('light-mode');
+      darkToggle.checked = true;
+    } else {
+      // No saved theme or explicitly 'light' → default to light
       document.body.classList.add('light-mode');
       darkToggle.checked = false;
-    } else {
-      darkToggle.checked = true; // dark is default
     }
     darkToggle.addEventListener('change', () => {
       if (darkToggle.checked) {
@@ -8942,7 +8982,7 @@ document.addEventListener('DOMContentLoaded', () => {
       [
         ['weightGoal',              localStorage.getItem('weightGoal') || ''],
         ['weightUnitPreference',    localStorage.getItem('weightUnitPreference') || 'lbs'],
-        ['theme',                   localStorage.getItem('theme') || 'dark'],
+        ['theme',                   localStorage.getItem('theme') || 'light'],
       ]
     );
 
