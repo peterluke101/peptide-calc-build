@@ -1385,8 +1385,24 @@ body:not(.light-mode) .ev-badge-uncertain{background:transparent;color:#f87171;b
 /* === First-run progressive disclosure (Issue #84) === */
 body.first-run #today-card,
 body.first-run #calendar-card,
-body.first-run #protocols-quick-section{display:none!important}
-/* Gumroad banner hidden for first-run */
+body.first-run #protocols-quick-section,
+/* Section dividers */
+body.first-run .section-label,
+/* STEP 1 Add Peptide card (redundant — Welcome card has the CTA) */
+body.first-run #add-peptide-card,
+/* Reverse Calc card */
+body.first-run #reverse-calc-card,
+/* My Peptides card (empty on first run) */
+body.first-run #peptides-card,
+/* Recent Injections card (empty on first run) */
+body.first-run #history-card,
+/* Stack Builder link card */
+body.first-run #stack-card,
+/* Share Schedule button */
+body.first-run #share-schedule-btn,
+/* Add to Home Screen install banner */
+body.first-run #install-banner,
+/* Gumroad banner */
 body.first-run .gumroad-banner{display:none!important}
 /* Step label on guided flow */
 .gs-step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;text-align:center}
