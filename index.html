@@ -1513,6 +1513,66 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
 body.simple-mode .advanced-tools-label,
 body.simple-mode #advanced-tools-section{display:none!important}
 #advanced-tools-section{width:100%;max-width:720px;margin:0 auto}
+
+/* ── Flow Refinement v2 (#123-#129) ─────────────────────────── */
+/* First-run 3-choice beginner screen */
+#first-run-choices{display:none;width:100%;max-width:720px;margin:0 auto 1rem;padding:0}
+body.first-run #first-run-choices{display:block}
+body.first-run #task-picker{display:none}
+.fr-choices-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:.75rem;padding:0 .25rem}
+.fr-choices-list{display:flex;flex-direction:column;gap:.75rem}
+.fr-choice-card{display:flex;align-items:center;gap:1rem;border-radius:14px;padding:1.1rem 1.25rem;cursor:pointer;transition:all .15s;width:100%;font-family:inherit;text-align:left;-webkit-appearance:none;appearance:none}
+.fr-choice-card.primary{background:var(--accent);border:none;color:#000}
+.fr-choice-card.primary .fr-choice-title{color:#000;font-weight:800;font-size:1rem}
+.fr-choice-card.primary .fr-choice-desc{color:rgba(0,0,0,.65);font-size:.8rem}
+.fr-choice-card.secondary{background:var(--surface2);border:1.5px solid var(--border);color:var(--text)}
+.fr-choice-card.secondary .fr-choice-title{color:var(--text);font-weight:700;font-size:.95rem}
+.fr-choice-card.secondary .fr-choice-desc{color:var(--text2);font-size:.78rem}
+.fr-choice-card.primary:hover{opacity:.92}
+.fr-choice-card.secondary:hover{border-color:rgba(61,232,195,.5);background:var(--surface)}
+.fr-choice-icon{font-size:1.6rem;flex-shrink:0;width:36px;text-align:center}
+.fr-choice-text{flex:1;min-width:0}
+.fr-choice-title{margin:0 0 .2rem;line-height:1.2}
+.fr-choice-desc{margin:0;line-height:1.35}
+.fr-choice-arrow{font-size:1.2rem;flex-shrink:0;opacity:.6}
+.fr-skip-link{text-align:center;margin-top:.75rem;padding:.25rem 0}
+.fr-skip-link button{background:none;border:none;color:var(--text2);font-size:.8rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:.25rem .5rem}
+/* More-tools expander for returning users */
+#more-tools-expander{width:100%;max-width:720px;margin:0 auto .25rem}
+body.first-run #more-tools-expander{display:none}
+#more-tools-toggle-btn{width:100%;background:none;border:none;color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;padding:.35rem;font-family:inherit;letter-spacing:.02em}
+#more-tools-toggle-btn:hover{opacity:.8}
+#more-tools-panel{display:none}
+#more-tools-panel.open{display:block}
+/* Dominant primary task card for returning users */
+body:not(.first-run) #task-calc-dose{background:var(--accent);border-color:var(--accent);color:#000;flex:0 0 100%;max-width:100%;flex-direction:row;min-height:52px;align-items:center;gap:.75rem;padding:.75rem 1rem;margin-bottom:.25rem}
+body:not(.first-run) #task-calc-dose .task-card-icon{font-size:1.3rem;width:auto}
+body:not(.first-run) #task-calc-dose .task-card-title{font-size:.9rem;color:#000;font-weight:700}
+body:not(.first-run) #task-calc-dose .task-card-desc{display:block;color:rgba(0,0,0,.6);font-size:.72rem}
+body:not(.first-run) #task-calc-dose .task-card-arrow{display:block;color:rgba(0,0,0,.5)}
+/* Homepage zones */
+.homepage-zone-sep{display:flex;align-items:center;gap:.65rem;margin:.75rem 0 .5rem;color:var(--text2);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;max-width:720px;width:100%}
+.homepage-zone-sep::before,.homepage-zone-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+body.first-run .homepage-zone-sep{display:none}
+/* Unlock toast */
+#unlock-toast{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:.75rem 1.25rem;text-align:center;z-index:9998;font-size:.85rem;font-weight:600;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.3);white-space:nowrap;animation:reward-in .25s ease}
+/* Nav new-dot indicator */
+.tab-btn .new-dot{display:none;position:absolute;top:4px;right:calc(50% - 18px);width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--bg)}
+.tab-btn{position:relative}
+.tab-btn.show-new-dot .new-dot{display:block}
+/* Wizard result action buttons */
+.wiz-result-actions-v2{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem}
+.wiz-result-actions-v2 .btn{padding:.65rem;font-size:.875rem}
+/* Protocol save success overlay */
+#proto-save-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;align-items:center;justify-content:center;padding:1.5rem}
+#proto-save-overlay.showing{display:flex}
+.proto-save-modal{background:var(--surface);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:340px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,.4);animation:reward-in .3s ease}
+.proto-save-modal .psm-icon{font-size:3rem;margin-bottom:.5rem}
+.proto-save-modal .psm-heading{font-size:1.2rem;font-weight:800;color:var(--text);margin:.25rem 0 .5rem}
+.proto-save-modal .psm-detail{font-size:.85rem;color:var(--text2);margin-bottom:1.25rem;line-height:1.4}
+.proto-save-modal .psm-actions{display:flex;flex-direction:column;gap:.5rem}
+.proto-save-modal .psm-actions .btn{padding:.65rem;font-size:.875rem}
+.proto-save-modal .psm-dismiss{background:none;border:none;color:var(--text2);font-size:.78rem;cursor:pointer;margin-top:.5rem;font-family:inherit;text-decoration:underline}
 /* "Need reverse calc?" link (#106) */
 .rc-entry-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;color:var(--text2);background:none;border:none;font-family:inherit;cursor:pointer;padding:.25rem 0;text-decoration:underline;transition:color .15s}
 .rc-entry-link:hover{color:var(--accent)}
@@ -1651,7 +1711,33 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </button>
 </div>
 
-<!-- Task Picker (#103) -->
+<!-- First-Run 3-Choice Beginner Screen (#123) -->
+<div id="first-run-choices">
+  <div class="fr-choices-label">What would you like to do?</div>
+  <div class="fr-choices-list">
+    <button class="fr-choice-card primary" id="fr-calc-dose">
+      <span class="fr-choice-icon">💉</span>
+      <span class="fr-choice-text">
+        <div class="fr-choice-title">Calculate a dose</div>
+        <div class="fr-choice-desc">Enter your vial and get units to draw</div>
+      </span>
+      <span class="fr-choice-arrow">›</span>
+    </button>
+    <button class="fr-choice-card secondary" id="fr-setup-protocol">
+      <span class="fr-choice-icon">📋</span>
+      <span class="fr-choice-text">
+        <div class="fr-choice-title">Set up my first protocol</div>
+        <div class="fr-choice-desc">Add a peptide, schedule doses, and save your setup</div>
+      </span>
+      <span class="fr-choice-arrow">›</span>
+    </button>
+  </div>
+  <div class="fr-skip-link">
+    <button id="fr-already-know">I already know what I'm doing — show everything</button>
+  </div>
+</div>
+
+<!-- Task Picker (#103, #128) -->
 <div id="task-picker">
   <div class="task-picker-label">What would you like to do?</div>
   <div class="task-card-list">
@@ -1659,42 +1745,51 @@ body.simple-mode #journal-trends-body{ display:none !important}
       <span class="task-card-icon">💉</span>
       <span class="task-card-text">
         <span class="task-card-title">Calculate a dose</span>
-        <span class="task-card-desc">Find how much BAC water to add and units to draw</span>
+        <span class="task-card-desc">Find units to draw for your peptide and dose</span>
       </span>
       <span class="task-card-arrow">›</span>
     </button>
-    <button class="task-card" id="task-reconstitute">
-      <span class="task-card-icon">🧪</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Reconstitute a vial</span>
-        <span class="task-card-desc">Calculate how much diluent to add</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-reverse-calc">
-      <span class="task-card-icon">🔁</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Reverse-calculate from units</span>
-        <span class="task-card-desc">Know your units drawn? Find the dose</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-schedule">
-      <span class="task-card-icon">🗓️</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Build a schedule</span>
-        <span class="task-card-desc">Create a dosing calendar for your protocol</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-track">
-      <span class="task-card-icon">📋</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Track a protocol</span>
-        <span class="task-card-desc">Log doses, view adherence, and monitor progress</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
+  </div>
+</div>
+
+<!-- More Tools expander for returning users (#128) -->
+<div id="more-tools-expander">
+  <button id="more-tools-toggle-btn">More tools ›</button>
+  <div id="more-tools-panel">
+    <div class="task-card-list" style="flex-direction:column;overflow:visible;padding-bottom:0">
+      <button class="task-card" id="task-reconstitute">
+        <span class="task-card-icon">🧪</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Reconstitute a vial</span>
+          <span class="task-card-desc">Calculate how much BAC water to add</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-reverse-calc">
+        <span class="task-card-icon">🔁</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Reverse-calculate from units</span>
+          <span class="task-card-desc">Know your units drawn? Find the dose</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-schedule">
+        <span class="task-card-icon">🗓️</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Build a schedule</span>
+          <span class="task-card-desc">Create a dosing calendar for your protocol</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-track">
+        <span class="task-card-icon">📋</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Log doses and progress</span>
+          <span class="task-card-desc">View adherence and monitor your results</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1764,10 +1859,16 @@ body.simple-mode #journal-trends-body{ display:none !important}
       </div>
       <!-- Show math expander -->
       <button class="math-toggle" id="wiz-math-toggle" aria-expanded="false" type="button" style="margin-top:.75rem">
-        <span class="math-chevron">▶</span> Show math
+        <span class="math-chevron">▶</span> Show how this was calculated
       </button>
       <div class="math-detail" id="wiz-math-detail"></div>
-      <div class="wiz-result-actions">
+      <!-- Action buttons (#124) -->
+      <div class="wiz-result-actions-v2">
+        <button class="btn btn-primary" id="wiz-save-protocol">💾 Save as Protocol</button>
+        <button class="btn btn-secondary" id="wiz-add-schedule">🗓️ Add to Schedule</button>
+        <button class="btn btn-secondary" id="wiz-log-first-dose" style="display:none">📝 Log First Dose</button>
+      </div>
+      <div class="wiz-result-actions" style="margin-top:.5rem">
         <button class="wiz-btn-back" id="wiz-back-4" style="width:100%">← Change values</button>
       </div>
     </div>
@@ -1784,7 +1885,25 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <p>Your schedule is ready. Check <strong>Today's Injections</strong> below to see your first dose.</p>
 </div>
 
-<div class="section-label">Your Schedule</div>
+<!-- Unlock toast (#125) -->
+<div id="unlock-toast">🔓 Your schedule, history, and tracking tools are now available.</div>
+
+<!-- Protocol Save Overlay (#127) -->
+<div id="proto-save-overlay" role="dialog" aria-modal="true">
+  <div class="proto-save-modal">
+    <div class="psm-icon">✅</div>
+    <div class="psm-heading">You're all set!</div>
+    <div class="psm-detail" id="psm-detail">Protocol saved.</div>
+    <div class="psm-actions">
+      <button class="btn btn-primary" id="psm-view-schedule">🗓️ View Schedule</button>
+      <button class="btn btn-secondary" id="psm-log-dose">📝 Log First Dose</button>
+      <button class="btn btn-secondary" id="psm-back-calc">← Back to Calculator</button>
+    </div>
+    <button class="psm-dismiss" id="psm-dismiss">Dismiss</button>
+  </div>
+</div>
+
+<div class="homepage-zone-sep">Your Dashboard</div>
 
 <div id="cycle-end-banners"></div>
 
@@ -1812,7 +1931,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="cal-grid" id="cal-grid"></div>
 </div>
 
-<div class="section-label">Your Tools</div>
+<div class="homepage-zone-sep">Your Tools</div>
 
 <!-- Saved Protocols Quick-Load (hidden when empty) -->
 <div id="protocols-quick-section" style="display:none" class="card animate-in">
@@ -3026,11 +3145,13 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </button>
   <button class="tab-btn" id="nav-schedule-link">
     <span class="tab-icon">🗓️</span>
+    <span class="new-dot"></span>
     <span class="tab-label">Schedule</span>
   </button>
   <button class="tab-btn" data-tab="history" style="position:relative">
     <span class="tab-icon">🕐</span>
     <span class="overdue-badge" id="overdue-badge"></span>
+    <span class="new-dot"></span>
     <span class="tab-label">History</span>
   </button>
   <button class="tab-btn" data-tab="more" style="position:relative">
@@ -6865,17 +6986,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function exitFirstRun() {
+  function exitFirstRun(showUnlock) {
     document.body.classList.remove('first-run');
     localStorage.setItem('hasOnboarded', '1');
     const wc = document.getElementById('welcome-card');
     if (wc) wc.style.display = 'none';
+    if (showUnlock && !localStorage.getItem('hasSeenUnlock')) {
+      localStorage.setItem('hasSeenUnlock', '1');
+      const $toast = document.getElementById('unlock-toast');
+      if ($toast) {
+        $toast.style.display = 'block';
+        // New-dot on Schedule and History nav buttons for this session
+        document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('show-new-dot');
+        document.querySelector('.tab-btn[data-tab="schedule"]')?.classList.add('show-new-dot');
+        setTimeout(() => { $toast.style.display = 'none'; }, 4000);
+      }
+    }
   }
 
   // Keep dismissOnboarding as alias for compatibility with add-confirm handler
-  function dismissOnboarding() { exitFirstRun(); }
+  function dismissOnboarding() { exitFirstRun(true); }
 
   applyFirstRunState();
+
+  // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
+  document.getElementById('fr-calc-dose')?.addEventListener('click', () => {
+    // Keep first-run CSS but show wizard
+    const wizard = document.getElementById('calc-wizard');
+    if (wizard) {
+      wizard.classList.add('active');
+      wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      wizShowStep(1);
+    }
+  });
+
+  document.getElementById('fr-setup-protocol')?.addEventListener('click', () => {
+    exitFirstRun(false);
+    const addCard = document.getElementById('add-peptide-card');
+    if (addCard) {
+      addCard.style.display = '';
+      addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  document.getElementById('fr-already-know')?.addEventListener('click', () => {
+    exitFirstRun(false);
+    document.querySelector('.app-content').scrollTop = 0;
+  });
+
+  // ── More Tools Expander (#128) ──────────────────────────────
+  document.getElementById('more-tools-toggle-btn')?.addEventListener('click', () => {
+    const panel = document.getElementById('more-tools-panel');
+    const btn   = document.getElementById('more-tools-toggle-btn');
+    if (!panel) return;
+    const open = panel.classList.toggle('open');
+    if (btn) btn.textContent = open ? 'Less tools ↑' : 'More tools ›';
+  });
+
+  // Clear new-dot when user visits the tab
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.remove('show-new-dot');
+    });
+  });
 
   // ── Simple / Advanced Mode (#104) ──────────────────────────
   function getAppMode() {
@@ -6911,10 +7084,15 @@ document.addEventListener('DOMContentLoaded', () => {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // Clear new-dot when schedule link clicked
+  document.getElementById('nav-schedule-link')?.addEventListener('click', function() {
+    this.classList.remove('show-new-dot');
+  });
+
   const taskCalcDose = document.getElementById('task-calc-dose');
   if (taskCalcDose) {
     taskCalcDose.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       const wizardDone = localStorage.getItem('hasCompletedWizard');
       if (!wizardDone) {
         // Show guided wizard
@@ -6939,7 +7117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskReconstitute = document.getElementById('task-reconstitute');
   if (taskReconstitute) {
     taskReconstitute.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       const wizardDone = localStorage.getItem('hasCompletedWizard');
       if (!wizardDone) {
         const wizard = document.getElementById('calc-wizard');
@@ -6962,7 +7140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskReverseCalc = document.getElementById('task-reverse-calc');
   if (taskReverseCalc) {
     taskReverseCalc.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       // Always go to full reverse calc
       const rcCard = document.getElementById('reverse-calc-card');
       if (rcCard) {
@@ -6983,7 +7161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskSchedule = document.getElementById('task-schedule');
   if (taskSchedule) {
     taskSchedule.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       window.location.href = 'schedule.html';
     });
   }
@@ -6991,7 +7169,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const taskTrack = document.getElementById('task-track');
   if (taskTrack) {
     taskTrack.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       // Switch to History tab
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -7084,6 +7262,112 @@ document.addEventListener('DOMContentLoaded', () => {
     const open = detail.classList.toggle('open');
     document.getElementById('wiz-math-toggle')?.setAttribute('aria-expanded', open);
   });
+
+  // ── Wizard result action buttons (#124) ────────────────────
+  // Show "Log First Dose" only if no injections logged yet
+  (function() {
+    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const hasLog = Object.keys(log).length > 0;
+    const btn = document.getElementById('wiz-log-first-dose');
+    if (btn && !hasLog) btn.style.display = '';
+  })();
+
+  document.getElementById('wiz-save-protocol')?.addEventListener('click', () => {
+    const vialMg  = parseFloat(document.getElementById('wiz-vial')?.value) || 5;
+    const waterMl = parseFloat(document.getElementById('wiz-water')?.value) || 2;
+    const doseRaw = parseFloat(document.getElementById('wiz-dose')?.value) || 250;
+    const doseMcg = wizDoseUnitMcg ? doseRaw : doseRaw * 1000;
+    const concMcgMl = (vialMg * 1000) / waterMl;
+    const units = (doseMcg / concMcgMl) * 100;
+
+    const name = prompt('Name this protocol:', 'My Protocol');
+    if (!name) return;
+    const protocols = getSavedProtocols();
+    protocols.push({
+      id: Date.now(),
+      name: name.trim() || 'My Protocol',
+      vialMg, waterMl,
+      doseMcg,
+      createdAt: new Date().toISOString().split('T')[0]
+    });
+    saveSavedProtocols(protocols);
+    renderProtocols && renderProtocols();
+    showProtoSaveOverlay(name.trim() || 'My Protocol', doseMcg, units);
+  });
+
+  document.getElementById('wiz-add-schedule')?.addEventListener('click', () => {
+    window.location.href = 'schedule.html';
+  });
+
+  document.getElementById('wiz-log-first-dose')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('active');
+    document.getElementById('tab-history')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'history');
+  });
+
+  // ── Protocol Save Overlay (#127) ───────────────────────────
+  function showProtoSaveOverlay(name, doseMcg, units) {
+    const $overlay = document.getElementById('proto-save-overlay');
+    if (!$overlay) return;
+    const detail = document.getElementById('psm-detail');
+    if (detail) {
+      detail.textContent = name + ' · ' + (doseMcg >= 1000 ? (doseMcg/1000).toFixed(2)+'mg' : doseMcg+'mcg') + ' · Draw ' + units.toFixed(1) + ' units';
+    }
+    $overlay.classList.add('showing');
+    clearTimeout($overlay._autoclose);
+    $overlay._autoclose = setTimeout(() => $overlay.classList.remove('showing'), 8000);
+  }
+
+  function hideProtoSaveOverlay() {
+    document.getElementById('proto-save-overlay')?.classList.remove('showing');
+  }
+
+  document.getElementById('psm-view-schedule')?.addEventListener('click', () => {
+    hideProtoSaveOverlay();
+    window.location.href = 'schedule.html';
+  });
+
+  document.getElementById('psm-log-dose')?.addEventListener('click', () => {
+    hideProtoSaveOverlay();
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('active');
+    document.getElementById('tab-history')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'history');
+  });
+
+  document.getElementById('psm-back-calc')?.addEventListener('click', hideProtoSaveOverlay);
+  document.getElementById('psm-dismiss')?.addEventListener('click', hideProtoSaveOverlay);
+  document.getElementById('proto-save-overlay')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hideProtoSaveOverlay();
+  });
+
+  // Also hook "Save & Start" to show overlay (#127)
+  // (patching add-confirm to call overlay after its existing logic)
+  const _origAddConfirm = document.getElementById('add-confirm');
+  if (_origAddConfirm) {
+    _origAddConfirm.addEventListener('click', () => {
+      // Wait one tick for the existing handler to run and renderAll()
+      setTimeout(() => {
+        const pepIdx = parseInt(document.getElementById('gs-peptide-sel')?.value);
+        if (!isNaN(pepIdx) && PEPTIDES[pepIdx]) {
+          const pep = PEPTIDES[pepIdx];
+          const vialMg = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+          const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+          const tier = document.getElementById('add-tier')?.value || 'standard';
+          const tierDoses = { low: 0.5, standard: 1.0, high: 1.5 };
+          const doseMcg = Math.round(pep.dose * (tierDoses[tier] || 1.0) * 1000);
+          const concMcgMl = (vialMg * 1000) / waterMl;
+          const units = (doseMcg / concMcgMl) * 100;
+          showProtoSaveOverlay(pep.name, doseMcg, units);
+        }
+      }, 100);
+    });
+  }
 
   // Switch to full calculator
   document.getElementById('wiz-switch-full')?.addEventListener('click', () => {
