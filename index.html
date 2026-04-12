@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4);--card-bg:var(--surface);--text-muted:var(--text2)}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
 
@@ -58,7 +58,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .banner-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
 
 /* ── Card ────────────────────────────────────────────────── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1rem;transition:box-shadow .3s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1rem;transition:box-shadow .3s}
 
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -1520,11 +1520,6 @@ body.simple-mode #advanced-tools-section{display:none!important}
 
 /* ── Progressive UX States (#135-#138) ─────────────────────── */
 /* Stage-based visibility */
-/* beginner = first-run (handled by body.first-run already) */
-/* Compact card padding app-wide */
-.card{padding:14px 16px}
-/* Zone spacing */
-.homepage-zone-sep{margin:1.5rem 0 .5rem}
 /* Protocol summary card (#136) */
 #proto-summary-card{background:var(--surface2);border-radius:10px;padding:.875rem 1rem;margin-bottom:.5rem;border:1px solid var(--border);display:none}
 #proto-summary-card.showing{display:block}
