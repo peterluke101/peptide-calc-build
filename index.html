@@ -4591,7 +4591,7 @@ function renderToday(animate) {
             <div class="today-empty-cta-sub">Set up your peptide, calculate your dose, and get a schedule in minutes.</div>
           </div>
         </div>
-        <button class="today-empty-cta-btn" onclick="document.getElementById('add-trigger').click();document.getElementById('add-trigger').scrollIntoView({behavior:'smooth',block:'center'})">+ Add Peptide</button>
+        <button class="today-empty-cta-btn" onclick="openAddPeptideForm()">+ Add Peptide</button>
       </div>`;
       return;
     }
@@ -7233,6 +7233,8 @@ document.addEventListener('DOMContentLoaded', () => {
       gsReset();
     }
   }
+  // Expose for inline onclick handlers (e.g. today-empty-cta-btn)
+  window.openAddPeptideForm = openAddPeptideForm;
 
   // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
   // ── Beginner Onboarding (#132) ──────────────────────────────
