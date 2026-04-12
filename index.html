@@ -1428,6 +1428,10 @@ body.first-run #share-schedule-btn,
 body.first-run #install-banner,
 /* Gumroad banner */
 body.first-run .gumroad-banner{display:none!important}
+/* #130: hide upsell until first value moment */
+.upsell-gated{display:none}
+body.upsell-unlocked .upsell-gated{display:block}
+body.upsell-unlocked .card.upsell-gated{display:block}
 /* Step label on guided flow */
 .gs-step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;text-align:center}
 /* Success message after first save */
@@ -1513,6 +1517,27 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
 body.simple-mode .advanced-tools-label,
 body.simple-mode #advanced-tools-section{display:none!important}
 #advanced-tools-section{width:100%;max-width:720px;margin:0 auto}
+
+/* ── Beginner Onboarding (#132) ─────────────────────────────── */
+#onboarding-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:9990;overflow-y:auto;padding:1.5rem 1rem 6rem;-webkit-overflow-scrolling:touch}
+#onboarding-overlay.showing{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.ob-progress-bar{width:100%;max-width:480px;height:3px;background:var(--border);border-radius:2px;margin-bottom:1.5rem;flex-shrink:0}
+.ob-progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .3s ease}
+.ob-screen{display:none;width:100%;max-width:480px;flex-direction:column;align-items:flex-start}
+.ob-screen.active{display:flex}
+.ob-step-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
+.ob-title{font-size:1.25rem;font-weight:800;color:var(--text);margin:0 0 .4rem;line-height:1.25}
+.ob-sub{font-size:.88rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.4}
+.ob-pill-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.ob-pill{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:20px;background:transparent;color:var(--text);font-size:.875rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.ob-pep-list{width:100%;display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.25rem;max-height:300px;overflow-y:auto}
+.ob-pep-btn{width:100%;text-align:left;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob-pep-btn:hover,.ob-pep-btn.selected{border-color:var(--accent);background:var(--accent-dim)}
+.ob-pep-btn.selected{font-weight:700}
+.ob-pep-skip{background:none;border:none;color:var(--text2);font-size:.82rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.25rem 0;margin-bottom:1rem}
+.ob-next-btn{width:100%;padding:.8rem;background:var(--accent);border:none;border-radius:10px;color:#000;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.ob-next-btn:disabled{opacity:.45;cursor:default}
 
 /* ── Flow Refinement v2 (#123-#129) ─────────────────────────── */
 /* First-run 3-choice beginner screen */
@@ -1760,23 +1785,23 @@ body.simple-mode #journal-trends-body{ display:none !important}
       <button class="task-card" id="task-reconstitute">
         <span class="task-card-icon">🧪</span>
         <span class="task-card-text">
-          <span class="task-card-title">Reconstitute a vial</span>
-          <span class="task-card-desc">Calculate how much BAC water to add</span>
+          <span class="task-card-title">Mix my vial</span>
+          <span class="task-card-desc">How much BAC water should I add?</span>
         </span>
         <span class="task-card-arrow">›</span>
       </button>
       <button class="task-card" id="task-reverse-calc">
         <span class="task-card-icon">🔁</span>
         <span class="task-card-text">
-          <span class="task-card-title">Reverse-calculate from units</span>
-          <span class="task-card-desc">Know your units drawn? Find the dose</span>
+          <span class="task-card-title">BAC Water Calculator</span>
+          <span class="task-card-desc">Know your dose? Find how much BAC water to add</span>
         </span>
         <span class="task-card-arrow">›</span>
       </button>
       <button class="task-card" id="task-schedule">
         <span class="task-card-icon">🗓️</span>
         <span class="task-card-text">
-          <span class="task-card-title">Build a schedule</span>
+          <span class="task-card-title">Set up reminders</span>
           <span class="task-card-desc">Create a dosing calendar for your protocol</span>
         </span>
         <span class="task-card-arrow">›</span>
@@ -2033,7 +2058,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
       </div>
       <div class="warn-card">
         <span class="warn-icon">ℹ️</span>
-        <span>Assumes a standard 100-unit (1mL) insulin syringe where 1U = 10µL. Check your syringe markings — a different size changes the math.</span>
+        <span>Syringe markings vary. Always verify with your actual syringe before drawing.</span>
       </div>
       <p class="calc-disclaimer">ℹ️ Standard reconstitution math for educational reference. Verify all calculations independently — supplier concentrations and labeling may vary.</p>
       <div class="btn-row">
@@ -2124,8 +2149,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
 <div class="card animate-in" id="reverse-calc-card">
   <div class="rc-toggle-row">
     <div class="rc-toggle-label">
-      <span class="rc-toggle-title">Reverse Calc</span>
-      <span class="rc-toggle-sub">Dose → Water</span>
+      <span class="rc-toggle-title">BAC Water Calculator</span>
+      <span class="rc-toggle-sub">How much BAC water should I add?</span>
     </div>
     <label class="toggle-switch">
       <input type="checkbox" id="reverse-calc-toggle">
@@ -2283,9 +2308,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
         <div class="rc-expander-body" id="rc-exp-safety-body">
           <div class="warn-card" style="margin:0">
             <span class="warn-icon">ℹ️</span>
-            <span>Assumes stated product concentration and a standard 100-unit (1 mL) insulin syringe. Math changes if your syringe type or product purity differs — verify with your supplier.</span>
+            <span>Syringe markings vary. Always verify with your actual syringe before drawing. Peptide concentrations vary by supplier — confirm the label before use.</span>
           </div>
-          <p class="rc-supplier-note" style="margin:.5rem 0 0">⚠️ Always verify your peptide's concentration matches the supplier's label. Concentrations vary between manufacturers and batches.</p>
         </div>
       </div>
     </div>
@@ -2361,23 +2385,23 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div style="display:flex;align-items:center;gap:.75rem;cursor:pointer;" onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-stacks')?.classList.add('active')">
     <div style="font-size:1.4rem;flex-shrink:0">🧬</div>
     <div style="flex:1;min-width:0">
-      <div style="font-size:.85rem;font-weight:600;color:var(--text)">Stack Builder</div>
+      <div style="font-size:.85rem;font-weight:600;color:var(--text)">Explore example stacks</div>
       <div style="font-size:.72rem;color:var(--text2);margin-top:.1rem">Browse example stacks by goal</div>
     </div>
     <div style="color:var(--text2);font-size:1.1rem">›</div>
   </div>
 </div>
 
-<!-- Gumroad Banner -->
-<div class="gumroad-banner">
+<!-- Gumroad Banner (#130: shown after first value moment) -->
+<div class="gumroad-banner upsell-gated">
   <div class="banner-content">
     <div class="banner-icon">📚</div>
     <div class="banner-text">
-      <h3>New to peptides?</h3>
-      <p>Get the Quick Start Guide — reconstitution, injection technique, storage & cycling basics</p>
+      <h3>Want to go deeper?</h3>
+      <p>Save more protocols, unlock advanced tracking, and access the education library — explore Navigator.</p>
     </div>
     <a href="https://peterlukedigital.gumroad.com/l/fkhwu" target="_blank" class="banner-btn">
-      Get Guide $9.99 →
+      Explore Navigator →
     </a>
   </div>
 </div>
@@ -2386,7 +2410,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
 
 <button id="share-schedule-btn" class="share-btn">📤 Share Schedule</button>
 
-<p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+<p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div> <!-- Close #tab-schedule -->
 
 <!-- Stacks Tab Content -->
@@ -2413,7 +2437,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <!-- Stack Builder Card -->
   <div class="card animate-in">
     <div class="section-header">
-      <h2>Stack Builder</h2>
+      <h2>Explore Example Stacks</h2>
       <div class="stack-goals">
         <button class="goal-btn" data-goal="healing">🩹 Healing</button>
         <button class="goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
@@ -2446,7 +2470,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- History Tab Content -->
@@ -2636,7 +2660,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- More Tab Content -->
@@ -2648,7 +2672,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
 
   <div class="card animate-in" style="border-left:3px solid var(--accent);margin-bottom:1rem">
     <p style="font-size:.8rem;color:var(--text2);margin:0;line-height:1.5">
-      ℹ️ <strong>About this app:</strong> Peptide Compass Pro is an educational reference and protocol tracking tool. It is not a medical device, does not provide medical advice, and is not a substitute for professional healthcare guidance. All calculations are mathematical tools for educational purposes. Always consult a qualified healthcare provider before starting, changing, or stopping any protocol.
+      ℹ️ <strong>About this app:</strong> Peptide Compass Pro is an educational math and protocol tracking tool — not a medical device. For educational math only — not medical advice. Always consult a qualified healthcare provider.
     </p>
   </div>
 
@@ -2661,14 +2685,14 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <div class="protocols-empty" id="protocols-empty-state">No saved protocols yet. Complete the Add Peptide flow and save your setup for quick reuse.</div>
   </div>
 
-  <!-- A) Premium Guides promo card -->
-  <div class="card animate-in">
+  <!-- A) Premium Guides promo card (#130: shown after first value moment) -->
+  <div class="card animate-in upsell-gated">
     <div class="guides-promo-card">
-      <div class="guides-promo-icon">📚</div>
+      <div class="guides-promo-icon">🚀</div>
       <div class="guides-promo-text">
-        <div class="guides-promo-title">Premium Guides</div>
-        <div class="guides-promo-desc">Reference guides on peptide protocols and related topics</div>
-        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Browse Guides →</a>
+        <div class="guides-promo-title">Unlock Navigator</div>
+        <div class="guides-promo-desc">Save more protocols and unlock advanced tracking, scheduling, and the education library.</div>
+        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Explore Navigator →</a>
       </div>
     </div>
   </div>
@@ -2710,8 +2734,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
       <div class="more-option more-option-toggle" style="cursor:default;">
         <div class="more-icon">🎛️</div>
         <div class="more-text">
-          <div class="more-title">Advanced Mode</div>
-          <div class="more-desc">Show inventory, stacks, reverse calc, and deep tracking</div>
+          <div class="more-title">Show advanced tools</div>
+          <div class="more-desc">Inventory, stacks, BAC water calculator, and deep tracking</div>
         </div>
         <label class="toggle-switch">
           <input type="checkbox" id="app-mode-toggle">
@@ -2815,7 +2839,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- Inventory Tab Content -->
@@ -3132,6 +3156,37 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <p style="font-size:.85rem;line-height:1.6;color:var(--accent);margin-top:.5rem;font-weight:600">
       🚨 Not for emergencies. If you are experiencing a medical emergency, contact emergency services immediately.
     </p>
+  </div>
+</div>
+
+<!-- Beginner Onboarding Overlay (#132) -->
+<div id="onboarding-overlay">
+  <div class="ob-progress-bar"><div class="ob-progress-fill" id="ob-progress-fill" style="width:25%"></div></div>
+
+  <!-- Screen 1: Goal -->
+  <div class="ob-screen active" id="ob-screen-1">
+    <div class="ob-step-label">Getting started</div>
+    <h2 class="ob-title">What are you calculating for?</h2>
+    <p class="ob-sub">This helps us show the most relevant information.</p>
+    <div class="ob-pill-row" id="ob-goal-pills">
+      <button class="ob-pill" data-val="weight_loss">Weight loss</button>
+      <button class="ob-pill" data-val="healing">Healing &amp; recovery</button>
+      <button class="ob-pill" data-val="antiaging">Anti-aging</button>
+      <button class="ob-pill" data-val="other">Other / not sure</button>
+    </div>
+    <button class="ob-next-btn" id="ob-goal-next" disabled>Continue →</button>
+  </div>
+
+  <!-- Screen 2: Peptide -->
+  <div class="ob-screen" id="ob-screen-2">
+    <div class="ob-step-label">Getting started</div>
+    <h2 class="ob-title">Which peptide are you working with?</h2>
+    <p class="ob-sub">Tap one to pre-fill your calculator. You can change it any time.</p>
+    <div class="ob-pep-list" id="ob-pep-list">
+      <!-- Populated by JS -->
+    </div>
+    <button class="ob-pep-skip" id="ob-pep-skip">I'm not sure yet — skip this</button>
+    <button class="ob-next-btn" id="ob-pep-next">Start calculating →</button>
   </div>
 </div>
 
@@ -7009,15 +7064,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyFirstRunState();
 
-  // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
-  document.getElementById('fr-calc-dose')?.addEventListener('click', () => {
-    // Keep first-run CSS but show wizard
-    const wizard = document.getElementById('calc-wizard');
-    if (wizard) {
-      wizard.classList.add('active');
-      wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      wizShowStep(1);
+  // ── Upsell unlock (#130) ────────────────────────────────────
+  function applyUpsellUnlock() {
+    const hasResult   = localStorage.getItem('hasSeenResult');
+    const hasProtocol = getSavedProtocols().length > 0;
+    const onboarded   = localStorage.getItem('hasOnboarded');
+    if (hasResult || hasProtocol || onboarded) {
+      document.body.classList.add('upsell-unlocked');
     }
+  }
+  applyUpsellUnlock();
+
+  // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
+  // ── Beginner Onboarding (#132) ──────────────────────────────
+  const TOP_PEPTIDES = ['BPC-157','Semaglutide','Tirzepatide','TB-500','Retatrutide','Ipamorelin','PT-141 (Bremelanotide)','Sermorelin','NAD+','GHK-Cu'];
+  let obSelectedGoal = '';
+  let obSelectedPep  = -1;
+
+  function showOnboarding() {
+    const $ov = document.getElementById('onboarding-overlay');
+    if (!$ov) return;
+    // Populate peptide list
+    const $pepList = document.getElementById('ob-pep-list');
+    if ($pepList) {
+      $pepList.innerHTML = TOP_PEPTIDES.map(name => {
+        const idx = PEPTIDES.findIndex(p => p.name === name);
+        return `<button class="ob-pep-btn" data-idx="${idx}">${name}</button>`;
+      }).join('');
+      $pepList.querySelectorAll('.ob-pep-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          $pepList.querySelectorAll('.ob-pep-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          obSelectedPep = parseInt(btn.dataset.idx);
+        });
+      });
+    }
+    $ov.classList.add('showing');
+    obGoScreen(1);
+  }
+
+  function obGoScreen(n) {
+    document.querySelectorAll('.ob-screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('ob-screen-' + n)?.classList.add('active');
+    const fills = { 1: '25%', 2: '50%' };
+    const fill = document.getElementById('ob-progress-fill');
+    if (fill) fill.style.width = fills[n] || '25%';
+  }
+
+  function finishOnboarding() {
+    const $ov = document.getElementById('onboarding-overlay');
+    if ($ov) $ov.classList.remove('showing');
+    // Pre-fill peptide in wizard if selected
+    if (obSelectedPep >= 0) {
+      const wiz = document.getElementById('calc-wizard');
+      if (wiz) {
+        wiz.classList.add('active');
+        wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        wizShowStep(1);
+      }
+    } else {
+      const wiz = document.getElementById('calc-wizard');
+      if (wiz) {
+        wiz.classList.add('active');
+        wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        wizShowStep(1);
+      }
+    }
+  }
+
+  // Goal pills
+  document.getElementById('ob-goal-pills')?.querySelectorAll('.ob-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('ob-goal-pills')?.querySelectorAll('.ob-pill').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      obSelectedGoal = btn.dataset.val;
+      localStorage.setItem('userGoal', obSelectedGoal);
+      const nextBtn = document.getElementById('ob-goal-next');
+      if (nextBtn) nextBtn.disabled = false;
+    });
+  });
+
+  document.getElementById('ob-goal-next')?.addEventListener('click', () => {
+    obGoScreen(2);
+  });
+
+  document.getElementById('ob-pep-skip')?.addEventListener('click', () => {
+    obSelectedPep = -1;
+    finishOnboarding();
+  });
+
+  document.getElementById('ob-pep-next')?.addEventListener('click', () => {
+    finishOnboarding();
+  });
+
+  document.getElementById('fr-calc-dose')?.addEventListener('click', () => {
+    showOnboarding();
   });
 
   document.getElementById('fr-setup-protocol')?.addEventListener('click', () => {
@@ -7236,6 +7377,8 @@ document.addEventListener('DOMContentLoaded', () => {
     wizCalcResult();
     wizShowStep(4);
     localStorage.setItem('hasCompletedWizard', '1');
+    localStorage.setItem('hasSeenResult', '1');
+    document.body.classList.add('upsell-unlocked');
   });
   document.getElementById('wiz-back-4')?.addEventListener('click', () => wizShowStep(3));
 
@@ -8524,6 +8667,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rcResultDose) rcResultDose.textContent  = doseDisplay;
       // rc-result-value now shows syringe units (not mL) — update it
       if (resultVal) resultVal.textContent = syringeUnits;
+
+      // Mark first result seen for upsell unlock (#130)
+      if (!localStorage.getItem('hasSeenResult')) {
+        localStorage.setItem('hasSeenResult', '1');
+        document.body.classList.add('upsell-unlocked');
+      }
 
       // Validation warnings
       const rcLowWarn  = document.getElementById('rc-low-water-warn');
