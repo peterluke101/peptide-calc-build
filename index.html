@@ -1583,25 +1583,66 @@ body.stage-first-result #wiz-save-protocol{animation:pulse-accent 2s 1}
 body.stage-active #proto-summary-card.showing{display:block}
 
 /* ── Beginner Onboarding (#132) ─────────────────────────────── */
-#onboarding-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:9990;overflow-y:auto;padding:1.5rem 1rem 6rem;-webkit-overflow-scrolling:touch}
-#onboarding-overlay.showing{display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
-.ob-progress-bar{width:100%;max-width:480px;height:3px;background:var(--border);border-radius:2px;margin-bottom:1.5rem;flex-shrink:0}
-.ob-progress-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .3s ease}
-.ob-screen{display:none;width:100%;max-width:480px;flex-direction:column;align-items:flex-start}
-.ob-screen.active{display:flex}
-.ob-step-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
-.ob-title{font-size:1.25rem;font-weight:800;color:var(--text);margin:0 0 .4rem;line-height:1.25}
-.ob-sub{font-size:.88rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.4}
-.ob-pill-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
-.ob-pill{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:20px;background:transparent;color:var(--text);font-size:.875rem;cursor:pointer;font-family:inherit;transition:all .15s}
-.ob-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
-.ob-pep-list{width:100%;display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.25rem;max-height:300px;overflow-y:auto}
-.ob-pep-btn{width:100%;text-align:left;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.ob-pep-btn:hover,.ob-pep-btn.selected{border-color:var(--accent);background:var(--accent-dim)}
-.ob-pep-btn.selected{font-weight:700}
-.ob-pep-skip{background:none;border:none;color:var(--text2);font-size:.82rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.25rem 0;margin-bottom:1rem}
-.ob-next-btn{width:100%;padding:.8rem;background:var(--accent);border:none;border-radius:10px;color:#000;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;transition:opacity .15s}
-.ob-next-btn:disabled{opacity:.45;cursor:default}
+/* ── Onboarding V3 (#141) ──────────────────────────────────── */
+#onboarding-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:10000;overflow-y:auto;-webkit-overflow-scrolling:touch;flex-direction:column;align-items:center}
+#onboarding-overlay.showing{display:flex}
+.ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0}
+.ob3-progress-bar{width:100%;height:3px;background:var(--border)}
+.ob3-progress-fill{height:100%;background:var(--accent);transition:width .3s ease}
+.ob3-step{display:none;flex-direction:column;width:100%;max-width:480px;padding:1.75rem 1.25rem 6rem;box-sizing:border-box;min-height:calc(100vh - 3px);animation:ob3Fade .2s ease}
+.ob3-step.active{display:flex}
+@keyframes ob3Fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ob3-step-center{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.ob3-back{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;padding:0;margin-bottom:1.25rem;align-self:flex-start;font-family:inherit;display:flex;align-items:center;gap:.3rem}
+.ob3-back:hover{color:var(--text)}
+.ob3-step-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
+.ob3-heading{font-size:1.35rem;font-weight:800;color:var(--text);margin:0 0 .4rem;line-height:1.25}
+.ob3-context{font-size:.8rem;color:var(--accent);font-weight:600;margin:0 0 .35rem}
+.ob3-sub{font-size:.88rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.45}
+.ob3-helper{font-size:.78rem;color:var(--text2);margin:.25rem 0 .75rem;line-height:1.4}
+.ob3-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem}
+.ob3-pill{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:20px;background:transparent;color:var(--text);font-size:.875rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.ob3-search{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.9rem;font-family:inherit;margin-bottom:.6rem;box-sizing:border-box}
+.ob3-search:focus{outline:none;border-color:var(--accent)}
+.ob3-pep-list{width:100%;display:flex;flex-direction:column;gap:.3rem;margin-bottom:.75rem;max-height:260px;overflow-y:auto}
+.ob3-pep-btn{width:100%;text-align:left;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:space-between}
+.ob3-pep-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.ob3-pep-btn.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.ob3-pep-btn.selected::after{content:'✓';font-weight:700}
+.ob3-custom-toggle{background:none;border:none;color:var(--text2);font-size:.82rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.2rem 0;margin-bottom:.6rem}
+.ob3-input{width:100%;padding:.75rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:1rem;font-family:inherit;box-sizing:border-box;margin-bottom:.5rem}
+.ob3-input:focus,.ob3-search:focus{outline:none;border-color:var(--accent)}
+.ob3-unit-toggle{display:flex;gap:.4rem;margin-bottom:.75rem}
+.ob3-unit-btn{flex:1;padding:.5rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-unit-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+.ob3-dose-presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:.25rem 0 .75rem}
+.ob3-dose-preset{padding:.4rem .8rem;border:1.5px solid var(--border);border-radius:16px;background:transparent;color:var(--text2);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-dose-preset:hover{border-color:var(--accent);color:var(--accent)}
+.ob3-live-result{text-align:center;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:12px;padding:1rem;margin:.75rem 0 1rem}
+.ob3-units-big{font-size:2.75rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:.2rem}
+.ob3-units-label{font-size:.8rem;color:var(--text2)}
+.ob3-conc-line{font-size:.75rem;color:var(--text2);margin-top:.4rem}
+.ob3-syringe-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.35rem}
+.ob3-syringe-row{display:flex;gap:.4rem;margin-bottom:1.25rem}
+.ob3-syr-btn{flex:1;padding:.5rem .3rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
+.ob3-syr-btn.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.ob3-summary-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;width:100%;box-sizing:border-box}
+.ob3-summary-pep{font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:.85rem}
+.ob3-summary-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text2);padding:.35rem 0;border-bottom:1px solid var(--border)}
+.ob3-summary-row:last-child{border-bottom:none}
+.ob3-summary-row strong{color:var(--text);font-weight:600}
+.ob3-btn-primary{width:100%;padding:.9rem;background:var(--accent);border:none;border-radius:12px;color:#000;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;transition:opacity .15s;margin-bottom:.75rem}
+.ob3-btn-primary:disabled{opacity:.45;cursor:default}
+.ob3-btn-primary:hover:not(:disabled){opacity:.9}
+.ob3-btn-secondary{width:100%;padding:.75rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-weight:600;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .15s;margin-bottom:.5rem}
+.ob3-btn-secondary:hover{border-color:var(--accent)}
+.ob3-expert-link{background:none;border:none;color:var(--text2);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.5rem;text-align:center;width:100%;margin-top:.25rem}
+.ob3-done-icon{font-size:3rem;text-align:center;margin-bottom:.75rem}
+.ob3-done-title{font-size:1.4rem;font-weight:800;color:var(--text);text-align:center;margin-bottom:.4rem}
+.ob3-done-sub{font-size:.88rem;color:var(--text2);text-align:center;margin-bottom:2rem;line-height:1.45}
+/* Hide bottom nav and hero behind overlay */
+body.first-run .bottom-nav{display:none}
 
 /* ── Flow Refinement v2 (#123-#129) ─────────────────────────── */
 /* First-run 3-choice beginner screen */
@@ -3290,32 +3331,152 @@ body.simple-mode #journal-trends-body{ display:none !important}
 
 <!-- Beginner Onboarding Overlay (#132) -->
 <div id="onboarding-overlay">
-  <div class="ob-progress-bar"><div class="ob-progress-fill" id="ob-progress-fill" style="width:25%"></div></div>
-
-  <!-- Screen 1: Goal -->
-  <div class="ob-screen active" id="ob-screen-1">
-    <div class="ob-step-label">Getting started</div>
-    <h2 class="ob-title">What are you calculating for?</h2>
-    <p class="ob-sub">This helps us show the most relevant information.</p>
-    <div class="ob-pill-row" id="ob-goal-pills">
-      <button class="ob-pill" data-val="weight_loss">Weight loss</button>
-      <button class="ob-pill" data-val="healing">Healing &amp; recovery</button>
-      <button class="ob-pill" data-val="antiaging">Anti-aging</button>
-      <button class="ob-pill" data-val="other">Other / not sure</button>
-    </div>
-    <button class="ob-next-btn" id="ob-goal-next" disabled>Continue →</button>
+  <!-- Sticky progress bar -->
+  <div class="ob3-progress-wrap">
+    <div class="ob3-progress-bar"><div class="ob3-progress-fill" id="ob3-progress-fill" style="width:0%"></div></div>
   </div>
 
-  <!-- Screen 2: Peptide -->
-  <div class="ob-screen" id="ob-screen-2">
-    <div class="ob-step-label">Getting started</div>
-    <h2 class="ob-title">Which peptide are you working with?</h2>
-    <p class="ob-sub">Tap one to pre-fill your calculator. You can change it any time.</p>
-    <div class="ob-pep-list" id="ob-pep-list">
-      <!-- Populated by JS -->
+  <!-- Step 0: Welcome -->
+  <div class="ob3-step active" id="ob3-step-0" style="justify-content:center">
+    <div class="ob3-step-center">
+      <div style="font-size:3rem;margin-bottom:.75rem">🧭</div>
+      <h1 class="ob3-heading" style="font-size:1.5rem;margin-bottom:.6rem">Welcome to Peptide Compass Pro</h1>
+      <p class="ob3-sub" style="text-align:center;max-width:360px;margin:0 auto 2rem">This app is packed with tools for tracking peptides — but don't worry, we'll start simple. Let's get your peptides set up first, and we'll unlock the rest as you go.</p>
+      <button class="ob3-btn-primary" id="ob3-start" style="max-width:320px">Let's Get Started →</button>
+      <button class="ob3-expert-link" id="ob3-expert">I'm experienced — show me everything</button>
     </div>
-    <button class="ob-pep-skip" id="ob-pep-skip">I'm not sure yet — skip this</button>
-    <button class="ob-next-btn" id="ob-pep-next">Start calculating →</button>
+  </div>
+
+  <!-- Step 1: Peptide picker -->
+  <div class="ob3-step" id="ob3-step-1">
+    <div class="ob3-step-num">Step 1 of 6</div>
+    <h2 class="ob3-heading">What peptide are you taking?</h2>
+    <p class="ob3-sub">Tap one to select it. You can add more later.</p>
+    <input type="search" class="ob3-search" id="ob3-pep-search" placeholder="Search peptides..." autocomplete="off">
+    <div class="ob3-pep-list" id="ob3-pep-list"><!-- JS populated --></div>
+    <div id="ob3-custom-wrap" style="display:none;width:100%">
+      <input type="text" class="ob3-input" id="ob3-custom-name" placeholder="Type peptide name...">
+    </div>
+    <button class="ob3-custom-toggle" id="ob3-custom-toggle">My peptide isn't listed →</button>
+    <button class="ob3-btn-primary" id="ob3-step1-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 2: Vial size -->
+  <div class="ob3-step" id="ob3-step-2">
+    <button class="ob3-back" id="ob3-back-2">← Back</button>
+    <div class="ob3-step-num">Step 2 of 6</div>
+    <h2 class="ob3-heading">What's your vial size?</h2>
+    <p class="ob3-context" id="ob3-ctx-2"></p>
+    <p class="ob3-helper">Check your vial label — it's usually printed on the front.</p>
+    <div class="ob3-pills" id="ob3-vial-pills">
+      <button class="ob3-pill" data-val="2">2mg</button>
+      <button class="ob3-pill" data-val="5">5mg</button>
+      <button class="ob3-pill" data-val="10">10mg</button>
+      <button class="ob3-pill" data-val="15">15mg</button>
+      <button class="ob3-pill" data-val="20">20mg</button>
+      <button class="ob3-pill" data-val="30">30mg</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-vial-custom" placeholder="Other (enter mg)" min="0.1" step="0.1" style="display:none">
+    <button class="ob3-custom-toggle" id="ob3-vial-custom-toggle">Enter custom amount</button>
+    <button class="ob3-btn-primary" id="ob3-step2-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 3: BAC water -->
+  <div class="ob3-step" id="ob3-step-3">
+    <button class="ob3-back" id="ob3-back-3">← Back</button>
+    <div class="ob3-step-num">Step 3 of 6</div>
+    <h2 class="ob3-heading">How much BAC water did you add?</h2>
+    <p class="ob3-context" id="ob3-ctx-3"></p>
+    <p class="ob3-helper">This is the bacteriostatic water used to reconstitute your peptide.</p>
+    <div class="ob3-pills" id="ob3-water-pills">
+      <button class="ob3-pill" data-val="1">1mL</button>
+      <button class="ob3-pill" data-val="1.5">1.5mL</button>
+      <button class="ob3-pill" data-val="2">2mL</button>
+      <button class="ob3-pill" data-val="2.5">2.5mL</button>
+      <button class="ob3-pill" data-val="3">3mL</button>
+      <button class="ob3-pill" data-val="5">5mL</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-water-custom" placeholder="Other (enter mL)" min="0.1" step="0.1" style="display:none">
+    <button class="ob3-custom-toggle" id="ob3-water-custom-toggle">Enter custom amount</button>
+    <details class="ob3-helper" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;color:var(--accent);font-size:.8rem">Not sure how much to add?</summary>
+      <div style="margin-top:.35rem;padding:.5rem .6rem;background:var(--surface2);border-radius:8px;font-size:.78rem;line-height:1.5">A common starting point is 2mL for a 5mg vial. You can always adjust later.</div>
+    </details>
+    <button class="ob3-btn-primary" id="ob3-step3-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 4: Dose -->
+  <div class="ob3-step" id="ob3-step-4">
+    <button class="ob3-back" id="ob3-back-4">← Back</button>
+    <div class="ob3-step-num">Step 4 of 6</div>
+    <h2 class="ob3-heading">What dose are you taking?</h2>
+    <p class="ob3-context" id="ob3-ctx-4"></p>
+    <div class="ob3-unit-toggle">
+      <button class="ob3-unit-btn active" id="ob3-unit-mcg" data-unit="mcg">mcg</button>
+      <button class="ob3-unit-btn" id="ob3-unit-mg" data-unit="mg">mg</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-dose-input" placeholder="Enter dose..." min="0" step="0.1">
+    <div class="ob3-dose-presets" id="ob3-dose-presets"></div>
+    <div class="ob3-live-result" id="ob3-live-result" style="display:none">
+      <div class="ob3-units-big" id="ob3-units-big">—</div>
+      <div class="ob3-units-label">units to draw</div>
+      <div class="ob3-conc-line" id="ob3-conc-line"></div>
+    </div>
+    <div class="ob3-syringe-label">Syringe size</div>
+    <div class="ob3-syringe-row" id="ob3-syringe-row">
+      <button class="ob3-syr-btn selected" data-ml="0.3">0.3mL<br><span style="font-size:.65rem;font-weight:400">30 units</span></button>
+      <button class="ob3-syr-btn" data-ml="0.5">0.5mL<br><span style="font-size:.65rem;font-weight:400">50 units</span></button>
+      <button class="ob3-syr-btn" data-ml="1.0">1.0mL<br><span style="font-size:.65rem;font-weight:400">100 units</span></button>
+    </div>
+    <button class="ob3-btn-primary" id="ob3-step4-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 5: Frequency -->
+  <div class="ob3-step" id="ob3-step-5">
+    <button class="ob3-back" id="ob3-back-5">← Back</button>
+    <div class="ob3-step-num">Step 5 of 6</div>
+    <h2 class="ob3-heading">How often do you inject?</h2>
+    <p class="ob3-sub">You can always adjust this later.</p>
+    <div class="ob3-pills" id="ob3-freq-pills">
+      <button class="ob3-pill" data-val="daily">Every day</button>
+      <button class="ob3-pill" data-val="eod">Every other day</button>
+      <button class="ob3-pill" data-val="2x_week">2x per week</button>
+      <button class="ob3-pill" data-val="3x_week">3x per week</button>
+      <button class="ob3-pill" data-val="5x_week">5x per week</button>
+      <button class="ob3-pill" data-val="weekly">Once a week</button>
+    </div>
+    <div class="ob3-syringe-label" style="margin-top:.25rem">What time?</div>
+    <div class="ob3-pills" id="ob3-time-pills">
+      <button class="ob3-pill" data-val="08:00">Morning (8am)</button>
+      <button class="ob3-pill" data-val="12:00">Afternoon (12pm)</button>
+      <button class="ob3-pill" data-val="18:00">Evening (6pm)</button>
+      <button class="ob3-pill" data-val="22:00">Night (10pm)</button>
+    </div>
+    <button class="ob3-btn-primary" id="ob3-step5-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 6: Summary + Save -->
+  <div class="ob3-step" id="ob3-step-6">
+    <button class="ob3-back" id="ob3-back-6">← Back</button>
+    <div class="ob3-step-num">Step 6 of 6</div>
+    <h2 class="ob3-heading">Here's your protocol</h2>
+    <p class="ob3-sub">Does this look right?</p>
+    <div class="ob3-summary-card" id="ob3-summary-card">
+      <!-- JS populated -->
+    </div>
+    <button class="ob3-btn-primary" id="ob3-save-btn">Save Protocol ✓</button>
+    <button class="ob3-btn-secondary" id="ob3-edit-btn">Edit something ←</button>
+  </div>
+
+  <!-- Step 7: Done / Add Another -->
+  <div class="ob3-step" id="ob3-step-7" style="justify-content:center">
+    <div class="ob3-step-center">
+      <div class="ob3-done-icon">✅</div>
+      <div class="ob3-done-title" id="ob3-done-title">Protocol saved!</div>
+      <div class="ob3-done-sub">Want to add another peptide to your stack?</div>
+      <button class="ob3-btn-primary" id="ob3-add-another" style="max-width:320px">Add another peptide →</button>
+      <button class="ob3-btn-secondary" id="ob3-finish" style="max-width:320px">I'm done — show me my dashboard →</button>
+    </div>
   </div>
 </div>
 
@@ -7487,14 +7648,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyFirstRunState() {
     if (isFirstRun()) {
       document.body.classList.add('first-run');
-      const wc = document.getElementById('welcome-card');
-      if (wc) wc.style.display = '';
+      // V3: show full-screen overlay instead of welcome card
+      const $ov = document.getElementById('onboarding-overlay');
+      if ($ov) $ov.classList.add('showing');
+      // resume step stored — handled after ob3GoStep is defined below
     }
   }
 
   function exitFirstRun(showUnlock) {
     document.body.classList.remove('first-run');
     localStorage.setItem('hasOnboarded', '1');
+    localStorage.removeItem('onboardingStep');
+    const $ov = document.getElementById('onboarding-overlay');
+    if ($ov) $ov.classList.remove('showing');
     const wc = document.getElementById('welcome-card');
     if (wc) wc.style.display = 'none';
     if (showUnlock && !localStorage.getItem('hasSeenUnlock')) {
@@ -7502,7 +7668,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const $toast = document.getElementById('unlock-toast');
       if ($toast) {
         $toast.style.display = 'block';
-        // New-dot on Schedule and History nav buttons for this session
         document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('show-new-dot');
         document.querySelector('.tab-btn[data-tab="schedule"]')?.classList.add('show-new-dot');
         setTimeout(() => { $toast.style.display = 'none'; }, 4000);
@@ -7621,9 +7786,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   applyUpsellUnlock();
 
-  // ── Open Add Peptide Form (used by first-run CTAs) ──────────
+  // ── Open Add Peptide Form (used by CTAs after onboarding) ───
   function openAddPeptideForm() {
-    // 1. Expand the tools zone panel if it's collapsed
     const $panel = document.getElementById('tools-zone-panel');
     const $icon  = document.getElementById('tools-zone-toggle-icon');
     if ($panel && $panel.classList.contains('collapsed')) {
@@ -7631,115 +7795,380 @@ document.addEventListener('DOMContentLoaded', () => {
       $panel.style.maxHeight = $panel.scrollHeight + 'px';
       if ($icon) $icon.style.transform = 'rotate(0deg)';
     }
-    // 2. Scroll the add card into view
     const addCard = document.getElementById('add-peptide-card');
     if (addCard) {
       setTimeout(() => addCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     }
-    // 3. Open the add form (show add-panel and start at step 1)
     const addPanel = document.getElementById('add-panel');
     if (addPanel && addPanel.style.display !== 'block') {
       addPanel.style.display = 'block';
       gsReset();
     }
   }
-  // Expose for inline onclick handlers (e.g. today-empty-cta-btn)
   window.openAddPeptideForm = openAddPeptideForm;
 
-  // ── First-Run 3-Choice Beginner Screen (#123) ──────────────
-  // ── Beginner Onboarding (#132) ──────────────────────────────
-  const TOP_PEPTIDES = ['BPC-157','Semaglutide','Tirzepatide','TB-500','Retatrutide','Ipamorelin','PT-141 (Bremelanotide)','Sermorelin','NAD+','GHK-Cu'];
-  let obSelectedGoal = '';
-  let obSelectedPep  = -1;
+  // ── Onboarding V3 (#141) ─────────────────────────────────────
+  const OB3_FEATURED = [
+    'BPC-157','Semaglutide','Tirzepatide','TB-500','Retatrutide',
+    'Ipamorelin','CJC-1295 no DAC + Ipamorelin','GHK-Cu','Sermorelin',
+    'Tesamorelin','MOTS-C','PT-141 (Bremelanotide)','Selank','Semax',
+    'AOD-9604','MK-677 (Ibutamoren)'
+  ];
 
-  function showOnboarding() {
-    const $ov = document.getElementById('onboarding-overlay');
-    if (!$ov) return;
-    // Populate peptide list
-    const $pepList = document.getElementById('ob-pep-list');
-    if ($pepList) {
-      $pepList.innerHTML = TOP_PEPTIDES.map(name => {
-        const idx = PEPTIDES.findIndex(p => p.name === name);
-        return `<button class="ob-pep-btn" data-idx="${idx}">${name}</button>`;
-      }).join('');
-      $pepList.querySelectorAll('.ob-pep-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          $pepList.querySelectorAll('.ob-pep-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          obSelectedPep = parseInt(btn.dataset.idx);
-        });
+  // v3 state
+  const ob3 = {
+    step: 0,
+    pepName: '',      // final name (featured or custom)
+    pepIdx: -1,       // index in PEPTIDES array (-1 = custom)
+    vialMg: 0,
+    waterMl: 0,
+    doseMcg: 0,
+    doseUnit: 'mcg',  // 'mcg' or 'mg'
+    syringeMl: 0.3,
+    freq: '',
+    time: '',
+  };
+
+  const OB3_TOTAL = 6; // steps 1–6 (step 0 = welcome, step 7 = done)
+
+  function ob3Progress(step) {
+    const pct = step <= 0 ? 0 : step >= OB3_TOTAL ? 100 : Math.round((step / OB3_TOTAL) * 100);
+    const fill = document.getElementById('ob3-progress-fill');
+    if (fill) fill.style.width = pct + '%';
+  }
+
+  function ob3GoStep(n) {
+    ob3.step = n;
+    localStorage.setItem('onboardingStep', n);
+    document.querySelectorAll('.ob3-step').forEach(s => s.classList.remove('active'));
+    const $step = document.getElementById('ob3-step-' + n);
+    if ($step) {
+      $step.classList.add('active');
+      const $ov = document.getElementById('onboarding-overlay');
+      if ($ov) $ov.scrollTop = 0;
+    }
+    ob3Progress(n);
+    if (n === 2) ob3UpdateCtx2();
+    if (n === 3) ob3UpdateCtx3();
+    if (n === 4) ob3UpdateCtx4();
+    if (n === 6) ob3RenderSummary();
+  }
+
+  // ── Step 1: Peptide picker ───────────────────────────────────
+  function ob3BuildPepList(filter) {
+    const $list = document.getElementById('ob3-pep-list');
+    if (!$list) return;
+    const q = (filter || '').toLowerCase().trim();
+    let names = OB3_FEATURED;
+    if (q) {
+      // search full PEPTIDES array
+      names = PEPTIDES.map(p => p.name).filter(n => n.toLowerCase().includes(q));
+    }
+    $list.innerHTML = names.map(name => {
+      const sel = ob3.pepName === name ? ' selected' : '';
+      return `<button class="ob3-pep-btn${sel}" data-name="${name}">${name}</button>`;
+    }).join('') || '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No match — use the custom field below</div>';
+    $list.querySelectorAll('.ob3-pep-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $list.querySelectorAll('.ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ob3.pepName = btn.dataset.name;
+        ob3.pepIdx  = PEPTIDES.findIndex(p => p.name === ob3.pepName);
+        // hide custom input
+        document.getElementById('ob3-custom-wrap').style.display = 'none';
+        document.getElementById('ob3-custom-toggle').style.display = '';
+        document.getElementById('ob3-step1-next').disabled = false;
       });
+    });
+  }
+
+  ob3BuildPepList();
+
+  document.getElementById('ob3-pep-search')?.addEventListener('input', function() {
+    ob3BuildPepList(this.value);
+    // if custom name was active, clear it
+    if (this.value) {
+      ob3.pepName = '';
+      document.getElementById('ob3-step1-next').disabled = true;
     }
-    $ov.classList.add('showing');
-    obGoScreen(1);
+  });
+
+  document.getElementById('ob3-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-custom-wrap').style.display = 'block';
+    document.getElementById('ob3-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-custom-name').focus();
+    // deselect list items
+    document.querySelectorAll('#ob3-pep-list .ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+    ob3.pepName = '';
+    document.getElementById('ob3-step1-next').disabled = true;
+  });
+
+  document.getElementById('ob3-custom-name')?.addEventListener('input', function() {
+    ob3.pepName = this.value.trim();
+    ob3.pepIdx  = -1;
+    document.getElementById('ob3-step1-next').disabled = !ob3.pepName;
+  });
+
+  document.getElementById('ob3-step1-next')?.addEventListener('click', () => ob3GoStep(2));
+
+  // ── Step 2: Vial size ────────────────────────────────────────
+  function ob3UpdateCtx2() {
+    const el = document.getElementById('ob3-ctx-2');
+    if (el) el.textContent = 'Setting up: ' + (ob3.pepName || '—');
   }
 
-  function obGoScreen(n) {
-    document.querySelectorAll('.ob-screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('ob-screen-' + n)?.classList.add('active');
-    const fills = { 1: '25%', 2: '50%' };
-    const fill = document.getElementById('ob-progress-fill');
-    if (fill) fill.style.width = fills[n] || '25%';
+  function ob3PillGroup(containerId, stateKey, onSelect) {
+    document.getElementById(containerId)?.querySelectorAll('.ob3-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(containerId).querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ob3[stateKey] = parseFloat(btn.dataset.val) || btn.dataset.val;
+        if (onSelect) onSelect(btn.dataset.val);
+      });
+    });
   }
 
-  function finishOnboarding() {
-    const $ov = document.getElementById('onboarding-overlay');
-    if ($ov) $ov.classList.remove('showing');
-    // Pre-fill peptide in wizard if selected
-    if (obSelectedPep >= 0) {
-      const wiz = document.getElementById('calc-wizard');
-      if (wiz) {
-        wiz.classList.add('active');
-        wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        wizShowStep(1);
+  ob3PillGroup('ob3-vial-pills', 'vialMg', () => {
+    document.getElementById('ob3-vial-custom').style.display = 'none';
+    document.getElementById('ob3-vial-custom-toggle').style.display = '';
+    document.getElementById('ob3-step2-next').disabled = false;
+  });
+
+  document.getElementById('ob3-vial-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-vial-custom').style.display = 'block';
+    document.getElementById('ob3-vial-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-vial-pills').querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+    document.getElementById('ob3-vial-custom').focus();
+  });
+
+  document.getElementById('ob3-vial-custom')?.addEventListener('input', function() {
+    ob3.vialMg = parseFloat(this.value) || 0;
+    document.getElementById('ob3-step2-next').disabled = !ob3.vialMg;
+  });
+
+  document.getElementById('ob3-step2-next')?.addEventListener('click', () => ob3GoStep(3));
+  document.getElementById('ob3-back-2')?.addEventListener('click', () => ob3GoStep(1));
+
+  // ── Step 3: BAC water ────────────────────────────────────────
+  function ob3UpdateCtx3() {
+    const el = document.getElementById('ob3-ctx-3');
+    if (el) el.textContent = (ob3.pepName || '—') + (ob3.vialMg ? ' · ' + ob3.vialMg + 'mg vial' : '');
+  }
+
+  ob3PillGroup('ob3-water-pills', 'waterMl', () => {
+    document.getElementById('ob3-water-custom').style.display = 'none';
+    document.getElementById('ob3-water-custom-toggle').style.display = '';
+    document.getElementById('ob3-step3-next').disabled = false;
+  });
+
+  document.getElementById('ob3-water-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-water-custom').style.display = 'block';
+    document.getElementById('ob3-water-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-water-pills').querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+    document.getElementById('ob3-water-custom').focus();
+  });
+
+  document.getElementById('ob3-water-custom')?.addEventListener('input', function() {
+    ob3.waterMl = parseFloat(this.value) || 0;
+    document.getElementById('ob3-step3-next').disabled = !ob3.waterMl;
+  });
+
+  document.getElementById('ob3-step3-next')?.addEventListener('click', () => ob3GoStep(4));
+  document.getElementById('ob3-back-3')?.addEventListener('click', () => ob3GoStep(2));
+
+  // ── Step 4: Dose + live calc ─────────────────────────────────
+  function ob3UpdateCtx4() {
+    const el = document.getElementById('ob3-ctx-4');
+    if (el) {
+      const parts = [ob3.pepName || '—'];
+      if (ob3.vialMg)  parts.push(ob3.vialMg + 'mg vial');
+      if (ob3.waterMl) parts.push(ob3.waterMl + 'mL BAC water');
+      el.textContent = parts.join(' · ');
+    }
+    // Dose presets from peptide data
+    const $presets = document.getElementById('ob3-dose-presets');
+    if ($presets) {
+      const pep = PEPTIDES[ob3.pepIdx];
+      if (pep && ob3.doseUnit === 'mcg') {
+        $presets.innerHTML = [pep.lowMcg, pep.stdMcg, pep.highMcg]
+          .filter((v, i, a) => a.indexOf(v) === i)
+          .map(v => `<button class="ob3-dose-preset" data-val="${v}">${v >= 1000 ? (v/1000) + 'mg' : v + 'mcg'}</button>`)
+          .join('');
+        $presets.querySelectorAll('.ob3-dose-preset').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('ob3-dose-input').value = btn.dataset.val;
+            ob3CalcLive();
+          });
+        });
+      } else {
+        $presets.innerHTML = '';
       }
+    }
+    ob3CalcLive();
+  }
+
+  function ob3CalcLive() {
+    const raw = parseFloat(document.getElementById('ob3-dose-input')?.value) || 0;
+    const doseMcg = ob3.doseUnit === 'mg' ? raw * 1000 : raw;
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && doseMcg ? (doseMcg / concMcgMl) * 100 : 0;
+    ob3.doseMcg = doseMcg;
+
+    const $result = document.getElementById('ob3-live-result');
+    const $big    = document.getElementById('ob3-units-big');
+    const $conc   = document.getElementById('ob3-conc-line');
+    const $next4  = document.getElementById('ob3-step4-next');
+
+    if (doseMcg > 0 && concMcgMl > 0) {
+      if ($result) $result.style.display = 'block';
+      if ($big)    $big.textContent = units.toFixed(1);
+      if ($conc)   $conc.textContent = 'Concentration: ' + (concMcgMl >= 1000 ? (concMcgMl/1000).toFixed(2) + 'mg/mL' : concMcgMl.toFixed(0) + 'mcg/mL');
+      if ($next4)  $next4.disabled = false;
     } else {
-      const wiz = document.getElementById('calc-wizard');
-      if (wiz) {
-        wiz.classList.add('active');
-        wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        wizShowStep(1);
-      }
+      if ($result) $result.style.display = doseMcg > 0 ? 'block' : 'none';
+      if ($big)    $big.textContent = '—';
+      if ($next4)  $next4.disabled = !doseMcg;
     }
   }
 
-  // Goal pills
-  document.getElementById('ob-goal-pills')?.querySelectorAll('.ob-pill').forEach(btn => {
+  document.getElementById('ob3-dose-input')?.addEventListener('input', ob3CalcLive);
+
+  // Unit toggle
+  document.getElementById('ob3-unit-mcg')?.addEventListener('click', () => {
+    ob3.doseUnit = 'mcg';
+    document.getElementById('ob3-unit-mcg').classList.add('active');
+    document.getElementById('ob3-unit-mg').classList.remove('active');
+    document.getElementById('ob3-dose-input').value = '';
+    ob3CalcLive();
+    ob3UpdateCtx4();
+  });
+  document.getElementById('ob3-unit-mg')?.addEventListener('click', () => {
+    ob3.doseUnit = 'mg';
+    document.getElementById('ob3-unit-mg').classList.add('active');
+    document.getElementById('ob3-unit-mcg').classList.remove('active');
+    document.getElementById('ob3-dose-input').value = '';
+    ob3CalcLive();
+    ob3UpdateCtx4();
+  });
+
+  // Syringe selector
+  document.getElementById('ob3-syringe-row')?.querySelectorAll('.ob3-syr-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.getElementById('ob-goal-pills')?.querySelectorAll('.ob-pill').forEach(b => b.classList.remove('selected'));
+      document.getElementById('ob3-syringe-row').querySelectorAll('.ob3-syr-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
-      obSelectedGoal = btn.dataset.val;
-      localStorage.setItem('userGoal', obSelectedGoal);
-      const nextBtn = document.getElementById('ob-goal-next');
-      if (nextBtn) nextBtn.disabled = false;
+      ob3.syringeMl = parseFloat(btn.dataset.ml);
     });
   });
 
-  document.getElementById('ob-goal-next')?.addEventListener('click', () => {
-    obGoScreen(2);
+  document.getElementById('ob3-step4-next')?.addEventListener('click', () => ob3GoStep(5));
+  document.getElementById('ob3-back-4')?.addEventListener('click', () => ob3GoStep(3));
+
+  // ── Step 5: Frequency ────────────────────────────────────────
+  ob3PillGroup('ob3-freq-pills', 'freq', () => ob3CheckStep5());
+  ob3PillGroup('ob3-time-pills', 'time', () => ob3CheckStep5());
+
+  function ob3CheckStep5() {
+    document.getElementById('ob3-step5-next').disabled = !(ob3.freq && ob3.time);
+  }
+
+  document.getElementById('ob3-step5-next')?.addEventListener('click', () => ob3GoStep(6));
+  document.getElementById('ob3-back-5')?.addEventListener('click', () => ob3GoStep(4));
+
+  // ── Step 6: Summary ──────────────────────────────────────────
+  function ob3RenderSummary() {
+    const $card = document.getElementById('ob3-summary-card');
+    if (!$card) return;
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && ob3.doseMcg ? (ob3.doseMcg / concMcgMl) * 100 : 0;
+    const doseLabel = ob3.doseMcg >= 1000 ? (ob3.doseMcg / 1000).toFixed(2) + 'mg' : ob3.doseMcg + 'mcg';
+    const freqLabels = { daily:'Daily', eod:'Every other day', '2x_week':'2× per week', '3x_week':'3× per week', '5x_week':'5× per week', weekly:'Once a week' };
+    const timeLabel = ob3.time ? ' at ' + ob3.time : '';
+    $card.innerHTML = `
+      <div class="ob3-summary-pep">${ob3.pepName}</div>
+      <div class="ob3-summary-row">💉 <strong>Dose</strong> ${doseLabel}${units ? ' (' + units.toFixed(1) + ' units to draw)' : ''}</div>
+      <div class="ob3-summary-row">🗓 <strong>Frequency</strong> ${freqLabels[ob3.freq] || ob3.freq}${timeLabel}</div>
+      <div class="ob3-summary-row">🧪 <strong>Vial</strong> ${ob3.vialMg}mg in ${ob3.waterMl}mL</div>
+      ${concMcgMl ? `<div class="ob3-summary-row">⚗️ <strong>Concentration</strong> ${concMcgMl >= 1000 ? (concMcgMl/1000).toFixed(2)+'mg/mL' : concMcgMl.toFixed(0)+'mcg/mL'}</div>` : ''}
+    `;
+  }
+
+  document.getElementById('ob3-save-btn')?.addEventListener('click', () => {
+    // Save protocol to localStorage
+    const protocols = getSavedProtocols();
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && ob3.doseMcg ? (ob3.doseMcg / concMcgMl) * 100 : 0;
+    protocols.push({
+      id: Date.now(),
+      name: ob3.pepName,
+      peptideIndex: ob3.pepIdx >= 0 ? ob3.pepIdx : undefined,
+      vialMg: ob3.vialMg,
+      waterMl: ob3.waterMl,
+      doseMcg: ob3.doseMcg,
+      syringeMl: ob3.syringeMl,
+      freq: ob3.freq,
+      time: ob3.time,
+      createdAt: new Date().toISOString().split('T')[0]
+    });
+    saveSavedProtocols(protocols);
+    // Set milestones
+    localStorage.setItem('hasOnboarded', '1');
+    localStorage.setItem('hasCompletedWizard', '1');
+    localStorage.setItem('hasSavedProtocol', '1');
+    localStorage.setItem('hasCalculated', '1');
+    // Show done step
+    const $done = document.getElementById('ob3-done-title');
+    if ($done) $done.textContent = ob3.pepName + ' protocol saved!';
+    ob3GoStep(7);
   });
 
-  document.getElementById('ob-pep-skip')?.addEventListener('click', () => {
-    obSelectedPep = -1;
-    finishOnboarding();
+  document.getElementById('ob3-edit-btn')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('ob3-back-6')?.addEventListener('click', () => ob3GoStep(5));
+
+  // ── Step 7: Done ─────────────────────────────────────────────
+  document.getElementById('ob3-add-another')?.addEventListener('click', () => {
+    // Reset peptide/dose state, keep vial defaults
+    ob3.pepName = ''; ob3.pepIdx = -1; ob3.doseMcg = 0;
+    ob3.freq = ''; ob3.time = '';
+    // Clear step 1 selections
+    document.querySelectorAll('#ob3-pep-list .ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+    const $search = document.getElementById('ob3-pep-search');
+    if ($search) $search.value = '';
+    ob3BuildPepList();
+    document.getElementById('ob3-step1-next').disabled = true;
+    ob3GoStep(1);
   });
 
-  document.getElementById('ob-pep-next')?.addEventListener('click', () => {
-    finishOnboarding();
+  document.getElementById('ob3-finish')?.addEventListener('click', () => {
+    exitFirstRun(true);
+    // Set stage to active
+    localStorage.setItem('hasSavedProtocol', '1');
+    if (typeof applyStage === 'function') applyStage();
+    renderProtocolsQuick && renderProtocolsQuick();
+    document.querySelector('.app-content').scrollTop = 0;
   });
 
-  document.getElementById('fr-calc-dose')?.addEventListener('click', () => {
-    showOnboarding();
-  });
+  // ── Welcome screen buttons ───────────────────────────────────
+  document.getElementById('ob3-start')?.addEventListener('click', () => ob3GoStep(1));
 
-  document.getElementById('fr-setup-protocol')?.addEventListener('click', () => {
-    exitFirstRun(false);
-    openAddPeptideForm();
-  });
-
-  document.getElementById('fr-already-know')?.addEventListener('click', () => {
+  document.getElementById('ob3-expert')?.addEventListener('click', () => {
+    localStorage.setItem('appMode', 'advanced');
     exitFirstRun(false);
     document.querySelector('.app-content').scrollTop = 0;
+    if (typeof applyStage === 'function') applyStage();
+  });
+
+  // Resume mid-flow if user reloaded during onboarding
+  if (isFirstRun()) {
+    const savedStep = parseInt(localStorage.getItem('onboardingStep') || '0');
+    if (savedStep > 0) ob3GoStep(savedStep);
+  }
+
+  // Legacy first-run choice buttons (now hidden behind overlay, kept for safety)
+  document.getElementById('fr-calc-dose')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('fr-setup-protocol')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('fr-already-know')?.addEventListener('click', () => {
+    localStorage.setItem('appMode', 'advanced');
+    exitFirstRun(false);
   });
 
   // ── More Tools Expander (#128) ──────────────────────────────
