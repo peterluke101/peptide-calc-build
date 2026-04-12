@@ -1147,6 +1147,11 @@ body.light-mode .timeline-step.future .timeline-step-dot { background: var(--sur
 body.light-mode .more-option { background: var(--surface2); }
 body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
 body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
+/* Scrollable container and tab backgrounds */
+body.light-mode .app-content { background: var(--bg) !important; }
+body.light-mode .tab-content { background: var(--bg) !important; }
+body.light-mode #tab-history,
+body.light-mode #logs-view { background: var(--bg) !important; }
 /* Toggle switch off-state */
 body.light-mode .toggle-slider { background: #bbb; }
 /* Install banner */
@@ -3637,8 +3642,8 @@ function shortName(name) {
 function getWeekStart(offset) {
   const now = new Date();
   const start = new Date(now);
-  // Center today in the 7-day strip (3 days before today)
-  start.setDate(now.getDate() - 3 + (offset * 7));
+  // Start on today (offset 0 = today through today+6)
+  start.setDate(now.getDate() + (offset * 7));
   start.setHours(0, 0, 0, 0);
   return start;
 }
