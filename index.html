@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4);--card-bg:var(--surface);--text-muted:var(--text2)}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
 
@@ -58,7 +58,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .banner-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
 
 /* ── Card ────────────────────────────────────────────────── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1rem;transition:box-shadow .3s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;width:100%;max-width:720px;box-shadow:var(--shadow);margin-bottom:1rem;transition:box-shadow .3s}
 
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -193,6 +193,40 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Dose Detail Button (today view) ──────────────────────── */
 .dose-detail-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.35rem .5rem;font-size:.7rem;border-radius:6px;transition:all .15s;min-height:unset;min-width:unset;flex-shrink:0;margin-left:.25rem;white-space:nowrap}
 .dose-detail-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+/* ── Injection Sites Tab ─────────────────────────────────── */
+.site-view-toggle{display:flex;gap:.25rem}
+.site-view-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.3rem .65rem;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.site-view-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.site-body-map{position:relative;width:100%;max-width:280px;margin:0 auto;touch-action:manipulation}
+.site-body-svg{width:100%;height:auto;display:block}
+.site-dot{cursor:pointer;transition:all .2s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+.site-dot circle{transition:fill .3s,stroke .3s}
+.site-dot:hover circle{stroke-width:3}
+.site-dot.fresh circle{fill:#22c55e;stroke:#16a34a}
+.site-dot.recent circle{fill:#f59e0b;stroke:#d97706}
+.site-dot.used-today circle{fill:#ef4444;stroke:#dc2626}
+.site-dot.never circle{fill:var(--surface2);stroke:var(--border)}
+.site-dot text{fill:var(--text);font-size:7px;font-family:inherit;pointer-events:none;font-weight:600}
+.site-suggestion{display:flex;align-items:center;gap:.75rem;padding:.1rem 0}
+.site-suggestion-icon{font-size:1.4rem;flex-shrink:0}
+.site-suggestion-body{flex:1;min-width:0}
+.site-suggestion-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.site-suggestion-sub{font-size:.75rem;color:var(--text2)}
+.site-history-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .25rem;border-bottom:1px solid var(--border)}
+.site-history-item:last-child{border-bottom:none}
+.site-history-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.site-history-name{font-size:.82rem;font-weight:600;flex:1}
+.site-history-time{font-size:.7rem;color:var(--text2)}
+.site-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom);animation:fadeInBg .18s ease}
+.site-popup{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:420px;padding:1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));animation:slideUp .22s ease}
+.site-popup-title{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.site-popup-sub{font-size:.8rem;color:var(--text2);margin-bottom:1.1rem}
+.site-popup-actions{display:flex;gap:.6rem}
+.site-popup-confirm{flex:1;padding:.75rem;background:var(--accent);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+.site-popup-cancel{padding:.75rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer}
+/* ── Demo Mode ───────────────────────────────────────────── */
+.btn-demo-try{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.65rem 1.25rem;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
+.btn-demo-try:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 /* ── Missed Dose Badge ────────────────────────────────────── */
 .missed-badge{display:inline-block;font-size:.6rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:.1rem .35rem;margin-left:.4rem;letter-spacing:.03em;vertical-align:middle}
 /* ── Log Sheet (bottom sheet modal) ──────────────────────── */
@@ -504,6 +538,27 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 .welcome-cta:hover{background:#2dd4b0;transform:translateY(-1px);box-shadow:0 4px 16px rgba(61,232,195,.25)}
 .welcome-skip{display:block;margin:.75rem auto 0;background:none;border:none;font-family:inherit;font-size:.72rem;color:var(--text2);cursor:pointer;text-decoration:underline;padding:0}
 .welcome-skip:hover{color:var(--text)}
+
+/* ── Hero Landing Overlay (first-run) ────────────────────── */
+body.first-run #welcome-card{
+  position:fixed;inset:0;z-index:998;
+  display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:2rem 1.5rem calc(2.5rem + env(safe-area-inset-bottom));
+  background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.08) 25%,rgba(0,0,0,.35) 55%,rgba(0,0,0,.75) 80%,rgba(0,0,0,.88) 100%),url('landing-bg.webp') center 20%/cover no-repeat;
+  border:none;border-radius:0;margin:0;max-width:100%;
+  animation:heroFadeIn .6s ease;
+}
+@keyframes heroFadeIn{from{opacity:0}to{opacity:1}}
+body.first-run #welcome-card .hero-badge{display:flex}
+body.first-run #welcome-card .hero-logo{display:block}
+body.first-run #welcome-card h2{font-size:clamp(1.6rem,6vw,2.6rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin:0 0 .6rem;line-height:1.15}
+body.first-run #welcome-card p{font-size:clamp(.85rem,2.5vw,1.05rem);color:rgba(255,255,255,.8);margin:0 0 2rem;max-width:400px;line-height:1.6}
+body.first-run #welcome-card #welcome-cta{background:var(--accent);color:#000;font-size:1rem;padding:.85rem 2rem;border-radius:10px;width:auto;max-width:none;box-shadow:0 4px 24px rgba(61,232,195,.35)}
+body.first-run #welcome-card #welcome-cta:hover{background:#2dd4b0;transform:translateY(-2px);box-shadow:0 8px 32px rgba(61,232,195,.45)}
+body.first-run #welcome-card #welcome-skip{color:rgba(255,255,255,.55);font-size:.78rem}
+body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
+.hero-badge{display:none;align-items:center;gap:.4rem;background:rgba(61,232,195,.15);border:1px solid rgba(61,232,195,.35);border-radius:20px;padding:.3rem .8rem;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem}
+.hero-logo{display:none;font-size:3rem;margin-bottom:.75rem}
 
 /* ── Disclaimer ──────────────────────────────────────────── */
 .disclaimer{text-align:center;font-size:.7rem;color:var(--text2);max-width:720px;line-height:1.6;padding:0 .5rem;opacity:.7;margin-top:1rem}
@@ -824,6 +879,30 @@ body.light-mode .delete-journal:active {
   color: var(--accent);
   font-weight: 600;
 }
+
+/* ── Journal Check-In UX (#116-#121) ────────────────────────── */
+.checkin-pill-row{display:flex;gap:.3rem;margin-bottom:.75rem}
+.checkin-pill{flex:1;padding:.5rem .15rem;background:transparent;border:1.5px solid var(--border);border-radius:20px;color:var(--text);font-size:.78rem;cursor:pointer;text-align:center;transition:all .15s;line-height:1.35}
+.checkin-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.yn-control{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:.75rem}
+.yn-btn{flex:1;padding:.6rem;background:transparent;border:none;color:var(--text2);font-size:.9rem;cursor:pointer;transition:all .15s}
+.yn-btn:first-child{border-right:1px solid var(--border)}
+.yn-btn.selected{background:var(--accent);color:#000;font-weight:700}
+.reward-card{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:1rem 1.5rem;text-align:center;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.35);min-width:220px;animation:reward-in .25s ease;display:none}
+.reward-card.showing{display:block}
+.reward-card.hiding{animation:reward-out .25s ease forwards}
+@keyframes reward-in{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes reward-out{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.reward-card .reward-emoji{font-size:2rem;margin-bottom:.25rem}
+.reward-card .reward-message{font-weight:700;font-size:1rem;color:var(--text)}
+.reward-card .reward-stats{font-size:.8rem;color:var(--text2);margin-top:.25rem}
+.journal-insight-card{background:var(--surface2);border-radius:10px;padding:.875rem;margin-bottom:.75rem;border:1px solid var(--border)}
+.journal-insight-card .insight-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.5rem}
+.journal-insight-card .insight-line{font-size:.875rem;color:var(--text);padding:.3rem 0;border-bottom:1px solid var(--border);line-height:1.4}
+.journal-insight-card .insight-line:last-child{border-bottom:none}
+.protocol-context-card{display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:10px;padding:.75rem;margin-bottom:.875rem;border:1px solid var(--border);font-size:.82rem;color:var(--text2)}
+.protocol-context-card .ctx-icon{font-size:1.25rem;flex-shrink:0}
+.protocol-context-card .ctx-peptide{font-weight:700;color:var(--text);font-size:.9rem}
 
 /* Add Log/Journal Entry Forms */
 .add-log-form,
@@ -1148,6 +1227,10 @@ body.light-mode .timeline-step.future .timeline-step-dot { background: var(--sur
 /* More tab rows */
 body.light-mode .more-option { background: var(--surface2); }
 body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
+body.light-mode .site-view-btn { background: var(--surface2); border-color: var(--border); color: var(--text); }
+body.light-mode .site-dot.never circle { fill: var(--surface2); stroke: var(--border); }
+body.light-mode .site-popup { background: var(--surface); }
+body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
 /* Guides promo card */
 body.light-mode .guides-promo-card { background: linear-gradient(135deg,rgba(43,186,160,.1),rgba(100,120,255,.06)); border-color: rgba(43,186,160,.3); }
 /* Toggle switch off-state */
@@ -1404,6 +1487,10 @@ body.first-run #share-schedule-btn,
 body.first-run #install-banner,
 /* Gumroad banner */
 body.first-run .gumroad-banner{display:none!important}
+/* #130: hide upsell until first value moment */
+.upsell-gated{display:none}
+body.upsell-unlocked .upsell-gated{display:block}
+body.upsell-unlocked .card.upsell-gated{display:block}
 /* Step label on guided flow */
 .gs-step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;text-align:center}
 /* Success message after first save */
@@ -1489,6 +1576,214 @@ body:not(.light-mode) .stack-overlap-warn{background:rgba(245,158,11,.1);color:#
 body.simple-mode .advanced-tools-label,
 body.simple-mode #advanced-tools-section{display:none!important}
 #advanced-tools-section{width:100%;max-width:720px;margin:0 auto}
+
+/* ── Progressive UX States (#135-#138) ─────────────────────── */
+/* Stage-based visibility */
+/* Protocol summary card (#136) */
+#proto-summary-card{background:var(--surface2);border-radius:10px;padding:.875rem 1rem;margin-bottom:.5rem;border:1px solid var(--border);display:none}
+#proto-summary-card.showing{display:block}
+.psc-name{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem}
+.psc-meta{display:flex;gap:.75rem;font-size:.75rem;color:var(--text2);flex-wrap:wrap}
+.psc-meta span{display:flex;align-items:center;gap:.25rem}
+/* Tools collapsible (#136) */
+#tools-zone-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:.35rem 0;user-select:none}
+#tools-zone-header .tools-count{font-size:.65rem;color:var(--text2);margin-left:.35rem;font-weight:400}
+#tools-zone-toggle-icon{font-size:.8rem;color:var(--text2);transition:transform .2s}
+#tools-zone-panel{overflow:hidden;transition:max-height .25s ease}
+#tools-zone-panel.collapsed{max-height:0!important}
+/* stage-first-result: nudge to save protocol */
+body.stage-first-result #wiz-save-protocol{animation:pulse-accent 2s 1}
+@keyframes pulse-accent{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 3px rgba(61,232,195,.35)}}
+/* New badge for milestone-unlocked sections */
+.new-section-badge{display:inline-block;background:var(--accent);color:#000;font-size:.55rem;font-weight:800;padding:.15rem .35rem;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;vertical-align:middle;margin-left:.35rem}
+/* Consolidated inline warning under result */
+.result-inline-warn{font-size:.72rem;color:var(--text2);text-align:center;margin-top:.3rem;line-height:1.4}
+/* Tighter warn-card */
+.warn-card{padding:.4rem .65rem!important;font-size:.72rem!important;line-height:1.4!important}
+/* stage-active: dashboard-first */
+body.stage-active #proto-summary-card.showing{display:block}
+
+/* ── Beginner Onboarding (#132) ─────────────────────────────── */
+/* ── Onboarding V3 (#141) ──────────────────────────────────── */
+#onboarding-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:10000;overflow-y:auto;-webkit-overflow-scrolling:touch;flex-direction:column;align-items:center}
+#onboarding-overlay.showing{display:flex}
+/* ── Onboarding hero background — all steps share landing-bg.webp ── */
+#onboarding-overlay.ob3-hero{background-color:#0a0a0a;overflow:hidden}
+/* Steps 1-7: blurred ::before holds the bg — content sits above it */
+#onboarding-overlay.ob3-hero::before{
+  content:'';
+  position:absolute;inset:-8px;
+  background-color:#0a0a0a;
+  background-image:linear-gradient(rgba(0,0,0,.68) 0%,rgba(0,0,0,.82) 35%,rgba(0,0,0,.82) 70%,rgba(0,0,0,.6) 100%),url('landing-bg.webp');
+  background-position:center,center 20%;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:blur(4px);
+  z-index:0;
+  transition:background-position .6s ease;
+}
+/* Lift step content and progress bar above ::before */
+#onboarding-overlay.ob3-hero .ob3-step,
+#onboarding-overlay.ob3-hero .ob3-progress-wrap{position:relative;z-index:1}
+#onboarding-overlay.ob3-hero .ob3-progress-wrap{background:rgba(0,0,0,.5)}
+/* Step 0: crisp direct background on element, no ::before */
+#onboarding-overlay.ob3-hero.ob3-step-0{
+  background-image:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,.08) 25%,rgba(0,0,0,.38) 55%,rgba(0,0,0,.76) 80%,rgba(0,0,0,.9) 100%),url('landing-bg.webp');
+  background-position:center,center 20%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+#onboarding-overlay.ob3-hero.ob3-step-0::before{content:none}
+#onboarding-overlay.ob3-hero.ob3-step-0 .ob3-progress-wrap{display:none}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0{justify-content:flex-end;padding-bottom:calc(3rem + env(safe-area-inset-bottom))}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-step-center{flex:0 0 auto;justify-content:flex-end;padding-bottom:.5rem}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-heading{font-size:clamp(1.6rem,6vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.15}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-sub{color:rgba(255,255,255,.78);font-size:clamp(.85rem,2.5vw,1rem);max-width:380px}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-btn-primary{max-width:320px;font-size:1rem;padding:.9rem;box-shadow:0 4px 24px rgba(61,232,195,.35)}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-expert-link{color:rgba(255,255,255,.5)}
+#onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0 .ob3-expert-link:hover{color:rgba(255,255,255,.8)}
+/* Steps 1-7: headings bright white with shadow so they pop against the bg */
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-heading{color:#fff!important;text-shadow:0 1px 10px rgba(0,0,0,.7)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-sub{color:rgba(255,255,255,.82)!important}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-step-num{color:var(--accent)!important}
+/* Steps 1-7: force readable text on dark blurred background */
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-pill{color:#fff;border-color:rgba(255,255,255,.35)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-pill.selected{color:#000;border-color:var(--accent)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-syr-btn{color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.3)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-syr-btn.selected{color:var(--accent);border-color:var(--accent)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-dose-preset{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-dose-preset:hover{color:var(--accent);border-color:var(--accent)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-back,
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-helper,
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-custom-toggle,
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-syringe-label,
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-units-label,
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-conc-line{color:rgba(255,255,255,.65)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-back:hover{color:#fff}
+/* Per-step crop positions on ::before (300% zoom gives real range) */
+.ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0}
+.ob3-progress-bar{width:100%;height:3px;background:var(--border)}
+.ob3-progress-fill{height:100%;background:var(--accent);transition:width .3s ease}
+.ob3-step{display:none;flex-direction:column;width:100%;max-width:480px;padding:1.75rem 1.25rem 6rem;box-sizing:border-box;min-height:calc(100vh - 3px);animation:ob3Fade .2s ease}
+.ob3-step.active{display:flex}
+@keyframes ob3Fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ob3-step-center{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.ob3-back{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;padding:0;margin-bottom:1.25rem;align-self:flex-start;font-family:inherit;display:flex;align-items:center;gap:.3rem}
+.ob3-back:hover{color:var(--text)}
+.ob3-step-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
+.ob3-heading{font-size:1.35rem;font-weight:800;color:var(--text);margin:0 0 .4rem;line-height:1.25}
+.ob3-context{font-size:.8rem;color:var(--accent);font-weight:600;margin:0 0 .35rem}
+.ob3-sub{font-size:.88rem;color:var(--text2);margin:0 0 1.25rem;line-height:1.45}
+.ob3-helper{font-size:.78rem;color:var(--text2);margin:.25rem 0 .75rem;line-height:1.4}
+.ob3-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem}
+.ob3-pill{padding:.55rem 1rem;border:1.5px solid var(--border);border-radius:20px;background:transparent;color:var(--text);font-size:.875rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.ob3-search{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.9rem;font-family:inherit;margin-bottom:.6rem;box-sizing:border-box}
+.ob3-search:focus{outline:none;border-color:var(--accent)}
+.ob3-pep-list{width:100%;display:flex;flex-direction:column;gap:.3rem;margin-bottom:.75rem;max-height:260px;overflow-y:auto}
+.ob3-pep-btn{width:100%;text-align:left;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:space-between}
+.ob3-pep-btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+.ob3-pep-btn.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.ob3-pep-btn.selected::after{content:'✓';font-weight:700}
+.ob3-custom-toggle{background:none;border:none;color:var(--text2);font-size:.82rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.2rem 0;margin-bottom:.6rem}
+.ob3-input{width:100%;padding:.75rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:1rem;font-family:inherit;box-sizing:border-box;margin-bottom:.5rem}
+.ob3-input:focus,.ob3-search:focus{outline:none;border-color:var(--accent)}
+.ob3-unit-toggle{display:flex;gap:.4rem;margin-bottom:.75rem}
+.ob3-unit-btn{flex:1;padding:.5rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-unit-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
+.ob3-dose-presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:.25rem 0 .75rem}
+.ob3-dose-preset{padding:.4rem .8rem;border:1.5px solid var(--border);border-radius:16px;background:transparent;color:var(--text2);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.ob3-dose-preset:hover{border-color:var(--accent);color:var(--accent)}
+.ob3-live-result{text-align:center;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:12px;padding:1rem;margin:.75rem 0 1rem}
+.ob3-units-big{font-size:2.75rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:.2rem}
+.ob3-units-label{font-size:.8rem;color:var(--text2)}
+.ob3-conc-line{font-size:.75rem;color:var(--text2);margin-top:.4rem}
+.ob3-syringe-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.35rem}
+.ob3-syringe-row{display:flex;gap:.4rem;margin-bottom:1.25rem}
+.ob3-syr-btn{flex:1;padding:.5rem .3rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
+.ob3-syr-btn.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.ob3-summary-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;width:100%;box-sizing:border-box}
+.ob3-summary-pep{font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:.85rem}
+.ob3-summary-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text2);padding:.35rem 0;border-bottom:1px solid var(--border)}
+.ob3-summary-row:last-child{border-bottom:none}
+.ob3-summary-row strong{color:var(--text);font-weight:600}
+.ob3-btn-primary{width:100%;padding:.9rem;background:var(--accent);border:none;border-radius:12px;color:#000;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;transition:opacity .15s;margin-bottom:.75rem}
+.ob3-btn-primary:disabled{opacity:.45;cursor:default}
+.ob3-btn-primary:hover:not(:disabled){opacity:.9}
+.ob3-btn-secondary{width:100%;padding:.75rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-weight:600;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .15s;margin-bottom:.5rem}
+.ob3-btn-secondary:hover{border-color:var(--accent)}
+.ob3-expert-link{background:none;border:none;color:var(--text2);font-size:.8rem;text-decoration:underline;cursor:pointer;font-family:inherit;padding:.5rem;text-align:center;width:100%;margin-top:.25rem}
+.ob3-done-icon{font-size:3rem;text-align:center;margin-bottom:.75rem}
+.ob3-done-title{font-size:1.4rem;font-weight:800;color:var(--text);text-align:center;margin-bottom:.4rem}
+.ob3-done-sub{font-size:.88rem;color:var(--text2);text-align:center;margin-bottom:2rem;line-height:1.45}
+/* Hide bottom nav and hero behind overlay */
+body.first-run .bottom-nav{display:none}
+
+/* ── Flow Refinement v2 (#123-#129) ─────────────────────────── */
+/* First-run 3-choice beginner screen */
+#first-run-choices{display:none;width:100%;max-width:720px;margin:0 auto 1rem;padding:0}
+body.first-run #first-run-choices{display:block}
+body.first-run #task-picker{display:none}
+.fr-choices-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:.75rem;padding:0 .25rem}
+.fr-choices-list{display:flex;flex-direction:column;gap:.75rem}
+.fr-choice-card{display:flex;align-items:center;gap:1rem;border-radius:14px;padding:1.1rem 1.25rem;cursor:pointer;transition:all .15s;width:100%;font-family:inherit;text-align:left;-webkit-appearance:none;appearance:none}
+.fr-choice-card.primary{background:var(--accent);border:none;color:#000}
+.fr-choice-card.primary .fr-choice-title{color:#000;font-weight:800;font-size:1rem}
+.fr-choice-card.primary .fr-choice-desc{color:rgba(0,0,0,.65);font-size:.8rem}
+.fr-choice-card.secondary{background:var(--surface2);border:1.5px solid var(--border);color:var(--text)}
+.fr-choice-card.secondary .fr-choice-title{color:var(--text);font-weight:700;font-size:.95rem}
+.fr-choice-card.secondary .fr-choice-desc{color:var(--text2);font-size:.78rem}
+.fr-choice-card.primary:hover{opacity:.92}
+.fr-choice-card.secondary:hover{border-color:rgba(61,232,195,.5);background:var(--surface)}
+.fr-choice-icon{font-size:1.6rem;flex-shrink:0;width:36px;text-align:center}
+.fr-choice-text{flex:1;min-width:0}
+.fr-choice-title{margin:0 0 .2rem;line-height:1.2}
+.fr-choice-desc{margin:0;line-height:1.35}
+.fr-choice-arrow{font-size:1.2rem;flex-shrink:0;opacity:.6}
+.fr-skip-link{text-align:center;margin-top:.75rem;padding:.25rem 0}
+.fr-skip-link button{background:none;border:none;color:var(--text2);font-size:.8rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:.25rem .5rem}
+/* More-tools expander for returning users */
+#more-tools-expander{width:100%;max-width:720px;margin:0 auto .25rem}
+body.first-run #more-tools-expander{display:none}
+#more-tools-toggle-btn{width:100%;background:none;border:none;color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;padding:.35rem;font-family:inherit;letter-spacing:.02em}
+#more-tools-toggle-btn:hover{opacity:.8}
+#more-tools-panel{display:none}
+#more-tools-panel.open{display:block}
+#more-tools-panel .task-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-bottom:0}
+#more-tools-panel .task-card{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.65rem .5rem;gap:.3rem;min-height:64px}
+#more-tools-panel .task-card-icon{font-size:1.25rem;width:auto}
+#more-tools-panel .task-card-title{font-size:.78rem;font-weight:600}
+#more-tools-panel .task-card-desc{display:none}
+#more-tools-panel .task-card-arrow{display:none}
+/* Dominant primary task card for returning users */
+body:not(.first-run) #task-calc-dose{background:var(--accent);border-color:var(--accent);color:#000;flex:0 0 100%;max-width:100%;flex-direction:row;min-height:52px;align-items:center;gap:.75rem;padding:.75rem 1rem;margin-bottom:.25rem}
+body:not(.first-run) #task-calc-dose .task-card-icon{font-size:1.3rem;width:auto}
+body:not(.first-run) #task-calc-dose .task-card-title{font-size:.9rem;color:#000;font-weight:700}
+body:not(.first-run) #task-calc-dose .task-card-desc{display:block;color:rgba(0,0,0,.6);font-size:.72rem}
+body:not(.first-run) #task-calc-dose .task-card-arrow{display:block;color:rgba(0,0,0,.5)}
+/* Homepage zones */
+.homepage-zone-sep{display:flex;align-items:center;gap:.65rem;margin:.75rem 0 .5rem;color:var(--text2);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;max-width:720px;width:100%}
+.homepage-zone-sep::before,.homepage-zone-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+body.first-run .homepage-zone-sep{display:none}
+/* Unlock toast */
+#unlock-toast{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:.75rem 1.25rem;text-align:center;z-index:9998;font-size:.85rem;font-weight:600;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.3);white-space:nowrap;animation:reward-in .25s ease}
+/* Nav new-dot indicator */
+.tab-btn .new-dot{display:none;position:absolute;top:4px;right:calc(50% - 18px);width:7px;height:7px;border-radius:50%;background:var(--accent);border:1.5px solid var(--bg)}
+.tab-btn{position:relative}
+.tab-btn.show-new-dot .new-dot{display:block}
+/* Wizard result action buttons */
+.wiz-result-actions-v2{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem}
+.wiz-result-actions-v2 .btn{padding:.65rem;font-size:.875rem}
+/* Protocol save success overlay */
+#proto-save-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;align-items:center;justify-content:center;padding:1.5rem}
+#proto-save-overlay.showing{display:flex}
+.proto-save-modal{background:var(--surface);border-radius:16px;padding:2rem 1.5rem;text-align:center;max-width:340px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,.4);animation:reward-in .3s ease}
+.proto-save-modal .psm-icon{font-size:3rem;margin-bottom:.5rem}
+.proto-save-modal .psm-heading{font-size:1.2rem;font-weight:800;color:var(--text);margin:.25rem 0 .5rem}
+.proto-save-modal .psm-detail{font-size:.85rem;color:var(--text2);margin-bottom:1.25rem;line-height:1.4}
+.proto-save-modal .psm-actions{display:flex;flex-direction:column;gap:.5rem}
+.proto-save-modal .psm-actions .btn{padding:.65rem;font-size:.875rem}
+.proto-save-modal .psm-dismiss{background:none;border:none;color:var(--text2);font-size:.78rem;cursor:pointer;margin-top:.5rem;font-family:inherit;text-decoration:underline}
 /* "Need reverse calc?" link (#106) */
 .rc-entry-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;color:var(--text2);background:none;border:none;font-family:inherit;cursor:pointer;padding:.25rem 0;text-decoration:underline;transition:color .15s}
 .rc-entry-link:hover{color:var(--accent)}
@@ -1781,7 +2076,6 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     <button class="demo-banner-btn exit-btn" id="demo-exit-btn">Exit Demo</button>
   </div>
 </div>
-
 <div class="app-content">
 
 <!-- Tab Content Containers -->
@@ -1822,11 +2116,12 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
 
 <!-- First-Time Welcome Card (hidden by default; shown for new users via JS) -->
 <div id="welcome-card" class="card animate-in" style="display:none;text-align:center;padding:1.5rem 1.25rem;border:2px solid var(--accent);position:relative;overflow:hidden">
-  <div style="font-size:2.5rem;margin-bottom:.5rem">🧭</div>
-  <h2 style="margin:0 0 .4rem;font-size:1.2rem">Welcome to Peptide Compass Pro</h2>
-  <p style="margin:0 0 1rem;color:var(--text-muted);font-size:.88rem;line-height:1.5">Let's set up your first protocol. We'll walk you through reconstitution math, scheduling, and saving your setup — step by step.</p>
-  <button id="welcome-cta" class="btn-primary" style="width:100%;max-width:280px;padding:.75rem;font-size:1rem;font-weight:700;border-radius:12px;margin-bottom:.6rem">
-    ＋ Add Your First Peptide
+  <div class="hero-logo">💊</div>
+  <div class="hero-badge">Peptide Compass Pro</div>
+  <h2 style="margin:0 0 .6rem">Your peptide protocols,<br>done right.</h2>
+  <p style="margin:0 0 1.75rem">Reconstitution math, dosing schedules, and injection logs — all in one place. Let's set up your first protocol.</p>
+  <button id="welcome-cta" class="btn-primary" style="width:100%;max-width:300px;padding:.85rem;font-size:1rem;font-weight:700;border-radius:12px;margin-bottom:.75rem">
+    Get Started
   </button>
   <br>
   <button id="welcome-skip" style="background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;padding:.25rem .5rem;text-decoration:underline">
@@ -1837,7 +2132,36 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   </button>
 </div>
 
-<!-- Task Picker (#103) -->
+<!-- First-Run 3-Choice Beginner Screen (#123) -->
+<div id="first-run-choices">
+  <div class="fr-choices-label">What would you like to do?</div>
+  <div class="fr-choices-list">
+    <button class="fr-choice-card primary" id="fr-calc-dose">
+      <span class="fr-choice-icon">💉</span>
+      <span class="fr-choice-text">
+        <div class="fr-choice-title">Calculate a dose</div>
+        <div class="fr-choice-desc">Enter your vial and get units to draw</div>
+      </span>
+      <span class="fr-choice-arrow">›</span>
+    </button>
+    <button class="fr-choice-card secondary" id="fr-setup-protocol">
+      <span class="fr-choice-icon">📋</span>
+      <span class="fr-choice-text">
+        <div class="fr-choice-title">Set up my first protocol</div>
+        <div class="fr-choice-desc">Add a peptide, schedule doses, and save your setup</div>
+      </span>
+      <span class="fr-choice-arrow">›</span>
+    </button>
+  </div>
+  <div class="fr-skip-link">
+    <button id="fr-already-know">I already know what I'm doing — show everything</button>
+  </div>
+  <div style="text-align:center;margin-top:.5rem">
+    <button id="fr-see-demo" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.78rem;cursor:pointer;text-decoration:underline;padding:.25rem">or explore with demo data →</button>
+  </div>
+</div>
+
+<!-- Task Picker (#103, #128) -->
 <div id="task-picker">
   <div class="task-picker-label">What would you like to do?</div>
   <div class="task-card-list">
@@ -1845,42 +2169,51 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
       <span class="task-card-icon">💉</span>
       <span class="task-card-text">
         <span class="task-card-title">Calculate a dose</span>
-        <span class="task-card-desc">Find how much BAC water to add and units to draw</span>
+        <span class="task-card-desc">Find units to draw for your peptide and dose</span>
       </span>
       <span class="task-card-arrow">›</span>
     </button>
-    <button class="task-card" id="task-reconstitute">
-      <span class="task-card-icon">🧪</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Reconstitute a vial</span>
-        <span class="task-card-desc">Calculate how much diluent to add</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-reverse-calc">
-      <span class="task-card-icon">🔁</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Reverse-calculate from units</span>
-        <span class="task-card-desc">Know your units drawn? Find the dose</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-schedule">
-      <span class="task-card-icon">🗓️</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Build a schedule</span>
-        <span class="task-card-desc">Create a dosing calendar for your protocol</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
-    <button class="task-card" id="task-track">
-      <span class="task-card-icon">📋</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Track a protocol</span>
-        <span class="task-card-desc">Log doses, view adherence, and monitor progress</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
+  </div>
+</div>
+
+<!-- More Tools expander for returning users (#128) -->
+<div id="more-tools-expander">
+  <button id="more-tools-toggle-btn">More tools ›</button>
+  <div id="more-tools-panel">
+    <div class="task-card-grid">
+      <button class="task-card" id="task-reconstitute">
+        <span class="task-card-icon">🧪</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Mix my vial</span>
+          <span class="task-card-desc">How much BAC water should I add?</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-reverse-calc">
+        <span class="task-card-icon">🔁</span>
+        <span class="task-card-text">
+          <span class="task-card-title">BAC Water Calc</span>
+          <span class="task-card-desc">Know your dose? Find how much BAC water to add</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-schedule">
+        <span class="task-card-icon">🗓️</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Set up reminders</span>
+          <span class="task-card-desc">Create a dosing calendar for your protocol</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="task-track">
+        <span class="task-card-icon">📋</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Log a dose</span>
+          <span class="task-card-desc">View adherence and monitor your results</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1950,10 +2283,16 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
       </div>
       <!-- Show math expander -->
       <button class="math-toggle" id="wiz-math-toggle" aria-expanded="false" type="button" style="margin-top:.75rem">
-        <span class="math-chevron">▶</span> Show math
+        <span class="math-chevron">▶</span> Show how this was calculated
       </button>
       <div class="math-detail" id="wiz-math-detail"></div>
-      <div class="wiz-result-actions">
+      <!-- Action buttons (#124) -->
+      <div class="wiz-result-actions-v2">
+        <button class="btn btn-primary" id="wiz-save-protocol">💾 Save as Protocol</button>
+        <button class="btn btn-secondary" id="wiz-add-schedule">🗓️ Add to Schedule</button>
+        <button class="btn btn-secondary" id="wiz-log-first-dose" style="display:none">📝 Log First Dose</button>
+      </div>
+      <div class="wiz-result-actions" style="margin-top:.5rem">
         <button class="wiz-btn-back" id="wiz-back-4" style="width:100%">← Change values</button>
       </div>
     </div>
@@ -1970,7 +2309,34 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <p>Your schedule is ready. Check <strong>Today's Injections</strong> below to see your first dose.</p>
 </div>
 
-<div class="section-label">Your Schedule</div>
+<!-- Unlock toast (#125) -->
+<div id="unlock-toast">🔓 Your schedule, history, and tracking tools are now available.</div>
+
+<!-- Protocol Save Overlay (#127) -->
+<div id="proto-save-overlay" role="dialog" aria-modal="true">
+  <div class="proto-save-modal">
+    <div class="psm-icon">✅</div>
+    <div class="psm-heading">You're all set!</div>
+    <div class="psm-detail" id="psm-detail">Protocol saved.</div>
+    <div class="psm-actions">
+      <button class="btn btn-primary" id="psm-view-schedule">🗓️ View Schedule</button>
+      <button class="btn btn-secondary" id="psm-log-dose">📝 Log First Dose</button>
+      <button class="btn btn-secondary" id="psm-back-calc">← Back to Calculator</button>
+    </div>
+    <button class="psm-dismiss" id="psm-dismiss">Dismiss</button>
+  </div>
+</div>
+
+<div class="homepage-zone-sep">Your Dashboard</div>
+
+<!-- Protocol Summary Card (#136/#138: shown when stage-active or stage-power) -->
+<div id="proto-summary-card">
+  <div class="psc-name" id="psc-name">—</div>
+  <div class="psc-meta">
+    <span id="psc-next-dose">—</span>
+    <span id="psc-adherence"></span>
+  </div>
+</div>
 
 <div id="cycle-end-banners"></div>
 
@@ -1998,7 +2364,11 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <div class="cal-grid" id="cal-grid"></div>
 </div>
 
-<div class="section-label">Your Tools</div>
+<div class="homepage-zone-sep" style="cursor:pointer" id="tools-zone-header">
+  <span>Your Tools<span class="tools-count" id="tools-count"></span></span>
+  <span id="tools-zone-toggle-icon">▼</span>
+</div>
+<div id="tools-zone-panel">
 
 <!-- Saved Protocols Quick-Load (hidden when empty) -->
 <div id="protocols-quick-section" style="display:none" class="card animate-in">
@@ -2098,11 +2468,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
           <div class="gs-result-value" id="gs-per-unit-display">—</div>
         </div>
       </div>
-      <div class="warn-card">
-        <span class="warn-icon">ℹ️</span>
-        <span>Assumes a standard 100-unit (1mL) insulin syringe where 1U = 10µL. Check your syringe markings — a different size changes the math.</span>
-      </div>
-      <p class="calc-disclaimer">ℹ️ Standard reconstitution math for educational reference. Verify all calculations independently — supplier concentrations and labeling may vary.</p>
+      <p class="result-inline-warn">ℹ️ Syringe markings vary — verify with your actual syringe before drawing.</p>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -2124,15 +2490,8 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
         </button>
       </div>
       <div class="math-detail" id="gs-math-detail"></div>
-      <div class="warn-card warn-caution">
-        <span class="warn-icon">⚠️</span>
-        <span>Dose tiers are reference ranges from published research — not a personal prescription. Start low and adjust only with guidance from a healthcare provider.</span>
-      </div>
-      <p class="ev-source" style="margin:.3rem 0 .1rem">Common reference ranges — evidence base varies by compound</p>
-      <div class="warn-card warn-caution" id="gs-high-dose-warn" style="display:none">
-        <span class="warn-icon">⚠️</span>
-        <span>High draw volume — double-check your vial size and BAC water amount. If you need more than one syringe per dose, verify the product concentration with your supplier.</span>
-      </div>
+      <p class="result-inline-warn">⚠️ Reference ranges only — not a prescription. Start low, adjust with provider guidance.</p>
+      <p class="result-inline-warn" id="gs-high-dose-warn" style="display:none">⚠️ High draw volume — double-check vial size and BAC water amount.</p>
       <div class="btn-row">
         <button class="btn btn-secondary" data-gs-back>← Back</button>
         <button class="btn btn-primary" data-gs-next>Next →</button>
@@ -2191,8 +2550,8 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
 <div class="card animate-in" id="reverse-calc-card">
   <div class="rc-toggle-row">
     <div class="rc-toggle-label">
-      <span class="rc-toggle-title">Reverse Calc</span>
-      <span class="rc-toggle-sub">Dose → Water</span>
+      <span class="rc-toggle-title">BAC Water Calculator</span>
+      <span class="rc-toggle-sub">How much BAC water should I add?</span>
     </div>
     <label class="toggle-switch">
       <input type="checkbox" id="reverse-calc-toggle">
@@ -2350,9 +2709,8 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
         <div class="rc-expander-body" id="rc-exp-safety-body">
           <div class="warn-card" style="margin:0">
             <span class="warn-icon">ℹ️</span>
-            <span>Assumes stated product concentration and a standard 100-unit (1 mL) insulin syringe. Math changes if your syringe type or product purity differs — verify with your supplier.</span>
+            <span>Syringe markings vary. Always verify with your actual syringe before drawing. Peptide concentrations vary by supplier — confirm the label before use.</span>
           </div>
-          <p class="rc-supplier-note" style="margin:.5rem 0 0">⚠️ Always verify your peptide's concentration matches the supplier's label. Concentrations vary between manufacturers and batches.</p>
         </div>
       </div>
     </div>
@@ -2428,32 +2786,34 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <div style="display:flex;align-items:center;gap:.75rem;cursor:pointer;" onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-stacks')?.classList.add('active')">
     <div style="font-size:1.4rem;flex-shrink:0">🧬</div>
     <div style="flex:1;min-width:0">
-      <div style="font-size:.85rem;font-weight:600;color:var(--text)">Stack Builder</div>
+      <div style="font-size:.85rem;font-weight:600;color:var(--text)">Explore example stacks</div>
       <div style="font-size:.72rem;color:var(--text2);margin-top:.1rem">Browse example stacks by goal</div>
     </div>
     <div style="color:var(--text2);font-size:1.1rem">›</div>
   </div>
 </div>
 
-<!-- Gumroad Banner -->
-<div class="gumroad-banner">
+<!-- Gumroad Banner (#130: shown after first value moment) -->
+<div class="gumroad-banner upsell-gated">
   <div class="banner-content">
     <div class="banner-icon">📚</div>
     <div class="banner-text">
-      <h3>New to peptides?</h3>
-      <p>Get the Quick Start Guide — reconstitution, injection technique, storage & cycling basics</p>
+      <h3>Want to go deeper?</h3>
+      <p>Save more protocols, unlock advanced tracking, and access the education library — explore Navigator.</p>
     </div>
     <a href="https://peterlukedigital.gumroad.com/l/fkhwu" target="_blank" class="banner-btn">
-      Get Guide $9.99 →
+      Explore Navigator →
     </a>
   </div>
 </div>
 
 
 
+</div><!-- /#tools-zone-panel -->
+
 <button id="share-schedule-btn" class="share-btn">📤 Share Schedule</button>
 
-<p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+<p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div> <!-- Close #tab-schedule -->
 
 <!-- Stacks Tab Content -->
@@ -2480,7 +2840,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <!-- Stack Builder Card -->
   <div class="card animate-in">
     <div class="section-header">
-      <h2>Stack Builder</h2>
+      <h2>Explore Example Stacks</h2>
       <div class="stack-goals">
         <button class="goal-btn" data-goal="healing">🩹 Healing</button>
         <button class="goal-btn" data-goal="fatloss">🔥 Fat Loss</button>
@@ -2513,7 +2873,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- History Tab Content -->
@@ -2605,102 +2965,105 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
 
   <!-- Journal View -->
   <div id="journal-view" class="tab-content">
+    <!-- Protocol context: last injection (hidden when log is empty) -->
+    <div id="journal-protocol-ctx" class="protocol-context-card" style="display:none">
+      <div class="ctx-icon">💉</div>
+      <div>
+        <div class="ctx-peptide" id="ctx-peptide-name">—</div>
+        <div id="ctx-peptide-detail" style="font-size:.78rem"></div>
+      </div>
+    </div>
+
     <div class="card animate-in">
       <div class="section-header">
-        <h2>Journal Entries</h2>
-        <button class="share-btn" style="font-size: .7rem; padding: .4rem .8rem;" id="add-journal-btn">+ Add Entry</button>
+        <h2>Check-Ins</h2>
+        <button class="share-btn" style="font-size: .7rem; padding: .4rem .8rem;" id="add-journal-btn">+ Daily Check-In</button>
       </div>
+      <!-- Plain-English trend insights (shown when ≥3 entries) -->
+      <div id="journal-insights" style="display:none;margin-top:.75rem"></div>
       <div id="journal-entries" class="journal-entries">
         <div class="empty-state">
           <div class="icon">📝</div>
-          <h3>No journal entries yet</h3>
-          <p>Add your first entry to track symptoms, thoughts, and progress</p>
+          <h3>Start your first check-in</h3>
+          <p>Log how you're feeling today. Takes 30 seconds.</p>
         </div>
       </div>
     </div>
 
-    <!-- Side-Effect Timeline (Sprint 11) -->
+    <!-- Side-Effect Timeline (collapsed by default) -->
     <div class="card animate-in" style="margin-bottom:.75rem">
-      <details class="s11-collapsible" open>
+      <details class="s11-collapsible">
         <summary class="s11-summary">⚠️ Side-Effect Timeline</summary>
         <div id="side-effect-content" class="s11-body"></div>
       </details>
     </div>
 
-    <!-- Journal Trends by Peptide (Sprint 11) -->
+    <!-- Journal Trends by Peptide (collapsed by default) -->
     <div class="card animate-in" style="margin-bottom:.75rem">
-      <details class="s11-collapsible" open>
+      <details class="s11-collapsible">
         <summary class="s11-summary">🧬 Journal Trends</summary>
         <div id="journal-trends-content" class="s11-body"></div>
       </details>
     </div>
 
-    <!-- Add Journal Form (hidden by default) -->
+    <!-- Daily Check-In Form (hidden by default) -->
     <div class="card add-journal-form" id="add-journal-form" style="display: none;">
-      <div class="form-title">Add Journal Entry</div>
+      <div class="form-title">Daily Check-In</div>
+
       <div class="form-field">
-        <label for="journal-content">Entry</label>
-        <textarea id="journal-content" placeholder="How are you feeling today? Any symptoms, thoughts, or progress to note..." rows="6"></textarea>
-      </div>
-      <div class="form-field">
-        <label>Symptoms (optional)</label>
-        <div class="form-row">
-          <div class="form-field">
-            <label for="symptom-energy">Energy</label>
-            <select id="symptom-energy">
-              <option value="">Select</option>
-              <option value="1">1 - Very Low</option>
-              <option value="2">2 - Low</option>
-              <option value="3">3 - Moderate</option>
-              <option value="4">4 - Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="symptom-appetite">Appetite</label>
-            <select id="symptom-appetite">
-              <option value="">Select</option>
-              <option value="1">1 - Very Low</option>
-              <option value="2">2 - Low</option>
-              <option value="3">3 - Normal</option>
-              <option value="4">4 - High</option>
-              <option value="5">5 - Very High</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label for="symptom-cravings">Cravings</label>
-            <select id="symptom-cravings">
-              <option value="">Select</option>
-              <option value="1">1 - None</option>
-              <option value="2">2 - Mild</option>
-              <option value="3">3 - Moderate</option>
-              <option value="4">4 - Strong</option>
-              <option value="5">5 - Intense</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="symptom-sleep">Sleep Quality</label>
-            <select id="symptom-sleep">
-              <option value="">Select</option>
-              <option value="1">1 - Very Poor</option>
-              <option value="2">2 - Poor</option>
-              <option value="3">3 - Fair</option>
-              <option value="4">4 - Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
+        <label>Mood</label>
+        <div class="checkin-pill-row" id="mood-pills">
+          <button type="button" class="checkin-pill" data-val="1">😞<br>Rough</button>
+          <button type="button" class="checkin-pill" data-val="2">😕<br>Meh</button>
+          <button type="button" class="checkin-pill" data-val="3">😐<br>Okay</button>
+          <button type="button" class="checkin-pill" data-val="4">😊<br>Good</button>
+          <button type="button" class="checkin-pill" data-val="5">😄<br>Great</button>
         </div>
       </div>
+
+      <div class="form-field">
+        <label>Energy</label>
+        <div class="checkin-pill-row" id="energy-pills">
+          <button type="button" class="checkin-pill" data-val="1">⚡ 1</button>
+          <button type="button" class="checkin-pill" data-val="2">⚡ 2</button>
+          <button type="button" class="checkin-pill" data-val="3">⚡ 3</button>
+          <button type="button" class="checkin-pill" data-val="4">⚡ 4</button>
+          <button type="button" class="checkin-pill" data-val="5">⚡ 5</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Sleep Quality</label>
+        <div class="checkin-pill-row" id="sleep-pills">
+          <button type="button" class="checkin-pill" data-val="1">😴 1</button>
+          <button type="button" class="checkin-pill" data-val="2">😴 2</button>
+          <button type="button" class="checkin-pill" data-val="3">😴 3</button>
+          <button type="button" class="checkin-pill" data-val="4">😴 4</button>
+          <button type="button" class="checkin-pill" data-val="5">😴 5</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Side effects today?</label>
+        <div class="yn-control" id="side-effects-yn">
+          <button type="button" class="yn-btn" data-val="yes">Yes</button>
+          <button type="button" class="yn-btn" data-val="no">No</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="journal-content">Notes <span style="font-weight:400;color:var(--text2)">(optional)</span></label>
+        <textarea id="journal-content" placeholder="Anything else to note..." rows="3"></textarea>
+      </div>
+
       <div class="btn-row" style="margin-top: 1.5rem;">
-        <button class="btn btn-primary" id="save-journal-btn">Save Entry</button>
+        <button class="btn btn-primary" id="save-journal-btn">Save Check-In</button>
         <button class="btn btn-secondary" id="cancel-journal-btn">Cancel</button>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- More Tab Content -->
@@ -2712,7 +3075,7 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
 
   <div class="card animate-in" style="border-left:3px solid var(--accent);margin-bottom:1rem">
     <p style="font-size:.8rem;color:var(--text2);margin:0;line-height:1.5">
-      ℹ️ <strong>About this app:</strong> Peptide Compass Pro is an educational reference and protocol tracking tool. It is not a medical device, does not provide medical advice, and is not a substitute for professional healthcare guidance. All calculations are mathematical tools for educational purposes. Always consult a qualified healthcare provider before starting, changing, or stopping any protocol.
+      ℹ️ <strong>About this app:</strong> Peptide Compass Pro is an educational math and protocol tracking tool — not a medical device. For educational math only — not medical advice. Always consult a qualified healthcare provider.
     </p>
   </div>
 
@@ -2725,20 +3088,30 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     <div class="protocols-empty" id="protocols-empty-state">No saved protocols yet. Complete the Add Peptide flow and save your setup for quick reuse.</div>
   </div>
 
-  <!-- A) Premium Guides promo card -->
-  <div class="card animate-in">
+  <!-- A) Premium Guides promo card (#130: shown after first value moment) -->
+  <div class="card animate-in upsell-gated">
     <div class="guides-promo-card">
-      <div class="guides-promo-icon">📚</div>
+      <div class="guides-promo-icon">🚀</div>
       <div class="guides-promo-text">
-        <div class="guides-promo-title">Premium Guides</div>
-        <div class="guides-promo-desc">Reference guides on peptide protocols and related topics</div>
-        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Browse Guides →</a>
+        <div class="guides-promo-title">Unlock Navigator</div>
+        <div class="guides-promo-desc">Save more protocols and unlock advanced tracking, scheduling, and the education library.</div>
+        <a class="guides-promo-btn" href="https://peterlukedigital.gumroad.com" target="_blank" rel="noopener">Explore Navigator →</a>
       </div>
     </div>
   </div>
 
   <div class="card animate-in">
     <div class="more-options">
+
+      <!-- Injection Sites -->
+      <div class="more-option" id="sites-option">
+        <div class="more-icon">💉</div>
+        <div class="more-text">
+          <div class="more-title">Injection Sites</div>
+          <div class="more-desc">Rotation tracker, body map, site history</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
 
       <!-- Inventory -->
       <div class="more-option" id="inventory-option">
@@ -2774,8 +3147,8 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
       <div class="more-option more-option-toggle" style="cursor:default;">
         <div class="more-icon">🎛️</div>
         <div class="more-text">
-          <div class="more-title">Advanced Mode</div>
-          <div class="more-desc">Show inventory, stacks, reverse calc, and deep tracking</div>
+          <div class="more-title">Show advanced tools</div>
+          <div class="more-desc">Inventory, stacks, BAC water calculator, and deep tracking</div>
         </div>
         <label class="toggle-switch">
           <input type="checkbox" id="app-mode-toggle">
@@ -2889,7 +3262,13 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
     </div>
   </div>
 
-  <p class="disclaimer">Educational reference tool only — not medical advice. Peptide research is still evolving and individual responses vary. Always consult a qualified healthcare provider before starting any protocol.</p>
+  <!-- Demo Mode -->
+  <div class="card animate-in" id="demo-mode-card" style="text-align:center;padding:1rem">
+    <p style="font-size:.78rem;color:var(--text2);margin-bottom:.65rem;line-height:1.5">Load sample data to explore all features without entering your own info.</p>
+    <button class="btn-demo-try" id="try-demo-btn">Try Demo Mode</button>
+  </div>
+
+  <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
 <!-- Inventory Tab Content -->
@@ -2904,6 +3283,39 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   <div class="card animate-in" id="inv-card">
     <div id="inv-summary"></div>
     <div id="vial-list"></div>
+  </div>
+</div>
+
+<!-- Injection Sites Tab Content -->
+<div id="tab-sites" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
+    <button id="sites-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Injection <span>Sites</span></h1>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Rotate sites to prevent tissue damage</p>
+  </div>
+  <!-- Suggestion card -->
+  <div class="card animate-in" id="sites-suggestion-card">
+    <div id="sites-suggestion"></div>
+  </div>
+  <!-- Body map card -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:1rem">
+      <h2>Body Map</h2>
+      <div class="site-view-toggle">
+        <button class="site-view-btn active" data-view="front">Front</button>
+        <button class="site-view-btn" data-view="back">Back</button>
+      </div>
+    </div>
+    <div id="sites-body-map">
+      <!-- Rendered by renderSitesTab() -->
+    </div>
+  </div>
+  <!-- History card -->
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:.75rem"><h2>Recent Sites</h2></div>
+    <div id="sites-history"></div>
   </div>
 </div>
 
@@ -3209,6 +3621,156 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   </div>
 </div>
 
+<!-- Beginner Onboarding Overlay (#132) -->
+<div id="onboarding-overlay">
+  <!-- Sticky progress bar -->
+  <div class="ob3-progress-wrap">
+    <div class="ob3-progress-bar"><div class="ob3-progress-fill" id="ob3-progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Step 0: Welcome -->
+  <div class="ob3-step active" id="ob3-step-0">
+    <div class="ob3-step-center">
+      <h1 class="ob3-heading" style="margin-bottom:.6rem">Your peptide protocols,<br>done right.</h1>
+      <p class="ob3-sub" style="text-align:center;margin:0 auto 2rem">Reconstitution math, dosing schedules, and injection logs — all in one place. Takes about 2 minutes to set up.</p>
+      <button class="ob3-btn-primary" id="ob3-start">Get Started →</button>
+      <button class="ob3-expert-link" id="ob3-expert">I'm experienced — show me everything</button>
+    </div>
+  </div>
+
+  <!-- Step 1: Peptide picker -->
+  <div class="ob3-step" id="ob3-step-1">
+    <div class="ob3-step-num">Step 1 of 6</div>
+    <h2 class="ob3-heading">What peptide are you taking?</h2>
+    <p class="ob3-sub">Tap one to select it. You can add more later.</p>
+    <input type="search" class="ob3-search" id="ob3-pep-search" placeholder="Search peptides..." autocomplete="off">
+    <div class="ob3-pep-list" id="ob3-pep-list"><!-- JS populated --></div>
+    <div id="ob3-custom-wrap" style="display:none;width:100%">
+      <input type="text" class="ob3-input" id="ob3-custom-name" placeholder="Type peptide name...">
+    </div>
+    <button class="ob3-custom-toggle" id="ob3-custom-toggle">My peptide isn't listed →</button>
+    <button class="ob3-btn-primary" id="ob3-step1-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 2: Vial size -->
+  <div class="ob3-step" id="ob3-step-2">
+    <button class="ob3-back" id="ob3-back-2">← Back</button>
+    <div class="ob3-step-num">Step 2 of 6</div>
+    <h2 class="ob3-heading">What's your vial size?</h2>
+    <p class="ob3-context" id="ob3-ctx-2"></p>
+    <p class="ob3-helper">Check your vial label — it's usually printed on the front.</p>
+    <div class="ob3-pills" id="ob3-vial-pills">
+      <button class="ob3-pill" data-val="2">2mg</button>
+      <button class="ob3-pill" data-val="5">5mg</button>
+      <button class="ob3-pill" data-val="10">10mg</button>
+      <button class="ob3-pill" data-val="15">15mg</button>
+      <button class="ob3-pill" data-val="20">20mg</button>
+      <button class="ob3-pill" data-val="30">30mg</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-vial-custom" placeholder="Other (enter mg)" min="0.1" step="0.1" style="display:none">
+    <button class="ob3-custom-toggle" id="ob3-vial-custom-toggle">Enter custom amount</button>
+    <button class="ob3-btn-primary" id="ob3-step2-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 3: BAC water -->
+  <div class="ob3-step" id="ob3-step-3">
+    <button class="ob3-back" id="ob3-back-3">← Back</button>
+    <div class="ob3-step-num">Step 3 of 6</div>
+    <h2 class="ob3-heading">How much BAC water did you add?</h2>
+    <p class="ob3-context" id="ob3-ctx-3"></p>
+    <p class="ob3-helper">This is the bacteriostatic water used to reconstitute your peptide.</p>
+    <div class="ob3-pills" id="ob3-water-pills">
+      <button class="ob3-pill" data-val="1">1mL</button>
+      <button class="ob3-pill" data-val="1.5">1.5mL</button>
+      <button class="ob3-pill" data-val="2">2mL</button>
+      <button class="ob3-pill" data-val="2.5">2.5mL</button>
+      <button class="ob3-pill" data-val="3">3mL</button>
+      <button class="ob3-pill" data-val="5">5mL</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-water-custom" placeholder="Other (enter mL)" min="0.1" step="0.1" style="display:none">
+    <button class="ob3-custom-toggle" id="ob3-water-custom-toggle">Enter custom amount</button>
+    <details class="ob3-helper" style="margin-bottom:.75rem">
+      <summary style="cursor:pointer;color:var(--accent);font-size:.8rem">Not sure how much to add?</summary>
+      <div style="margin-top:.35rem;padding:.5rem .6rem;background:var(--surface2);border-radius:8px;font-size:.78rem;line-height:1.5">A common starting point is 2mL for a 5mg vial. You can always adjust later.</div>
+    </details>
+    <button class="ob3-btn-primary" id="ob3-step3-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 4: Dose -->
+  <div class="ob3-step" id="ob3-step-4">
+    <button class="ob3-back" id="ob3-back-4">← Back</button>
+    <div class="ob3-step-num">Step 4 of 6</div>
+    <h2 class="ob3-heading">What dose are you taking?</h2>
+    <p class="ob3-context" id="ob3-ctx-4"></p>
+    <div class="ob3-unit-toggle">
+      <button class="ob3-unit-btn active" id="ob3-unit-mcg" data-unit="mcg">mcg</button>
+      <button class="ob3-unit-btn" id="ob3-unit-mg" data-unit="mg">mg</button>
+    </div>
+    <input type="number" class="ob3-input" id="ob3-dose-input" placeholder="Enter dose..." min="0" step="0.1">
+    <div class="ob3-dose-presets" id="ob3-dose-presets"></div>
+    <div class="ob3-live-result" id="ob3-live-result" style="display:none">
+      <div class="ob3-units-big" id="ob3-units-big">—</div>
+      <div class="ob3-units-label">units to draw</div>
+      <div class="ob3-conc-line" id="ob3-conc-line"></div>
+    </div>
+    <div class="ob3-syringe-label">Syringe size</div>
+    <div class="ob3-syringe-row" id="ob3-syringe-row">
+      <button class="ob3-syr-btn selected" data-ml="0.3">0.3mL<br><span style="font-size:.65rem;font-weight:400">30 units</span></button>
+      <button class="ob3-syr-btn" data-ml="0.5">0.5mL<br><span style="font-size:.65rem;font-weight:400">50 units</span></button>
+      <button class="ob3-syr-btn" data-ml="1.0">1.0mL<br><span style="font-size:.65rem;font-weight:400">100 units</span></button>
+    </div>
+    <button class="ob3-btn-primary" id="ob3-step4-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 5: Frequency -->
+  <div class="ob3-step" id="ob3-step-5">
+    <button class="ob3-back" id="ob3-back-5">← Back</button>
+    <div class="ob3-step-num">Step 5 of 6</div>
+    <h2 class="ob3-heading">How often do you inject?</h2>
+    <p class="ob3-sub">You can always adjust this later.</p>
+    <div class="ob3-pills" id="ob3-freq-pills">
+      <button class="ob3-pill" data-val="daily">Every day</button>
+      <button class="ob3-pill" data-val="eod">Every other day</button>
+      <button class="ob3-pill" data-val="2x_week">2x per week</button>
+      <button class="ob3-pill" data-val="3x_week">3x per week</button>
+      <button class="ob3-pill" data-val="5x_week">5x per week</button>
+      <button class="ob3-pill" data-val="weekly">Once a week</button>
+    </div>
+    <div class="ob3-syringe-label" style="margin-top:.25rem">What time?</div>
+    <div class="ob3-pills" id="ob3-time-pills">
+      <button class="ob3-pill" data-val="08:00">Morning (8am)</button>
+      <button class="ob3-pill" data-val="12:00">Afternoon (12pm)</button>
+      <button class="ob3-pill" data-val="18:00">Evening (6pm)</button>
+      <button class="ob3-pill" data-val="22:00">Night (10pm)</button>
+    </div>
+    <button class="ob3-btn-primary" id="ob3-step5-next" disabled>Next →</button>
+  </div>
+
+  <!-- Step 6: Summary + Save -->
+  <div class="ob3-step" id="ob3-step-6">
+    <button class="ob3-back" id="ob3-back-6">← Back</button>
+    <div class="ob3-step-num">Step 6 of 6</div>
+    <h2 class="ob3-heading">Here's your protocol</h2>
+    <p class="ob3-sub">Does this look right?</p>
+    <div class="ob3-summary-card" id="ob3-summary-card">
+      <!-- JS populated -->
+    </div>
+    <button class="ob3-btn-primary" id="ob3-save-btn">Save Protocol ✓</button>
+    <button class="ob3-btn-secondary" id="ob3-edit-btn">Edit something ←</button>
+  </div>
+
+  <!-- Step 7: Done / Add Another -->
+  <div class="ob3-step" id="ob3-step-7" style="justify-content:center">
+    <div class="ob3-step-center">
+      <div class="ob3-done-icon">✅</div>
+      <div class="ob3-done-title" id="ob3-done-title">Protocol saved!</div>
+      <div class="ob3-done-sub">Want to add another peptide to your stack?</div>
+      <button class="ob3-btn-primary" id="ob3-add-another" style="max-width:320px">Add another peptide →</button>
+      <button class="ob3-btn-secondary" id="ob3-finish" style="max-width:320px">I'm done — show me my dashboard →</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /.app-content -->
 
 <!-- Bottom Navigation Tabs -->
@@ -3219,11 +3781,13 @@ body.demo-mode #demo-walkthrough-offer { display: flex !important; }
   </button>
   <button class="tab-btn" id="nav-schedule-link">
     <span class="tab-icon">🗓️</span>
+    <span class="new-dot"></span>
     <span class="tab-label">Schedule</span>
   </button>
   <button class="tab-btn" data-tab="history" style="position:relative">
     <span class="tab-icon">🕐</span>
     <span class="overdue-badge" id="overdue-badge"></span>
+    <span class="new-dot"></span>
     <span class="tab-label">History</span>
   </button>
   <button class="tab-btn" data-tab="more" style="position:relative">
@@ -3502,6 +4066,12 @@ function saveInjection(injectionKey, meta = {}) {
     late: meta.late || false
   };
   localStorage.setItem('injectionLog', JSON.stringify(log));
+  // Milestone: first dose logged (#138)
+  if (!localStorage.getItem('hasLoggedDose')) {
+    localStorage.setItem('hasLoggedDose', '1');
+    // applyStage is defined inside DOMContentLoaded — call if available
+    if (typeof applyStage === 'function') applyStage();
+  }
 
   // Update vial tracking
   const parts = injectionKey.split('_');
@@ -4567,7 +5137,7 @@ function renderToday(animate) {
             <div class="today-empty-cta-sub">Set up your peptide, calculate your dose, and get a schedule in minutes.</div>
           </div>
         </div>
-        <button class="today-empty-cta-btn" onclick="document.getElementById('add-trigger').click();document.getElementById('add-trigger').scrollIntoView({behavior:'smooth',block:'center'})">+ Add Peptide</button>
+        <button class="today-empty-cta-btn" onclick="openAddPeptideForm()">+ Add Peptide</button>
       </div>`;
       return;
     }
@@ -5326,6 +5896,20 @@ function openLogDetailSheet(injectionKey, pepName, doseStr, unitsStr) {
     const notesVal = overlay.querySelector('#ls-notes').value.trim();
     const timestamp = timeVal ? new Date(timeVal).toISOString() : ts;
     updateInjectionMeta(injectionKey, { timestamp, site: siteVal, notes: notesVal });
+    // Mirror site to injection sites rotation tracker
+    if (siteVal) {
+      // Map display name to site key
+      const siteKeyMap = {
+        'Left delt': 'deltoid-left', 'Right delt': 'deltoid-right',
+        'Left glute': 'glute-left', 'Right glute': 'glute-right',
+        'Left thigh': 'thigh-left', 'Right thigh': 'thigh-right',
+        'Abdomen': 'abdomen-left',
+        'Left Abdomen': 'abdomen-left', 'Right Abdomen': 'abdomen-right',
+        'Left Flank': 'flank-left', 'Right Flank': 'flank-right'
+      };
+      const siteKey = siteKeyMap[siteVal];
+      if (siteKey) saveInjectionSite(siteKey);
+    }
     overlay.remove();
     renderInjectionHistory();
     renderInjectionLog();
@@ -6470,15 +7054,168 @@ function deleteJournalEntry(date) {
   const journal = getJournal();
   const compareDate = new Date(date);
   compareDate.setHours(0, 0, 0, 0);
-  
+
   const filteredJournal = journal.filter(entry => {
     const entryDate = new Date(entry.date);
     entryDate.setHours(0, 0, 0, 0);
     return entryDate.getTime() !== compareDate.getTime();
   });
-  
+
   saveJournal(filteredJournal);
   return filteredJournal;
+}
+
+// ── Journal Check-In UX Helpers (#116-#121) ──────────────────
+
+function getCheckInStreak(journal) {
+  if (!journal || !journal.length) return 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  let streak = 0;
+  const check = new Date(today);
+  for (let i = 0; i < 365; i++) {
+    const ds = check.toISOString().split('T')[0];
+    if (!journal.some(e => e.date === ds)) break;
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+  return streak;
+}
+
+function getLastInjection() {
+  const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+  const dates = Object.keys(log).sort().reverse();
+  if (!dates.length) return null;
+  const lastDate = dates[0];
+  const entry = Array.isArray(log[lastDate]) ? log[lastDate][0] : log[lastDate];
+  if (!entry) return null;
+  return { date: lastDate, ...entry };
+}
+
+function renderProtocolContext() {
+  const $card = document.getElementById('journal-protocol-ctx');
+  if (!$card) return;
+  const last = getLastInjection();
+  if (!last) { $card.style.display = 'none'; return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(last.date); d.setHours(0,0,0,0);
+  const diff = Math.round((today - d) / 86400000);
+  const when = diff === 0 ? 'today' : diff === 1 ? 'yesterday' : diff + ' days ago';
+  const peptide = last.peptide || last.name || last.compound || 'Unknown peptide';
+  const dose = last.dose ? last.dose + '\u202f' + (last.unit || 'mcg') : '';
+  $card.style.display = 'flex';
+  document.getElementById('ctx-peptide-name').textContent = peptide;
+  document.getElementById('ctx-peptide-detail').textContent = (dose ? dose + ' \u00b7 ' : '') + 'Last injected ' + when;
+}
+
+function renderJournalInsights() {
+  const $el = document.getElementById('journal-insights');
+  if (!$el) return;
+  const journal = getJournal();
+  if (journal.length < 3) { $el.style.display = 'none'; return; }
+
+  function avgOf(entries, getter) {
+    const vals = entries.map(getter).filter(v => v !== null && !isNaN(v));
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  }
+  function moodNum(e) {
+    const m = e.mood;
+    if (!m) return null;
+    const n = parseInt(m);
+    return isNaN(n) ? null : n;
+  }
+  function symNum(key) { return e => { const v = parseFloat(e.symptoms?.[key]); return isNaN(v) ? null : v; }; }
+
+  const recent = journal.slice(0, Math.min(7, journal.length));
+  const older  = journal.slice(7, Math.min(14, journal.length));
+  const insights = [];
+
+  const streak = getCheckInStreak(journal);
+  if (streak >= 2) insights.push('\uD83D\uDD25 ' + streak + '-day check-in streak \u2014 keep it going!');
+
+  if (older.length >= 2) {
+    const mR = avgOf(recent, moodNum), mO = avgOf(older, moodNum);
+    if (mR !== null && mO !== null) {
+      const d = mR - mO;
+      if (d >= 0.5) insights.push('\uD83D\uDCC8 Your mood has been trending up lately.');
+      else if (d <= -0.5) insights.push('\uD83D\uDCC9 Your mood has dipped compared to last week.');
+      else insights.push('\uD83D\uDE10 Your mood has been steady this week.');
+    }
+    const eR = avgOf(recent, symNum('energy')), eO = avgOf(older, symNum('energy'));
+    if (eR !== null && eO !== null) {
+      if (eR - eO >= 0.5) insights.push('\u26A1 Energy levels have been higher lately.');
+      else if (eR - eO <= -0.5) insights.push('\u26A1 Energy has been lower than usual.');
+    }
+    const sR = avgOf(recent, symNum('sleep')), sO = avgOf(older, symNum('sleep'));
+    if (sR !== null && sO !== null) {
+      if (sR - sO >= 0.5) insights.push('\uD83D\uDE34 Sleep quality is improving.');
+      else if (sR - sO <= -0.5) insights.push('\uD83D\uDE34 Sleep has been rougher than usual.');
+    }
+  } else {
+    const mAvg = avgOf(recent, moodNum);
+    if (mAvg !== null) {
+      if (mAvg >= 4) insights.push('\uD83D\uDE0A You\'ve been feeling good this week.');
+      else if (mAvg <= 2) insights.push('\uD83D\uDC9B Tough stretch \u2014 keep checking in.');
+    }
+  }
+
+  const shown = insights.slice(0, 3);
+  if (!shown.length) { $el.style.display = 'none'; return; }
+  $el.style.display = 'block';
+  $el.innerHTML = '<div class="journal-insight-card"><div class="insight-title">Your Trends</div>' +
+    shown.map(s => '<div class="insight-line">' + s + '</div>').join('') + '</div>';
+}
+
+function showSaveReward() {
+  const journal = getJournal();
+  const streak = getCheckInStreak(journal);
+  const total  = journal.length;
+  const streakMsg = streak >= 2 ? streak + '-day streak!' : 'Check-in logged!';
+  const totalMsg  = total + ' total check-in' + (total !== 1 ? 's' : '');
+  const emoji = streak >= 7 ? '\uD83D\uDD25' : streak >= 3 ? '\uD83D\uDCAA' : '\uD83C\uDF89';
+
+  let $card = document.getElementById('reward-card');
+  if (!$card) {
+    $card = document.createElement('div');
+    $card.id = 'reward-card';
+    $card.className = 'reward-card';
+    document.body.appendChild($card);
+  }
+  $card.innerHTML = '<div class="reward-emoji">' + emoji + '</div>' +
+    '<div class="reward-message">Saved!</div>' +
+    '<div class="reward-stats">' + streakMsg + ' \u00b7 ' + totalMsg + '</div>';
+  $card.classList.remove('hiding');
+  $card.classList.add('showing');
+
+  const dismiss = () => {
+    $card.classList.add('hiding');
+    setTimeout(() => { $card.classList.remove('showing', 'hiding'); }, 260);
+    $card.removeEventListener('click', dismiss);
+  };
+  $card.addEventListener('click', dismiss);
+  clearTimeout($card._t);
+  $card._t = setTimeout(dismiss, 3000);
+}
+
+function initPillButtons() {
+  ['mood-pills', 'energy-pills', 'sleep-pills'].forEach(rowId => {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+    row.querySelectorAll('.checkin-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        row.querySelectorAll('.checkin-pill').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  });
+  const $yn = document.getElementById('side-effects-yn');
+  if ($yn) {
+    $yn.querySelectorAll('.yn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $yn.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  }
 }
 
 // ── Formatting Helpers ───────────────────────────────────────
@@ -6649,8 +7386,8 @@ function renderJournalList() {
     $journalList.innerHTML = `
       <div class="empty-state">
         <div class="icon">📝</div>
-        <h3>No journal entries yet</h3>
-        <p>How are you feeling? Add your first journal entry.</p>
+        <h3>Start your first check-in</h3>
+        <p>Log how you're feeling today. Takes 30 seconds.</p>
       </div>
     `;
     return;
@@ -6887,6 +7624,308 @@ function setupLogbookToggle() {
   switchToView(savedView);
 }
 
+// ── Injection Sites ───────────────────────────────────────
+const SITE_LABELS = {
+  'abdomen-left': 'Left Abdomen', 'abdomen-right': 'Right Abdomen',
+  'thigh-left': 'Left Thigh', 'thigh-right': 'Right Thigh',
+  'deltoid-left': 'Left Delt', 'deltoid-right': 'Right Delt',
+  'glute-left': 'Left Glute', 'glute-right': 'Right Glute',
+  'flank-left': 'Left Flank', 'flank-right': 'Right Flank'
+};
+const ALL_SITES = Object.keys(SITE_LABELS);
+
+function getInjectionSites() {
+  try { return JSON.parse(localStorage.getItem('injectionSites') || '[]'); } catch { return []; }
+}
+function saveInjectionSite(siteKey) {
+  const sites = getInjectionSites();
+  sites.unshift({ site: siteKey, date: new Date().toISOString() });
+  // Keep only last 50 entries
+  localStorage.setItem('injectionSites', JSON.stringify(sites.slice(0, 50)));
+}
+function getSiteLastUsed(siteKey) {
+  const entry = getInjectionSites().find(s => s.site === siteKey);
+  return entry ? new Date(entry.date) : null;
+}
+function getSiteStatus(siteKey) {
+  const last = getSiteLastUsed(siteKey);
+  if (!last) return 'never';
+  const diffDays = (Date.now() - last.getTime()) / 86400000;
+  if (diffDays < 1) return 'used-today';
+  if (diffDays < 3) return 'recent';
+  return 'fresh';
+}
+function getSuggestedSite() {
+  const sites = getInjectionSites();
+  if (sites.length === 0) return null;
+  // Find site with oldest last-use date
+  const lastUsedMap = {};
+  sites.forEach(s => { if (!lastUsedMap[s.site]) lastUsedMap[s.site] = new Date(s.date); });
+  let oldest = null, oldestDate = null;
+  ALL_SITES.forEach(key => {
+    if (!lastUsedMap[key]) { oldest = key; oldestDate = null; return; }
+    if (!oldestDate || lastUsedMap[key] < oldestDate) { oldest = key; oldestDate = lastUsedMap[key]; }
+  });
+  return oldest ? { key: oldest, lastUsed: oldestDate } : null;
+}
+
+function renderSitesTab() {
+  // Suggestion card
+  const $sug = document.getElementById('sites-suggestion');
+  if ($sug) {
+    const suggestion = getSuggestedSite();
+    if (!suggestion) {
+      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">💉</div><div class="site-suggestion-body"><div class="site-suggestion-title">Tap a site to start tracking</div><div class="site-suggestion-sub">Rotate injection sites to prevent tissue damage and improve absorption.</div></div></div>`;
+    } else {
+      const label = SITE_LABELS[suggestion.key];
+      const daysAgo = suggestion.lastUsed ? Math.round((Date.now() - suggestion.lastUsed.getTime()) / 86400000) : null;
+      const sub = daysAgo === null ? 'Never used — best choice!' : `Last used ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
+      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">✅</div><div class="site-suggestion-body"><div class="site-suggestion-title">Suggested: ${label}</div><div class="site-suggestion-sub">${sub}</div></div></div>`;
+    }
+  }
+
+  // Body map
+  const $map = document.getElementById('sites-body-map');
+  if ($map) {
+    const activeView = $map.dataset.view || 'front';
+    renderBodyMap($map, activeView);
+  }
+
+  // History
+  const $hist = document.getElementById('sites-history');
+  if ($hist) {
+    const sites = getInjectionSites().slice(0, 10);
+    if (sites.length === 0) {
+      $hist.innerHTML = '<div class="today-empty">No sites logged yet</div>';
+    } else {
+      const statusColors = { 'used-today': '#ef4444', 'recent': '#f59e0b', 'fresh': '#22c55e', 'never': 'var(--border)' };
+      $hist.innerHTML = sites.map(s => {
+        const label = SITE_LABELS[s.site] || s.site;
+        const diff = (Date.now() - new Date(s.date).getTime()) / 86400000;
+        const timeStr = diff < 0.5 ? 'Today' : diff < 1.5 ? 'Yesterday' : Math.round(diff) + ' days ago';
+        const status = getSiteStatus(s.site);
+        return `<div class="site-history-item">
+          <div class="site-history-dot" style="background:${statusColors[status]}"></div>
+          <div class="site-history-name">${label}</div>
+          <div class="site-history-time">${timeStr}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+function renderBodyMap($container, view) {
+  $container.dataset.view = view;
+
+  // Site positions in SVG coordinate space (viewBox 0 0 160 320)
+  const frontSites = [
+    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
+    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
+    { key: 'flank-left',    cx: 38,  cy: 138, label: 'L Flank' },
+    { key: 'flank-right',   cx: 122, cy: 138, label: 'R Flank' },
+    { key: 'abdomen-left',  cx: 62,  cy: 150, label: 'L Abd' },
+    { key: 'abdomen-right', cx: 98,  cy: 150, label: 'R Abd' },
+    { key: 'thigh-left',    cx: 58,  cy: 230, label: 'L Thigh' },
+    { key: 'thigh-right',   cx: 102, cy: 230, label: 'R Thigh' },
+  ];
+  const backSites = [
+    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
+    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
+    { key: 'glute-left',    cx: 58,  cy: 175, label: 'L Glute' },
+    { key: 'glute-right',   cx: 102, cy: 175, label: 'R Glute' },
+    { key: 'thigh-left',    cx: 58,  cy: 240, label: 'L Thigh' },
+    { key: 'thigh-right',   cx: 102, cy: 240, label: 'R Thigh' },
+  ];
+  const sites = view === 'front' ? frontSites : backSites;
+
+  // Simple body outline paths
+  const frontBody = `
+    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
+  `;
+  const backBody = `
+    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
+    <ellipse cx="58" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
+    <ellipse cx="102" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
+  `;
+
+  const dotsHtml = sites.map(s => {
+    const status = getSiteStatus(s.key);
+    const fillColors = { 'fresh': '#22c55e', 'recent': '#f59e0b', 'used-today': '#ef4444', 'never': 'var(--surface2)' };
+    const strokeColors = { 'fresh': '#16a34a', 'recent': '#d97706', 'used-today': '#dc2626', 'never': 'var(--border)' };
+    return `<g class="site-dot ${status}" data-site="${s.key}" data-label="${SITE_LABELS[s.key]}" role="button" aria-label="${SITE_LABELS[s.key]}">
+      <circle cx="${s.cx}" cy="${s.cy}" r="11" fill="${fillColors[status]}" stroke="${strokeColors[status]}" stroke-width="2"/>
+      <text x="${s.cx}" y="${s.cy + 3}" text-anchor="middle">${s.label}</text>
+    </g>`;
+  }).join('');
+
+  const legendHtml = `<div style="display:flex;gap:.75rem;justify-content:center;margin-top:.75rem;flex-wrap:wrap">
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block"></span>Fresh (3+ days)</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Recent (1-2 days)</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Today</span>
+    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-block"></span>Never used</span>
+  </div>`;
+
+  $container.innerHTML = `
+    <div class="site-body-map">
+      <svg class="site-body-svg" viewBox="0 0 160 310" xmlns="http://www.w3.org/2000/svg" style="color:var(--text2)">
+        ${view === 'front' ? frontBody : backBody}
+        ${dotsHtml}
+      </svg>
+    </div>
+    ${legendHtml}
+  `;
+
+  // Attach click handlers to dots
+  $container.querySelectorAll('.site-dot').forEach(dot => {
+    dot.style.cursor = 'pointer';
+    dot.addEventListener('click', () => {
+      openSitePopup(dot.dataset.site, dot.dataset.label);
+    });
+  });
+}
+
+function openSitePopup(siteKey, siteLabel) {
+  const overlay = document.createElement('div');
+  overlay.className = 'site-popup-overlay';
+  overlay.innerHTML = `
+    <div class="site-popup">
+      <div style="width:32px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .75rem"></div>
+      <div class="site-popup-title">Log injection here?</div>
+      <div class="site-popup-sub">${siteLabel}</div>
+      <div class="site-popup-actions">
+        <button class="site-popup-confirm">✓ Confirm</button>
+        <button class="site-popup-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('.site-popup-confirm').addEventListener('click', () => {
+    saveInjectionSite(siteKey);
+    overlay.remove();
+    renderSitesTab();
+    // Brief toast
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;z-index:9999;pointer-events:none;animation:fadeUp .2s ease';
+    toast.textContent = 'Logged: ' + siteLabel;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
+  overlay.querySelector('.site-popup-cancel').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+// ── Demo Mode ─────────────────────────────────────────────
+function isDemoMode() {
+  return localStorage.getItem('demoMode') === 'true';
+}
+
+function loadDemoData() {
+  // Find peptide indices
+  const bpcIdx = PEPTIDES.findIndex(p => p.name === 'BPC-157');
+  const tb500Idx = PEPTIDES.findIndex(p => p.name === 'TB-500');
+  if (bpcIdx === -1 || tb500Idx === -1) { alert('Demo data: peptide not found'); return; }
+
+  const now = new Date();
+  const daysAgo = n => { const d = new Date(now); d.setDate(d.getDate() - n); return d; };
+  const isoAgo = n => daysAgo(n).toISOString();
+  const dateStrAgo = n => { const d = daysAgo(n); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+
+  // Schedule: BPC-157 + TB-500
+  const demoSchedule = [
+    { peptideIndex: bpcIdx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: 'daily' },
+    { peptideIndex: tb500Idx, tier: 'standard', vialMg: 5, waterMl: 2, startDate: dateStrAgo(14), frequency: '3x-week' }
+  ];
+  localStorage.setItem('peptide-schedule', JSON.stringify(demoSchedule));
+
+  // Injection log: 12 entries over 14 days, some days skipped for realism
+  const injLog = {};
+  const loggedDays = [0,1,2,4,5,6,7,9,10,11,12,13]; // skip days 3, 8
+  loggedDays.forEach(d => {
+    const dateStr = dateStrAgo(d);
+    const ts = daysAgo(d); ts.setHours(8, 15, 0, 0);
+    injLog['BPC-157_' + dateStr] = { timestamp: ts.toISOString(), site: ['abdomen-left','abdomen-right','thigh-left','thigh-right','flank-left','flank-right'][d % 6], notes: d === 4 ? 'Feeling more flexible today' : d === 10 ? 'Knee pain noticeably less' : '' };
+  });
+  // TB-500: 3x/week pattern
+  [1,4,6,8,11,13].forEach(d => {
+    const dateStr = dateStrAgo(d);
+    const ts = daysAgo(d); ts.setHours(9, 0, 0, 0);
+    injLog['TB-500_' + dateStr] = { timestamp: ts.toISOString(), site: ['deltoid-left','deltoid-right','glute-left','glute-right'][d % 4], notes: '' };
+  });
+  localStorage.setItem('injectionLog', JSON.stringify(injLog));
+  // Mark first dose logged
+  localStorage.setItem('hasLoggedDose', '1');
+
+  // Journal entries (peptideLogs key)
+  const journalEntries = [
+    { date: dateStrAgo(1), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: 'Feeling more flexible today. Recovery seems faster.' },
+    { date: dateStrAgo(3), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: '' },
+    { date: dateStrAgo(5), mood: 4, energy: 4, sleep: 4, cravings: 'low', notes: 'Great energy today. Knee pain noticeably less.' },
+    { date: dateStrAgo(7), mood: 3, energy: 2, sleep: 3, cravings: 'high', notes: 'Bit tired. Skipped morning workout.' },
+    { date: dateStrAgo(9), mood: 4, energy: 3, sleep: 4, cravings: 'low', notes: '' },
+    { date: dateStrAgo(11), mood: 3, energy: 3, sleep: 3, cravings: 'moderate', notes: 'Noticing improved sleep quality.' },
+    { date: dateStrAgo(12), mood: 3, energy: 2, sleep: 2, cravings: 'moderate', notes: 'First week, adjusting.' },
+    { date: dateStrAgo(14), mood: 3, energy: 3, sleep: 3, cravings: 'low', notes: 'Started protocol today.' },
+  ];
+  localStorage.setItem('peptideJournal', JSON.stringify(journalEntries));
+
+  // Vial inventory
+  const vialData = {
+    'BPC-157_5_2': { totalDoses: 20, usedDoses: 5, reconDate: isoAgo(10) },
+    'TB-500_5_2': { totalDoses: 12, usedDoses: 4, reconDate: isoAgo(5) }
+  };
+  localStorage.setItem('vialData', JSON.stringify(vialData));
+
+  // Injection sites history
+  const sitesLog = [
+    { site: 'abdomen-left', date: isoAgo(0) },
+    { site: 'thigh-right', date: isoAgo(1) },
+    { site: 'abdomen-right', date: isoAgo(2) },
+    { site: 'deltoid-left', date: isoAgo(3) },
+    { site: 'thigh-left', date: isoAgo(4) },
+    { site: 'deltoid-right', date: isoAgo(6) },
+  ];
+  localStorage.setItem('injectionSites', JSON.stringify(sitesLog));
+
+  // Weight entries
+  const weights = [185, 184.5, 184.2, 183.8, 183.5, 183.2, 182.8, 182.5, 182.2, 182];
+  const weightLog = weights.map((w, i) => ({ value: w, date: dateStrAgo(13 - i), unit: 'lbs' }));
+  localStorage.setItem('weightTracker', JSON.stringify(weightLog));
+
+  // Mark demo active
+  localStorage.setItem('demoMode', 'true');
+  localStorage.setItem('hasOnboarded', '1');
+  localStorage.setItem('hasSeenResult', '1');
+  localStorage.setItem('hasSavedProtocol', '1');
+  localStorage.setItem('activeTab', 'schedule');
+
+  // Reload to apply
+  window.location.reload();
+}
+
+function clearDemoData() {
+  if (!confirm('This will clear all demo data and reset to a clean state. Continue?')) return;
+  const keysToRemove = [
+    'demoMode','peptide-schedule','injectionLog','hasLoggedDose','vialData',
+    'injectionSites','weightTracker','peptideJournal','hasOnboarded',
+    'hasSeenResult','hasSavedProtocol','activeTab'
+  ];
+  keysToRemove.forEach(k => localStorage.removeItem(k));
+  window.location.reload();
+}
+
+function applyDemoBadge() {
+  const badge = document.getElementById('demo-badge');
+  if (!badge) return;
+  if (isDemoMode()) {
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
 // ── Initialize on DOM Ready ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
@@ -6900,22 +7939,571 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyFirstRunState() {
     if (isFirstRun()) {
       document.body.classList.add('first-run');
-      const wc = document.getElementById('welcome-card');
-      if (wc) wc.style.display = '';
+      // V3: show full-screen overlay instead of welcome card
+      const $ov = document.getElementById('onboarding-overlay');
+      if ($ov) { $ov.classList.add('showing'); $ov.classList.add('ob3-hero'); $ov.classList.add('ob3-step-0'); }
+      // resume step stored — handled after ob3GoStep is defined below
     }
   }
 
-  function exitFirstRun() {
+  function exitFirstRun(showUnlock) {
     document.body.classList.remove('first-run');
     localStorage.setItem('hasOnboarded', '1');
+    localStorage.removeItem('onboardingStep');
+    const $ov = document.getElementById('onboarding-overlay');
+    if ($ov) $ov.classList.remove('showing');
     const wc = document.getElementById('welcome-card');
     if (wc) wc.style.display = 'none';
+    if (showUnlock && !localStorage.getItem('hasSeenUnlock')) {
+      localStorage.setItem('hasSeenUnlock', '1');
+      const $toast = document.getElementById('unlock-toast');
+      if ($toast) {
+        $toast.style.display = 'block';
+        document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('show-new-dot');
+        document.querySelector('.tab-btn[data-tab="schedule"]')?.classList.add('show-new-dot');
+        setTimeout(() => { $toast.style.display = 'none'; }, 4000);
+      }
+    }
   }
 
   // Keep dismissOnboarding as alias for compatibility with add-confirm handler
-  function dismissOnboarding() { exitFirstRun(); }
+  function dismissOnboarding() { exitFirstRun(true); }
 
   applyFirstRunState();
+
+  // ── Progressive UX States (#135/#138) ──────────────────────
+  function getUserStage() {
+    const isAdvanced = localStorage.getItem('appMode') === 'advanced';
+    if (isAdvanced) return 'power';
+    const hasDose    = localStorage.getItem('hasLoggedDose');
+    const journal    = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    if (hasDose && journal.length >= 5) return 'power';
+    const hasProto   = localStorage.getItem('hasSavedProtocol');
+    if (hasProto) return 'active';
+    const hasCalc    = localStorage.getItem('hasCalculated');
+    if (hasCalc) return 'first-result';
+    return 'beginner';
+  }
+
+  window.applyStage = function applyStage() {
+    const stage = getUserStage();
+    ['stage-beginner','stage-first-result','stage-active','stage-power'].forEach(c => document.body.classList.remove(c));
+    document.body.classList.add('stage-' + stage);
+
+    // Protocol summary card (#136)
+    const protocols = getSavedProtocols();
+    const $psc = document.getElementById('proto-summary-card');
+    if ($psc) {
+      if (protocols.length > 0 && (stage === 'active' || stage === 'power')) {
+        const p = protocols[0];
+        const $name = document.getElementById('psc-name');
+        if ($name) $name.textContent = p.name || 'My Protocol';
+        // Next dose from schedule
+        const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+        const $next = document.getElementById('psc-next-dose');
+        if ($next) {
+          if (sched.length > 0) {
+            $next.innerHTML = '📅 Schedule active';
+          } else {
+            $next.innerHTML = '📅 No schedule yet';
+          }
+        }
+        // Adherence from stats
+        const $adh = document.getElementById('psc-adherence');
+        if ($adh) {
+          const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+          const total = Object.keys(injLog).length;
+          if (total > 0) $adh.textContent = '✓ ' + total + ' dose' + (total !== 1 ? 's' : '') + ' logged';
+        }
+        $psc.classList.add('showing');
+      } else {
+        $psc.classList.remove('showing');
+      }
+    }
+  }
+
+  applyStage();
+
+  // ── Tools zone collapsible (#136) ───────────────────────────
+  (function() {
+    const $header = document.getElementById('tools-zone-header');
+    const $panel  = document.getElementById('tools-zone-panel');
+    const $icon   = document.getElementById('tools-zone-toggle-icon');
+    const $count  = document.getElementById('tools-count');
+    if (!$header || !$panel) return;
+
+    // Count visible tool cards in panel
+    function updateCount() {
+      const n = $panel.querySelectorAll('.card:not([style*="display: none"]):not([style*="display:none"])').length;
+      if ($count) $count.textContent = n ? ' (' + n + ')' : '';
+    }
+    updateCount();
+
+    // Start collapsed for non-power users
+    const stage = getUserStage();
+    let open = (stage === 'power' || stage === 'active');
+    function setOpen(val) {
+      open = val;
+      if (open) {
+        $panel.style.maxHeight = $panel.scrollHeight + 'px';
+        $panel.classList.remove('collapsed');
+        if ($icon) $icon.style.transform = 'rotate(0deg)';
+      } else {
+        $panel.style.maxHeight = $panel.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          $panel.style.maxHeight = '0';
+          $panel.classList.add('collapsed');
+        });
+        if ($icon) $icon.style.transform = 'rotate(-90deg)';
+      }
+    }
+    // Init without animation
+    if (!open) {
+      $panel.style.maxHeight = '0';
+      $panel.classList.add('collapsed');
+      if ($icon) $icon.style.transform = 'rotate(-90deg)';
+    }
+    $header.addEventListener('click', () => setOpen(!open));
+  })();
+
+  // ── Upsell unlock (#130) ────────────────────────────────────
+  function applyUpsellUnlock() {
+    const hasResult   = localStorage.getItem('hasSeenResult');
+    const hasProtocol = getSavedProtocols().length > 0;
+    const onboarded   = localStorage.getItem('hasOnboarded');
+    if (hasResult || hasProtocol || onboarded) {
+      document.body.classList.add('upsell-unlocked');
+    }
+  }
+  applyUpsellUnlock();
+
+  // ── Open Add Peptide Form (used by CTAs after onboarding) ───
+  function openAddPeptideForm() {
+    const $panel = document.getElementById('tools-zone-panel');
+    const $icon  = document.getElementById('tools-zone-toggle-icon');
+    if ($panel && $panel.classList.contains('collapsed')) {
+      $panel.classList.remove('collapsed');
+      $panel.style.maxHeight = $panel.scrollHeight + 'px';
+      if ($icon) $icon.style.transform = 'rotate(0deg)';
+    }
+    const addCard = document.getElementById('add-peptide-card');
+    if (addCard) {
+      setTimeout(() => addCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
+    const addPanel = document.getElementById('add-panel');
+    if (addPanel && addPanel.style.display !== 'block') {
+      addPanel.style.display = 'block';
+      gsReset();
+    }
+  }
+  window.openAddPeptideForm = openAddPeptideForm;
+
+  // ── Onboarding V3 (#141) ─────────────────────────────────────
+  const OB3_FEATURED = [
+    'BPC-157','Semaglutide','Tirzepatide','TB-500','Retatrutide',
+    'Ipamorelin','CJC-1295 no DAC + Ipamorelin','GHK-Cu','Sermorelin',
+    'Tesamorelin','MOTS-C','PT-141 (Bremelanotide)','Selank','Semax',
+    'AOD-9604','MK-677 (Ibutamoren)'
+  ];
+
+  // v3 state
+  const ob3 = {
+    step: 0,
+    pepName: '',      // final name (featured or custom)
+    pepIdx: -1,       // index in PEPTIDES array (-1 = custom)
+    vialMg: 0,
+    waterMl: 0,
+    doseMcg: 0,
+    doseUnit: 'mcg',  // 'mcg' or 'mg'
+    syringeMl: 0.3,
+    freq: '',
+    time: '',
+  };
+
+  const OB3_TOTAL = 6; // steps 1–6 (step 0 = welcome, step 7 = done)
+
+  function ob3Progress(step) {
+    const pct = step <= 0 ? 0 : step >= OB3_TOTAL ? 100 : Math.round((step / OB3_TOTAL) * 100);
+    const fill = document.getElementById('ob3-progress-fill');
+    if (fill) fill.style.width = pct + '%';
+  }
+
+  function ob3GoStep(n) {
+    ob3.step = n;
+    localStorage.setItem('onboardingStep', n);
+    document.querySelectorAll('.ob3-step').forEach(s => s.classList.remove('active'));
+    const $step = document.getElementById('ob3-step-' + n);
+    const $ov = document.getElementById('onboarding-overlay');
+    if ($step) {
+      $step.classList.add('active');
+      if ($ov) $ov.scrollTop = 0;
+    }
+    if ($ov) {
+      // keep hero bg on all steps; swap step class for position shift
+      $ov.classList.add('ob3-hero');
+      for (let i = 0; i <= 7; i++) $ov.classList.remove('ob3-step-' + i);
+      $ov.classList.add('ob3-step-' + n);
+    }
+    ob3Progress(n);
+    if (n === 2) ob3UpdateCtx2();
+    if (n === 3) ob3UpdateCtx3();
+    if (n === 4) ob3UpdateCtx4();
+    if (n === 6) ob3RenderSummary();
+  }
+
+  // ── Step 1: Peptide picker ───────────────────────────────────
+  function ob3BuildPepList(filter) {
+    const $list = document.getElementById('ob3-pep-list');
+    if (!$list) return;
+    const q = (filter || '').toLowerCase().trim();
+    let names = OB3_FEATURED;
+    if (q) {
+      // search full PEPTIDES array
+      names = PEPTIDES.map(p => p.name).filter(n => n.toLowerCase().includes(q));
+    }
+    $list.innerHTML = names.map(name => {
+      const sel = ob3.pepName === name ? ' selected' : '';
+      return `<button class="ob3-pep-btn${sel}" data-name="${name}">${name}</button>`;
+    }).join('') || '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No match — use the custom field below</div>';
+    $list.querySelectorAll('.ob3-pep-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $list.querySelectorAll('.ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ob3.pepName = btn.dataset.name;
+        ob3.pepIdx  = PEPTIDES.findIndex(p => p.name === ob3.pepName);
+        // hide custom input
+        document.getElementById('ob3-custom-wrap').style.display = 'none';
+        document.getElementById('ob3-custom-toggle').style.display = '';
+        document.getElementById('ob3-step1-next').disabled = false;
+      });
+    });
+  }
+
+  ob3BuildPepList();
+
+  document.getElementById('ob3-pep-search')?.addEventListener('input', function() {
+    ob3BuildPepList(this.value);
+    // if custom name was active, clear it
+    if (this.value) {
+      ob3.pepName = '';
+      document.getElementById('ob3-step1-next').disabled = true;
+    }
+  });
+
+  document.getElementById('ob3-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-custom-wrap').style.display = 'block';
+    document.getElementById('ob3-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-custom-name').focus();
+    // deselect list items
+    document.querySelectorAll('#ob3-pep-list .ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+    ob3.pepName = '';
+    document.getElementById('ob3-step1-next').disabled = true;
+  });
+
+  document.getElementById('ob3-custom-name')?.addEventListener('input', function() {
+    ob3.pepName = this.value.trim();
+    ob3.pepIdx  = -1;
+    document.getElementById('ob3-step1-next').disabled = !ob3.pepName;
+  });
+
+  document.getElementById('ob3-step1-next')?.addEventListener('click', () => ob3GoStep(2));
+
+  // ── Step 2: Vial size ────────────────────────────────────────
+  function ob3UpdateCtx2() {
+    const el = document.getElementById('ob3-ctx-2');
+    if (el) el.textContent = 'Setting up: ' + (ob3.pepName || '—');
+  }
+
+  function ob3PillGroup(containerId, stateKey, onSelect) {
+    document.getElementById(containerId)?.querySelectorAll('.ob3-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(containerId).querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        ob3[stateKey] = parseFloat(btn.dataset.val) || btn.dataset.val;
+        if (onSelect) onSelect(btn.dataset.val);
+      });
+    });
+  }
+
+  ob3PillGroup('ob3-vial-pills', 'vialMg', () => {
+    document.getElementById('ob3-vial-custom').style.display = 'none';
+    document.getElementById('ob3-vial-custom-toggle').style.display = '';
+    document.getElementById('ob3-step2-next').disabled = false;
+  });
+
+  document.getElementById('ob3-vial-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-vial-custom').style.display = 'block';
+    document.getElementById('ob3-vial-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-vial-pills').querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+    document.getElementById('ob3-vial-custom').focus();
+  });
+
+  document.getElementById('ob3-vial-custom')?.addEventListener('input', function() {
+    ob3.vialMg = parseFloat(this.value) || 0;
+    document.getElementById('ob3-step2-next').disabled = !ob3.vialMg;
+  });
+
+  document.getElementById('ob3-step2-next')?.addEventListener('click', () => ob3GoStep(3));
+  document.getElementById('ob3-back-2')?.addEventListener('click', () => ob3GoStep(1));
+
+  // ── Step 3: BAC water ────────────────────────────────────────
+  function ob3UpdateCtx3() {
+    const el = document.getElementById('ob3-ctx-3');
+    if (el) el.textContent = (ob3.pepName || '—') + (ob3.vialMg ? ' · ' + ob3.vialMg + 'mg vial' : '');
+  }
+
+  ob3PillGroup('ob3-water-pills', 'waterMl', () => {
+    document.getElementById('ob3-water-custom').style.display = 'none';
+    document.getElementById('ob3-water-custom-toggle').style.display = '';
+    document.getElementById('ob3-step3-next').disabled = false;
+  });
+
+  document.getElementById('ob3-water-custom-toggle')?.addEventListener('click', () => {
+    document.getElementById('ob3-water-custom').style.display = 'block';
+    document.getElementById('ob3-water-custom-toggle').style.display = 'none';
+    document.getElementById('ob3-water-pills').querySelectorAll('.ob3-pill').forEach(b => b.classList.remove('selected'));
+    document.getElementById('ob3-water-custom').focus();
+  });
+
+  document.getElementById('ob3-water-custom')?.addEventListener('input', function() {
+    ob3.waterMl = parseFloat(this.value) || 0;
+    document.getElementById('ob3-step3-next').disabled = !ob3.waterMl;
+  });
+
+  document.getElementById('ob3-step3-next')?.addEventListener('click', () => ob3GoStep(4));
+  document.getElementById('ob3-back-3')?.addEventListener('click', () => ob3GoStep(2));
+
+  // ── Step 4: Dose + live calc ─────────────────────────────────
+  function ob3UpdateCtx4() {
+    const el = document.getElementById('ob3-ctx-4');
+    if (el) {
+      const parts = [ob3.pepName || '—'];
+      if (ob3.vialMg)  parts.push(ob3.vialMg + 'mg vial');
+      if (ob3.waterMl) parts.push(ob3.waterMl + 'mL BAC water');
+      el.textContent = parts.join(' · ');
+    }
+    // Dose presets from peptide data
+    const $presets = document.getElementById('ob3-dose-presets');
+    if ($presets) {
+      const pep = PEPTIDES[ob3.pepIdx];
+      if (pep && ob3.doseUnit === 'mcg') {
+        $presets.innerHTML = [pep.lowMcg, pep.stdMcg, pep.highMcg]
+          .filter((v, i, a) => a.indexOf(v) === i)
+          .map(v => `<button class="ob3-dose-preset" data-val="${v}">${v >= 1000 ? (v/1000) + 'mg' : v + 'mcg'}</button>`)
+          .join('');
+        $presets.querySelectorAll('.ob3-dose-preset').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('ob3-dose-input').value = btn.dataset.val;
+            ob3CalcLive();
+          });
+        });
+      } else {
+        $presets.innerHTML = '';
+      }
+    }
+    ob3CalcLive();
+  }
+
+  function ob3CalcLive() {
+    const raw = parseFloat(document.getElementById('ob3-dose-input')?.value) || 0;
+    const doseMcg = ob3.doseUnit === 'mg' ? raw * 1000 : raw;
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && doseMcg ? (doseMcg / concMcgMl) * 100 : 0;
+    ob3.doseMcg = doseMcg;
+
+    const $result = document.getElementById('ob3-live-result');
+    const $big    = document.getElementById('ob3-units-big');
+    const $conc   = document.getElementById('ob3-conc-line');
+    const $next4  = document.getElementById('ob3-step4-next');
+
+    if (doseMcg > 0 && concMcgMl > 0) {
+      if ($result) $result.style.display = 'block';
+      if ($big)    $big.textContent = units.toFixed(1);
+      if ($conc)   $conc.textContent = 'Concentration: ' + (concMcgMl >= 1000 ? (concMcgMl/1000).toFixed(2) + 'mg/mL' : concMcgMl.toFixed(0) + 'mcg/mL');
+      if ($next4)  $next4.disabled = false;
+    } else {
+      if ($result) $result.style.display = doseMcg > 0 ? 'block' : 'none';
+      if ($big)    $big.textContent = '—';
+      if ($next4)  $next4.disabled = !doseMcg;
+    }
+  }
+
+  document.getElementById('ob3-dose-input')?.addEventListener('input', ob3CalcLive);
+
+  // Unit toggle
+  document.getElementById('ob3-unit-mcg')?.addEventListener('click', () => {
+    ob3.doseUnit = 'mcg';
+    document.getElementById('ob3-unit-mcg').classList.add('active');
+    document.getElementById('ob3-unit-mg').classList.remove('active');
+    document.getElementById('ob3-dose-input').value = '';
+    ob3CalcLive();
+    ob3UpdateCtx4();
+  });
+  document.getElementById('ob3-unit-mg')?.addEventListener('click', () => {
+    ob3.doseUnit = 'mg';
+    document.getElementById('ob3-unit-mg').classList.add('active');
+    document.getElementById('ob3-unit-mcg').classList.remove('active');
+    document.getElementById('ob3-dose-input').value = '';
+    ob3CalcLive();
+    ob3UpdateCtx4();
+  });
+
+  // Syringe selector
+  document.getElementById('ob3-syringe-row')?.querySelectorAll('.ob3-syr-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('ob3-syringe-row').querySelectorAll('.ob3-syr-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      ob3.syringeMl = parseFloat(btn.dataset.ml);
+    });
+  });
+
+  document.getElementById('ob3-step4-next')?.addEventListener('click', () => ob3GoStep(5));
+  document.getElementById('ob3-back-4')?.addEventListener('click', () => ob3GoStep(3));
+
+  // ── Step 5: Frequency ────────────────────────────────────────
+  ob3PillGroup('ob3-freq-pills', 'freq', () => ob3CheckStep5());
+  ob3PillGroup('ob3-time-pills', 'time', () => ob3CheckStep5());
+
+  function ob3CheckStep5() {
+    document.getElementById('ob3-step5-next').disabled = !(ob3.freq && ob3.time);
+  }
+
+  document.getElementById('ob3-step5-next')?.addEventListener('click', () => ob3GoStep(6));
+  document.getElementById('ob3-back-5')?.addEventListener('click', () => ob3GoStep(4));
+
+  // ── Step 6: Summary ──────────────────────────────────────────
+  function ob3RenderSummary() {
+    const $card = document.getElementById('ob3-summary-card');
+    if (!$card) return;
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && ob3.doseMcg ? (ob3.doseMcg / concMcgMl) * 100 : 0;
+    const doseLabel = ob3.doseMcg >= 1000 ? (ob3.doseMcg / 1000).toFixed(2) + 'mg' : ob3.doseMcg + 'mcg';
+    const freqLabels = { daily:'Daily', eod:'Every other day', '2x_week':'2× per week', '3x_week':'3× per week', '5x_week':'5× per week', weekly:'Once a week' };
+    const timeLabel = ob3.time ? ' at ' + ob3.time : '';
+    $card.innerHTML = `
+      <div class="ob3-summary-pep">${ob3.pepName}</div>
+      <div class="ob3-summary-row">💉 <strong>Dose</strong> ${doseLabel}${units ? ' (' + units.toFixed(1) + ' units to draw)' : ''}</div>
+      <div class="ob3-summary-row">🗓 <strong>Frequency</strong> ${freqLabels[ob3.freq] || ob3.freq}${timeLabel}</div>
+      <div class="ob3-summary-row">🧪 <strong>Vial</strong> ${ob3.vialMg}mg in ${ob3.waterMl}mL</div>
+      ${concMcgMl ? `<div class="ob3-summary-row">⚗️ <strong>Concentration</strong> ${concMcgMl >= 1000 ? (concMcgMl/1000).toFixed(2)+'mg/mL' : concMcgMl.toFixed(0)+'mcg/mL'}</div>` : ''}
+    `;
+  }
+
+  document.getElementById('ob3-save-btn')?.addEventListener('click', () => {
+    // Save protocol to localStorage
+    const protocols = getSavedProtocols();
+    const concMcgMl = ob3.vialMg && ob3.waterMl ? (ob3.vialMg * 1000) / ob3.waterMl : 0;
+    const units = concMcgMl && ob3.doseMcg ? (ob3.doseMcg / concMcgMl) * 100 : 0;
+    protocols.push({
+      id: Date.now(),
+      name: ob3.pepName,
+      peptideIndex: ob3.pepIdx >= 0 ? ob3.pepIdx : undefined,
+      vialMg: ob3.vialMg,
+      waterMl: ob3.waterMl,
+      doseMcg: ob3.doseMcg,
+      syringeMl: ob3.syringeMl,
+      freq: ob3.freq,
+      time: ob3.time,
+      createdAt: new Date().toISOString().split('T')[0]
+    });
+    saveSavedProtocols(protocols);
+    // Set milestones
+    localStorage.setItem('hasOnboarded', '1');
+    localStorage.setItem('hasCompletedWizard', '1');
+    localStorage.setItem('hasSavedProtocol', '1');
+    localStorage.setItem('hasCalculated', '1');
+    // Show done step
+    const $done = document.getElementById('ob3-done-title');
+    if ($done) $done.textContent = ob3.pepName + ' protocol saved!';
+    ob3GoStep(7);
+  });
+
+  document.getElementById('ob3-edit-btn')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('ob3-back-6')?.addEventListener('click', () => ob3GoStep(5));
+
+  // ── Step 7: Done ─────────────────────────────────────────────
+  document.getElementById('ob3-add-another')?.addEventListener('click', () => {
+    // Reset peptide/dose state, keep vial defaults
+    ob3.pepName = ''; ob3.pepIdx = -1; ob3.doseMcg = 0;
+    ob3.freq = ''; ob3.time = '';
+    // Clear step 1 selections
+    document.querySelectorAll('#ob3-pep-list .ob3-pep-btn').forEach(b => b.classList.remove('selected'));
+    const $search = document.getElementById('ob3-pep-search');
+    if ($search) $search.value = '';
+    ob3BuildPepList();
+    document.getElementById('ob3-step1-next').disabled = true;
+    ob3GoStep(1);
+  });
+
+  document.getElementById('ob3-finish')?.addEventListener('click', () => {
+    exitFirstRun(true);
+    localStorage.setItem('hasSavedProtocol', '1');
+
+    // Add the completed onboarding protocol to peptide-schedule so the
+    // weekly calendar shows it immediately after the user taps "I'm done".
+    if (ob3.pepIdx >= 0) {
+      const pep = PEPTIDES[ob3.pepIdx];
+      const today = new Date().toISOString().split('T')[0];
+      // Derive tier from the dose the user entered
+      let tier = 'standard';
+      if (pep && ob3.doseMcg > 0) {
+        if (ob3.doseMcg <= pep.lowMcg) tier = 'low';
+        else if (ob3.doseMcg >= pep.highMcg) tier = 'high';
+      }
+      const entry = {
+        peptideIndex: ob3.pepIdx,
+        tier,
+        vialMg: ob3.vialMg || 5,
+        waterMl: ob3.waterMl || 2,
+        cycleDays: pep && pep.cycleWeeks > 0 ? pep.cycleWeeks * 7 : 0,
+        startDate: today,
+      };
+      const existing = schedule.findIndex(e => e.peptideIndex === ob3.pepIdx);
+      if (existing !== -1) {
+        schedule[existing] = entry;
+      } else {
+        schedule.push(entry);
+      }
+      saveSchedule();
+      localStorage.setItem('hasAddedPeptide', '1');
+    }
+
+    if (typeof applyStage === 'function') applyStage();
+    renderAll();
+    document.querySelector('.app-content').scrollTop = 0;
+  });
+
+  // ── Welcome screen buttons ───────────────────────────────────
+  document.getElementById('ob3-start')?.addEventListener('click', () => ob3GoStep(1));
+
+  document.getElementById('ob3-expert')?.addEventListener('click', () => {
+    localStorage.setItem('appMode', 'advanced');
+    exitFirstRun(false);
+    document.querySelector('.app-content').scrollTop = 0;
+    if (typeof applyStage === 'function') applyStage();
+  });
+
+  // Resume mid-flow if user reloaded during onboarding
+  if (isFirstRun()) {
+    const savedStep = parseInt(localStorage.getItem('onboardingStep') || '0');
+    if (savedStep > 0) ob3GoStep(savedStep);
+  }
+
+  // Legacy first-run choice buttons (now hidden behind overlay, kept for safety)
+  document.getElementById('fr-calc-dose')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('fr-setup-protocol')?.addEventListener('click', () => ob3GoStep(1));
+  document.getElementById('fr-already-know')?.addEventListener('click', () => {
+    localStorage.setItem('appMode', 'advanced');
+    exitFirstRun(false);
+  });
+
+  // ── More Tools Expander (#128) ──────────────────────────────
+  // Clear new-dot when user visits the tab
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.remove('show-new-dot');
+    });
+  });
 
   // ── Simple / Advanced Mode (#104) ──────────────────────────
   function getAppMode() {
@@ -6940,8 +8528,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($appModeToggle) {
     $appModeToggle.addEventListener('change', () => {
       setAppMode($appModeToggle.checked ? 'advanced' : 'simple');
+      applyStage();
     });
   }
+
+  // ── More Tools toggle ───────────────────────────────────────
+  document.getElementById('more-tools-toggle-btn')?.addEventListener('click', () => {
+    const panel = document.getElementById('more-tools-panel');
+    const btn   = document.getElementById('more-tools-toggle-btn');
+    if (!panel) return;
+    const open = panel.classList.toggle('open');
+    if (btn) btn.textContent = open ? 'Less tools ↑' : 'More tools ›';
+  });
 
   // ── Task Picker (#103) ──────────────────────────────────────
   function scrollToAndReveal(id) {
@@ -6951,13 +8549,29 @@ document.addEventListener('DOMContentLoaded', () => {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // Expand tools-zone-panel if collapsed, then run callback
+  function expandToolsZone(cb) {
+    const panel = document.getElementById('tools-zone-panel');
+    const icon  = document.getElementById('tools-zone-toggle-icon');
+    if (panel && panel.classList.contains('collapsed')) {
+      panel.classList.remove('collapsed');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      if (icon) icon.style.transform = 'rotate(180deg)';
+    }
+    if (cb) setTimeout(cb, 50);
+  }
+
+  // Clear new-dot when schedule link clicked
+  document.getElementById('nav-schedule-link')?.addEventListener('click', function() {
+    this.classList.remove('show-new-dot');
+  });
+
   const taskCalcDose = document.getElementById('task-calc-dose');
   if (taskCalcDose) {
     taskCalcDose.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       const wizardDone = localStorage.getItem('hasCompletedWizard');
       if (!wizardDone) {
-        // Show guided wizard
         const wizard = document.getElementById('calc-wizard');
         if (wizard) {
           wizard.classList.add('active');
@@ -6965,82 +8579,102 @@ document.addEventListener('DOMContentLoaded', () => {
           wizShowStep(1);
         }
       } else {
-        // Go to full reverse calc
-        const rcCard = document.getElementById('reverse-calc-card');
-        if (rcCard) {
-          rcCard.style.display = '';
-          document.body.classList.remove('simple-mode');
-          rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        expandToolsZone(() => {
+          const rcCard = document.getElementById('reverse-calc-card');
+          if (rcCard) {
+            rcCard.style.display = '';
+            document.body.classList.remove('simple-mode');
+            rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       }
     });
   }
 
+  // "Mix my vial" → wizard step 2 (diluent), or expand reconstitution section in calc
   const taskReconstitute = document.getElementById('task-reconstitute');
   if (taskReconstitute) {
     taskReconstitute.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       const wizardDone = localStorage.getItem('hasCompletedWizard');
       if (!wizardDone) {
         const wizard = document.getElementById('calc-wizard');
         if (wizard) {
           wizard.classList.add('active');
           wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          wizShowStep(1);
+          wizShowStep(2);
         }
       } else {
-        const rcCard = document.getElementById('reverse-calc-card');
-        if (rcCard) {
+        expandToolsZone(() => {
+          const rcCard = document.getElementById('reverse-calc-card');
+          if (!rcCard) return;
           rcCard.style.display = '';
           document.body.classList.remove('simple-mode');
+          // Open the rc-panel toggle
+          const toggle = document.getElementById('reverse-calc-toggle');
+          const panel  = document.getElementById('rc-panel');
+          if (toggle && panel && !toggle.checked) {
+            toggle.checked = true;
+            panel.style.display = '';
+          }
+          // Expand the reconstitution subsection
+          const reconBtn  = document.getElementById('rc-exp-recon-btn');
+          const reconBody = document.getElementById('rc-exp-recon-body');
+          if (reconBtn && reconBody && reconBtn.getAttribute('aria-expanded') !== 'true') {
+            reconBtn.setAttribute('aria-expanded', 'true');
+            reconBody.style.display = '';
+          }
           rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        });
       }
     });
   }
 
+  // "BAC Water Calculator" → open tools zone + reverse calc panel directly
   const taskReverseCalc = document.getElementById('task-reverse-calc');
   if (taskReverseCalc) {
     taskReverseCalc.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
-      // Always go to full reverse calc
-      const rcCard = document.getElementById('reverse-calc-card');
-      if (rcCard) {
+      if (isFirstRun()) exitFirstRun(true);
+      expandToolsZone(() => {
+        const rcCard = document.getElementById('reverse-calc-card');
+        if (!rcCard) return;
         rcCard.style.display = '';
         document.body.classList.remove('simple-mode');
-        rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Open the toggle if closed
         const toggle = document.getElementById('reverse-calc-toggle');
-        const panel = document.getElementById('rc-panel');
+        const panel  = document.getElementById('rc-panel');
         if (toggle && panel && !toggle.checked) {
           toggle.checked = true;
           panel.style.display = '';
         }
-      }
+        rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
   }
 
+  // "Set up reminders" → navigate to schedule page
   const taskSchedule = document.getElementById('task-schedule');
   if (taskSchedule) {
     taskSchedule.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
+      if (isFirstRun()) exitFirstRun(true);
       window.location.href = 'schedule.html';
     });
   }
 
+  // "Log a dose" → switch to History tab and scroll to log section
   const taskTrack = document.getElementById('task-track');
   if (taskTrack) {
     taskTrack.addEventListener('click', () => {
-      if (isFirstRun()) exitFirstRun();
-      // Switch to History tab
+      if (isFirstRun()) exitFirstRun(true);
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       const histTab = document.getElementById('tab-history');
       if (histTab) histTab.classList.add('active');
       const histBtn = document.querySelector('.tab-btn[data-tab="history"]');
       if (histBtn) histBtn.classList.add('active');
-      document.querySelector('.app-content').scrollTop = 0;
       localStorage.setItem('activeTab', 'history');
+      // Scroll to the log entry form
+      const logForm = document.getElementById('log-entry-form') || document.getElementById('tab-history');
+      if (logForm) logForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
@@ -7098,6 +8732,10 @@ document.addEventListener('DOMContentLoaded', () => {
     wizCalcResult();
     wizShowStep(4);
     localStorage.setItem('hasCompletedWizard', '1');
+    localStorage.setItem('hasSeenResult', '1');
+    localStorage.setItem('hasCalculated', '1');
+    document.body.classList.add('upsell-unlocked');
+    applyStage && applyStage();
   });
   document.getElementById('wiz-back-4')?.addEventListener('click', () => wizShowStep(3));
 
@@ -7125,6 +8763,114 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('wiz-math-toggle')?.setAttribute('aria-expanded', open);
   });
 
+  // ── Wizard result action buttons (#124) ────────────────────
+  // Show "Log First Dose" only if no injections logged yet
+  (function() {
+    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const hasLog = Object.keys(log).length > 0;
+    const btn = document.getElementById('wiz-log-first-dose');
+    if (btn && !hasLog) btn.style.display = '';
+  })();
+
+  document.getElementById('wiz-save-protocol')?.addEventListener('click', () => {
+    const vialMg  = parseFloat(document.getElementById('wiz-vial')?.value) || 5;
+    const waterMl = parseFloat(document.getElementById('wiz-water')?.value) || 2;
+    const doseRaw = parseFloat(document.getElementById('wiz-dose')?.value) || 250;
+    const doseMcg = wizDoseUnitMcg ? doseRaw : doseRaw * 1000;
+    const concMcgMl = (vialMg * 1000) / waterMl;
+    const units = (doseMcg / concMcgMl) * 100;
+
+    const name = prompt('Name this protocol:', 'My Protocol');
+    if (!name) return;
+    const protocols = getSavedProtocols();
+    protocols.push({
+      id: Date.now(),
+      name: name.trim() || 'My Protocol',
+      vialMg, waterMl,
+      doseMcg,
+      createdAt: new Date().toISOString().split('T')[0]
+    });
+    saveSavedProtocols(protocols);
+    renderProtocols && renderProtocols();
+    localStorage.setItem('hasSavedProtocol', '1');
+    applyStage();
+    showProtoSaveOverlay(name.trim() || 'My Protocol', doseMcg, units);
+  });
+
+  document.getElementById('wiz-add-schedule')?.addEventListener('click', () => {
+    window.location.href = 'schedule.html';
+  });
+
+  document.getElementById('wiz-log-first-dose')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('active');
+    document.getElementById('tab-history')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'history');
+  });
+
+  // ── Protocol Save Overlay (#127) ───────────────────────────
+  function showProtoSaveOverlay(name, doseMcg, units) {
+    const $overlay = document.getElementById('proto-save-overlay');
+    if (!$overlay) return;
+    const detail = document.getElementById('psm-detail');
+    if (detail) {
+      detail.textContent = name + ' · ' + (doseMcg >= 1000 ? (doseMcg/1000).toFixed(2)+'mg' : doseMcg+'mcg') + ' · Draw ' + units.toFixed(1) + ' units';
+    }
+    $overlay.classList.add('showing');
+    clearTimeout($overlay._autoclose);
+    $overlay._autoclose = setTimeout(() => $overlay.classList.remove('showing'), 8000);
+  }
+
+  function hideProtoSaveOverlay() {
+    document.getElementById('proto-save-overlay')?.classList.remove('showing');
+  }
+
+  document.getElementById('psm-view-schedule')?.addEventListener('click', () => {
+    hideProtoSaveOverlay();
+    window.location.href = 'schedule.html';
+  });
+
+  document.getElementById('psm-log-dose')?.addEventListener('click', () => {
+    hideProtoSaveOverlay();
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('active');
+    document.getElementById('tab-history')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'history');
+  });
+
+  document.getElementById('psm-back-calc')?.addEventListener('click', hideProtoSaveOverlay);
+  document.getElementById('psm-dismiss')?.addEventListener('click', hideProtoSaveOverlay);
+  document.getElementById('proto-save-overlay')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hideProtoSaveOverlay();
+  });
+
+  // Also hook "Save & Start" to show overlay (#127)
+  // (patching add-confirm to call overlay after its existing logic)
+  const _origAddConfirm = document.getElementById('add-confirm');
+  if (_origAddConfirm) {
+    _origAddConfirm.addEventListener('click', () => {
+      // Wait one tick for the existing handler to run and renderAll()
+      setTimeout(() => {
+        const pepIdx = parseInt(document.getElementById('gs-peptide-sel')?.value);
+        if (!isNaN(pepIdx) && PEPTIDES[pepIdx]) {
+          const pep = PEPTIDES[pepIdx];
+          const vialMg = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
+          const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
+          const tier = document.getElementById('add-tier')?.value || 'standard';
+          const tierDoses = { low: 0.5, standard: 1.0, high: 1.5 };
+          const doseMcg = Math.round(pep.dose * (tierDoses[tier] || 1.0) * 1000);
+          const concMcgMl = (vialMg * 1000) / waterMl;
+          const units = (doseMcg / concMcgMl) * 100;
+          showProtoSaveOverlay(pep.name, doseMcg, units);
+        }
+      }, 100);
+    });
+  }
+
   // Switch to full calculator
   document.getElementById('wiz-switch-full')?.addEventListener('click', () => {
     const wizard = document.getElementById('calc-wizard');
@@ -7148,12 +8894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($welcomeCta) {
     $welcomeCta.addEventListener('click', () => {
       exitFirstRun();
-      // Scroll add-peptide card into view and open step 1
-      const addCard = document.getElementById('add-peptide-card');
-      if (addCard) {
-        addCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        gsShowStep(1);
-      }
+      openAddPeptideForm();
     });
   }
 
@@ -7252,7 +8993,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const el = document.getElementById('gs-draw-value');
       if (el) el.textContent = fmtUnits(units);
       const highWarn = document.getElementById('gs-high-dose-warn');
-      if (highWarn) highWarn.style.display = units > 60 ? 'flex' : 'none';
+      if (highWarn) highWarn.style.display = units > 60 ? 'block' : 'none';
       // Sync hidden tier select
       const tierSel = document.getElementById('add-tier');
       if (tierSel) tierSel.value = tier;
@@ -7451,6 +9192,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     saveSchedule();
+    localStorage.setItem('hasSavedProtocol', '1');
+    applyStage && applyStage();
     dismissOnboarding();
     if ($addPanel) $addPanel.style.display = 'none';
 
@@ -7625,10 +9368,48 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('activeTab', 'weight');
   });
 
+  // Sites option in More tab
+  document.getElementById('sites-option')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-sites')?.classList.add('active');
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    document.querySelector('.app-content').scrollTop = 0;
+    localStorage.setItem('activeTab', 'sites');
+    renderSitesTab();
+  });
+
+  // Sites back button
+  document.getElementById('sites-back-btn')?.addEventListener('click', () => {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-more')?.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
+    localStorage.setItem('activeTab', 'more');
+  });
+
+  // Front/Back toggle on body map
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.site-view-btn');
+    if (!btn) return;
+    const view = btn.dataset.view;
+    document.querySelectorAll('.site-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    const $map = document.getElementById('sites-body-map');
+    if ($map) renderBodyMap($map, view);
+  });
+
+  // Demo mode
+  document.getElementById('try-demo-btn')?.addEventListener('click', loadDemoData);
+  document.getElementById('fr-see-demo')?.addEventListener('click', loadDemoData);
+  document.getElementById('exit-demo-btn')?.addEventListener('click', clearDemoData);
+
+  // Apply demo badge on load
+  applyDemoBadge();
+
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology', 'sites'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
@@ -7651,15 +9432,21 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('journal-add-btn')?.addEventListener('click', () => {
     const mood = document.getElementById('journal-mood')?.value || '';
     const note = document.getElementById('journal-note')?.value?.trim();
-    if (!note) { alert('Please write something before saving.'); return; }
+    if (!note && !mood) { alert('Please fill in at least one field before saving.'); return; }
     const today = new Date().toISOString().split('T')[0];
-    addJournalEntry(today, note, mood);
+    addJournalEntry(today, note || '', mood);
     document.getElementById('journal-note').value = '';
     if (document.getElementById('journal-mood')) document.getElementById('journal-mood').value = '';
     renderStandaloneJournalList();
     renderSprint11();
+    showSaveReward();
   });
   renderStandaloneJournalList();
+
+  // ── Journal Check-In UX init (#116-#121) ────────────────────
+  initPillButtons();
+  renderProtocolContext();
+  renderJournalInsights();
 
   // ── History / Logbook Toggle ────────────────────────────────
   setupLogbookToggle();
@@ -7735,35 +9522,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideJournalForm() {
     if ($addJournalForm) $addJournalForm.style.display = 'none';
-    if (document.getElementById('journal-content')) document.getElementById('journal-content').value = '';
-    ['symptom-energy','symptom-appetite','symptom-cravings','symptom-sleep'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
+    const $content = document.getElementById('journal-content');
+    if ($content) $content.value = '';
+    // Reset pill selections
+    $addJournalForm?.querySelectorAll('.checkin-pill, .yn-btn').forEach(b => b.classList.remove('selected'));
   }
 
   $addJournalBtn?.addEventListener('click', () => {
     if (!$addJournalForm) return;
+    renderProtocolContext();
     $addJournalForm.style.display = 'block';
     $addJournalForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
   $saveJournalBtn?.addEventListener('click', () => {
-    const note = document.getElementById('journal-content')?.value?.trim();
-    if (!note) {
-      alert('Please write something before saving.');
+    const note = document.getElementById('journal-content')?.value?.trim() || '';
+    const today = new Date().toISOString().split('T')[0];
+
+    function getPillVal(rowId) {
+      return document.querySelector('#' + rowId + ' .checkin-pill.selected')?.dataset.val || '';
+    }
+    const moodVal = getPillVal('mood-pills');
+    const symptoms = {
+      energy:      getPillVal('energy-pills'),
+      sleep:       getPillVal('sleep-pills'),
+      sideEffects: document.querySelector('#side-effects-yn .yn-btn.selected')?.dataset.val || ''
+    };
+
+    if (!note && !moodVal && !symptoms.energy && !symptoms.sleep) {
+      alert('Please fill in at least one field before saving.');
       return;
     }
-    const today = new Date().toISOString().split('T')[0];
-    const symptoms = {
-      energy:   document.getElementById('symptom-energy')?.value || '',
-      appetite: document.getElementById('symptom-appetite')?.value || '',
-      cravings: document.getElementById('symptom-cravings')?.value || '',
-      sleep:    document.getElementById('symptom-sleep')?.value || ''
-    };
-    addJournalEntry(today, note, '', null, symptoms);
+    addJournalEntry(today, note, moodVal, null, symptoms);
     renderJournalList();
+    renderJournalInsights();
     hideJournalForm();
+    showSaveReward();
   });
 
   $cancelJournalBtn?.addEventListener('click', hideJournalForm);
@@ -7844,13 +9638,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Dark / Light Mode ────────────────────────────────────────
   const darkToggle = document.getElementById('dark-mode-toggle');
   if (darkToggle) {
-    // Dark mode is default; toggle is ON = dark, OFF = light
+    // Light mode is default; toggle ON = dark, OFF = light
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
+    if (savedTheme === 'dark') {
+      document.body.classList.remove('light-mode');
+      darkToggle.checked = true;
+    } else {
+      // No saved theme or explicitly 'light' → default to light
       document.body.classList.add('light-mode');
       darkToggle.checked = false;
-    } else {
-      darkToggle.checked = true; // dark is default
     }
     darkToggle.addEventListener('change', () => {
       if (darkToggle.checked) {
@@ -7941,7 +9737,7 @@ document.addEventListener('DOMContentLoaded', () => {
       [
         ['weightGoal',              localStorage.getItem('weightGoal') || ''],
         ['weightUnitPreference',    localStorage.getItem('weightUnitPreference') || 'lbs'],
-        ['theme',                   localStorage.getItem('theme') || 'dark'],
+        ['theme',                   localStorage.getItem('theme') || 'light'],
       ]
     );
 
@@ -8267,6 +10063,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (rcResultDose) rcResultDose.textContent  = doseDisplay;
       // rc-result-value now shows syringe units (not mL) — update it
       if (resultVal) resultVal.textContent = syringeUnits;
+
+      // Mark first result seen for upsell unlock (#130) and stage milestone (#138)
+      if (!localStorage.getItem('hasSeenResult')) {
+        localStorage.setItem('hasSeenResult', '1');
+        document.body.classList.add('upsell-unlocked');
+      }
+      if (!localStorage.getItem('hasCalculated')) {
+        localStorage.setItem('hasCalculated', '1');
+        applyStage && applyStage();
+      }
 
       // Validation warnings
       const rcLowWarn  = document.getElementById('rc-low-water-warn');
@@ -8896,6 +10702,8 @@ document.getElementById('gs-save-protocol')?.addEventListener('click', () => {
   });
   saveSavedProtocols(protocols);
   renderProtocols();
+  localStorage.setItem('hasSavedProtocol', '1');
+  if (typeof applyStage === 'function') applyStage();
 
   // Brief feedback
   const btn = document.getElementById('gs-save-protocol');
@@ -8963,24 +10771,24 @@ renderProtocols();
 <!-- Journal Tab Content -->
 <div id="tab-journal" class="tab-content">
   <div class="header">
-    <h1>Journal <span>Entries</span></h1>
+    <h1>Journal <span>Check-Ins</span></h1>
   </div>
   <div class="card animate-in">
-    <h3>Add Entry <span id="journal-date-display" style="font-size: 0.8rem; color: var(--text2); font-weight: 400;"></span></h3>
+    <h3>Daily Check-In <span id="journal-date-display" style="font-size: 0.8rem; color: var(--text2); font-weight: 400;"></span></h3>
     <input type="hidden" id="journal-date">
     <select id="journal-mood" class="input" style="width: 100%; margin-bottom: 0.75rem;">
       <option value="">How are you feeling?</option>
-      <option value="😫">😫 Terrible</option>
-      <option value="😕">😕 Not great</option>
+      <option value="😞">😞 Rough</option>
+      <option value="😕">😕 Meh</option>
       <option value="😐">😐 Okay</option>
-      <option value="🙂">🙂 Good</option>
+      <option value="😊">😊 Good</option>
       <option value="😄">😄 Great</option>
     </select>
-    <textarea id="journal-note" placeholder="What's on your mind?" class="input" rows="4" style="width: 100%; margin-bottom: 0.75rem;"></textarea>
-    <button id="journal-add-btn" class="btn" style="width: 100%;">Add Entry</button>
+    <textarea id="journal-note" placeholder="Anything to note?" class="input" rows="4" style="width: 100%; margin-bottom: 0.75rem;"></textarea>
+    <button id="journal-add-btn" class="btn" style="width: 100%;">Daily Check-In</button>
   </div>
   <div id="journal-list" class="card animate-in">
-    <div class="empty-state">No journal entries yet.</div>
+    <div class="empty-state">Start your first check-in — takes 30 seconds.</div>
   </div>
 
   <!-- Side-Effect Timeline -->
