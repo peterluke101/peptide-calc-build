@@ -825,6 +825,30 @@ body.light-mode .delete-journal:active {
   font-weight: 600;
 }
 
+/* ── Journal Check-In UX (#116-#121) ────────────────────────── */
+.checkin-pill-row{display:flex;gap:.3rem;margin-bottom:.75rem}
+.checkin-pill{flex:1;padding:.5rem .15rem;background:transparent;border:1.5px solid var(--border);border-radius:20px;color:var(--text);font-size:.78rem;cursor:pointer;text-align:center;transition:all .15s;line-height:1.35}
+.checkin-pill.selected{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.yn-control{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:.75rem}
+.yn-btn{flex:1;padding:.6rem;background:transparent;border:none;color:var(--text2);font-size:.9rem;cursor:pointer;transition:all .15s}
+.yn-btn:first-child{border-right:1px solid var(--border)}
+.yn-btn.selected{background:var(--accent);color:#000;font-weight:700}
+.reward-card{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface);border:2px solid var(--accent);border-radius:14px;padding:1rem 1.5rem;text-align:center;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.35);min-width:220px;animation:reward-in .25s ease;display:none}
+.reward-card.showing{display:block}
+.reward-card.hiding{animation:reward-out .25s ease forwards}
+@keyframes reward-in{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes reward-out{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.reward-card .reward-emoji{font-size:2rem;margin-bottom:.25rem}
+.reward-card .reward-message{font-weight:700;font-size:1rem;color:var(--text)}
+.reward-card .reward-stats{font-size:.8rem;color:var(--text2);margin-top:.25rem}
+.journal-insight-card{background:var(--surface2);border-radius:10px;padding:.875rem;margin-bottom:.75rem;border:1px solid var(--border)}
+.journal-insight-card .insight-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.5rem}
+.journal-insight-card .insight-line{font-size:.875rem;color:var(--text);padding:.3rem 0;border-bottom:1px solid var(--border);line-height:1.4}
+.journal-insight-card .insight-line:last-child{border-bottom:none}
+.protocol-context-card{display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:10px;padding:.75rem;margin-bottom:.875rem;border:1px solid var(--border);font-size:.82rem;color:var(--text2)}
+.protocol-context-card .ctx-icon{font-size:1.25rem;flex-shrink:0}
+.protocol-context-card .ctx-peptide{font-weight:700;color:var(--text);font-size:.9rem}
+
 /* Add Log/Journal Entry Forms */
 .add-log-form,
 .add-journal-form {
@@ -2395,96 +2419,99 @@ body.simple-mode #journal-trends-body{ display:none !important}
 
   <!-- Journal View -->
   <div id="journal-view" class="tab-content">
+    <!-- Protocol context: last injection (hidden when log is empty) -->
+    <div id="journal-protocol-ctx" class="protocol-context-card" style="display:none">
+      <div class="ctx-icon">💉</div>
+      <div>
+        <div class="ctx-peptide" id="ctx-peptide-name">—</div>
+        <div id="ctx-peptide-detail" style="font-size:.78rem"></div>
+      </div>
+    </div>
+
     <div class="card animate-in">
       <div class="section-header">
-        <h2>Journal Entries</h2>
-        <button class="share-btn" style="font-size: .7rem; padding: .4rem .8rem;" id="add-journal-btn">+ Add Entry</button>
+        <h2>Check-Ins</h2>
+        <button class="share-btn" style="font-size: .7rem; padding: .4rem .8rem;" id="add-journal-btn">+ Daily Check-In</button>
       </div>
+      <!-- Plain-English trend insights (shown when ≥3 entries) -->
+      <div id="journal-insights" style="display:none;margin-top:.75rem"></div>
       <div id="journal-entries" class="journal-entries">
         <div class="empty-state">
           <div class="icon">📝</div>
-          <h3>No journal entries yet</h3>
-          <p>Add your first entry to track symptoms, thoughts, and progress</p>
+          <h3>Start your first check-in</h3>
+          <p>Log how you're feeling today. Takes 30 seconds.</p>
         </div>
       </div>
     </div>
 
-    <!-- Side-Effect Timeline (Sprint 11) -->
+    <!-- Side-Effect Timeline (collapsed by default) -->
     <div class="card animate-in" style="margin-bottom:.75rem">
-      <details class="s11-collapsible" open>
+      <details class="s11-collapsible">
         <summary class="s11-summary">⚠️ Side-Effect Timeline</summary>
         <div id="side-effect-content" class="s11-body"></div>
       </details>
     </div>
 
-    <!-- Journal Trends by Peptide (Sprint 11) -->
+    <!-- Journal Trends by Peptide (collapsed by default) -->
     <div class="card animate-in" style="margin-bottom:.75rem">
-      <details class="s11-collapsible" open>
+      <details class="s11-collapsible">
         <summary class="s11-summary">🧬 Journal Trends</summary>
         <div id="journal-trends-content" class="s11-body"></div>
       </details>
     </div>
 
-    <!-- Add Journal Form (hidden by default) -->
+    <!-- Daily Check-In Form (hidden by default) -->
     <div class="card add-journal-form" id="add-journal-form" style="display: none;">
-      <div class="form-title">Add Journal Entry</div>
+      <div class="form-title">Daily Check-In</div>
+
       <div class="form-field">
-        <label for="journal-content">Entry</label>
-        <textarea id="journal-content" placeholder="How are you feeling today? Any symptoms, thoughts, or progress to note..." rows="6"></textarea>
-      </div>
-      <div class="form-field">
-        <label>Symptoms (optional)</label>
-        <div class="form-row">
-          <div class="form-field">
-            <label for="symptom-energy">Energy</label>
-            <select id="symptom-energy">
-              <option value="">Select</option>
-              <option value="1">1 - Very Low</option>
-              <option value="2">2 - Low</option>
-              <option value="3">3 - Moderate</option>
-              <option value="4">4 - Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="symptom-appetite">Appetite</label>
-            <select id="symptom-appetite">
-              <option value="">Select</option>
-              <option value="1">1 - Very Low</option>
-              <option value="2">2 - Low</option>
-              <option value="3">3 - Normal</option>
-              <option value="4">4 - High</option>
-              <option value="5">5 - Very High</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-field">
-            <label for="symptom-cravings">Cravings</label>
-            <select id="symptom-cravings">
-              <option value="">Select</option>
-              <option value="1">1 - None</option>
-              <option value="2">2 - Mild</option>
-              <option value="3">3 - Moderate</option>
-              <option value="4">4 - Strong</option>
-              <option value="5">5 - Intense</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label for="symptom-sleep">Sleep Quality</label>
-            <select id="symptom-sleep">
-              <option value="">Select</option>
-              <option value="1">1 - Very Poor</option>
-              <option value="2">2 - Poor</option>
-              <option value="3">3 - Fair</option>
-              <option value="4">4 - Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
+        <label>Mood</label>
+        <div class="checkin-pill-row" id="mood-pills">
+          <button type="button" class="checkin-pill" data-val="1">😞<br>Rough</button>
+          <button type="button" class="checkin-pill" data-val="2">😕<br>Meh</button>
+          <button type="button" class="checkin-pill" data-val="3">😐<br>Okay</button>
+          <button type="button" class="checkin-pill" data-val="4">😊<br>Good</button>
+          <button type="button" class="checkin-pill" data-val="5">😄<br>Great</button>
         </div>
       </div>
+
+      <div class="form-field">
+        <label>Energy</label>
+        <div class="checkin-pill-row" id="energy-pills">
+          <button type="button" class="checkin-pill" data-val="1">⚡ 1</button>
+          <button type="button" class="checkin-pill" data-val="2">⚡ 2</button>
+          <button type="button" class="checkin-pill" data-val="3">⚡ 3</button>
+          <button type="button" class="checkin-pill" data-val="4">⚡ 4</button>
+          <button type="button" class="checkin-pill" data-val="5">⚡ 5</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Sleep Quality</label>
+        <div class="checkin-pill-row" id="sleep-pills">
+          <button type="button" class="checkin-pill" data-val="1">😴 1</button>
+          <button type="button" class="checkin-pill" data-val="2">😴 2</button>
+          <button type="button" class="checkin-pill" data-val="3">😴 3</button>
+          <button type="button" class="checkin-pill" data-val="4">😴 4</button>
+          <button type="button" class="checkin-pill" data-val="5">😴 5</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>Side effects today?</label>
+        <div class="yn-control" id="side-effects-yn">
+          <button type="button" class="yn-btn" data-val="yes">Yes</button>
+          <button type="button" class="yn-btn" data-val="no">No</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="journal-content">Notes <span style="font-weight:400;color:var(--text2)">(optional)</span></label>
+        <textarea id="journal-content" placeholder="Anything else to note..." rows="3"></textarea>
+      </div>
+
       <div class="btn-row" style="margin-top: 1.5rem;">
-        <button class="btn btn-primary" id="save-journal-btn">Save Entry</button>
+        <button class="btn btn-primary" id="save-journal-btn">Save Check-In</button>
         <button class="btn btn-secondary" id="cancel-journal-btn">Cancel</button>
       </div>
     </div>
@@ -6250,15 +6277,168 @@ function deleteJournalEntry(date) {
   const journal = getJournal();
   const compareDate = new Date(date);
   compareDate.setHours(0, 0, 0, 0);
-  
+
   const filteredJournal = journal.filter(entry => {
     const entryDate = new Date(entry.date);
     entryDate.setHours(0, 0, 0, 0);
     return entryDate.getTime() !== compareDate.getTime();
   });
-  
+
   saveJournal(filteredJournal);
   return filteredJournal;
+}
+
+// ── Journal Check-In UX Helpers (#116-#121) ──────────────────
+
+function getCheckInStreak(journal) {
+  if (!journal || !journal.length) return 0;
+  const today = new Date(); today.setHours(0,0,0,0);
+  let streak = 0;
+  const check = new Date(today);
+  for (let i = 0; i < 365; i++) {
+    const ds = check.toISOString().split('T')[0];
+    if (!journal.some(e => e.date === ds)) break;
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+  return streak;
+}
+
+function getLastInjection() {
+  const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+  const dates = Object.keys(log).sort().reverse();
+  if (!dates.length) return null;
+  const lastDate = dates[0];
+  const entry = Array.isArray(log[lastDate]) ? log[lastDate][0] : log[lastDate];
+  if (!entry) return null;
+  return { date: lastDate, ...entry };
+}
+
+function renderProtocolContext() {
+  const $card = document.getElementById('journal-protocol-ctx');
+  if (!$card) return;
+  const last = getLastInjection();
+  if (!last) { $card.style.display = 'none'; return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(last.date); d.setHours(0,0,0,0);
+  const diff = Math.round((today - d) / 86400000);
+  const when = diff === 0 ? 'today' : diff === 1 ? 'yesterday' : diff + ' days ago';
+  const peptide = last.peptide || last.name || last.compound || 'Unknown peptide';
+  const dose = last.dose ? last.dose + '\u202f' + (last.unit || 'mcg') : '';
+  $card.style.display = 'flex';
+  document.getElementById('ctx-peptide-name').textContent = peptide;
+  document.getElementById('ctx-peptide-detail').textContent = (dose ? dose + ' \u00b7 ' : '') + 'Last injected ' + when;
+}
+
+function renderJournalInsights() {
+  const $el = document.getElementById('journal-insights');
+  if (!$el) return;
+  const journal = getJournal();
+  if (journal.length < 3) { $el.style.display = 'none'; return; }
+
+  function avgOf(entries, getter) {
+    const vals = entries.map(getter).filter(v => v !== null && !isNaN(v));
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+  }
+  function moodNum(e) {
+    const m = e.mood;
+    if (!m) return null;
+    const n = parseInt(m);
+    return isNaN(n) ? null : n;
+  }
+  function symNum(key) { return e => { const v = parseFloat(e.symptoms?.[key]); return isNaN(v) ? null : v; }; }
+
+  const recent = journal.slice(0, Math.min(7, journal.length));
+  const older  = journal.slice(7, Math.min(14, journal.length));
+  const insights = [];
+
+  const streak = getCheckInStreak(journal);
+  if (streak >= 2) insights.push('\uD83D\uDD25 ' + streak + '-day check-in streak \u2014 keep it going!');
+
+  if (older.length >= 2) {
+    const mR = avgOf(recent, moodNum), mO = avgOf(older, moodNum);
+    if (mR !== null && mO !== null) {
+      const d = mR - mO;
+      if (d >= 0.5) insights.push('\uD83D\uDCC8 Your mood has been trending up lately.');
+      else if (d <= -0.5) insights.push('\uD83D\uDCC9 Your mood has dipped compared to last week.');
+      else insights.push('\uD83D\uDE10 Your mood has been steady this week.');
+    }
+    const eR = avgOf(recent, symNum('energy')), eO = avgOf(older, symNum('energy'));
+    if (eR !== null && eO !== null) {
+      if (eR - eO >= 0.5) insights.push('\u26A1 Energy levels have been higher lately.');
+      else if (eR - eO <= -0.5) insights.push('\u26A1 Energy has been lower than usual.');
+    }
+    const sR = avgOf(recent, symNum('sleep')), sO = avgOf(older, symNum('sleep'));
+    if (sR !== null && sO !== null) {
+      if (sR - sO >= 0.5) insights.push('\uD83D\uDE34 Sleep quality is improving.');
+      else if (sR - sO <= -0.5) insights.push('\uD83D\uDE34 Sleep has been rougher than usual.');
+    }
+  } else {
+    const mAvg = avgOf(recent, moodNum);
+    if (mAvg !== null) {
+      if (mAvg >= 4) insights.push('\uD83D\uDE0A You\'ve been feeling good this week.');
+      else if (mAvg <= 2) insights.push('\uD83D\uDC9B Tough stretch \u2014 keep checking in.');
+    }
+  }
+
+  const shown = insights.slice(0, 3);
+  if (!shown.length) { $el.style.display = 'none'; return; }
+  $el.style.display = 'block';
+  $el.innerHTML = '<div class="journal-insight-card"><div class="insight-title">Your Trends</div>' +
+    shown.map(s => '<div class="insight-line">' + s + '</div>').join('') + '</div>';
+}
+
+function showSaveReward() {
+  const journal = getJournal();
+  const streak = getCheckInStreak(journal);
+  const total  = journal.length;
+  const streakMsg = streak >= 2 ? streak + '-day streak!' : 'Check-in logged!';
+  const totalMsg  = total + ' total check-in' + (total !== 1 ? 's' : '');
+  const emoji = streak >= 7 ? '\uD83D\uDD25' : streak >= 3 ? '\uD83D\uDCAA' : '\uD83C\uDF89';
+
+  let $card = document.getElementById('reward-card');
+  if (!$card) {
+    $card = document.createElement('div');
+    $card.id = 'reward-card';
+    $card.className = 'reward-card';
+    document.body.appendChild($card);
+  }
+  $card.innerHTML = '<div class="reward-emoji">' + emoji + '</div>' +
+    '<div class="reward-message">Saved!</div>' +
+    '<div class="reward-stats">' + streakMsg + ' \u00b7 ' + totalMsg + '</div>';
+  $card.classList.remove('hiding');
+  $card.classList.add('showing');
+
+  const dismiss = () => {
+    $card.classList.add('hiding');
+    setTimeout(() => { $card.classList.remove('showing', 'hiding'); }, 260);
+    $card.removeEventListener('click', dismiss);
+  };
+  $card.addEventListener('click', dismiss);
+  clearTimeout($card._t);
+  $card._t = setTimeout(dismiss, 3000);
+}
+
+function initPillButtons() {
+  ['mood-pills', 'energy-pills', 'sleep-pills'].forEach(rowId => {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+    row.querySelectorAll('.checkin-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        row.querySelectorAll('.checkin-pill').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  });
+  const $yn = document.getElementById('side-effects-yn');
+  if ($yn) {
+    $yn.querySelectorAll('.yn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $yn.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  }
 }
 
 // ── Formatting Helpers ───────────────────────────────────────
@@ -6429,8 +6609,8 @@ function renderJournalList() {
     $journalList.innerHTML = `
       <div class="empty-state">
         <div class="icon">📝</div>
-        <h3>No journal entries yet</h3>
-        <p>How are you feeling? Add your first journal entry.</p>
+        <h3>Start your first check-in</h3>
+        <p>Log how you're feeling today. Takes 30 seconds.</p>
       </div>
     `;
     return;
@@ -7431,15 +7611,21 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('journal-add-btn')?.addEventListener('click', () => {
     const mood = document.getElementById('journal-mood')?.value || '';
     const note = document.getElementById('journal-note')?.value?.trim();
-    if (!note) { alert('Please write something before saving.'); return; }
+    if (!note && !mood) { alert('Please fill in at least one field before saving.'); return; }
     const today = new Date().toISOString().split('T')[0];
-    addJournalEntry(today, note, mood);
+    addJournalEntry(today, note || '', mood);
     document.getElementById('journal-note').value = '';
     if (document.getElementById('journal-mood')) document.getElementById('journal-mood').value = '';
     renderStandaloneJournalList();
     renderSprint11();
+    showSaveReward();
   });
   renderStandaloneJournalList();
+
+  // ── Journal Check-In UX init (#116-#121) ────────────────────
+  initPillButtons();
+  renderProtocolContext();
+  renderJournalInsights();
 
   // ── History / Logbook Toggle ────────────────────────────────
   setupLogbookToggle();
@@ -7515,35 +7701,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideJournalForm() {
     if ($addJournalForm) $addJournalForm.style.display = 'none';
-    if (document.getElementById('journal-content')) document.getElementById('journal-content').value = '';
-    ['symptom-energy','symptom-appetite','symptom-cravings','symptom-sleep'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
+    const $content = document.getElementById('journal-content');
+    if ($content) $content.value = '';
+    // Reset pill selections
+    $addJournalForm?.querySelectorAll('.checkin-pill, .yn-btn').forEach(b => b.classList.remove('selected'));
   }
 
   $addJournalBtn?.addEventListener('click', () => {
     if (!$addJournalForm) return;
+    renderProtocolContext();
     $addJournalForm.style.display = 'block';
     $addJournalForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
   $saveJournalBtn?.addEventListener('click', () => {
-    const note = document.getElementById('journal-content')?.value?.trim();
-    if (!note) {
-      alert('Please write something before saving.');
+    const note = document.getElementById('journal-content')?.value?.trim() || '';
+    const today = new Date().toISOString().split('T')[0];
+
+    function getPillVal(rowId) {
+      return document.querySelector('#' + rowId + ' .checkin-pill.selected')?.dataset.val || '';
+    }
+    const moodVal = getPillVal('mood-pills');
+    const symptoms = {
+      energy:      getPillVal('energy-pills'),
+      sleep:       getPillVal('sleep-pills'),
+      sideEffects: document.querySelector('#side-effects-yn .yn-btn.selected')?.dataset.val || ''
+    };
+
+    if (!note && !moodVal && !symptoms.energy && !symptoms.sleep) {
+      alert('Please fill in at least one field before saving.');
       return;
     }
-    const today = new Date().toISOString().split('T')[0];
-    const symptoms = {
-      energy:   document.getElementById('symptom-energy')?.value || '',
-      appetite: document.getElementById('symptom-appetite')?.value || '',
-      cravings: document.getElementById('symptom-cravings')?.value || '',
-      sleep:    document.getElementById('symptom-sleep')?.value || ''
-    };
-    addJournalEntry(today, note, '', null, symptoms);
+    addJournalEntry(today, note, moodVal, null, symptoms);
     renderJournalList();
+    renderJournalInsights();
     hideJournalForm();
+    showSaveReward();
   });
 
   $cancelJournalBtn?.addEventListener('click', hideJournalForm);
@@ -8699,24 +8892,24 @@ renderProtocols();
 <!-- Journal Tab Content -->
 <div id="tab-journal" class="tab-content">
   <div class="header">
-    <h1>Journal <span>Entries</span></h1>
+    <h1>Journal <span>Check-Ins</span></h1>
   </div>
   <div class="card animate-in">
-    <h3>Add Entry <span id="journal-date-display" style="font-size: 0.8rem; color: var(--text2); font-weight: 400;"></span></h3>
+    <h3>Daily Check-In <span id="journal-date-display" style="font-size: 0.8rem; color: var(--text2); font-weight: 400;"></span></h3>
     <input type="hidden" id="journal-date">
     <select id="journal-mood" class="input" style="width: 100%; margin-bottom: 0.75rem;">
       <option value="">How are you feeling?</option>
-      <option value="😫">😫 Terrible</option>
-      <option value="😕">😕 Not great</option>
+      <option value="😞">😞 Rough</option>
+      <option value="😕">😕 Meh</option>
       <option value="😐">😐 Okay</option>
-      <option value="🙂">🙂 Good</option>
+      <option value="😊">😊 Good</option>
       <option value="😄">😄 Great</option>
     </select>
-    <textarea id="journal-note" placeholder="What's on your mind?" class="input" rows="4" style="width: 100%; margin-bottom: 0.75rem;"></textarea>
-    <button id="journal-add-btn" class="btn" style="width: 100%;">Add Entry</button>
+    <textarea id="journal-note" placeholder="Anything to note?" class="input" rows="4" style="width: 100%; margin-bottom: 0.75rem;"></textarea>
+    <button id="journal-add-btn" class="btn" style="width: 100%;">Daily Check-In</button>
   </div>
   <div id="journal-list" class="card animate-in">
-    <div class="empty-state">No journal entries yet.</div>
+    <div class="empty-state">Start your first check-in — takes 30 seconds.</div>
   </div>
 
   <!-- Side-Effect Timeline -->
