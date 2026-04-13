@@ -2556,6 +2556,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         <button class="goal-btn" data-goal="muscle">💪 Muscle</button>
         <button class="goal-btn" data-goal="longevity">🧬 Longevity</button>
         <button class="goal-btn" data-goal="skin">✨ Skin</button>
+        <button class="goal-btn" data-goal="immune">🛡️ Immune</button>
       </div>
     </div>
     <div class="stack-suggestions" id="stack-suggestions-logbook">
@@ -4235,6 +4236,24 @@ const PEPTIDE_STACKS = {
         { name: 'CJC-1295', dose: '100-200 mcg 3x/week', priority: 'optional', benefit: 'Associated with GH pathways and skin thickness support', systems: ['gh-secretagogue'] }
       ]
     }
+  },
+  immune: {
+    title: 'Immune Health & Anti-Inflammatory',
+    description: 'Commonly associated with immune resilience, infection defense, and inflammation control',
+    why: 'Thymosin Alpha-1 is the gold standard for immune modulation — boosting T-cell function and restoring immune balance. Stacking with LL-37 adds antimicrobial defense, while BPC-157 and KPV address systemic inflammation. TB-500 bridges immune support with tissue repair.',
+    categories: {
+      'Core Immune Support': [
+        { name: 'Thymosin Alpha-1', dose: '1.6 mg twice weekly', priority: 'featured', featured: true, benefit: 'Gold standard immune modulator — boosts T-cell function and restores immune balance', systems: ['immune'] },
+        { name: 'LL-37', dose: '50-250 mcg daily', priority: 'core', benefit: 'Antimicrobial powerhouse — fights infections while calming excess inflammation', systems: ['immune'] }
+      ],
+      'Anti-Inflammatory': [
+        { name: 'BPC-157', dose: '250-500 mcg daily', priority: 'core', benefit: 'Reduces systemic inflammation (TNF-α, IL-6) and supports gut immune health', systems: ['healing'] },
+        { name: 'KPV', dose: '200-500 mcg daily', priority: 'synergistic', benefit: 'Potent NF-κB blocker — calms overactive immune responses in gut and skin', systems: ['immune'] }
+      ],
+      'Recovery & Repair': [
+        { name: 'TB-500', dose: '2-5 mg twice weekly', priority: 'synergistic', benefit: 'Anti-inflammatory tissue repair — modulates immune cell migration and reduces cytokines', systems: ['healing'] }
+      ]
+    }
   }
 };
 
@@ -4354,7 +4373,8 @@ function renderStackRecommendations(goal) {
     fatloss:  { name: 'Retatrutide', desc: 'Triple agonist (GIP/GLP-1/Glucagon) — investigational peptide associated with weight management in clinical research.' },
     muscle:   { name: 'CJC-1295 no DAC + Ipamorelin', desc: 'Classic GH combination — commonly associated with lean muscle support, recovery, and sleep quality' },
     longevity:{ name: 'Epitalon', desc: 'Research suggests telomerase activation — among the most studied peptides for cellular longevity' },
-    skin:     { name: 'GHK-Cu', desc: 'Glow Stack essential — research suggests collagen support, skin texture improvement, and hair growth' }
+    skin:     { name: 'GHK-Cu', desc: 'Glow Stack essential — research suggests collagen support, skin texture improvement, and hair growth' },
+    immune:   { name: 'Thymosin Alpha-1', desc: 'Gold standard immune modulator — research suggests T-cell activation and immune system restoration' }
   };
 
   const pick = FEATURED_PICKS[goal];
