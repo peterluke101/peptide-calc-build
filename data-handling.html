@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Handling — Peptide Compass Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --surface: #ffffff;
+      --surface2: #e2e4ec;
+      --border: #c0c4cc;
+      --accent: #0d9b83;
+      --text: #1a1a2e;
+      --text2: #484860;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,.10), 0 0 0 1px rgba(0,0,0,.04);
+    }
+    html.dark-mode {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #3DE8C3;
+      --text: #ffffff;
+      --text2: #a0a0a0;
+      --shadow: 0 4px 24px rgba(0,0,0,.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    body { min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .container { max-width: 680px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--accent); text-decoration: none; font-size: .875rem; font-weight: 500;
+      margin-bottom: 2rem; opacity: .9;
+    }
+    .back-link:hover { opacity: 1; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: .35rem; }
+    .subtitle { color: var(--text2); font-size: .875rem; margin-bottom: 2.5rem; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+    }
+    h2 { font-size: 1rem; font-weight: 600; margin-bottom: .75rem; color: var(--accent); }
+    p { font-size: .9rem; line-height: 1.7; color: var(--text2); margin-bottom: .75rem; }
+    p:last-child { margin-bottom: 0; }
+    ul { padding-left: 1.25rem; margin-bottom: .75rem; }
+    li { font-size: .9rem; line-height: 1.7; color: var(--text2); margin-bottom: .25rem; }
+    .highlight {
+      background: var(--surface2); border-radius: 10px;
+      padding: 1rem 1.25rem; margin-bottom: .75rem;
+      border-left: 3px solid var(--accent);
+    }
+    .highlight p { margin: 0; font-weight: 500; color: var(--text); }
+    .step {
+      display: flex; gap: 1rem; align-items: flex-start; margin-bottom: .75rem;
+    }
+    .step-num {
+      flex-shrink: 0; width: 24px; height: 24px;
+      background: var(--accent); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; margin-top: .15rem;
+    }
+    html.dark-mode .step-num { color: #0a0a0a; }
+    .step p { margin: 0; }
+    a { color: var(--accent); }
+    .footer { text-align: center; color: var(--text2); font-size: .75rem; margin-top: 2.5rem; opacity: .6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to app</a>
+
+    <h1>Data Handling</h1>
+    <p class="subtitle">Last updated: April 13, 2026</p>
+
+    <div class="card">
+      <h2>All Data Stays on Your Device</h2>
+      <div class="highlight">
+        <p>Peptide Compass Pro stores all data locally on your device. Nothing is sent to any server. Ever.</p>
+      </div>
+      <p>There is no cloud sync, no remote database, no user accounts, and no backend. The app runs entirely in your browser using standard web technologies.</p>
+    </div>
+
+    <div class="card">
+      <h2>Where Your Data Lives</h2>
+      <p>Your data is stored in your browser's <strong>localStorage</strong> — a sandboxed storage area that is:</p>
+      <ul>
+        <li>Local to your device and browser</li>
+        <li>Not shared across devices</li>
+        <li>Not accessible to any website other than this app</li>
+        <li>Not transmitted over the network</li>
+      </ul>
+      <p>Data stored includes your protocols, injection history, schedule preferences, and app settings.</p>
+    </div>
+
+    <div class="card">
+      <h2>No Server Communication</h2>
+      <p>Beyond loading the app files themselves on first install, Peptide Compass Pro makes no network requests that involve your data. Specifically:</p>
+      <ul>
+        <li>No data is sent to any API or server</li>
+        <li>No analytics or telemetry is collected</li>
+        <li>No background sync or data upload occurs</li>
+        <li>No third-party services receive your health data</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>How to Delete Your Data</h2>
+      <p>You can delete all app data at any time. There are two ways:</p>
+
+      <p><strong>Option 1 — From within the app:</strong></p>
+      <div class="step"><div class="step-num">1</div><p>Open the app and go to the <strong>More</strong> tab</p></div>
+      <div class="step"><div class="step-num">2</div><p>Tap <strong>Reset All Data</strong></p></div>
+      <div class="step"><div class="step-num">3</div><p>Confirm the reset — all locally stored data will be cleared</p></div>
+
+      <p style="margin-top:.75rem"><strong>Option 2 — From your browser:</strong></p>
+      <div class="step"><div class="step-num">1</div><p>Open your browser's Settings or Developer Tools</p></div>
+      <div class="step"><div class="step-num">2</div><p>Navigate to <strong>Storage</strong> or <strong>Site Data</strong></p></div>
+      <div class="step"><div class="step-num">3</div><p>Find and clear data for this site — this removes all localStorage entries and cached files</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Data Portability</h2>
+      <p>You can export your data at any time using the <strong>Export Data</strong> option in the More tab. This produces a JSON file saved to your device that you can keep as a backup or import into a new device.</p>
+      <p>To move your data to another device, export from the old device and use <strong>Import Data</strong> on the new one.</p>
+    </div>
+
+    <div class="card">
+      <h2>Offline Use</h2>
+      <p>Peptide Compass Pro is a Progressive Web App (PWA). Once installed, it works entirely offline. The service worker caches the app's files on your device — it does not cache or sync your personal data.</p>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p>Questions about your data? Contact us at <a href="mailto:peterluke101@gmail.com">peterluke101@gmail.com</a>.</p>
+    </div>
+
+    <p class="footer">Peptide Compass Pro &mdash; Your data never leaves your device.</p>
+  </div>
+</body>
+</html>

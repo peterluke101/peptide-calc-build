@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Peptide Compass Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --surface: #ffffff;
+      --surface2: #e2e4ec;
+      --border: #c0c4cc;
+      --accent: #0d9b83;
+      --text: #1a1a2e;
+      --text2: #484860;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(0,0,0,.10), 0 0 0 1px rgba(0,0,0,.04);
+    }
+    html.dark-mode {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #3DE8C3;
+      --text: #ffffff;
+      --text2: #a0a0a0;
+      --shadow: 0 4px 24px rgba(0,0,0,.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    body { min-height: 100vh; padding: 2rem 1rem 4rem; }
+    .container { max-width: 680px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--accent); text-decoration: none; font-size: .875rem; font-weight: 500;
+      margin-bottom: 2rem; opacity: .9;
+    }
+    .back-link:hover { opacity: 1; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: .35rem; }
+    .subtitle { color: var(--text2); font-size: .875rem; margin-bottom: 2.5rem; }
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+    }
+    h2 { font-size: 1rem; font-weight: 600; margin-bottom: .75rem; color: var(--accent); }
+    p { font-size: .9rem; line-height: 1.7; color: var(--text2); margin-bottom: .75rem; }
+    p:last-child { margin-bottom: 0; }
+    ul { padding-left: 1.25rem; margin-bottom: .75rem; }
+    li { font-size: .9rem; line-height: 1.7; color: var(--text2); margin-bottom: .25rem; }
+    .badge {
+      display: inline-block; background: var(--accent); color: #fff;
+      font-size: .7rem; font-weight: 700; padding: .2rem .5rem;
+      border-radius: 6px; letter-spacing: .03em; margin-bottom: 1rem;
+    }
+    html.dark-mode .badge { color: #0a0a0a; }
+    a { color: var(--accent); }
+    .footer { text-align: center; color: var(--text2); font-size: .75rem; margin-top: 2.5rem; opacity: .6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to app</a>
+
+    <h1>Privacy Policy</h1>
+    <p class="subtitle">Last updated: April 13, 2026</p>
+
+    <div class="badge">Privacy First</div>
+
+    <div class="card">
+      <h2>Overview</h2>
+      <p>Peptide Compass Pro is designed with privacy by default. All data you enter stays on your device — we do not collect, transmit, or store any personal information on remote servers.</p>
+    </div>
+
+    <div class="card">
+      <h2>What Data We Collect</h2>
+      <p>We collect <strong>no personal data</strong>. There are no accounts, no sign-ups, and no analytics. The app stores your preferences and protocol data locally in your browser's localStorage — data that never leaves your device.</p>
+      <p>Specifically, the app may store locally:</p>
+      <ul>
+        <li>Peptide protocols and dosage records you enter</li>
+        <li>Injection history and schedule preferences</li>
+        <li>App settings (theme, units, display preferences)</li>
+        <li>Any notes or custom data you add within the app</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>What We Do NOT Collect</h2>
+      <ul>
+        <li>No names, email addresses, or contact information</li>
+        <li>No health records or medical data sent to any server</li>
+        <li>No IP addresses or location data</li>
+        <li>No usage analytics or behavioral tracking</li>
+        <li>No advertising identifiers or third-party tracking pixels</li>
+        <li>No cookies from third parties</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>localStorage and Browser Storage</h2>
+      <p>The app uses your browser's <code>localStorage</code> API to persist your data between sessions. This is standard browser technology — the data is stored entirely on your device and is not accessible to us or any third party.</p>
+      <p>You can view or clear this data at any time through your browser's developer tools or privacy settings. Clearing site data will remove all locally stored app data.</p>
+    </div>
+
+    <div class="card">
+      <h2>Service Worker and Caching</h2>
+      <p>Peptide Compass Pro is a Progressive Web App (PWA) and uses a service worker to enable offline functionality. The service worker caches the app's files locally on your device so it can load without an internet connection.</p>
+      <p>The service worker only caches the app's own static files (HTML, CSS, JavaScript). It does not cache or transmit any of your personal data.</p>
+    </div>
+
+    <div class="card">
+      <h2>Third-Party Services</h2>
+      <p>The app loads the Inter font from Google Fonts. This is the only external network request the app makes during normal use, and it is a standard resource load (no tracking).</p>
+      <p>There are no third-party analytics tools, ad networks, or data brokers integrated into this app.</p>
+    </div>
+
+    <div class="card">
+      <h2>Children's Privacy</h2>
+      <p>This app is not directed at children under 13. We do not knowingly collect any information from children.</p>
+    </div>
+
+    <div class="card">
+      <h2>Changes to This Policy</h2>
+      <p>If we make changes to this privacy policy, we will update the "last updated" date at the top of this page. Continued use of the app after changes constitutes acceptance of the updated policy.</p>
+    </div>
+
+    <div class="card">
+      <h2>Contact</h2>
+      <p>Questions about privacy? Reach out at <a href="mailto:peterluke101@gmail.com">peterluke101@gmail.com</a>.</p>
+    </div>
+
+    <p class="footer">Peptide Compass Pro &mdash; All data stays on your device.</p>
+  </div>
+</body>
+</html>
