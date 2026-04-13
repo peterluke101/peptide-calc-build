@@ -2687,21 +2687,24 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     <div id="recon-form" style="display:none;background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:1rem">
       <div class="field" style="margin-bottom:.6rem">
         <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Peptide Name</label>
-        <input type="text" id="recon-pep-name" placeholder="e.g. MOTS-C" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        <select id="recon-pep-select" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem;appearance:auto">
+          <option value="" disabled selected>Select a peptide…</option>
+        </select>
+        <input type="text" id="recon-pep-name" placeholder="Enter peptide name" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem;margin-top:.4rem;display:none">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem">
         <div class="field">
           <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Vial (mg)</label>
-          <input type="number" id="recon-vial-mg" placeholder="10" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+          <input type="number" id="recon-vial-mg" placeholder="e.g. 10" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
         </div>
         <div class="field">
           <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">BAC Water (mL)</label>
-          <input type="number" id="recon-bac-ml" placeholder="2" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+          <input type="number" id="recon-bac-ml" placeholder="e.g. 2" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
         </div>
       </div>
       <div class="field" style="margin-bottom:.75rem">
         <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Dose per injection (mcg)</label>
-        <input type="number" id="recon-dose-mcg" placeholder="250" min="1" step="1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        <input type="number" id="recon-dose-mcg" placeholder="e.g. 250" min="1" step="1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
       </div>
       <div id="recon-calc-preview" style="display:none;background:rgba(43,186,160,.1);border:1px solid rgba(43,186,160,.3);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;font-size:.85rem;color:var(--accent);font-weight:600;text-align:center"></div>
       <div style="display:flex;gap:.5rem">
@@ -8840,15 +8843,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Recon form logic
   let reconEditIdx = -1;
+  // Populate peptide dropdown from PEPTIDES array
+  (function populateReconSelect() {
+    const sel = document.getElementById('recon-pep-select');
+    if (!sel) return;
+    const names = PEPTIDES.map(p => p.name).sort((a, b) => a.localeCompare(b));
+    names.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o); });
+    const custom = document.createElement('option'); custom.value = '__custom__'; custom.textContent = '— Other (type a name) —'; sel.appendChild(custom);
+  })();
+  // Show/hide custom input based on dropdown
+  document.getElementById('recon-pep-select')?.addEventListener('change', function() {
+    const customInput = document.getElementById('recon-pep-name');
+    if (this.value === '__custom__') { customInput.style.display = 'block'; customInput.value = ''; customInput.focus(); }
+    else { customInput.style.display = 'none'; customInput.value = this.value; }
+  });
   document.getElementById('recon-add-btn')?.addEventListener('click', () => {
     reconEditIdx = -1;
+    const sel = document.getElementById('recon-pep-select');
+    if (sel) { sel.value = ''; sel.selectedIndex = 0; }
     document.getElementById('recon-pep-name').value = '';
+    document.getElementById('recon-pep-name').style.display = 'none';
     document.getElementById('recon-vial-mg').value = '';
     document.getElementById('recon-bac-ml').value = '';
     document.getElementById('recon-dose-mcg').value = '';
     document.getElementById('recon-calc-preview').style.display = 'none';
     document.getElementById('recon-form').style.display = 'block';
-    document.getElementById('recon-pep-name').focus();
   });
   document.getElementById('recon-cancel-btn')?.addEventListener('click', () => {
     document.getElementById('recon-form').style.display = 'none';
@@ -8871,7 +8890,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(id)?.addEventListener('input', updateReconPreview);
   });
   document.getElementById('recon-save-btn')?.addEventListener('click', () => {
-    const pepName = document.getElementById('recon-pep-name')?.value.trim();
+    const sel = document.getElementById('recon-pep-select');
+    const pepName = (sel?.value === '__custom__' ? document.getElementById('recon-pep-name')?.value.trim() : sel?.value) || '';
     const vialMg  = parseFloat(document.getElementById('recon-vial-mg')?.value);
     const bacMl   = parseFloat(document.getElementById('recon-bac-ml')?.value);
     const doseMcg = parseFloat(document.getElementById('recon-dose-mcg')?.value);
