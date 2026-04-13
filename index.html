@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')!=='dark')document.documentElement.classList.add('light-mode');</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4);--card-bg:var(--surface);--text-muted:var(--text2)}
@@ -184,37 +185,6 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Dose Detail Button (today view) ──────────────────────── */
 .dose-detail-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:.35rem .5rem;font-size:.7rem;border-radius:6px;transition:all .15s;min-height:unset;min-width:unset;flex-shrink:0;margin-left:.25rem;white-space:nowrap}
 .dose-detail-btn:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
-/* ── Injection Sites Tab ─────────────────────────────────── */
-.site-view-toggle{display:flex;gap:.25rem}
-.site-view-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.3rem .65rem;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
-.site-view-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
-.site-body-map{position:relative;width:100%;max-width:280px;margin:0 auto;touch-action:manipulation}
-.site-body-svg{width:100%;height:auto;display:block}
-.site-dot{cursor:pointer;transition:all .2s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
-.site-dot circle{transition:fill .3s,stroke .3s}
-.site-dot:hover circle{stroke-width:3}
-.site-dot.fresh circle{fill:#22c55e;stroke:#16a34a}
-.site-dot.recent circle{fill:#f59e0b;stroke:#d97706}
-.site-dot.used-today circle{fill:#ef4444;stroke:#dc2626}
-.site-dot.never circle{fill:var(--surface2);stroke:var(--border)}
-.site-dot text{fill:var(--text);font-size:7px;font-family:inherit;pointer-events:none;font-weight:600}
-.site-suggestion{display:flex;align-items:center;gap:.75rem;padding:.1rem 0}
-.site-suggestion-icon{font-size:1.4rem;flex-shrink:0}
-.site-suggestion-body{flex:1;min-width:0}
-.site-suggestion-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
-.site-suggestion-sub{font-size:.75rem;color:var(--text2)}
-.site-history-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .25rem;border-bottom:1px solid var(--border)}
-.site-history-item:last-child{border-bottom:none}
-.site-history-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.site-history-name{font-size:.82rem;font-weight:600;flex:1}
-.site-history-time{font-size:.7rem;color:var(--text2)}
-.site-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom);animation:fadeInBg .18s ease}
-.site-popup{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:420px;padding:1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));animation:slideUp .22s ease}
-.site-popup-title{font-size:1rem;font-weight:700;margin-bottom:.25rem}
-.site-popup-sub{font-size:.8rem;color:var(--text2);margin-bottom:1.1rem}
-.site-popup-actions{display:flex;gap:.6rem}
-.site-popup-confirm{flex:1;padding:.75rem;background:var(--accent);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
-.site-popup-cancel{padding:.75rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer}
 /* ── Demo Mode ───────────────────────────────────────────── */
 .btn-demo-try{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.65rem 1.25rem;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}
 .btn-demo-try:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
@@ -1111,7 +1081,21 @@ body.light-mode .delete-journal:active {
 .more-title-danger { color: #e05252 !important; }
 
 /* Light mode */
-html.light-mode { background: #f0f0f0; }
+html.light-mode {
+  --bg: #f0f0f0;
+  --surface: #ffffff;
+  --surface2: #e8e8e8;
+  --text: #1a1a2e;
+  --text2: #5a5a72;
+  --border: #d0d0d0;
+  --accent: #2bbaa0;
+  --accent-dim: rgba(43,186,160,.15);
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  --card-bg: #ffffff;
+  --text-muted: #5a5a72;
+  background: #f0f0f0 !important;
+  color: #1a1a2e;
+}
 body.light-mode {
   --bg: #f0f0f0;
   --surface: #ffffff;
@@ -1122,7 +1106,7 @@ body.light-mode {
   --accent: #2bbaa0;
   --accent-dim: rgba(43,186,160,.15);
   --shadow: 0 4px 24px rgba(0,0,0,.08);
-  background: var(--bg);
+  background: #f0f0f0 !important;
   color: var(--text);
 }
 /* Base surfaces — card, nav, bottom bar */
@@ -1177,10 +1161,16 @@ body.light-mode .timeline-step.future .timeline-step-dot { background: var(--sur
 /* More tab rows */
 body.light-mode .more-option { background: var(--surface2); }
 body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
-body.light-mode .site-view-btn { background: var(--surface2); border-color: var(--border); color: var(--text); }
-body.light-mode .site-dot.never circle { fill: var(--surface2); stroke: var(--border); }
-body.light-mode .site-popup { background: var(--surface); }
 body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
+/* Scrollable container and tab backgrounds */
+body.light-mode .app-content { background: #f0f0f0 !important; }
+body.light-mode .tab-content { background: #f0f0f0 !important; }
+body.light-mode #tab-schedule { background: #f0f0f0 !important; }
+body.light-mode #tab-history,
+body.light-mode #logs-view { background: #f0f0f0 !important; }
+/* Quick Insights boxes */
+body.light-mode .insight-box { background: #ffffff !important; border-color: var(--border); }
+html.light-mode .insight-box { background: #ffffff !important; border-color: #d0d0d0; }
 /* Toggle switch off-state */
 body.light-mode .toggle-slider { background: #bbb; }
 /* Install banner */
@@ -1811,16 +1801,19 @@ body.light-mode .wiz-card{background:var(--surface2)}
 .app-mode-badge{display:inline-flex;align-items:center;gap:.3rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.2rem .65rem;font-size:.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:background .15s;margin-top:.4rem}
 .app-mode-badge:hover{border-color:var(--accent);color:var(--accent)}
 body.advanced-mode .app-mode-badge{background:rgba(61,232,195,.1);border-color:rgba(61,232,195,.25);color:var(--accent)}
+/* Advanced tab button — only visible in advanced mode */
+.tab-btn-advanced{display:none!important}
+body.advanced-mode .tab-btn-advanced{display:flex!important}
 /* Elements hidden in simple mode */
-body.simple-mode #reverse-calc-card,
-body.simple-mode #stack-card,
 body.simple-mode #inventory-option,
-body.simple-mode #tab-inventory,
 body.simple-mode #weight-loss-option,
-body.simple-mode #tab-weight,
 body.simple-mode #dose-change-body,
 body.simple-mode #side-effect-body,
 body.simple-mode #journal-trends-body{ display:none !important}
+/* Advanced tab page hidden unless tab is active */
+#tab-advanced:not(.active){display:none}
+/* Light mode override for advanced tab */
+body.light-mode #tab-advanced{background:#f0f0f0!important}
 
 </style>
 </head>
@@ -2278,9 +2271,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 </div>
 
-<!-- Reverse Calc Card -->
-<div class="advanced-tools-label">Advanced Tools</div>
-<div id="advanced-tools-section">
+<!-- BAC Water Calculator — moved to #tab-advanced -->
+<div id="advanced-tools-section" style="display:none">
 <div class="card animate-in" id="reverse-calc-card">
   <div class="rc-toggle-row">
     <div class="rc-toggle-label">
@@ -2515,8 +2507,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="history-list" id="history-list"></div>
 </div>
 
-<!-- Stack Builder (compact link) -->
-<div class="card animate-in animate-d3" id="stack-card" style="padding:.85rem 1.1rem;">
+<!-- Stack Builder — moved to #tab-advanced via JS -->
+<div class="card animate-in animate-d3" id="stack-card" style="padding:.85rem 1.1rem;display:none">
   <div style="display:flex;align-items:center;gap:.75rem;cursor:pointer;" onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-stacks')?.classList.add('active')">
     <div style="font-size:1.4rem;flex-shrink:0">🧬</div>
     <div style="flex:1;min-width:0">
@@ -2594,6 +2586,50 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
+</div>
+
+<!-- Advanced Tools Tab -->
+<div id="tab-advanced" class="tab-content">
+  <div class="header">
+    <h1>Advanced <span>Tools</span></h1>
+    <p class="app-tagline">Power-user features for detailed protocol management</p>
+  </div>
+
+  <!-- BAC Water Calculator + Stack Builder inserted here by JS -->
+  <div id="adv-tools-slot"></div>
+
+  <!-- Navigation cards for tools living in other tabs -->
+  <div class="card animate-in" style="margin-bottom:.75rem">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>More Tools</h2>
+    </div>
+    <div class="task-card-list" style="display:flex;flex-direction:column;gap:.5rem">
+      <button class="task-card" id="adv-goto-inventory">
+        <span class="task-card-icon">📦</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Vial Inventory</span>
+          <span class="task-card-desc">Track reconstitution dates, discard timelines, stock levels</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="adv-goto-weight">
+        <span class="task-card-icon">📊</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Weight Tracking</span>
+          <span class="task-card-desc">Log progress and visualize weight loss trends</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="adv-goto-history">
+        <span class="task-card-icon">📈</span>
+        <span class="task-card-text">
+          <span class="task-card-title">History &amp; Analytics</span>
+          <span class="task-card-desc">Dose change log, side-effect timeline, journal trends</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- History Tab Content -->
@@ -2799,27 +2835,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
     </p>
   </div>
 
-  <!-- Saved Protocols Management Card -->
-  <div class="card animate-in" id="protocols-more-section">
-    <div class="section-header">
-      <h2>Saved Protocols</h2>
-    </div>
-    <div id="protocols-more-list"></div>
-    <div class="protocols-empty" id="protocols-empty-state">No saved protocols yet. Complete the Add Peptide flow and save your setup for quick reuse.</div>
-  </div>
-
   <div class="card animate-in">
     <div class="more-options">
-
-      <!-- Injection Sites -->
-      <div class="more-option" id="sites-option">
-        <div class="more-icon">💉</div>
-        <div class="more-text">
-          <div class="more-title">Injection Sites</div>
-          <div class="more-desc">Rotation tracker, body map, site history</div>
-        </div>
-        <div class="more-arrow">›</div>
-      </div>
 
       <!-- Inventory -->
       <div class="more-option" id="inventory-option">
@@ -2988,43 +3005,10 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 </div>
 
-<!-- Injection Sites Tab Content -->
-<div id="tab-sites" class="tab-content">
-  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
-    <button id="sites-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem">← Back</button>
-  </div>
-  <div class="header">
-    <h1>Injection <span>Sites</span></h1>
-    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Rotate sites to prevent tissue damage</p>
-  </div>
-  <!-- Suggestion card -->
-  <div class="card animate-in" id="sites-suggestion-card">
-    <div id="sites-suggestion"></div>
-  </div>
-  <!-- Body map card -->
-  <div class="card animate-in">
-    <div class="section-header" style="margin-bottom:1rem">
-      <h2>Body Map</h2>
-      <div class="site-view-toggle">
-        <button class="site-view-btn active" data-view="front">Front</button>
-        <button class="site-view-btn" data-view="back">Back</button>
-      </div>
-    </div>
-    <div id="sites-body-map">
-      <!-- Rendered by renderSitesTab() -->
-    </div>
-  </div>
-  <!-- History card -->
-  <div class="card animate-in">
-    <div class="section-header" style="margin-bottom:.75rem"><h2>Recent Sites</h2></div>
-    <div id="sites-history"></div>
-  </div>
-</div>
-
 <!-- Weight Loss Tab Content -->
 <div id="tab-weight" class="tab-content">
   <div style="width:100%;max-width:720px;margin-bottom:.5rem;">
-    <button onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-more').classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.tab-btn[data-tab=more]').classList.add('active');localStorage.setItem('activeTab','more');" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
+    <button id="weight-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
   </div>
   <div class="header">
     <h1>Weight <span>Loss</span></h1>
@@ -3498,6 +3482,10 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <span class="more-alert-dot" id="more-alert-dot"></span>
     <span class="tab-label">More</span>
   </button>
+  <button class="tab-btn tab-btn-advanced" data-tab="advanced">
+    <span class="tab-icon">⚗️</span>
+    <span class="tab-label">Advanced</span>
+  </button>
 </div>
 
 <script>
@@ -3723,8 +3711,8 @@ function shortName(name) {
 function getWeekStart(offset) {
   const now = new Date();
   const start = new Date(now);
-  // Center today in the 7-day strip (3 days before today)
-  start.setDate(now.getDate() - 3 + (offset * 7));
+  // Start on today (offset 0 = today through today+6)
+  start.setDate(now.getDate() + (offset * 7));
   start.setHours(0, 0, 0, 0);
   return start;
 }
@@ -7327,199 +7315,6 @@ function setupLogbookToggle() {
   switchToView(savedView);
 }
 
-// ── Injection Sites ───────────────────────────────────────
-const SITE_LABELS = {
-  'abdomen-left': 'Left Abdomen', 'abdomen-right': 'Right Abdomen',
-  'thigh-left': 'Left Thigh', 'thigh-right': 'Right Thigh',
-  'deltoid-left': 'Left Delt', 'deltoid-right': 'Right Delt',
-  'glute-left': 'Left Glute', 'glute-right': 'Right Glute',
-  'flank-left': 'Left Flank', 'flank-right': 'Right Flank'
-};
-const ALL_SITES = Object.keys(SITE_LABELS);
-
-function getInjectionSites() {
-  try { return JSON.parse(localStorage.getItem('injectionSites') || '[]'); } catch { return []; }
-}
-function saveInjectionSite(siteKey) {
-  const sites = getInjectionSites();
-  sites.unshift({ site: siteKey, date: new Date().toISOString() });
-  // Keep only last 50 entries
-  localStorage.setItem('injectionSites', JSON.stringify(sites.slice(0, 50)));
-}
-function getSiteLastUsed(siteKey) {
-  const entry = getInjectionSites().find(s => s.site === siteKey);
-  return entry ? new Date(entry.date) : null;
-}
-function getSiteStatus(siteKey) {
-  const last = getSiteLastUsed(siteKey);
-  if (!last) return 'never';
-  const diffDays = (Date.now() - last.getTime()) / 86400000;
-  if (diffDays < 1) return 'used-today';
-  if (diffDays < 3) return 'recent';
-  return 'fresh';
-}
-function getSuggestedSite() {
-  const sites = getInjectionSites();
-  if (sites.length === 0) return null;
-  // Find site with oldest last-use date
-  const lastUsedMap = {};
-  sites.forEach(s => { if (!lastUsedMap[s.site]) lastUsedMap[s.site] = new Date(s.date); });
-  let oldest = null, oldestDate = null;
-  ALL_SITES.forEach(key => {
-    if (!lastUsedMap[key]) { oldest = key; oldestDate = null; return; }
-    if (!oldestDate || lastUsedMap[key] < oldestDate) { oldest = key; oldestDate = lastUsedMap[key]; }
-  });
-  return oldest ? { key: oldest, lastUsed: oldestDate } : null;
-}
-
-function renderSitesTab() {
-  // Suggestion card
-  const $sug = document.getElementById('sites-suggestion');
-  if ($sug) {
-    const suggestion = getSuggestedSite();
-    if (!suggestion) {
-      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">💉</div><div class="site-suggestion-body"><div class="site-suggestion-title">Tap a site to start tracking</div><div class="site-suggestion-sub">Rotate injection sites to prevent tissue damage and improve absorption.</div></div></div>`;
-    } else {
-      const label = SITE_LABELS[suggestion.key];
-      const daysAgo = suggestion.lastUsed ? Math.round((Date.now() - suggestion.lastUsed.getTime()) / 86400000) : null;
-      const sub = daysAgo === null ? 'Never used — best choice!' : `Last used ${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`;
-      $sug.innerHTML = `<div class="site-suggestion"><div class="site-suggestion-icon">✅</div><div class="site-suggestion-body"><div class="site-suggestion-title">Suggested: ${label}</div><div class="site-suggestion-sub">${sub}</div></div></div>`;
-    }
-  }
-
-  // Body map
-  const $map = document.getElementById('sites-body-map');
-  if ($map) {
-    const activeView = $map.dataset.view || 'front';
-    renderBodyMap($map, activeView);
-  }
-
-  // History
-  const $hist = document.getElementById('sites-history');
-  if ($hist) {
-    const sites = getInjectionSites().slice(0, 10);
-    if (sites.length === 0) {
-      $hist.innerHTML = '<div class="today-empty">No sites logged yet</div>';
-    } else {
-      const statusColors = { 'used-today': '#ef4444', 'recent': '#f59e0b', 'fresh': '#22c55e', 'never': 'var(--border)' };
-      $hist.innerHTML = sites.map(s => {
-        const label = SITE_LABELS[s.site] || s.site;
-        const diff = (Date.now() - new Date(s.date).getTime()) / 86400000;
-        const timeStr = diff < 0.5 ? 'Today' : diff < 1.5 ? 'Yesterday' : Math.round(diff) + ' days ago';
-        const status = getSiteStatus(s.site);
-        return `<div class="site-history-item">
-          <div class="site-history-dot" style="background:${statusColors[status]}"></div>
-          <div class="site-history-name">${label}</div>
-          <div class="site-history-time">${timeStr}</div>
-        </div>`;
-      }).join('');
-    }
-  }
-}
-
-function renderBodyMap($container, view) {
-  $container.dataset.view = view;
-
-  // Site positions in SVG coordinate space (viewBox 0 0 160 320)
-  const frontSites = [
-    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
-    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
-    { key: 'flank-left',    cx: 38,  cy: 138, label: 'L Flank' },
-    { key: 'flank-right',   cx: 122, cy: 138, label: 'R Flank' },
-    { key: 'abdomen-left',  cx: 62,  cy: 150, label: 'L Abd' },
-    { key: 'abdomen-right', cx: 98,  cy: 150, label: 'R Abd' },
-    { key: 'thigh-left',    cx: 58,  cy: 230, label: 'L Thigh' },
-    { key: 'thigh-right',   cx: 102, cy: 230, label: 'R Thigh' },
-  ];
-  const backSites = [
-    { key: 'deltoid-left',  cx: 18,  cy: 72,  label: 'L Delt' },
-    { key: 'deltoid-right', cx: 142, cy: 72,  label: 'R Delt' },
-    { key: 'glute-left',    cx: 58,  cy: 175, label: 'L Glute' },
-    { key: 'glute-right',   cx: 102, cy: 175, label: 'R Glute' },
-    { key: 'thigh-left',    cx: 58,  cy: 240, label: 'L Thigh' },
-    { key: 'thigh-right',   cx: 102, cy: 240, label: 'R Thigh' },
-  ];
-  const sites = view === 'front' ? frontSites : backSites;
-
-  // Simple body outline paths
-  const frontBody = `
-    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
-    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
-  `;
-  const backBody = `
-    <ellipse cx="80" cy="30" rx="22" ry="26" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
-    <path d="M 52 56 Q 48 60 46 68 L 8 68 Q 4 68 4 72 L 4 120 Q 4 124 8 124 L 30 124 L 30 290 Q 30 298 38 298 L 56 298 Q 64 298 64 290 L 64 210 L 96 210 L 96 290 Q 96 298 104 298 L 122 298 Q 130 298 130 290 L 130 124 L 152 124 Q 156 124 156 120 L 156 72 Q 156 68 152 68 L 114 68 Q 112 60 108 56 Q 96 52 80 52 Q 64 52 52 56Z" fill="var(--surface2)" stroke="var(--border)" stroke-width="1.5" opacity=".6"/>
-    <ellipse cx="58" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
-    <ellipse cx="102" cy="170" rx="22" ry="18" fill="var(--surface2)" stroke="var(--border)" stroke-width="1" opacity=".4"/>
-  `;
-
-  const dotsHtml = sites.map(s => {
-    const status = getSiteStatus(s.key);
-    const fillColors = { 'fresh': '#22c55e', 'recent': '#f59e0b', 'used-today': '#ef4444', 'never': 'var(--surface2)' };
-    const strokeColors = { 'fresh': '#16a34a', 'recent': '#d97706', 'used-today': '#dc2626', 'never': 'var(--border)' };
-    return `<g class="site-dot ${status}" data-site="${s.key}" data-label="${SITE_LABELS[s.key]}" role="button" aria-label="${SITE_LABELS[s.key]}">
-      <circle cx="${s.cx}" cy="${s.cy}" r="11" fill="${fillColors[status]}" stroke="${strokeColors[status]}" stroke-width="2"/>
-      <text x="${s.cx}" y="${s.cy + 3}" text-anchor="middle">${s.label}</text>
-    </g>`;
-  }).join('');
-
-  const legendHtml = `<div style="display:flex;gap:.75rem;justify-content:center;margin-top:.75rem;flex-wrap:wrap">
-    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block"></span>Fresh (3+ days)</span>
-    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Recent (1-2 days)</span>
-    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Today</span>
-    <span style="display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--text2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:inline-block"></span>Never used</span>
-  </div>`;
-
-  $container.innerHTML = `
-    <div class="site-body-map">
-      <svg class="site-body-svg" viewBox="0 0 160 310" xmlns="http://www.w3.org/2000/svg" style="color:var(--text2)">
-        ${view === 'front' ? frontBody : backBody}
-        ${dotsHtml}
-      </svg>
-    </div>
-    ${legendHtml}
-  `;
-
-  // Attach click handlers to dots
-  $container.querySelectorAll('.site-dot').forEach(dot => {
-    dot.style.cursor = 'pointer';
-    dot.addEventListener('click', () => {
-      openSitePopup(dot.dataset.site, dot.dataset.label);
-    });
-  });
-}
-
-function openSitePopup(siteKey, siteLabel) {
-  const overlay = document.createElement('div');
-  overlay.className = 'site-popup-overlay';
-  overlay.innerHTML = `
-    <div class="site-popup">
-      <div style="width:32px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .75rem"></div>
-      <div class="site-popup-title">Log injection here?</div>
-      <div class="site-popup-sub">${siteLabel}</div>
-      <div class="site-popup-actions">
-        <button class="site-popup-confirm">✓ Confirm</button>
-        <button class="site-popup-cancel">Cancel</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-
-  overlay.querySelector('.site-popup-confirm').addEventListener('click', () => {
-    saveInjectionSite(siteKey);
-    overlay.remove();
-    renderSitesTab();
-    // Brief toast
-    const toast = document.createElement('div');
-    toast.style.cssText = 'position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:.8rem;font-weight:700;padding:.55rem 1.2rem;border-radius:20px;z-index:9999;pointer-events:none;animation:fadeUp .2s ease';
-    toast.textContent = 'Logged: ' + siteLabel;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  });
-  overlay.querySelector('.site-popup-cancel').addEventListener('click', () => overlay.remove());
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-}
-
 // ── Initialize on DOM Ready ─────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
@@ -8090,23 +7885,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Simple / Advanced Mode (#104) ──────────────────────────
+  // Move advanced-tool cards into #adv-tools-slot once at page load
+  function initAdvancedToolsSlot() {
+    const slot = document.getElementById('adv-tools-slot');
+    if (!slot) return;
+    const rcCard = document.getElementById('reverse-calc-card');
+    const stackCard = document.getElementById('stack-card');
+    if (rcCard) slot.appendChild(rcCard);
+    if (stackCard) { stackCard.style.display = ''; slot.appendChild(stackCard); }
+  }
+  initAdvancedToolsSlot();
+
+  function switchToTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+    if (btn) btn.classList.add('active');
+    const tab = document.getElementById('tab-' + tabName);
+    if (tab) tab.classList.add('active');
+    document.querySelector('.app-content')?.scrollTo(0, 0);
+    localStorage.setItem('activeTab', tabName);
+  }
+
   function getAppMode() {
     return localStorage.getItem('appMode') || 'simple';
   }
-  function setAppMode(mode) {
+  function setAppMode(mode, navigate) {
     localStorage.setItem('appMode', mode);
     if (mode === 'advanced') {
       document.body.classList.add('advanced-mode');
       document.body.classList.remove('simple-mode');
+      if (navigate !== false) switchToTab('advanced');
     } else {
       document.body.classList.add('simple-mode');
       document.body.classList.remove('advanced-mode');
+      // If currently on the advanced tab, go back to Compass
+      const advTab = document.getElementById('tab-advanced');
+      if (advTab?.classList.contains('active')) switchToTab('schedule');
     }
     const toggle = document.getElementById('app-mode-toggle');
     if (toggle) toggle.checked = (mode === 'advanced');
   }
-  // Apply on load
-  setAppMode(getAppMode());
+  // Apply on load (no navigation — let tab-restore logic handle it)
+  setAppMode(getAppMode(), false);
 
   const $appModeToggle = document.getElementById('app-mode-toggle');
   if ($appModeToggle) {
@@ -8908,22 +8729,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inventory option in More tab — show tab-inventory
   document.getElementById('inventory-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-inventory')?.classList.add('active');
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'inventory');
-    renderVialTracker();
+    switchToTab('inventory');
+    renderVialTracker?.();
   });
 
   document.getElementById('inv-back-btn')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-more')?.classList.add('active');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'more');
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
   });
 
   document.getElementById('methodology-back-btn')?.addEventListener('click', () => {
@@ -8943,51 +8755,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('weight-loss-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const weightTab = document.getElementById('tab-weight');
-    if (weightTab) weightTab.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'weight');
+    switchToTab('weight');
   });
 
-  // Sites option in More tab
-  document.getElementById('sites-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-sites')?.classList.add('active');
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'sites');
-    renderSitesTab();
+  document.getElementById('weight-back-btn')?.addEventListener('click', () => {
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
   });
 
-  // Sites back button
-  document.getElementById('sites-back-btn')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-more')?.classList.add('active');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    localStorage.setItem('activeTab', 'more');
+  // ── Advanced Tab navigation cards ──────────────────────────
+  document.getElementById('adv-goto-inventory')?.addEventListener('click', () => {
+    switchToTab('inventory');
+    renderVialTracker?.();
   });
-
-  // Front/Back toggle on body map
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.site-view-btn');
-    if (!btn) return;
-    const view = btn.dataset.view;
-    document.querySelectorAll('.site-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
-    const $map = document.getElementById('sites-body-map');
-    if ($map) renderBodyMap($map, view);
+  document.getElementById('adv-goto-weight')?.addEventListener('click', () => {
+    switchToTab('weight');
+  });
+  document.getElementById('adv-goto-history')?.addEventListener('click', () => {
+    switchToTab('history');
+    // Open the logs view within history
+    document.getElementById('logs-view')?.classList.add('active');
+    document.getElementById('journal-view')?.classList.remove('active');
   });
 
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
-  const MAIN_TABS = ['schedule', 'history', 'more'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology', 'sites'];
+  const MAIN_TABS = ['schedule', 'history', 'more', 'advanced'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
+  // If advanced tab was saved but mode is now simple, fall back to Compass
+  if (savedTab === 'advanced' && getAppMode() !== 'advanced') savedTab = 'schedule';
   // Ensure only valid main tabs are used; fall back to Compass
   if (!MAIN_TABS.includes(savedTab)) savedTab = 'schedule';
   if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
