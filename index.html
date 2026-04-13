@@ -7965,6 +7965,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Switch bottom-nav tab programmatically (mirrors the tab-btn click handler)
+  function switchToTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const target = document.getElementById('tab-' + tabName);
+    if (target) target.classList.add('active');
+    localStorage.setItem('activeTab', tabName);
+  }
+
   // "Mix my vial" → wizard step 2 (diluent), or expand reconstitution section in calc
   const taskReconstitute = document.getElementById('task-reconstitute');
   if (taskReconstitute) {
@@ -7979,6 +7988,7 @@ document.addEventListener('DOMContentLoaded', () => {
           wizShowStep(2);
         }
       } else {
+        switchToTab('advanced');
         expandToolsZone(() => {
           const rcCard = document.getElementById('reverse-calc-card');
           if (!rcCard) return;
@@ -8009,6 +8019,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (taskReverseCalc) {
     taskReverseCalc.addEventListener('click', () => {
       if (isFirstRun()) exitFirstRun(true);
+      switchToTab('advanced');
       expandToolsZone(() => {
         const rcCard = document.getElementById('reverse-calc-card');
         if (!rcCard) return;
