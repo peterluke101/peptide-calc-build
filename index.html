@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')!=='dark')document.documentElement.classList.add('light-mode');</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--accent:#3DE8C3;--accent-dim:rgba(61,232,195,.12);--text:#ffffff;--text2:#a0a0a0;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.4);--card-bg:var(--surface);--text-muted:var(--text2)}
@@ -1080,7 +1081,21 @@ body.light-mode .delete-journal:active {
 .more-title-danger { color: #e05252 !important; }
 
 /* Light mode */
-html.light-mode { background: #f0f0f0; }
+html.light-mode {
+  --bg: #f0f0f0;
+  --surface: #ffffff;
+  --surface2: #e8e8e8;
+  --text: #1a1a2e;
+  --text2: #5a5a72;
+  --border: #d0d0d0;
+  --accent: #2bbaa0;
+  --accent-dim: rgba(43,186,160,.15);
+  --shadow: 0 4px 24px rgba(0,0,0,.08);
+  --card-bg: #ffffff;
+  --text-muted: #5a5a72;
+  background: #f0f0f0 !important;
+  color: #1a1a2e;
+}
 body.light-mode {
   --bg: #f0f0f0;
   --surface: #ffffff;
@@ -1091,7 +1106,7 @@ body.light-mode {
   --accent: #2bbaa0;
   --accent-dim: rgba(43,186,160,.15);
   --shadow: 0 4px 24px rgba(0,0,0,.08);
-  background: var(--bg);
+  background: #f0f0f0 !important;
   color: var(--text);
 }
 /* Base surfaces — card, nav, bottom bar */
@@ -1148,10 +1163,14 @@ body.light-mode .more-option { background: var(--surface2); }
 body.light-mode .more-option:hover { background: #dcdcdc; border-color: var(--border); }
 body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(--border); color: var(--text); }
 /* Scrollable container and tab backgrounds */
-body.light-mode .app-content { background: var(--bg) !important; }
-body.light-mode .tab-content { background: var(--bg) !important; }
+body.light-mode .app-content { background: #f0f0f0 !important; }
+body.light-mode .tab-content { background: #f0f0f0 !important; }
+body.light-mode #tab-schedule { background: #f0f0f0 !important; }
 body.light-mode #tab-history,
-body.light-mode #logs-view { background: var(--bg) !important; }
+body.light-mode #logs-view { background: #f0f0f0 !important; }
+/* Quick Insights boxes */
+body.light-mode .insight-box { background: #ffffff !important; border-color: var(--border); }
+html.light-mode .insight-box { background: #ffffff !important; border-color: #d0d0d0; }
 /* Toggle switch off-state */
 body.light-mode .toggle-slider { background: #bbb; }
 /* Install banner */
