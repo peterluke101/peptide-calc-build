@@ -9165,6 +9165,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const MAIN_TABS = ['schedule', 'history', 'more', 'advanced'];
   const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'recon-sheet', 'cost-tracker', 'methodology'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
+  // First run or fresh install — always start on Compass
+  if (isFirstRun()) savedTab = 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
   // If advanced tab was saved but mode is now simple, fall back to Compass
