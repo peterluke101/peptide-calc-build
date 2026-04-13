@@ -1579,11 +1579,11 @@ body.stage-active #proto-summary-card.showing{display:block}
 .ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0}
 .ob3-progress-bar{width:100%;height:3px;background:var(--border)}
 .ob3-progress-fill{height:100%;background:var(--accent);transition:width .3s ease}
-.ob3-step{display:none;flex-direction:column;width:100%;max-width:480px;padding:1.75rem 1.25rem 6rem;box-sizing:border-box;min-height:calc(100vh - 3px);animation:ob3Fade .2s ease}
+.ob3-step{display:none;flex-direction:column;width:100%;max-width:480px;padding:1rem 1.25rem 1.5rem;box-sizing:border-box;min-height:calc(100dvh - 3px);max-height:calc(100dvh - 3px);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:ob3Fade .2s ease}
 .ob3-step.active{display:flex}
 @keyframes ob3Fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .ob3-step-center{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
-.ob3-back{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;padding:0;margin-bottom:1.25rem;align-self:flex-start;font-family:inherit;display:flex;align-items:center;gap:.3rem}
+.ob3-back{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;padding:0;margin-bottom:.5rem;align-self:flex-start;font-family:inherit;display:flex;align-items:center;gap:.3rem}
 .ob3-back:hover{color:var(--text)}
 .ob3-step-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
 .ob3-heading{font-size:1.35rem;font-weight:800;color:var(--text);margin:0 0 .4rem;line-height:1.25}
@@ -1609,12 +1609,12 @@ body.stage-active #proto-summary-card.showing{display:block}
 .ob3-dose-presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:.25rem 0 .75rem}
 .ob3-dose-preset{padding:.4rem .8rem;border:1.5px solid var(--border);border-radius:16px;background:transparent;color:var(--text2);font-size:.78rem;cursor:pointer;font-family:inherit;transition:all .15s}
 .ob3-dose-preset:hover{border-color:var(--accent);color:var(--accent)}
-.ob3-live-result{text-align:center;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:12px;padding:1rem;margin:.75rem 0 1rem}
-.ob3-units-big{font-size:2.75rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:.2rem}
+.ob3-live-result{text-align:center;background:var(--accent-dim);border:1px solid rgba(61,232,195,.25);border-radius:12px;padding:.6rem .75rem;margin:.4rem 0 .6rem}
+.ob3-units-big{font-size:2.25rem;font-weight:900;color:var(--accent);line-height:1;margin-bottom:.15rem}
 .ob3-units-label{font-size:.8rem;color:var(--text2)}
 .ob3-conc-line{font-size:.75rem;color:var(--text2);margin-top:.4rem}
 .ob3-syringe-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:.35rem}
-.ob3-syringe-row{display:flex;gap:.4rem;margin-bottom:1.25rem}
+.ob3-syringe-row{display:flex;gap:.4rem;margin-bottom:.75rem}
 .ob3-syr-btn{flex:1;padding:.5rem .3rem;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text2);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
 .ob3-syr-btn.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 .ob3-summary-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;width:100%;box-sizing:border-box}
