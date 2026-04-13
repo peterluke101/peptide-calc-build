@@ -1575,8 +1575,20 @@ body.stage-active #proto-summary-card.showing{display:block}
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-units-label,
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-conc-line{color:rgba(255,255,255,.65)}
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-back:hover{color:#fff}
+/* Steps 1-7: dark-theme inputs, search, peptide list, summary cards */
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-search{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-search::placeholder{color:rgba(255,255,255,.45)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-pep-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.9)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-pep-btn:hover{border-color:var(--accent);background:rgba(61,232,195,.1)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-pep-btn.selected{border-color:var(--accent);background:rgba(61,232,195,.15);color:var(--accent)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-input{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-input::placeholder{color:rgba(255,255,255,.45)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-summary-card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-summary-pep{color:#fff}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-summary-row{color:rgba(255,255,255,.7);border-bottom-color:rgba(255,255,255,.1)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-summary-row strong{color:#fff}
 /* Per-step crop positions on ::before (300% zoom gives real range) */
-.ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0}
+.ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0;padding-top:env(safe-area-inset-top,0px)}
 .ob3-progress-bar{width:100%;height:3px;background:var(--border)}
 .ob3-progress-fill{height:100%;background:var(--accent);transition:width .3s ease}
 .ob3-step{display:none;flex-direction:column;width:100%;max-width:480px;padding:1rem 1.25rem 1.5rem;box-sizing:border-box;min-height:calc(100dvh - 3px);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:ob3Fade .2s ease}
@@ -3425,6 +3437,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 
   <!-- Step 1: Peptide picker -->
   <div class="ob3-step" id="ob3-step-1">
+    <button class="ob3-back" id="ob3-back-1">← Back</button>
     <div class="ob3-step-num">Step 1 of 6</div>
     <h2 class="ob3-heading">What peptide are you taking?</h2>
     <p class="ob3-sub">Tap one to select it. You can add more later.</p>
@@ -7570,6 +7583,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('ob3-step1-next')?.addEventListener('click', () => ob3GoStep(2));
+  document.getElementById('ob3-back-1')?.addEventListener('click', () => ob3GoStep(0));
 
   // ── Step 2: Vial size ────────────────────────────────────────
   function ob3UpdateCtx2() {
