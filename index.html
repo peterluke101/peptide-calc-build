@@ -7970,27 +7970,8 @@ document.addEventListener('DOMContentLoaded', () => {
           wizShowStep(2);
         }
       } else {
-        expandToolsZone(() => {
-          const rcCard = document.getElementById('reverse-calc-card');
-          if (!rcCard) return;
-          rcCard.style.display = '';
-          document.body.classList.remove('simple-mode');
-          // Open the rc-panel toggle
-          const toggle = document.getElementById('reverse-calc-toggle');
-          const panel  = document.getElementById('rc-panel');
-          if (toggle && panel && !toggle.checked) {
-            toggle.checked = true;
-            panel.style.display = '';
-          }
-          // Expand the reconstitution subsection
-          const reconBtn  = document.getElementById('rc-exp-recon-btn');
-          const reconBody = document.getElementById('rc-exp-recon-body');
-          if (reconBtn && reconBody && reconBtn.getAttribute('aria-expanded') !== 'true') {
-            reconBtn.setAttribute('aria-expanded', 'true');
-            reconBody.style.display = '';
-          }
-          rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+        switchToTab('recon-sheet');
+        renderReconList();
       }
     });
   }
