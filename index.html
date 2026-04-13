@@ -8011,14 +8011,14 @@ document.addEventListener('DOMContentLoaded', () => {
           wizShowStep(1);
         }
       } else {
-        expandToolsZone(() => {
+        switchToTab('advanced');
+        const advSection = document.getElementById('advanced-tools-section');
+        if (advSection) advSection.style.display = '';
+        document.body.classList.remove('simple-mode');
+        setTimeout(() => {
           const rcCard = document.getElementById('reverse-calc-card');
-          if (rcCard) {
-            rcCard.style.display = '';
-            document.body.classList.remove('simple-mode');
-            rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
+          if (rcCard) rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     });
   }
