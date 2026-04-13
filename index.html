@@ -583,6 +583,8 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 .tab-btn.active {
   color: var(--accent);
   font-weight: 700;
+  border-top: 2.5px solid var(--accent);
+  margin-top: -2.5px;
 }
 
 .tab-icon {
@@ -5003,11 +5005,15 @@ function renderToday(animate) {
         const btn = e.currentTarget;
         if (btn.classList.contains('done')) {
           removeInjection(injectionKey);
+          afterAction();
         } else {
+          // Instant visual feedback — turn green and show ✓ Done
+          btn.classList.add('done');
+          btn.textContent = '✓ Done';
           saveInjection(injectionKey);
           removeDoseSkip(injectionKey);
+          setTimeout(afterAction, 350);
         }
-        afterAction();
       });
 
       // Skip
