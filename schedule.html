@@ -409,6 +409,9 @@ body.dark-mode .pep-notes textarea{background:var(--surface2);color:var(--text)}
   font-size: .65rem;
   letter-spacing: .02em;
 }
+/* Advanced tab button — only visible in advanced mode */
+.tab-btn-advanced{display:none!important}
+body.advanced-mode .tab-btn-advanced{display:flex!important}
 </style>
 </head>
 <body>
@@ -1897,6 +1900,16 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
+// ── Onboarding gate — redirect to index if not yet onboarded ──
+if (!localStorage.getItem('hasOnboarded')) {
+  window.location.replace('index.html');
+}
+
+// ── Advanced mode — restore class from localStorage ───────────
+if (localStorage.getItem('appMode') === 'advanced') {
+  document.body.classList.add('advanced-mode');
+}
+
 // ── Theme ─────────────────────────────────────────────────────
 if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark-mode');
@@ -1930,6 +1943,10 @@ if (localStorage.getItem('theme') === 'dark') {
   <button class="tab-btn" onclick="window.location.href='index.html#more'">
     <span class="tab-icon">⚙️</span>
     <span class="tab-label">More</span>
+  </button>
+  <button class="tab-btn tab-btn-advanced" onclick="window.location.href='index.html#advanced'">
+    <span class="tab-icon">⚗️</span>
+    <span class="tab-label">Advanced</span>
   </button>
 </div>
 </body>

@@ -1786,9 +1786,9 @@ body.advanced-mode .app-mode-badge{background:rgba(61,232,195,.1);border-color:r
 /* Advanced tab button — only visible in advanced mode */
 .tab-btn-advanced{display:none!important}
 body.advanced-mode .tab-btn-advanced{display:flex!important}
-/* Advanced tab — More Tools 3-column row */
-.adv-nav-grid{display:flex;flex-direction:row;gap:12px;width:100%}
-.adv-nav-grid .task-card{flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.85rem .5rem;gap:.4rem;min-height:72px;min-width:0}
+/* Advanced tab — More Tools 2x2 grid */
+.adv-nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.adv-nav-grid .task-card{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.85rem .5rem;gap:.4rem;min-height:72px}
 .adv-nav-grid .task-card-icon{font-size:1.5rem;width:auto}
 .adv-nav-grid .task-card-title{font-size:.78rem;font-weight:600;line-height:1.3}
 /* Landing hero — brand name at top */
