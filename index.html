@@ -1105,7 +1105,7 @@ body.light-mode #tab-journal .input { background: var(--surface2); color: var(--
 /* Calendar */
 body.light-mode .cal-day { background: var(--surface2); border-color: var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.06); }
 body.light-mode .cal-day.today { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent),0 2px 8px rgba(13,155,131,.2); }
-body.light-mode .cal-day.selected { background: rgba(13,155,131,.12); border-color: var(--accent); }
+body.light-mode .cal-day.selected { background: var(--accent-dim); border-color: var(--accent); }
 body.light-mode .cal-day.in-break { background: rgba(239,68,68,.07) !important; border-color: rgba(239,68,68,.2) !important; }
 body.light-mode .week-nav button { background: var(--surface2); border-color: var(--border); color: var(--text); }
 /* Peptide list rows */
@@ -1733,7 +1733,8 @@ body.light-mode .btn-secondary{background:transparent!important;color:#1a9e88!im
 .task-picker-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:.5rem;padding:0 .25rem}
 .task-card-list{display:flex;flex-direction:column;gap:.5rem}
 .task-card{display:flex;align-items:center;gap:.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s;min-height:56px;text-align:left;width:100%;font-family:inherit;color:var(--text);-webkit-appearance:none;appearance:none}
-.task-card:hover,.task-card:active{background:var(--surface);border-color:rgba(61,232,195,.35)}
+.task-card:hover,.task-card:active{background:var(--surface);border-color:var(--accent)}
+body:not(.first-run) #task-calc-dose:hover{background:#0b8870;border-color:#0b8870}
 .task-card-icon{font-size:1.25rem;flex-shrink:0;width:28px;text-align:center}
 .task-card-text{flex:1;min-width:0}
 .task-card-title{font-size:.9rem;font-weight:600;color:var(--text)}
@@ -1806,7 +1807,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
 #tab-advanced:not(.active){display:none}
 /* Light mode override for advanced tab and all its children */
 body.light-mode #tab-advanced,
-html.light-mode #tab-advanced{background:#f0f0f0!important}
+html.light-mode #tab-advanced{background:#f5f6fa!important}
 body.light-mode #tab-advanced .card{background:#ffffff;border-color:var(--border)}
 body.light-mode #tab-advanced .adv-nav-grid .task-card{background:var(--surface2);border-color:var(--border);color:var(--text)}
 body.light-mode #tab-advanced .task-card-title{color:var(--text)}
