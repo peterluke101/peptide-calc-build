@@ -207,57 +207,8 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .log-cancel-btn{background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-family:inherit;font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap}
 .log-cancel-btn:hover{border-color:var(--accent);color:var(--text)}
 
-/* ── Vial Tracker ───────────────────────────────────────── */
-.vial-item{background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:.75rem;transition:border-color .2s}
-.vial-item:last-child{margin-bottom:0}
-.vial-item.low{border:1px solid #f59e0b;background:rgba(245,158,11,.07)}
-.vial-item.critical{border:1px solid #ef4444;background:rgba(239,68,68,.07)}
-.vial-item.empty{border:1px solid #ef4444;background:rgba(239,68,68,.08)}
-.vial-item.expired{border:2px solid #ef4444;background:rgba(239,68,68,.1)}
-.vial-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
-.vial-name{font-size:.9rem;font-weight:600}
-.vial-specs{font-size:.7rem;color:var(--text2)}
-.vial-progress{background:var(--bg);border-radius:3px;height:7px;margin:.55rem 0;overflow:hidden}
-.vial-progress-fill{height:100%;background:var(--accent);transition:width .4s ease;border-radius:3px}
-.vial-progress-fill.low{background:#f59e0b}
-.vial-progress-fill.critical{background:#ef4444}
-.vial-progress-fill.empty{background:#ef4444}
-.vial-stats{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.25rem}
-.vial-doses{font-size:.75rem;color:var(--text2)}
-.vial-warning{font-size:.7rem;font-weight:600;color:#f59e0b}
-.vial-warning.empty-warn{color:#ef4444}
-.vial-reset-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:4px;padding:.2rem .4rem;font-size:.6rem;font-weight:500;cursor:pointer;transition:all .2s;margin-left:.5rem}
-.vial-reset-btn:hover{border-color:var(--accent);color:var(--accent)}
-.vial-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.8rem}
-/* Lifecycle metadata row */
-.vial-lifecycle{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.45rem}
-.vial-lc-chip{display:inline-flex;align-items:center;gap:.25rem;font-size:.65rem;font-weight:500;color:var(--text2);background:var(--bg);border-radius:5px;padding:.15rem .45rem;border:1px solid var(--border)}
-.vial-lc-chip.green{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.07)}
-.vial-lc-chip.amber{color:#f59e0b;border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.07)}
-.vial-lc-chip.red{color:#ef4444;border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.07)}
-/* Expired banner */
-.vial-expired-banner{font-size:.75rem;font-weight:700;color:#ef4444;background:rgba(239,68,68,.12);border-radius:6px;padding:.35rem .6rem;margin-top:.4rem;text-align:center;letter-spacing:.04em}
-/* Cycle coverage chip */
-.vial-coverage{font-size:.7rem;font-weight:600;border-radius:5px;padding:.2rem .5rem;margin-top:.35rem;display:inline-block}
-.vial-coverage.ok{color:#22c55e;background:rgba(34,197,94,.1)}
-.vial-coverage.warn{color:#f59e0b;background:rgba(245,158,11,.1)}
-/* Inventory summary banner */
-.inv-summary{background:var(--surface2);border-radius:10px;padding:.8rem 1rem;margin-bottom:.85rem}
-.inv-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
-.inv-summary-stat{font-size:1.1rem;font-weight:800;color:var(--text)}
-.inv-summary-lbl{font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
-.inv-low-banner{font-size:.75rem;font-weight:600;color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:7px;padding:.4rem .75rem;margin-bottom:.6rem}
 /* Alert dot on More nav */
 .more-alert-dot{position:absolute;top:-4px;right:-5px;width:9px;height:9px;background:#ef4444;border-radius:50%;display:none;pointer-events:none}
-/* Vial action row */
-.vial-actions{display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap}
-.vial-new-btn{flex:1;background:var(--accent);color:#000;border:none;border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .2s}
-.vial-new-btn:hover{opacity:.82}
-/* Light mode */
-body.light-mode .vial-item{background:var(--surface2)}
-body.light-mode .vial-lc-chip{background:#f5f5f5;color:var(--text2)}
-body.light-mode .inv-summary{background:var(--surface2)}
-body.light-mode .vial-progress{background:#e0e0e0}
 
 /* ── Calendar Grid ───────────────────────────────────────── */
 .calendar-nav{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
@@ -1080,6 +1031,28 @@ body.light-mode .delete-journal:active {
 /* Reset warning colour */
 .more-title-danger { color: #e05252 !important; }
 
+/* ── Reconstitution Cheat Sheet ─────────────────────────── */
+.recon-recipe-card{background:var(--surface2);border-radius:10px;padding:.75rem .9rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem}
+.recon-recipe-main{flex:1;min-width:0}
+.recon-recipe-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
+.recon-recipe-details{font-size:.78rem;color:var(--text2);line-height:1.5}
+.recon-recipe-units{font-size:1.1rem;font-weight:800;color:var(--accent);flex-shrink:0;text-align:right;min-width:52px}
+.recon-recipe-units-lbl{font-size:.6rem;color:var(--text2);text-align:right;margin-top:.1rem}
+.recon-recipe-actions{display:flex;gap:.35rem;flex-shrink:0}
+.recon-recipe-del{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.25rem .45rem;font-size:.72rem;cursor:pointer;font-family:inherit}
+.recon-recipe-del:hover{border-color:#ef4444;color:#ef4444}
+body.light-mode .recon-recipe-card{background:var(--surface2)}
+
+/* ── Cost Tracker ───────────────────────────────────────── */
+.cost-entry{background:var(--surface2);border-radius:10px;padding:.65rem .9rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem}
+.cost-entry-main{flex:1;min-width:0}
+.cost-entry-pep{font-size:.88rem;font-weight:700;color:var(--text)}
+.cost-entry-meta{font-size:.72rem;color:var(--text2);margin-top:.15rem}
+.cost-entry-amount{font-size:1rem;font-weight:800;color:var(--text);flex-shrink:0}
+.cost-entry-del{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.25rem .45rem;font-size:.72rem;cursor:pointer;font-family:inherit;flex-shrink:0}
+.cost-entry-del:hover{border-color:#ef4444;color:#ef4444}
+body.light-mode .cost-entry{background:var(--surface2)}
+
 /* Light mode */
 html.light-mode {
   --bg: #f0f0f0;
@@ -1134,10 +1107,8 @@ body.light-mode .peptide-entry { background: var(--surface2); border-color: tran
 body.light-mode .peptide-entry:hover { border-color: var(--border); }
 body.light-mode .today-item { background: var(--surface2); }
 body.light-mode .done-btn { background: var(--surface); border-color: var(--border); color: var(--text); }
-/* History + vial tracker */
+/* History */
 body.light-mode .history-item { background: var(--surface2); }
-body.light-mode .vial-item { background: var(--surface2); }
-body.light-mode .vial-progress { background: #d0d0d0; }
 /* Stack builder */
 body.light-mode .goal-btn { background: var(--surface2); border-color: var(--border); color: var(--text); }
 body.light-mode .stack-peptide { background: var(--surface2); }
@@ -1813,7 +1784,6 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
 .ob3-brand{position:absolute;top:calc(env(safe-area-inset-top,0px) + 1.25rem);left:0;width:100%;text-align:center;color:#fff;font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 1px 10px rgba(0,0,0,.7);pointer-events:none;z-index:2}
 #onboarding-overlay.ob3-hero.ob3-step-0 #ob3-step-0{position:relative}
 /* Elements hidden in simple mode */
-body.simple-mode #inventory-option,
 body.simple-mode #weight-loss-option,
 body.simple-mode #dose-change-body,
 body.simple-mode #side-effect-body,
@@ -2616,10 +2586,16 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <h2>More Tools</h2>
     </div>
     <div class="adv-nav-grid">
-      <button class="task-card" id="adv-goto-inventory">
-        <span class="task-card-icon">📦</span>
+      <button class="task-card" id="adv-goto-recon">
+        <span class="task-card-icon">📋</span>
         <span class="task-card-text">
-          <span class="task-card-title">Vial Inventory</span>
+          <span class="task-card-title">Recon Cheat Sheet</span>
+        </span>
+      </button>
+      <button class="task-card" id="adv-goto-cost">
+        <span class="task-card-icon">💰</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Cost Tracker</span>
         </span>
       </button>
       <button class="task-card" id="adv-goto-weight">
@@ -2634,6 +2610,129 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
           <span class="task-card-title">History &amp; Analytics</span>
         </span>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reconstitution Cheat Sheet Tab -->
+<div id="tab-recon-sheet" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
+    <button id="recon-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Recon <span>Cheat Sheet</span></h1>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Saved recipes — figure it out once, never again</p>
+  </div>
+
+  <div class="card animate-in" id="recon-sheet-card">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>My Recipes</h2>
+      <button class="share-btn" style="font-size:.75rem;padding:.4rem .85rem" id="recon-add-btn">+ Add Recipe</button>
+    </div>
+
+    <!-- Add/Edit form (hidden by default) -->
+    <div id="recon-form" style="display:none;background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:1rem">
+      <div class="field" style="margin-bottom:.6rem">
+        <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Peptide Name</label>
+        <input type="text" id="recon-pep-name" placeholder="e.g. MOTS-C" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem">
+        <div class="field">
+          <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Vial (mg)</label>
+          <input type="number" id="recon-vial-mg" placeholder="10" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        </div>
+        <div class="field">
+          <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">BAC Water (mL)</label>
+          <input type="number" id="recon-bac-ml" placeholder="2" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:.75rem">
+        <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Dose per injection (mcg)</label>
+        <input type="number" id="recon-dose-mcg" placeholder="250" min="1" step="1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+      </div>
+      <div id="recon-calc-preview" style="display:none;background:rgba(43,186,160,.1);border:1px solid rgba(43,186,160,.3);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;font-size:.85rem;color:var(--accent);font-weight:600;text-align:center"></div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-primary" id="recon-save-btn" style="flex:1">Save Recipe</button>
+        <button class="btn btn-secondary" id="recon-cancel-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div id="recon-list">
+      <div class="empty-state" id="recon-empty">
+        <div class="icon">🧪</div>
+        <h3>No recipes yet</h3>
+        <p>Add your first reconstitution recipe above.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cost Tracker Tab -->
+<div id="tab-cost-tracker" class="tab-content">
+  <div style="width:100%;max-width:720px;margin-bottom:.5rem">
+    <button id="cost-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem">← Back</button>
+  </div>
+  <div class="header">
+    <h1>Cost <span>Tracker</span></h1>
+    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Track what you're spending on peptides</p>
+  </div>
+
+  <!-- Summary card -->
+  <div class="card animate-in" id="cost-summary-card">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center">
+      <div>
+        <div style="font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">This Month</div>
+        <div id="cost-stat-month" style="font-size:1.4rem;font-weight:800;color:var(--accent)">$0</div>
+      </div>
+      <div>
+        <div style="font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">All Time</div>
+        <div id="cost-stat-total" style="font-size:1.4rem;font-weight:800;color:var(--text)">$0</div>
+      </div>
+      <div>
+        <div style="font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem">Per Week</div>
+        <div id="cost-stat-week" style="font-size:1.4rem;font-weight:800;color:var(--text)">$0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card animate-in">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>Purchases</h2>
+      <button class="share-btn" style="font-size:.75rem;padding:.4rem .85rem" id="cost-add-btn">+ Add Purchase</button>
+    </div>
+
+    <!-- Add form (hidden by default) -->
+    <div id="cost-form" style="display:none;background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:1rem">
+      <div class="field" style="margin-bottom:.6rem">
+        <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Peptide</label>
+        <input type="text" id="cost-pep-name" placeholder="e.g. BPC-157" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.6rem">
+        <div class="field">
+          <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Cost ($)</label>
+          <input type="number" id="cost-amount" placeholder="45" min="0" step="0.01" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        </div>
+        <div class="field">
+          <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Qty</label>
+          <input type="number" id="cost-qty" placeholder="1" min="1" step="1" value="1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        </div>
+        <div class="field">
+          <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Date</label>
+          <input type="date" id="cost-date" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem;color-scheme:light">
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn btn-primary" id="cost-save-btn" style="flex:1">Save</button>
+        <button class="btn btn-secondary" id="cost-cancel-btn">Cancel</button>
+      </div>
+    </div>
+
+    <div id="cost-list">
+      <div class="empty-state" id="cost-empty">
+        <div class="icon">💰</div>
+        <h3>No purchases yet</h3>
+        <p>Track your peptide spending here.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -2844,16 +2943,6 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   <div class="card animate-in">
     <div class="more-options">
 
-      <!-- Inventory -->
-      <div class="more-option" id="inventory-option">
-        <div class="more-icon">🧪</div>
-        <div class="more-text">
-          <div class="more-title">Vial Inventory</div>
-          <div class="more-desc">Lifecycle tracking, discard dates, stock alerts</div>
-        </div>
-        <div class="more-arrow">›</div>
-      </div>
-
       <!-- Learn Tab -->
       <div class="more-option" id="learn-option">
         <div class="more-icon">🧬</div>
@@ -2996,20 +3085,6 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
 </div>
 
-<!-- Inventory Tab Content -->
-<div id="tab-inventory" class="tab-content">
-  <div style="width:100%;max-width:720px;margin-bottom:.5rem;">
-    <button id="inv-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
-  </div>
-  <div class="header">
-    <h1>Vial <span>Inventory</span></h1>
-    <p style="font-size:.85rem;color:var(--text2);margin-top:.35rem;text-align:center">Reconstitution dates, discard timelines, stock levels</p>
-  </div>
-  <div class="card animate-in" id="inv-card">
-    <div id="inv-summary"></div>
-    <div id="vial-list"></div>
-  </div>
-</div>
 
 <!-- Weight Loss Tab Content -->
 <div id="tab-weight" class="tab-content">
@@ -4509,138 +4584,6 @@ function showVialToast(msg) {
   toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-function renderVialTracker() {
-  const $list = document.getElementById('vial-list');
-  const $summary = document.getElementById('inv-summary');
-  if (!$list) return;
-
-  // Ensure all scheduled peptides have vial entries
-  schedule.forEach(entry => ensureVialEntry(entry));
-
-  const vialData = getVialData();
-  // Sort: oldest reconstitution first (FIFO for active tracking)
-  const entries = Object.entries(vialData).sort((a, b) => {
-    const da = a[1].reconstitutionDate || a[1].createdAt || '';
-    const db = b[1].reconstitutionDate || b[1].createdAt || '';
-    return da.localeCompare(db);
-  });
-
-  if (entries.length === 0) {
-    if ($summary) $summary.innerHTML = '';
-    $list.innerHTML = '<div class="vial-empty">No vials tracked yet. Add peptides to your schedule to track vial usage.</div>';
-    return;
-  }
-
-  const today = formatLocalDate(new Date());
-
-  // Build summary stats
-  let totalActive = 0, expiringSoon = 0, lowStock = 0;
-  entries.forEach(([, vial]) => {
-    const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
-    if (remaining > 0) totalActive++;
-    const { daysLeft } = vialDiscardInfo(vial);
-    if (daysLeft >= 0 && daysLeft <= 7) expiringSoon++;
-    if (remaining > 0 && remaining <= 3) lowStock++;
-  });
-
-  if ($summary) {
-    const lowBanner = lowStock > 0
-      ? `<div class="inv-low-banner">⚠ ${lowStock} vial${lowStock !== 1 ? 's' : ''} running low on doses — reorder soon</div>`
-      : '';
-    $summary.innerHTML = `
-      ${lowBanner}
-      <div class="inv-summary">
-        <div class="inv-summary-grid">
-          <div>
-            <div class="inv-summary-stat">${totalActive}</div>
-            <div class="inv-summary-lbl">Active vials</div>
-          </div>
-          <div>
-            <div class="inv-summary-stat" style="color:${expiringSoon > 0 ? '#f59e0b' : 'var(--text)'}">${expiringSoon}</div>
-            <div class="inv-summary-lbl">Expiring ≤7d</div>
-          </div>
-          <div>
-            <div class="inv-summary-stat" style="color:${lowStock > 0 ? '#ef4444' : 'var(--text)'}">${lowStock}</div>
-            <div class="inv-summary-lbl">Low stock</div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // Render each vial card
-  $list.innerHTML = '';
-  entries.forEach(([key, vial]) => {
-    const remaining = Math.max(0, vial.totalDoses - vial.usedDoses);
-    const usedPct = vial.totalDoses > 0 ? Math.min(100, (vial.usedDoses / vial.totalDoses) * 100) : 0;
-    const isEmpty = remaining <= 0;
-    const isCritical = !isEmpty && remaining <= 1;
-    const isLow = !isEmpty && !isCritical && remaining <= 3;
-    const { daysLeft, expired, color: discardColor, label: discardLabel } = vialDiscardInfo(vial);
-
-    let statusClass = expired ? 'expired' : isEmpty ? 'empty' : isCritical ? 'critical' : isLow ? 'low' : '';
-    const fillClass = isEmpty || isCritical ? 'critical' : isLow ? 'low' : '';
-
-    // Runout estimate
-    const schedEntry = schedule.find(e => PEPTIDES[e.peptideIndex].name === vial.peptideName);
-    let coverageHtml = '';
-    if (schedEntry && remaining > 0) {
-      const daysToRunout = estimateDaysLeft(schedEntry, remaining);
-      const runoutDate = new Date();
-      runoutDate.setDate(runoutDate.getDate() + daysToRunout);
-      const runoutStr = runoutDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      const coversProtocol = daysToRunout >= 30;
-      coverageHtml = coversProtocol
-        ? `<div class="vial-coverage ok">✓ Covers next 30 days</div>`
-        : `<div class="vial-coverage warn">Will run out ~${runoutStr}</div>`;
-    }
-
-    // Dose stock badge
-    let stockBadge = '';
-    if (isEmpty) stockBadge = '<span class="vial-empty-badge">Empty — replace</span>';
-    else if (isCritical) stockBadge = '<span class="vial-empty-badge">⚠ 1 dose left</span>';
-    else if (isLow) stockBadge = '<span class="vial-low-badge">⚠ Low stock</span>';
-
-    const reconLabel = vial.reconstitutionDate
-      ? parseLocalDate(vial.reconstitutionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      : '—';
-
-    const div = document.createElement('div');
-    div.className = `vial-item ${statusClass}`;
-    div.innerHTML = `
-      <div class="vial-header">
-        <div class="vial-name">${vial.peptideName}</div>
-        <div class="vial-specs">${vial.vialMg}mg · ${vial.waterMl}mL</div>
-      </div>
-      ${expired ? '<div class="vial-expired-banner">⛔ EXPIRED — Do not use</div>' : ''}
-      <div class="vial-progress">
-        <div class="vial-progress-fill ${fillClass}" style="width:${100 - usedPct}%"></div>
-      </div>
-      <div class="vial-stats">
-        <div class="vial-doses">${remaining} of ${vial.totalDoses} doses remaining</div>
-        ${stockBadge}
-      </div>
-      <div class="vial-lifecycle">
-        <span class="vial-lc-chip">🧪 Mixed ${reconLabel}</span>
-        <span class="vial-lc-chip ${discardColor}">🗓 ${discardLabel}</span>
-      </div>
-      ${coverageHtml}
-      <div class="vial-actions">
-        <button class="vial-new-btn" data-vial-key="${key}">New Vial (reset)</button>
-      </div>
-    `;
-
-    div.querySelector('.vial-new-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      if (confirm(`Open a new vial of ${vial.peptideName}? This resets the dose counter and sets today as the reconstitution date.`)) {
-        resetSingleVial(key);
-      }
-    });
-
-    $list.appendChild(div);
-  });
-
-  updateMoreAlertDot();
-}
 
 // ── Cycle status for a given date ────────────────────────────
 // Returns { status: 'inject'|'break'|'off'|'rest', cycleNumber, cycleDayInCycle, breakDayRemaining, isLastCycleDay, isFirstBreakDay, isRestartDay }
@@ -5074,7 +5017,6 @@ function renderToday(animate) {
 
     function afterAction() {
       renderInjectionHistory();
-      renderVialTracker();
       renderPeptidesList();
       renderInjectionLog();
       updateOverdueBadge();
@@ -6346,7 +6288,6 @@ function renderAll() {
   updateAddPeptideVisibility();
   updateOverdueBadge();
   updateMoreAlertDot();
-  renderVialTracker();
   renderSprint11();
   renderCycleEndBanners();
 }
@@ -8734,17 +8675,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Inventory option in More tab — show tab-inventory
-  document.getElementById('inventory-option')?.addEventListener('click', () => {
-    switchToTab('inventory');
-    renderVialTracker?.();
-  });
-
-  document.getElementById('inv-back-btn')?.addEventListener('click', () => {
-    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
-    switchToTab(dest);
-  });
-
   document.getElementById('methodology-back-btn')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-more')?.classList.add('active');
@@ -8771,9 +8701,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Advanced Tab navigation cards ──────────────────────────
-  document.getElementById('adv-goto-inventory')?.addEventListener('click', () => {
-    switchToTab('inventory');
-    renderVialTracker?.();
+  document.getElementById('adv-goto-recon')?.addEventListener('click', () => {
+    switchToTab('recon-sheet');
+    renderReconList();
+  });
+  document.getElementById('adv-goto-cost')?.addEventListener('click', () => {
+    switchToTab('cost-tracker');
+    renderCostList();
   });
   document.getElementById('adv-goto-weight')?.addEventListener('click', () => {
     switchToTab('weight');
@@ -8785,10 +8719,204 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('journal-view')?.classList.remove('active');
   });
 
+  // ── Reconstitution Cheat Sheet ──────────────────────────────
+  function getReconRecipes() {
+    try { return JSON.parse(localStorage.getItem('reconRecipes') || '[]'); } catch(e) { return []; }
+  }
+  function saveReconRecipes(arr) { localStorage.setItem('reconRecipes', JSON.stringify(arr)); }
+  function calcReconUnits(vialMg, bacMl, doseMcg) {
+    if (!vialMg || !bacMl || !doseMcg) return null;
+    const concMcgPerMl = (vialMg * 1000) / bacMl;
+    const drawMl = doseMcg / concMcgPerMl;
+    return Math.round(drawMl * 1000) / 10; // units on 100-unit syringe
+  }
+  function renderReconList() {
+    const list = document.getElementById('recon-list');
+    const empty = document.getElementById('recon-empty');
+    if (!list) return;
+    const recipes = getReconRecipes();
+    // Remove existing recipe cards
+    list.querySelectorAll('.recon-recipe-card').forEach(c => c.remove());
+    if (recipes.length === 0) {
+      if (empty) empty.style.display = '';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+    recipes.forEach((r, i) => {
+      const units = calcReconUnits(r.vialMg, r.bacMl, r.doseMcg);
+      const card = document.createElement('div');
+      card.className = 'recon-recipe-card';
+      card.innerHTML = `
+        <div class="recon-recipe-main">
+          <div class="recon-recipe-name">${r.pepName}</div>
+          <div class="recon-recipe-details">${r.vialMg}mg vial · ${r.bacMl}mL BAC water · ${r.doseMcg}mcg dose</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-right:.35rem">
+          <div class="recon-recipe-units">${units !== null ? units : '—'}</div>
+          <div class="recon-recipe-units-lbl">units</div>
+        </div>
+        <div class="recon-recipe-actions">
+          <button class="recon-recipe-del" data-idx="${i}">✕</button>
+        </div>`;
+      list.insertBefore(card, empty);
+    });
+    list.querySelectorAll('.recon-recipe-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        const arr = getReconRecipes();
+        arr.splice(idx, 1);
+        saveReconRecipes(arr);
+        renderReconList();
+      });
+    });
+  }
+
+  // Recon form logic
+  let reconEditIdx = -1;
+  document.getElementById('recon-add-btn')?.addEventListener('click', () => {
+    reconEditIdx = -1;
+    document.getElementById('recon-pep-name').value = '';
+    document.getElementById('recon-vial-mg').value = '';
+    document.getElementById('recon-bac-ml').value = '';
+    document.getElementById('recon-dose-mcg').value = '';
+    document.getElementById('recon-calc-preview').style.display = 'none';
+    document.getElementById('recon-form').style.display = 'block';
+    document.getElementById('recon-pep-name').focus();
+  });
+  document.getElementById('recon-cancel-btn')?.addEventListener('click', () => {
+    document.getElementById('recon-form').style.display = 'none';
+  });
+  function updateReconPreview() {
+    const vialMg = parseFloat(document.getElementById('recon-vial-mg')?.value);
+    const bacMl  = parseFloat(document.getElementById('recon-bac-ml')?.value);
+    const doseMcg = parseFloat(document.getElementById('recon-dose-mcg')?.value);
+    const preview = document.getElementById('recon-calc-preview');
+    if (!preview) return;
+    const units = calcReconUnits(vialMg, bacMl, doseMcg);
+    if (units !== null && !isNaN(units)) {
+      preview.textContent = `Draw ${units} units on a 100-unit syringe`;
+      preview.style.display = 'block';
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+  ['recon-vial-mg','recon-bac-ml','recon-dose-mcg'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateReconPreview);
+  });
+  document.getElementById('recon-save-btn')?.addEventListener('click', () => {
+    const pepName = document.getElementById('recon-pep-name')?.value.trim();
+    const vialMg  = parseFloat(document.getElementById('recon-vial-mg')?.value);
+    const bacMl   = parseFloat(document.getElementById('recon-bac-ml')?.value);
+    const doseMcg = parseFloat(document.getElementById('recon-dose-mcg')?.value);
+    if (!pepName || isNaN(vialMg) || isNaN(bacMl) || isNaN(doseMcg)) {
+      alert('Please fill in all fields.'); return;
+    }
+    const arr = getReconRecipes();
+    const entry = { pepName, vialMg, bacMl, doseMcg };
+    if (reconEditIdx >= 0) arr[reconEditIdx] = entry; else arr.push(entry);
+    saveReconRecipes(arr);
+    document.getElementById('recon-form').style.display = 'none';
+    renderReconList();
+  });
+  document.getElementById('recon-back-btn')?.addEventListener('click', () => {
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
+  });
+  renderReconList();
+
+  // ── Cost Tracker ────────────────────────────────────────────
+  function getCostEntries() {
+    try { return JSON.parse(localStorage.getItem('costEntries') || '[]'); } catch(e) { return []; }
+  }
+  function saveCostEntries(arr) { localStorage.setItem('costEntries', JSON.stringify(arr)); }
+  function renderCostSummary() {
+    const entries = getCostEntries();
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear  = now.getFullYear();
+    let total = 0, monthTotal = 0;
+    let earliest = null;
+    entries.forEach(e => {
+      const amt = (e.cost || 0) * (e.qty || 1);
+      total += amt;
+      const d = new Date(e.date);
+      if (d.getMonth() === thisMonth && d.getFullYear() === thisYear) monthTotal += amt;
+      if (!earliest || d < earliest) earliest = d;
+    });
+    const weeks = earliest ? Math.max(1, (now - earliest) / (7 * 86400000)) : 1;
+    const perWeek = entries.length > 0 ? total / weeks : 0;
+    const fmt = n => '$' + n.toFixed(2).replace(/\.00$/, '');
+    const el = id => document.getElementById(id);
+    if (el('cost-stat-month')) el('cost-stat-month').textContent = fmt(monthTotal);
+    if (el('cost-stat-total')) el('cost-stat-total').textContent = fmt(total);
+    if (el('cost-stat-week'))  el('cost-stat-week').textContent  = fmt(perWeek);
+  }
+  function renderCostList() {
+    const list = document.getElementById('cost-list');
+    const empty = document.getElementById('cost-empty');
+    if (!list) return;
+    const entries = getCostEntries();
+    list.querySelectorAll('.cost-entry').forEach(c => c.remove());
+    renderCostSummary();
+    if (entries.length === 0) { if (empty) empty.style.display = ''; return; }
+    if (empty) empty.style.display = 'none';
+    [...entries].reverse().forEach((e, ri) => {
+      const i = entries.length - 1 - ri;
+      const card = document.createElement('div');
+      card.className = 'cost-entry';
+      const total = (e.cost || 0) * (e.qty || 1);
+      const dateStr = e.date ? new Date(e.date + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      card.innerHTML = `
+        <div class="cost-entry-main">
+          <div class="cost-entry-pep">${e.pepName}</div>
+          <div class="cost-entry-meta">${e.qty > 1 ? e.qty + ' × $' + Number(e.cost).toFixed(2) : ''}${dateStr ? (e.qty > 1 ? ' · ' : '') + dateStr : ''}</div>
+        </div>
+        <div class="cost-entry-amount">$${total.toFixed(2).replace(/\.00$/, '')}</div>
+        <button class="cost-entry-del" data-idx="${i}">✕</button>`;
+      list.insertBefore(card, empty);
+    });
+    list.querySelectorAll('.cost-entry-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const arr = getCostEntries();
+        arr.splice(parseInt(btn.dataset.idx), 1);
+        saveCostEntries(arr);
+        renderCostList();
+      });
+    });
+  }
+  document.getElementById('cost-add-btn')?.addEventListener('click', () => {
+    document.getElementById('cost-pep-name').value = '';
+    document.getElementById('cost-amount').value = '';
+    document.getElementById('cost-qty').value = '1';
+    document.getElementById('cost-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('cost-form').style.display = 'block';
+    document.getElementById('cost-pep-name').focus();
+  });
+  document.getElementById('cost-cancel-btn')?.addEventListener('click', () => {
+    document.getElementById('cost-form').style.display = 'none';
+  });
+  document.getElementById('cost-save-btn')?.addEventListener('click', () => {
+    const pepName = document.getElementById('cost-pep-name')?.value.trim();
+    const cost    = parseFloat(document.getElementById('cost-amount')?.value);
+    const qty     = parseInt(document.getElementById('cost-qty')?.value) || 1;
+    const date    = document.getElementById('cost-date')?.value;
+    if (!pepName || isNaN(cost) || cost < 0) { alert('Please enter a peptide name and cost.'); return; }
+    const arr = getCostEntries();
+    arr.push({ pepName, cost, qty, date });
+    saveCostEntries(arr);
+    document.getElementById('cost-form').style.display = 'none';
+    renderCostList();
+  });
+  document.getElementById('cost-back-btn')?.addEventListener('click', () => {
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
+  });
+  renderCostList();
+
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
   const MAIN_TABS = ['schedule', 'history', 'more', 'advanced'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'recon-sheet', 'cost-tracker', 'methodology'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
