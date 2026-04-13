@@ -1804,6 +1804,11 @@ body.advanced-mode .app-mode-badge{background:rgba(61,232,195,.1);border-color:r
 /* Advanced tab button — only visible in advanced mode */
 .tab-btn-advanced{display:none!important}
 body.advanced-mode .tab-btn-advanced{display:flex!important}
+/* Advanced tab — More Tools 3-column grid */
+.adv-nav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.adv-nav-grid .task-card{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.75rem .5rem;gap:.35rem;min-height:72px}
+.adv-nav-grid .task-card-icon{font-size:1.5rem;width:auto}
+.adv-nav-grid .task-card-title{font-size:.78rem;font-weight:600}
 /* Elements hidden in simple mode */
 body.simple-mode #inventory-option,
 body.simple-mode #weight-loss-option,
@@ -1812,8 +1817,12 @@ body.simple-mode #side-effect-body,
 body.simple-mode #journal-trends-body{ display:none !important}
 /* Advanced tab page hidden unless tab is active */
 #tab-advanced:not(.active){display:none}
-/* Light mode override for advanced tab */
-body.light-mode #tab-advanced{background:#f0f0f0!important}
+/* Light mode override for advanced tab and all its children */
+body.light-mode #tab-advanced,
+html.light-mode #tab-advanced{background:#f0f0f0!important}
+body.light-mode #tab-advanced .card{background:#ffffff;border-color:var(--border)}
+body.light-mode #tab-advanced .adv-nav-grid .task-card{background:var(--surface2);border-color:var(--border);color:var(--text)}
+body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 
 </style>
 </head>
@@ -2603,30 +2612,24 @@ body.light-mode #tab-advanced{background:#f0f0f0!important}
     <div class="section-header" style="margin-bottom:.75rem">
       <h2>More Tools</h2>
     </div>
-    <div class="task-card-list" style="display:flex;flex-direction:column;gap:.5rem">
+    <div class="adv-nav-grid">
       <button class="task-card" id="adv-goto-inventory">
         <span class="task-card-icon">📦</span>
         <span class="task-card-text">
           <span class="task-card-title">Vial Inventory</span>
-          <span class="task-card-desc">Track reconstitution dates, discard timelines, stock levels</span>
         </span>
-        <span class="task-card-arrow">›</span>
       </button>
       <button class="task-card" id="adv-goto-weight">
         <span class="task-card-icon">📊</span>
         <span class="task-card-text">
           <span class="task-card-title">Weight Tracking</span>
-          <span class="task-card-desc">Log progress and visualize weight loss trends</span>
         </span>
-        <span class="task-card-arrow">›</span>
       </button>
       <button class="task-card" id="adv-goto-history">
         <span class="task-card-icon">📈</span>
         <span class="task-card-text">
           <span class="task-card-title">History &amp; Analytics</span>
-          <span class="task-card-desc">Dose change log, side-effect timeline, journal trends</span>
         </span>
-        <span class="task-card-arrow">›</span>
       </button>
     </div>
   </div>
