@@ -1610,6 +1610,8 @@ body.stage-active #proto-summary-card.showing{display:block}
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-conc-line{color:rgba(255,255,255,.6)}
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-syringe-label{color:rgba(255,255,255,.6)}
 #onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-live-result{background:rgba(61,232,195,.1);border-color:rgba(61,232,195,.25)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) .ob3-details-box{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+#onboarding-overlay.ob3-hero:not(.ob3-step-0) details.ob3-helper summary{color:var(--accent)}
 /* Per-step crop positions on ::before (300% zoom gives real range) */
 .ob3-progress-wrap{position:sticky;top:0;width:100%;background:var(--bg);z-index:1;flex-shrink:0;padding-top:env(safe-area-inset-top,0px)}
 .ob3-progress-bar{width:100%;height:3px;background:var(--border)}
@@ -3512,7 +3514,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     <button class="ob3-custom-toggle" id="ob3-water-custom-toggle">Enter custom amount</button>
     <details class="ob3-helper" style="margin-bottom:.75rem">
       <summary style="cursor:pointer;color:var(--accent);font-size:.8rem">Not sure how much to add?</summary>
-      <div style="margin-top:.35rem;padding:.5rem .6rem;background:var(--surface2);border-radius:8px;font-size:.78rem;line-height:1.5">A common starting point is 2mL for a 5mg vial. You can always adjust later.</div>
+      <div class="ob3-details-box" style="margin-top:.35rem;padding:.5rem .6rem;background:var(--surface2);border-radius:8px;font-size:.78rem;line-height:1.5">A common starting point is 2mL for a 5mg vial. You can always adjust later.</div>
     </details>
     <button class="ob3-btn-primary" id="ob3-step3-next" disabled>Next →</button>
   </div>
@@ -3534,12 +3536,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <div class="ob3-units-label">units to draw</div>
       <div class="ob3-conc-line" id="ob3-conc-line"></div>
     </div>
-    <div class="ob3-syringe-label">Syringe size</div>
-    <div class="ob3-syringe-row" id="ob3-syringe-row">
-      <button class="ob3-syr-btn selected" data-ml="0.3">0.3mL<br><span style="font-size:.65rem;font-weight:400">30 units</span></button>
-      <button class="ob3-syr-btn" data-ml="0.5">0.5mL<br><span style="font-size:.65rem;font-weight:400">50 units</span></button>
-      <button class="ob3-syr-btn" data-ml="1.0">1.0mL<br><span style="font-size:.65rem;font-weight:400">100 units</span></button>
-    </div>
+    <!-- Syringe size removed — defaults to U-100 (1.0mL) -->
     <button class="ob3-btn-primary" id="ob3-step4-next" disabled>Next →</button>
   </div>
 
@@ -7514,7 +7511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     waterMl: 0,
     doseMcg: 0,
     doseUnit: 'mcg',  // 'mcg' or 'mg'
-    syringeMl: 0.3,
+    syringeMl: 1.0,
     freq: '',
     time: '',
   };
