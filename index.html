@@ -7626,6 +7626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Dose presets from peptide data
     const $presets = document.getElementById('ob3-dose-presets');
+    const $doseInput = document.getElementById('ob3-dose-input');
     if ($presets) {
       const pep = PEPTIDES[ob3.pepIdx];
       if (pep && ob3.doseUnit === 'mcg') {
@@ -7639,6 +7640,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ob3CalcLive();
           });
         });
+        // Auto-fill typical starting dose if input is empty
+        if ($doseInput && !$doseInput.value) {
+          $doseInput.value = pep.lowMcg;
+          $doseInput.placeholder = 'Typical starting dose';
+        }
       } else {
         $presets.innerHTML = '';
       }
@@ -7983,7 +7989,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const panel  = document.getElementById('rc-panel');
           if (toggle && panel && !toggle.checked) {
             toggle.checked = true;
-            panel.style.display = '';
+            panel.style.display = 'block';
           }
           // Expand the reconstitution subsection
           const reconBtn  = document.getElementById('rc-exp-recon-btn');
@@ -8012,7 +8018,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const panel  = document.getElementById('rc-panel');
         if (toggle && panel && !toggle.checked) {
           toggle.checked = true;
-          panel.style.display = '';
+          panel.style.display = 'block';
         }
         rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
@@ -8250,7 +8256,7 @@ document.addEventListener('DOMContentLoaded', () => {
       rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const toggle = document.getElementById('reverse-calc-toggle');
       const panel = document.getElementById('rc-panel');
-      if (toggle && panel && !toggle.checked) { toggle.checked = true; panel.style.display = ''; }
+      if (toggle && panel && !toggle.checked) { toggle.checked = true; panel.style.display = 'block'; }
     }
     localStorage.setItem('hasCompletedWizard', '1');
   });
