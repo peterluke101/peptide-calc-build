@@ -15,9 +15,9 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 /* Light-first defaults — dark mode overrides below */
-html,body{background:#f0f0f0;color:#1a1a2e}
+html,body{background:#f4f5f9;color:#1a1a2e}
 html.dark-mode,body.dark-mode{background:#0a0a0a!important;color:#fff!important}
-:root{--bg:#f0f0f0;--surface:#ffffff;--surface2:#e8e8e8;--border:#d0d0d0;--accent:#2bbaa0;--accent-dim:rgba(43,186,160,.15);--text:#1a1a2e;--text2:#5a5a72;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.08);--card-bg:#ffffff;--text-muted:#5a5a72}
+:root{--bg:#f4f5f9;--surface:#ffffff;--surface2:#e2e4ec;--border:#c0c4cc;--accent:#0d9b83;--accent-dim:rgba(43,186,160,.22);--text:#1a1a2e;--text2:#484860;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04);--card-bg:#ffffff;--text-muted:#484860}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
 
@@ -31,7 +31,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .nav{width:100%;max-width:720px;display:flex;align-items:center;gap:.25rem;padding:1rem 0 .5rem;margin-bottom:.5rem}
 .nav a{font-size:.8rem;font-weight:500;color:var(--text2);text-decoration:none;padding:.45rem .85rem;border-radius:8px;transition:all .2s;letter-spacing:.02em}
 .nav a:hover{color:var(--text);background:var(--surface2)}
-.nav a.active{color:var(--accent);background:var(--accent-dim)}
+.nav a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
 .nav-sep{color:var(--border);font-size:.7rem;user-select:none}
 
 /* ── Header ──────────────────────────────────────────────── */
