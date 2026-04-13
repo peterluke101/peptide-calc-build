@@ -1801,16 +1801,19 @@ body.light-mode .wiz-card{background:var(--surface2)}
 .app-mode-badge{display:inline-flex;align-items:center;gap:.3rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.2rem .65rem;font-size:.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:background .15s;margin-top:.4rem}
 .app-mode-badge:hover{border-color:var(--accent);color:var(--accent)}
 body.advanced-mode .app-mode-badge{background:rgba(61,232,195,.1);border-color:rgba(61,232,195,.25);color:var(--accent)}
+/* Advanced tab button — only visible in advanced mode */
+.tab-btn-advanced{display:none!important}
+body.advanced-mode .tab-btn-advanced{display:flex!important}
 /* Elements hidden in simple mode */
-body.simple-mode #reverse-calc-card,
-body.simple-mode #stack-card,
 body.simple-mode #inventory-option,
-body.simple-mode #tab-inventory,
 body.simple-mode #weight-loss-option,
-body.simple-mode #tab-weight,
 body.simple-mode #dose-change-body,
 body.simple-mode #side-effect-body,
 body.simple-mode #journal-trends-body{ display:none !important}
+/* Advanced tab page hidden unless tab is active */
+#tab-advanced:not(.active){display:none}
+/* Light mode override for advanced tab */
+body.light-mode #tab-advanced{background:#f0f0f0!important}
 
 </style>
 </head>
@@ -2268,9 +2271,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 </div>
 
-<!-- Reverse Calc Card -->
-<div class="advanced-tools-label">Advanced Tools</div>
-<div id="advanced-tools-section">
+<!-- BAC Water Calculator — moved to #tab-advanced -->
+<div id="advanced-tools-section" style="display:none">
 <div class="card animate-in" id="reverse-calc-card">
   <div class="rc-toggle-row">
     <div class="rc-toggle-label">
@@ -2505,8 +2507,8 @@ body.simple-mode #journal-trends-body{ display:none !important}
   <div class="history-list" id="history-list"></div>
 </div>
 
-<!-- Stack Builder (compact link) -->
-<div class="card animate-in animate-d3" id="stack-card" style="padding:.85rem 1.1rem;">
+<!-- Stack Builder — moved to #tab-advanced via JS -->
+<div class="card animate-in animate-d3" id="stack-card" style="padding:.85rem 1.1rem;display:none">
   <div style="display:flex;align-items:center;gap:.75rem;cursor:pointer;" onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-stacks')?.classList.add('active')">
     <div style="font-size:1.4rem;flex-shrink:0">🧬</div>
     <div style="flex:1;min-width:0">
@@ -2584,6 +2586,50 @@ body.simple-mode #journal-trends-body{ display:none !important}
   </div>
 
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
+</div>
+
+<!-- Advanced Tools Tab -->
+<div id="tab-advanced" class="tab-content">
+  <div class="header">
+    <h1>Advanced <span>Tools</span></h1>
+    <p class="app-tagline">Power-user features for detailed protocol management</p>
+  </div>
+
+  <!-- BAC Water Calculator + Stack Builder inserted here by JS -->
+  <div id="adv-tools-slot"></div>
+
+  <!-- Navigation cards for tools living in other tabs -->
+  <div class="card animate-in" style="margin-bottom:.75rem">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>More Tools</h2>
+    </div>
+    <div class="task-card-list" style="display:flex;flex-direction:column;gap:.5rem">
+      <button class="task-card" id="adv-goto-inventory">
+        <span class="task-card-icon">📦</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Vial Inventory</span>
+          <span class="task-card-desc">Track reconstitution dates, discard timelines, stock levels</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="adv-goto-weight">
+        <span class="task-card-icon">📊</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Weight Tracking</span>
+          <span class="task-card-desc">Log progress and visualize weight loss trends</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+      <button class="task-card" id="adv-goto-history">
+        <span class="task-card-icon">📈</span>
+        <span class="task-card-text">
+          <span class="task-card-title">History &amp; Analytics</span>
+          <span class="task-card-desc">Dose change log, side-effect timeline, journal trends</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- History Tab Content -->
@@ -2962,7 +3008,7 @@ body.simple-mode #journal-trends-body{ display:none !important}
 <!-- Weight Loss Tab Content -->
 <div id="tab-weight" class="tab-content">
   <div style="width:100%;max-width:720px;margin-bottom:.5rem;">
-    <button onclick="document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-more').classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.tab-btn[data-tab=more]').classList.add('active');localStorage.setItem('activeTab','more');" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
+    <button id="weight-back-btn" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;padding:.25rem 0;display:flex;align-items:center;gap:.35rem;">← Back</button>
   </div>
   <div class="header">
     <h1>Weight <span>Loss</span></h1>
@@ -3435,6 +3481,10 @@ body.simple-mode #journal-trends-body{ display:none !important}
     <span class="tab-icon">⚙️</span>
     <span class="more-alert-dot" id="more-alert-dot"></span>
     <span class="tab-label">More</span>
+  </button>
+  <button class="tab-btn tab-btn-advanced" data-tab="advanced">
+    <span class="tab-icon">⚗️</span>
+    <span class="tab-label">Advanced</span>
   </button>
 </div>
 
@@ -7835,23 +7885,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Simple / Advanced Mode (#104) ──────────────────────────
+  // Move advanced-tool cards into #adv-tools-slot once at page load
+  function initAdvancedToolsSlot() {
+    const slot = document.getElementById('adv-tools-slot');
+    if (!slot) return;
+    const rcCard = document.getElementById('reverse-calc-card');
+    const stackCard = document.getElementById('stack-card');
+    if (rcCard) slot.appendChild(rcCard);
+    if (stackCard) { stackCard.style.display = ''; slot.appendChild(stackCard); }
+  }
+  initAdvancedToolsSlot();
+
+  function switchToTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+    if (btn) btn.classList.add('active');
+    const tab = document.getElementById('tab-' + tabName);
+    if (tab) tab.classList.add('active');
+    document.querySelector('.app-content')?.scrollTo(0, 0);
+    localStorage.setItem('activeTab', tabName);
+  }
+
   function getAppMode() {
     return localStorage.getItem('appMode') || 'simple';
   }
-  function setAppMode(mode) {
+  function setAppMode(mode, navigate) {
     localStorage.setItem('appMode', mode);
     if (mode === 'advanced') {
       document.body.classList.add('advanced-mode');
       document.body.classList.remove('simple-mode');
+      if (navigate !== false) switchToTab('advanced');
     } else {
       document.body.classList.add('simple-mode');
       document.body.classList.remove('advanced-mode');
+      // If currently on the advanced tab, go back to Compass
+      const advTab = document.getElementById('tab-advanced');
+      if (advTab?.classList.contains('active')) switchToTab('schedule');
     }
     const toggle = document.getElementById('app-mode-toggle');
     if (toggle) toggle.checked = (mode === 'advanced');
   }
-  // Apply on load
-  setAppMode(getAppMode());
+  // Apply on load (no navigation — let tab-restore logic handle it)
+  setAppMode(getAppMode(), false);
 
   const $appModeToggle = document.getElementById('app-mode-toggle');
   if ($appModeToggle) {
@@ -8653,22 +8729,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inventory option in More tab — show tab-inventory
   document.getElementById('inventory-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-inventory')?.classList.add('active');
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'inventory');
-    renderVialTracker();
+    switchToTab('inventory');
+    renderVialTracker?.();
   });
 
   document.getElementById('inv-back-btn')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-more')?.classList.add('active');
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="more"]')?.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'more');
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
   });
 
   document.getElementById('methodology-back-btn')?.addEventListener('click', () => {
@@ -8688,21 +8755,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('weight-loss-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const weightTab = document.getElementById('tab-weight');
-    if (weightTab) weightTab.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'weight');
+    switchToTab('weight');
+  });
+
+  document.getElementById('weight-back-btn')?.addEventListener('click', () => {
+    const dest = getAppMode() === 'advanced' ? 'advanced' : 'more';
+    switchToTab(dest);
+  });
+
+  // ── Advanced Tab navigation cards ──────────────────────────
+  document.getElementById('adv-goto-inventory')?.addEventListener('click', () => {
+    switchToTab('inventory');
+    renderVialTracker?.();
+  });
+  document.getElementById('adv-goto-weight')?.addEventListener('click', () => {
+    switchToTab('weight');
+  });
+  document.getElementById('adv-goto-history')?.addEventListener('click', () => {
+    switchToTab('history');
+    // Open the logs view within history
+    document.getElementById('logs-view')?.classList.add('active');
+    document.getElementById('journal-view')?.classList.remove('active');
   });
 
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
-  const MAIN_TABS = ['schedule', 'history', 'more'];
+  const MAIN_TABS = ['schedule', 'history', 'more', 'advanced'];
   const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'inventory', 'methodology'];
   let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
   // Sub-tabs are children of More; never restore them as the root landing tab
   if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
+  // If advanced tab was saved but mode is now simple, fall back to Compass
+  if (savedTab === 'advanced' && getAppMode() !== 'advanced') savedTab = 'schedule';
   // Ensure only valid main tabs are used; fall back to Compass
   if (!MAIN_TABS.includes(savedTab)) savedTab = 'schedule';
   if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
