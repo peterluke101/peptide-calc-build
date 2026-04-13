@@ -2697,7 +2697,9 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem">
         <div class="field">
           <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Vial (mg)</label>
-          <input type="number" id="recon-vial-mg" placeholder="e.g. 10" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+          <select id="recon-vial-mg" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem;appearance:auto">
+            <option value="" disabled selected>Select size…</option>
+          </select>
         </div>
         <div class="field">
           <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">BAC Water (mL)</label>
@@ -2705,8 +2707,9 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         </div>
       </div>
       <div class="field" style="margin-bottom:.75rem">
-        <label style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Dose per injection (mcg)</label>
-        <input type="number" id="recon-dose-mcg" placeholder="e.g. 250" min="1" step="1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        <label id="recon-dose-label" style="font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.3rem">Dose per injection (mcg)</label>
+        <input type="number" id="recon-dose-mcg" placeholder="e.g. 250" min="0.1" step="0.1" style="width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem">
+        <div id="recon-dose-hint" style="display:none;font-size:.72rem;color:var(--accent);margin-top:.25rem;font-weight:500"></div>
       </div>
       <div id="recon-calc-preview" style="display:none;background:rgba(43,186,160,.1);border:1px solid rgba(43,186,160,.3);border-radius:8px;padding:.6rem .75rem;margin-bottom:.75rem;font-size:.85rem;color:var(--accent);font-weight:600;text-align:center"></div>
       <div style="display:flex;gap:.5rem">
@@ -8849,6 +8852,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Recon form logic
   let reconEditIdx = -1;
+
+  // Common vial sizes per peptide (from wholesale supplier data)
+  const VIAL_SIZES = {
+    'Adipotide': [5],
+    'AICAR': [50],
+    'AOD-9604': [5, 10],
+    'ARA-290': [5, 10],
+    'BPC-157': [5, 10],
+    'Cagrilintide': [5, 10],
+    'CJC-1295 no DAC + Ipamorelin': [10],
+    'CJC-1295 with DAC': [2, 5],
+    'Dihexa': [10, 30],
+    'DSIP': [5, 10],
+    'Epitalon': [10, 50],
+    'FOXO4-DRI': [10],
+    'GHK-Cu': [50, 100],
+    'GHRP-2': [5, 10],
+    'GHRP-6': [5, 10],
+    'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)': [70],
+    'Glutathione': [600, 1500],
+    'HCG': [5000, 10000],
+    'Hexarelin': [5],
+    'HGH': [10, 36],
+    'IGF-1 LR3': [1],
+    'Ipamorelin': [5, 10],
+    'KLOW Stack (TB + BPC + GHK + KPV)': [80],
+    'KPV': [10],
+    'L-Carnitine': [600, 1200],
+    'LL-37': [5],
+    'Mazdutide': [10],
+    'Melanotan I': [10],
+    'Melanotan II': [10],
+    'MK-677 (Ibutamoren)': [5, 25],
+    'MOTS-C': [10, 40],
+    'NAD+': [100, 500, 1000],
+    'Oxytocin': [2, 5],
+    'PE-22-28': [5],
+    'PEG-MGF': [2, 5],
+    'PT-141 (Bremelanotide)': [10],
+    'Retatrutide': [5, 10, 15, 20, 30],
+    'Selank': [5, 10],
+    'Semaglutide': [5, 10, 15, 20],
+    'Semax': [5, 10],
+    'Sermorelin': [5, 10],
+    'SS-31 (Elamipretide)': [10, 50],
+    'Survodutide': [10],
+    'TB-500': [5, 10],
+    'Tesamorelin': [5, 10],
+    'Thymalin': [10, 20],
+    'Thymosin Alpha-1': [5, 10],
+    'Tirzepatide': [5, 10, 15, 20, 30, 60],
+    'VIP': [5, 10],
+  };
+
+  // Default vial sizes when no peptide-specific data exists
+  const DEFAULT_VIAL_SIZES = [1, 2, 3, 5, 10, 15, 20, 25, 30, 40, 50];
+
+  function populateVialSelect(pepName) {
+    const sel = document.getElementById('recon-vial-mg');
+    if (!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="" disabled selected>Select size…</option>';
+    const sizes = VIAL_SIZES[pepName] || DEFAULT_VIAL_SIZES;
+    sizes.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s;
+      o.textContent = s >= 1000 ? (s/1000) + 'g' : s + ' mg';
+      sel.appendChild(o);
+    });
+    // Add "Other" option for custom entry
+    const other = document.createElement('option');
+    other.value = '__custom_vial__';
+    other.textContent = '— Other —';
+    sel.appendChild(other);
+    // Auto-select if only one size
+    if (sizes.length === 1) sel.value = sizes[0];
+    // Trigger preview update
+    updateReconPreview();
+  }
+
   // Populate peptide dropdown from PEPTIDES array
   (function populateReconSelect() {
     const sel = document.getElementById('recon-pep-select');
@@ -8857,11 +8940,70 @@ document.addEventListener('DOMContentLoaded', () => {
     names.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o); });
     const custom = document.createElement('option'); custom.value = '__custom__'; custom.textContent = '— Other (type a name) —'; sel.appendChild(custom);
   })();
-  // Show/hide custom input based on dropdown
+
+  // Show/hide custom input + prepopulate dose & vial based on selection
   document.getElementById('recon-pep-select')?.addEventListener('change', function() {
     const customInput = document.getElementById('recon-pep-name');
-    if (this.value === '__custom__') { customInput.style.display = 'block'; customInput.value = ''; customInput.focus(); }
-    else { customInput.style.display = 'none'; customInput.value = this.value; }
+    const doseInput = document.getElementById('recon-dose-mcg');
+    const doseHint = document.getElementById('recon-dose-hint');
+    const doseLabel = document.getElementById('recon-dose-label');
+
+    if (this.value === '__custom__') {
+      customInput.style.display = 'block';
+      customInput.value = '';
+      customInput.focus();
+      populateVialSelect(null);
+      if (doseHint) doseHint.style.display = 'none';
+      return;
+    }
+
+    customInput.style.display = 'none';
+    customInput.value = this.value;
+
+    // Populate vial sizes for this peptide
+    populateVialSelect(this.value);
+
+    // Prepopulate dose from PEPTIDES data
+    const pep = PEPTIDES.find(p => p.name === this.value);
+    if (pep && doseInput) {
+      // Use stdMcg as the default dose
+      const stdMcg = pep.stdMcg;
+      if (stdMcg >= 1000) {
+        // Show in mg for large doses
+        doseInput.value = (stdMcg / 1000);
+        if (doseLabel) doseLabel.textContent = 'Dose per injection (mg)';
+        doseInput.dataset.unit = 'mg';
+      } else {
+        doseInput.value = stdMcg;
+        if (doseLabel) doseLabel.textContent = 'Dose per injection (mcg)';
+        doseInput.dataset.unit = 'mcg';
+      }
+      // Show dose range hint
+      if (doseHint) {
+        doseHint.textContent = 'Typical range: ' + pep.rangeLabel;
+        doseHint.style.display = 'block';
+      }
+      updateReconPreview();
+    }
+  });
+
+  // Handle vial select "Other" option
+  document.getElementById('recon-vial-mg')?.addEventListener('change', function() {
+    if (this.value === '__custom_vial__') {
+      // Replace select with a number input temporarily
+      const wrapper = this.parentNode;
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.id = 'recon-vial-mg';
+      inp.placeholder = 'Enter mg';
+      inp.min = '0.1';
+      inp.step = '0.1';
+      inp.style.cssText = 'width:100%;padding:.6rem .75rem;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.9rem';
+      inp.addEventListener('input', updateReconPreview);
+      wrapper.replaceChild(inp, this);
+      inp.focus();
+    }
+    updateReconPreview();
   });
   document.getElementById('recon-add-btn')?.addEventListener('click', () => {
     reconEditIdx = -1;
@@ -8869,9 +9011,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sel) { sel.value = ''; sel.selectedIndex = 0; }
     document.getElementById('recon-pep-name').value = '';
     document.getElementById('recon-pep-name').style.display = 'none';
-    document.getElementById('recon-vial-mg').value = '';
+    // Reset vial dropdown (might have been replaced with input by "Other")
+    populateVialSelect(null);
     document.getElementById('recon-bac-ml').value = '';
-    document.getElementById('recon-dose-mcg').value = '';
+    const doseEl = document.getElementById('recon-dose-mcg');
+    if (doseEl) { doseEl.value = ''; delete doseEl.dataset.unit; }
+    const doseLabel = document.getElementById('recon-dose-label');
+    if (doseLabel) doseLabel.textContent = 'Dose per injection (mcg)';
+    const doseHint = document.getElementById('recon-dose-hint');
+    if (doseHint) doseHint.style.display = 'none';
     document.getElementById('recon-calc-preview').style.display = 'none';
     document.getElementById('recon-form').style.display = 'block';
   });
@@ -8881,7 +9029,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateReconPreview() {
     const vialMg = parseFloat(document.getElementById('recon-vial-mg')?.value);
     const bacMl  = parseFloat(document.getElementById('recon-bac-ml')?.value);
-    const doseMcg = parseFloat(document.getElementById('recon-dose-mcg')?.value);
+    const doseEl = document.getElementById('recon-dose-mcg');
+    let doseMcg = parseFloat(doseEl?.value);
+    // Convert mg to mcg if dose is in mg
+    if (doseEl?.dataset.unit === 'mg') doseMcg = doseMcg * 1000;
     const preview = document.getElementById('recon-calc-preview');
     if (!preview) return;
     const units = calcReconUnits(vialMg, bacMl, doseMcg);
@@ -8900,7 +9051,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pepName = (sel?.value === '__custom__' ? document.getElementById('recon-pep-name')?.value.trim() : sel?.value) || '';
     const vialMg  = parseFloat(document.getElementById('recon-vial-mg')?.value);
     const bacMl   = parseFloat(document.getElementById('recon-bac-ml')?.value);
-    const doseMcg = parseFloat(document.getElementById('recon-dose-mcg')?.value);
+    const doseEl  = document.getElementById('recon-dose-mcg');
+    let doseMcg   = parseFloat(doseEl?.value);
+    // Convert mg to mcg if needed for storage (always store as mcg)
+    if (doseEl?.dataset.unit === 'mg') doseMcg = doseMcg * 1000;
     if (!pepName || isNaN(vialMg) || isNaN(bacMl) || isNaN(doseMcg)) {
       alert('Please fill in all fields.'); return;
     }
