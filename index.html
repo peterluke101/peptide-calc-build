@@ -3148,6 +3148,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   </div>
   <div class="card animate-in">
     <h3>Track Progress</h3>
+    <input type="number" id="weight-starting" placeholder="Starting weight — before the app (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
     <input type="number" id="weight-current" placeholder="Current weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
     <input type="number" id="weight-goal" placeholder="Goal weight (lbs)" class="input" style="width: 100%; margin-bottom: 0.75rem;">
     <button id="update-weight-btn" class="btn" style="width: 100%;">Update</button>
@@ -3186,8 +3187,22 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
           <div id="stat-goal" style="font-size: 1.4rem; font-weight: 700; margin-top: .2rem;">--</div>
         </div>
         <div>
-          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Lost</div>
+          <div style="font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: .05em;">Total Lost</div>
           <div id="stat-progress" style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: .2rem;">--</div>
+        </div>
+      </div>
+      <!-- Journey progress bar — hidden until goal + starting weight are set -->
+      <div id="weight-journey-wrap" style="display:none;width:100%;padding:0.25rem 0 0.75rem;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem;">
+          <span style="font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;">Remaining</span>
+          <span id="stat-remaining" style="font-size:1rem;font-weight:700;color:var(--accent);">--</span>
+        </div>
+        <div style="background:var(--surface2);border-radius:99px;height:12px;border:1px solid var(--border);overflow:hidden;">
+          <div id="weight-progress-fill" style="height:100%;background:var(--accent);border-radius:99px;width:0%;transition:width 0.9s cubic-bezier(.4,0,.2,1);"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:0.35rem;">
+          <span id="stat-start-label" style="font-size:0.68rem;color:var(--text2);">--</span>
+          <span id="stat-goal-label" style="font-size:0.68rem;color:var(--text2);">--</span>
         </div>
       </div>
     </div>
@@ -9312,51 +9327,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Weight Tracker Functionality ────────────────────────────
   document.getElementById('update-weight-btn')?.addEventListener('click', () => {
+    const starting = parseFloat(document.getElementById('weight-starting')?.value);
     const current = parseFloat(document.getElementById('weight-current')?.value);
     const goal = parseFloat(document.getElementById('weight-goal')?.value);
-    
+
     if (!current) {
       alert('Please enter your current weight.');
       return;
     }
-    
+
+    if (starting) {
+      localStorage.setItem('weightStartingWeight', starting);
+    }
+
     const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
     weights.push({ date: new Date().toISOString().split('T')[0], weight: current, timestamp: Date.now() });
     localStorage.setItem('weightTracker', JSON.stringify(weights));
-    
+
     if (goal) {
       localStorage.setItem('weightGoal', goal);
     }
-    
+
     updateWeightDisplay();
   });
 
   function updateWeightDisplay() {
     const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
     const goal = parseFloat(localStorage.getItem('weightGoal'));
+    const startingWeight = parseFloat(localStorage.getItem('weightStartingWeight'));
     const $current = document.getElementById('stat-current');
     const $goal    = document.getElementById('stat-goal');
     const $progress = document.getElementById('stat-progress');
     const $arc     = document.getElementById('weight-ring-arc');
     const $pct     = document.getElementById('weight-ring-pct');
+    const $remaining    = document.getElementById('stat-remaining');
+    const $fill         = document.getElementById('weight-progress-fill');
+    const $journeyWrap  = document.getElementById('weight-journey-wrap');
+    const $startLabel   = document.getElementById('stat-start-label');
+    const $goalLabel    = document.getElementById('stat-goal-label');
     const CIRC = 502.65; // 2π × r(80)
 
     if (weights.length === 0) return;
 
     const current = weights[weights.length - 1].weight;
-    const start   = weights[0].weight;
+    // Use explicit starting weight if set, otherwise fall back to first entry
+    const effectiveStart = startingWeight || weights[0].weight;
 
     if ($current) $current.textContent = current + ' lbs';
     if ($goal)    $goal.textContent    = goal ? goal + ' lbs' : '--';
 
     let percent = 0;
     if (goal) {
-      const totalToLose = start - goal;
-      const lost = start - current;
+      const totalToLose = effectiveStart - goal;
+      const lost = effectiveStart - current;
       percent = totalToLose > 0
         ? Math.min(100, Math.max(0, Math.round((lost / totalToLose) * 100)))
         : 0;
       if ($progress) $progress.textContent = lost > 0 ? lost.toFixed(1) + ' lbs' : '--';
+
+      // Journey progress bar
+      const remaining = current - goal;
+      if ($journeyWrap) $journeyWrap.style.display = '';
+      if ($remaining) $remaining.textContent = remaining > 0 ? remaining.toFixed(1) + ' lbs to go' : 'Goal reached!';
+      if ($fill) $fill.style.width = percent + '%';
+      if ($startLabel) $startLabel.textContent = effectiveStart + ' lbs';
+      if ($goalLabel)  $goalLabel.textContent  = goal + ' lbs';
+    } else {
+      if ($journeyWrap) $journeyWrap.style.display = 'none';
+      if ($progress) {
+        const lost = effectiveStart - current;
+        if ($progress) $progress.textContent = lost > 0 ? lost.toFixed(1) + ' lbs' : '--';
+      }
     }
 
     // Animate the ring arc
@@ -9376,7 +9417,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderWeightChart();
   }
   
-  // Load saved goal
+  // Load saved starting weight and goal
+  const savedStarting = localStorage.getItem('weightStartingWeight');
+  if (savedStarting) {
+    const $si = document.getElementById('weight-starting');
+    if ($si) $si.value = savedStarting;
+  }
   const savedGoal = localStorage.getItem('weightGoal');
   if (savedGoal) {
     document.getElementById('weight-goal').value = savedGoal;
