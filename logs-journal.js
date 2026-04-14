@@ -485,16 +485,31 @@ function showEditJournalForm(entry) {
   }
 }
 
+function saveJournalEntry(editDate) {
+  const note = document.getElementById('journal-content')?.value?.trim() || '';
+  function getPillVal(rowId) {
+    return document.querySelector('#' + rowId + ' .checkin-pill.selected')?.dataset.val || '';
+  }
+  const moodVal = getPillVal('mood-pills');
+  const symptoms = {
+    energy:      getPillVal('energy-pills'),
+    sleep:       getPillVal('sleep-pills'),
+    sideEffects: document.querySelector('#side-effects-yn .yn-btn.selected')?.dataset.val || ''
+  };
+  addJournalEntry(editDate, note, moodVal, null, symptoms);
+  renderJournalList();
+}
+
 // ── Logbook Toggle ───────────────────────────────────────────
 function setupLogbookToggle() {
   const $logbookToggle = document.querySelector('.logbook-toggle');
   if (!$logbookToggle) return;
-  
+
   const $logsBtn = $logbookToggle.querySelector('[data-view="logs"]');
   const $journalBtn = $logbookToggle.querySelector('[data-view="journal"]');
   const $logsView = document.getElementById('logs-view');
   const $journalView = document.getElementById('journal-view');
-  
+
   if (!$logsBtn || !$journalBtn || !$logsView || !$journalView) return;
   
   function switchToView(view) {
