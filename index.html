@@ -162,6 +162,10 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 
 /* ── History Section ─────────────────────────────────────── */
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+#current-stack-list{max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+#current-stack-list::-webkit-scrollbar{width:4px}
+#current-stack-list::-webkit-scrollbar-track{background:transparent}
+#current-stack-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
 .section-header h2{font-size:1.1rem;font-weight:700}
 .clear-btn{background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.3rem .6rem;font-size:.7rem;font-weight:500;cursor:pointer;transition:all .2s}
 .clear-btn:hover{border-color:var(--accent);color:var(--accent)}
