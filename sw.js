@@ -1,5 +1,5 @@
-const CACHE_NAME = 'peptide-calc-v24';
-const ASSETS = ['./', './index.html', './schedule.html', './manifest.json'];
+const CACHE_NAME = 'peptide-calc-v25';
+const ASSETS = ['./', './index.html', './schedule.html', './manifest.json', './logs-journal.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
