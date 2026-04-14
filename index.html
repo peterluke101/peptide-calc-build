@@ -5140,7 +5140,7 @@ function renderToday(animate) {
           const dcl = safeGetJSON('doseChangeLog', []);
           dcl.push({ date: today, peptide: pepName, field: 'startDate (reschedule)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
           if (dcl.length > 100) dcl.splice(0, dcl.length - 100);
-          localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+          safeSetItem('doseChangeLog', JSON.stringify(dcl));
         } catch(e) {}
         saveSchedule();
         showImpactNote('Schedule adjusted — next dose starts today.');
@@ -6420,7 +6420,7 @@ function restartCycle(entryIdx) {
   try {
     const dcl = safeGetJSON('doseChangeLog', []);
     dcl.push({ date: today, peptide: pep?.name || '', field: 'startDate (restart)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
-    localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+    safeSetItem('doseChangeLog', JSON.stringify(dcl));
   } catch(e) {}
   saveSchedule();
   showImpactNote(`${pep?.name || 'Protocol'} restarted from today with same settings.`);
@@ -6437,7 +6437,7 @@ function extendCycle(entryIdx) {
     const dcl = safeGetJSON('doseChangeLog', []);
     const today = formatLocalDate(new Date());
     dcl.push({ date: today, peptide: pep?.name || '', field: 'cycleDays (extend)', oldValue: old, newValue: entry.cycleDays, timestamp: Date.now() });
-    localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
+    safeSetItem('doseChangeLog', JSON.stringify(dcl));
   } catch(e) {}
   saveSchedule();
   showImpactNote(`${pep?.name || 'Protocol'} extended by 4 weeks.`);
@@ -6755,7 +6755,7 @@ function getLogs() {
 }
 
 function saveLogs(logs) {
-  localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
+  safeSetItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
 }
 
 function getJournal() {
@@ -6767,7 +6767,7 @@ function getJournal() {
 }
 
 function saveJournal(journal) {
-  localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
+  safeSetItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
 }
 
 function getWeightUnit() {
@@ -8728,7 +8728,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       doseChangeLog.push({ date: dateStr, peptide: pepName, field: 'added', oldValue: '', newValue: tier + ' / ' + vialMg + 'mg', timestamp: now.getTime() });
     }
-    localStorage.setItem('doseChangeLog', JSON.stringify(doseChangeLog));
+    safeSetItem('doseChangeLog', JSON.stringify(doseChangeLog));
 
     if (existing !== -1) {
       schedule[existing] = entry;
@@ -8916,7 +8916,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getReconRecipes() {
     try { return safeGetJSON('reconRecipes', []); } catch(e) { return []; }
   }
-  function saveReconRecipes(arr) { localStorage.setItem('reconRecipes', JSON.stringify(arr)); }
+  function saveReconRecipes(arr) { safeSetItem('reconRecipes', JSON.stringify(arr)); }
   function calcReconUnits(vialMg, bacMl, doseMcg) {
     if (!vialMg || !bacMl || !doseMcg) return null;
     const concMcgPerMl = (vialMg * 1000) / bacMl;
@@ -9189,7 +9189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getCostEntries() {
     try { return safeGetJSON('costEntries', []); } catch(e) { return []; }
   }
-  function saveCostEntries(arr) { localStorage.setItem('costEntries', JSON.stringify(arr)); }
+  function saveCostEntries(arr) { safeSetItem('costEntries', JSON.stringify(arr)); }
   function renderCostSummary() {
     const entries = getCostEntries();
     const now = new Date();
@@ -10491,7 +10491,7 @@ function getSavedProtocols() {
 }
 
 function saveSavedProtocols(arr) {
-  localStorage.setItem('savedProtocols', JSON.stringify(arr));
+  safeSetItem('savedProtocols', JSON.stringify(arr));
 }
 
 function fmtProtocolMeta(p) {
