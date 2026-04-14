@@ -318,9 +318,10 @@ function renderJournalList() {
   
   const html = journal.map(entry => {
     const dateStr = formatDate(entry.date);
-    const notePreview = entry.note.length > 100 
-      ? entry.note.substring(0, 100) + '...' 
-      : entry.note;
+    const noteText = entry.note || '';
+    const notePreview = noteText.length > 100
+      ? noteText.substring(0, 100) + '...'
+      : noteText;
     
     const moodHtml = entry.mood ? `
       <div class="journal-mood">${getMoodEmoji(entry.mood)}</div>
@@ -474,11 +475,13 @@ function showEditJournalForm(entry) {
     $addForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
     // Populate form
-    document.getElementById('journal-content').value = entry.note || '';
-    document.getElementById('symptom-energy').value = '';
-    document.getElementById('symptom-appetite').value = '';
-    document.getElementById('symptom-cravings').value = '';
-    document.getElementById('symptom-sleep').value = '';
+    const $jc = document.getElementById('journal-content');
+    if ($jc) $jc.value = entry.note || '';
+    // Clear legacy symptom inputs if present (may not exist in newer form layouts)
+    ['symptom-energy','symptom-appetite','symptom-cravings','symptom-sleep'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     
     // Set date
     const dateInput = document.querySelector('#add-journal-form input[type="date"]');

@@ -3727,6 +3727,13 @@ const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// ── Security Helpers ─────────────────────────────────────────
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str || '');
+  return div.innerHTML;
+}
+
 // ── Safe localStorage helpers ─────────────────────────────────
 function safeGetJSON(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -6775,7 +6782,7 @@ function getWeightUnit() {
 }
 
 function saveWeightUnit(unit) {
-  localStorage.setItem(WEIGHT_UNIT_KEY, unit);
+  try { localStorage.setItem(WEIGHT_UNIT_KEY, unit); } catch(e) { /* non-critical */ }
 }
 
 // ── Log Entry Functions ──────────────────────────────────────
@@ -7127,7 +7134,7 @@ function renderLogsList() {
       : '';
     
     const notesHtml = log.notes ? `
-      <div class="log-notes">${log.notes}</div>
+      <div class="log-notes">${escapeHtml(log.notes)}</div>
     ` : '';
     
     return `
@@ -7209,9 +7216,10 @@ function renderJournalList() {
   
   const html = journal.map(entry => {
     const dateStr = formatDate(entry.date);
-    const notePreview = entry.note.length > 100 
-      ? entry.note.substring(0, 100) + '...' 
-      : entry.note;
+    const noteText = entry.note || '';
+    const notePreview = noteText.length > 100
+      ? noteText.substring(0, 100) + '...'
+      : noteText;
     
     const moodHtml = entry.mood ? `
       <div class="journal-mood">${getMoodEmoji(entry.mood)}</div>
@@ -7223,7 +7231,7 @@ function renderJournalList() {
           <div class="journal-date">${dateStr}</div>
           ${moodHtml}
         </div>
-        <div class="journal-content">${notePreview}</div>
+        <div class="journal-content">${escapeHtml(notePreview)}</div>
         <button class="delete-journal" data-date="${entry.date}" aria-label="Delete journal entry">×</button>
       </div>
     `;
@@ -7306,14 +7314,14 @@ function showJournalDetail(entry) {
           padding: 0.25rem;
         ">✕</button>
       </div>
-      ${entry.mood ? `<div style="margin-bottom: 1rem; font-size: 1.5rem;">${entry.mood}</div>` : ''}
+      ${entry.mood ? `<div style="margin-bottom: 1rem; font-size: 1.5rem;">${escapeHtml(entry.mood)}</div>` : ''}
       <div style="
         font-size: 0.9rem;
         line-height: 1.6;
         color: var(--text);
         white-space: pre-wrap;
         margin-bottom: 1.5rem;
-      ">${entry.note}</div>
+      ">${escapeHtml(entry.note)}</div>
       <div style="display: flex; gap: 0.5rem;">
         <button class="btn btn-secondary edit-journal" style="flex: 1;">Edit</button>
         <button class="btn btn-secondary delete-journal-modal" style="flex: 1;">Delete</button>
@@ -7365,11 +7373,13 @@ function showEditJournalForm(entry) {
     $addForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
     // Populate form
-    document.getElementById('journal-content').value = entry.note || '';
-    document.getElementById('symptom-energy').value = '';
-    document.getElementById('symptom-appetite').value = '';
-    document.getElementById('symptom-cravings').value = '';
-    document.getElementById('symptom-sleep').value = '';
+    const $jc = document.getElementById('journal-content');
+    if ($jc) $jc.value = entry.note || '';
+    // Clear legacy symptom inputs if present (may not exist in newer form layouts)
+    ['symptom-energy','symptom-appetite','symptom-cravings','symptom-sleep'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     
     // Set date
     const dateInput = document.querySelector('#add-journal-form input[type="date"]');
@@ -7443,12 +7453,12 @@ function setupLogbookToggle() {
     if (view === 'logs') renderInjectionLog();
 
     // Save preference
-    localStorage.setItem('logbookView', view);
+    try { localStorage.setItem('logbookView', view); } catch(e) { /* non-critical */ }
   }
-  
+
   $logsBtn.addEventListener('click', () => switchToView('logs'));
   $journalBtn.addEventListener('click', () => switchToView('journal'));
-  
+
   // Restore last view
   const savedView = localStorage.getItem('logbookView') || 'logs';
   switchToView(savedView);

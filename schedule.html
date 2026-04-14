@@ -623,8 +623,23 @@ const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// ── Safe Storage Helpers ─────────────────────────────────────
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      alert('Storage full — clear some data to continue saving.');
+    }
+  }
+}
+function safeGetJSON(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch(e) { return fallback; }
+}
+
 // ── State ────────────────────────────────────────────────────
-let schedule = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+let schedule = safeGetJSON('peptide-schedule', []);
 let weekOffset = 0;
 let selectedDate = new Date();
 selectedDate.setHours(0,0,0,0);
@@ -632,7 +647,7 @@ selectedDate.setHours(0,0,0,0);
 const FULL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function saveSchedule() {
-  localStorage.setItem('peptide-schedule', JSON.stringify(schedule));
+  safeSetItem('peptide-schedule', JSON.stringify(schedule));
 }
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -710,7 +725,7 @@ function getInjectionLog() {
 function saveInjection(injectionKey) {
   const log = getInjectionLog();
   log[injectionKey] = new Date().toISOString();
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  safeSetItem('injectionLog', JSON.stringify(log));
 
   // Update vial tracking
   const parts = injectionKey.split('_');
@@ -722,7 +737,7 @@ function saveInjection(injectionKey) {
 function removeInjection(injectionKey) {
   const log = getInjectionLog();
   delete log[injectionKey];
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  safeSetItem('injectionLog', JSON.stringify(log));
 
   const parts = injectionKey.split('_');
   const dateStr = parts.pop();
@@ -740,7 +755,7 @@ function getVialData() {
 }
 
 function saveVialData(data) {
-  localStorage.setItem('vialData', JSON.stringify(data));
+  safeSetItem('vialData', JSON.stringify(data));
 }
 
 function getVialKey(entry) {
@@ -812,7 +827,7 @@ function savePeptideNote(peptideName, note) {
   } else {
     delete notes[peptideName];
   }
-  localStorage.setItem('peptideNotes', JSON.stringify(notes));
+  safeSetItem('peptideNotes', JSON.stringify(notes));
 }
 
 // ── Titration Timeline Data ─────────────────────────────────
