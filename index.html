@@ -627,7 +627,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 .tab-content {
   display: none;
   width: 100%;
-  padding-bottom: 4rem; /* Space for bottom nav */
+  padding-bottom: max(6rem, calc(4rem + env(safe-area-inset-bottom))); /* Space for bottom nav + safe area */
   background: var(--bg);
 }
 
@@ -3857,6 +3857,13 @@ function initMathToggle(toggleId, detailId) {
   btn.addEventListener('click', () => {
     const open = detail.classList.toggle('open');
     btn.setAttribute('aria-expanded', open);
+    // When expanding, scroll the btn-row (Next/Back) into view so it stays reachable
+    if (open) {
+      setTimeout(() => {
+        const btnRow = detail.closest('.gs-step-panel')?.querySelector('.btn-row');
+        btnRow?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
   });
 }
 
@@ -8427,6 +8434,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (step === 3) gsInitDose();
     if (step === 4) gsInitSchedule();
     if (step === 'summary') gsRenderSummary();
+    // Scroll the card to the top of the viewport so step content is fully reachable
+    setTimeout(() => {
+      document.getElementById('add-peptide-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 30);
     // Update step label
     const stepLabel = document.getElementById('gs-step-label');
     if (stepLabel) {
