@@ -6,6 +6,13 @@ const LOGS_STORAGE_KEY = 'peptideLogs';
 const JOURNAL_STORAGE_KEY = 'peptideJournal';
 const WEIGHT_UNIT_KEY = 'weightUnitPreference';
 
+// ── Security Helpers ─────────────────────────────────────────
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str || '');
+  return div.innerHTML;
+}
+
 // ── Data Models ──────────────────────────────────────────────
 function getLogs() {
   try {
@@ -16,7 +23,13 @@ function getLogs() {
 }
 
 function saveLogs(logs) {
-  localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
+  try {
+    localStorage.setItem(LOGS_STORAGE_KEY, JSON.stringify(logs));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      alert('Storage full — clear some data to continue saving.');
+    }
+  }
 }
 
 function getJournal() {
@@ -42,7 +55,13 @@ function getWeightUnit() {
 }
 
 function saveWeightUnit(unit) {
-  localStorage.setItem(WEIGHT_UNIT_KEY, unit);
+  try {
+    localStorage.setItem(WEIGHT_UNIT_KEY, unit);
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      alert('Storage full — clear some data to continue saving.');
+    }
+  }
 }
 
 // ── Log Entry Functions ──────────────────────────────────────
@@ -97,7 +116,7 @@ function deleteLogEntry(date) {
 }
 
 // ── Journal Entry Functions ──────────────────────────────────
-function addJournalEntry(date, note, mood = '', timestamp = null) {
+function addJournalEntry(date, note, mood = '', timestamp = null, symptoms = {}) {
   const journal = getJournal();
   const entryTimestamp = timestamp || new Date(date).getTime();
   
@@ -114,7 +133,8 @@ function addJournalEntry(date, note, mood = '', timestamp = null) {
     date,
     note: note || '',
     mood: mood || '',
-    timestamp: entryTimestamp
+    timestamp: entryTimestamp,
+    symptoms: symptoms || {}
   };
   
   if (existingIndex >= 0) {
@@ -240,7 +260,7 @@ function renderLogsList() {
       : '';
     
     const notesHtml = log.notes ? `
-      <div class="log-notes">${log.notes}</div>
+      <div class="log-notes">${escapeHtml(log.notes)}</div>
     ` : '';
     
     return `
@@ -312,7 +332,7 @@ function renderJournalList() {
           <div class="journal-date">${dateStr}</div>
           ${moodHtml}
         </div>
-        <div class="journal-content">${notePreview}</div>
+        <div class="journal-content">${escapeHtml(notePreview)}</div>
         <button class="delete-journal" data-date="${entry.date}" aria-label="Delete journal entry">✕</button>
       </div>
     `;
@@ -395,14 +415,14 @@ function showJournalDetail(entry) {
           padding: 0.25rem;
         ">✕</button>
       </div>
-      ${entry.mood ? `<div style="margin-bottom: 1rem; font-size: 1.5rem;">${entry.mood}</div>` : ''}
+      ${entry.mood ? `<div style="margin-bottom: 1rem; font-size: 1.5rem;">${escapeHtml(entry.mood)}</div>` : ''}
       <div style="
         font-size: 0.9rem;
         line-height: 1.6;
         color: var(--text);
         white-space: pre-wrap;
         margin-bottom: 1.5rem;
-      ">${entry.note}</div>
+      ">${escapeHtml(entry.note)}</div>
       <div style="display: flex; gap: 0.5rem;">
         <button class="btn btn-secondary edit-journal" style="flex: 1;">Edit</button>
         <button class="btn btn-secondary delete-journal-modal" style="flex: 1;">Delete</button>
@@ -528,10 +548,13 @@ function setupLogbookToggle() {
     $journalView.classList.toggle('active', view === 'journal');
     
     // Save preference
-    localStorage.setItem('logbookView', view);
+    try { localStorage.setItem('logbookView', view); } catch(e) { /* non-critical */ }
   }
   
   $logsBtn.addEventListener('click', () => switchToView('logs'));
   $journalBtn.addEventListener('click', () => switchToView('journal'));
-  
-  // Rest
+
+  // Restore saved view preference
+  const savedView = localStorage.getItem('logbookView') || 'logs';
+  switchToView(savedView);
+}
