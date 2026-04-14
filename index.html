@@ -10529,7 +10529,7 @@ function renderProtocolsQuick() {
     const tierLabel = p.tier === 'low' ? 'Low' : p.tier === 'high' ? 'High' : 'Std';
     return `
       <button class="protocol-quick-btn" data-proto-load="${p.id}">
-        <span class="pqb-name">${p.name}</span>
+        <span class="pqb-name">${escapeHtml(p.name)}</span>
         <span class="pqb-meta">${pep ? pep.name : '—'} · ${tierLabel}</span>
         <span class="pqb-load">Load →</span>
       </button>`;
@@ -10552,7 +10552,7 @@ function renderProtocolsMore() {
   list.innerHTML = protocols.map(p => `
     <div class="protocol-card" data-proto-id="${p.id}">
       <div class="protocol-card-header">
-        <div class="protocol-card-name" id="proto-name-${p.id}">${p.name}</div>
+        <div class="protocol-card-name" id="proto-name-${p.id}">${escapeHtml(p.name)}</div>
         <div class="protocol-card-actions">
           <button class="proto-btn load" data-proto-load="${p.id}">Load</button>
           <button class="proto-btn" data-proto-dup="${p.id}">Duplicate</button>

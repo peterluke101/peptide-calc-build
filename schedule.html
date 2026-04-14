@@ -623,6 +623,13 @@ const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// ── Security Helpers ─────────────────────────────────────────
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str || '');
+  return div.innerHTML;
+}
+
 // ── Safe Storage Helpers ─────────────────────────────────────
 function safeSetItem(key, value) {
   try {
@@ -1615,7 +1622,7 @@ function renderPeptidesList() {
           <span class="notes-arrow ${hasNote ? 'open' : ''}">▶</span> Notes${hasNote ? ' (' + currentNote.length + ')' : ''}
         </button>
         <div class="notes-content ${hasNote ? 'open' : ''}">
-          <textarea placeholder="e.g. Left abdomen today, Felt nauseous at 5mg..." maxlength="500" data-peptide="${pep.name}">${currentNote}</textarea>
+          <textarea placeholder="e.g. Left abdomen today, Felt nauseous at 5mg..." maxlength="500" data-peptide="${pep.name}">${escapeHtml(currentNote)}</textarea>
           <div class="notes-charcount ${currentNote.length > 450 ? 'warn' : ''}">${currentNote.length}/500</div>
         </div>
       </div>
