@@ -304,6 +304,17 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .notes-charcount{font-size:.6rem;color:var(--text2);text-align:right;margin-top:.2rem}
 .notes-charcount.warn{color:#f59e0b}
 
+/* ── Collapsible peptide cards ───────────────────────────── */
+.pep-collapse-header{cursor:pointer;margin-bottom:0;user-select:none;-webkit-user-select:none}
+.peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
+.pep-summary{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;overflow:hidden}
+.pep-summary-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;flex-shrink:0;padding-left:.15rem}
+.pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
+.peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
+.pep-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.peptide-entry.expanded .pep-body{max-height:900px}
+
 /* ── Titration Timeline ─────────────────────────────────── */
 .titration-timeline{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--border)}
 .timeline-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
@@ -5282,6 +5293,9 @@ function renderCalendar() {
 // Week navigation moved to DOMContentLoaded
 
 // ── Render Peptides List ─────────────────────────────────────
+// Session-only set tracking which peptide cards are expanded
+const pepExpandedSet = new Set();
+
 function renderPeptidesList() {
   const $list = document.getElementById('peptides-list');
   $list.innerHTML = '';
@@ -5414,25 +5428,59 @@ function renderPeptidesList() {
       }
     }
 
+    const isExpanded = pepExpandedSet.has(pep.name);
+    if (isExpanded) div.classList.add('expanded');
+
     div.innerHTML = `
-      <div class="pep-header">
-        <div class="pep-name"><span class="pep-dot" style="background:${pep.color}"></span><span>${pep.name}</span></div>
+      <div class="pep-header pep-collapse-header">
+        <div class="pep-summary">
+          <span class="pep-dot" style="background:${pep.color}"></span>
+          <span class="pep-summary-name">${pep.name}</span>
+          <span class="pep-summary-meta">${fmtDose(doseMcg)} · ${pep.frequency}</span>
+        </div>
         <div style="display:flex;align-items:center;gap:.4rem">
           <button class="btn-print-label-sm pep-print-label" data-idx="${idx}" aria-label="Print label">🏷️ Label</button>
           <button class="pep-remove" data-idx="${idx}" aria-label="Remove">✕</button>
+          <span class="pep-chevron">›</span>
         </div>
       </div>
-      <div class="pep-details">
-        <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)} (${entry.tier})</strong></div>
-        <div class="pep-detail">Draw<strong>${fmtUnits(units)} units</strong></div>
-        <div class="pep-detail">Freq<strong>${pep.frequency}</strong></div>
+      <div class="pep-body">
+        <div class="pep-details">
+          <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)} (${entry.tier})</strong></div>
+          <div class="pep-detail">Draw<strong>${fmtUnits(units)} units</strong></div>
+          <div class="pep-detail">Freq<strong>${pep.frequency}</strong></div>
+        </div>
+        ${cycleHtml}
+        ${vialHtml}
+        ${titrationHtml}
+        ${notesHtml}
       </div>
-      ${cycleHtml}
-      ${vialHtml}
-      ${titrationHtml}
-      ${notesHtml}
     `;
     $list.appendChild(div);
+  });
+
+  // Auto-expand the last peptide if nothing is already expanded
+  if (pepExpandedSet.size === 0 && schedule.length > 0) {
+    const lastPepName = PEPTIDES[schedule[schedule.length - 1].peptideIndex].name;
+    pepExpandedSet.add(lastPepName);
+    const lastCard = $list.lastElementChild;
+    if (lastCard) lastCard.classList.add('expanded');
+  }
+
+  // Collapse toggle — tap header to expand/collapse
+  $list.querySelectorAll('.pep-collapse-header').forEach(header => {
+    header.addEventListener('click', (e) => {
+      // Don't toggle when clicking action buttons inside the header
+      if (e.target.closest('.pep-remove, .pep-print-label')) return;
+      const card = header.closest('.peptide-entry');
+      const pepName = card.querySelector('.pep-summary-name').textContent;
+      card.classList.toggle('expanded');
+      if (card.classList.contains('expanded')) {
+        pepExpandedSet.add(pepName);
+      } else {
+        pepExpandedSet.delete(pepName);
+      }
+    });
   });
 
   // Remove buttons
