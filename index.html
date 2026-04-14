@@ -9357,7 +9357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const colors = ['#3de8c3','#a78bfa','#f59e0b','#f43f5e','#38bdf8','#4ade80','#fb923c','#e879f9'];
     const cx = canvas.width / 2;
     const cy = Math.min(canvas.height * 0.28, 160);
-    const particles = Array.from({length: 72}, () => ({
+    const particles = Array.from({length: 144}, () => ({
       x: cx + (Math.random() - 0.5) * 80,
       y: cy,
       vx: (Math.random() - 0.5) * 18,
@@ -9369,13 +9369,13 @@ document.addEventListener('DOMContentLoaded', () => {
       rotV: (Math.random() - 0.5) * 14,
     }));
     let frame = 0;
-    const maxF = 85;
+    const maxF = 170;
     (function tick() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       frame++;
       particles.forEach(p => {
         p.x += p.vx; p.y += p.vy;
-        p.vy += 0.55; p.vx *= 0.97; p.rot += p.rotV;
+        p.vy += 0.275; p.vx *= 0.97; p.rot += p.rotV;
         ctx.save();
         ctx.globalAlpha = Math.max(0, 1 - frame / maxF);
         ctx.translate(p.x, p.y);
@@ -9392,7 +9392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       wrap.className = 'wc-hide';
       setTimeout(() => { wrap.style.display = 'none'; wrap.className = ''; }, 320);
-    }, 2000);
+    }, 4000);
   }
 
   document.getElementById('update-weight-btn')?.addEventListener('click', () => {
