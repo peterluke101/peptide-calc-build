@@ -3733,6 +3733,20 @@ function safeGetJSON(key, fallback) {
   catch(e) { return fallback; }
 }
 
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:.6rem 1.2rem;border-radius:8px;z-index:9999;font-size:.9rem;';
+      t.textContent = 'Storage full — clear some data to continue saving.';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 5000);
+    }
+  }
+}
+
 // ── State ────────────────────────────────────────────────────
 let schedule = safeGetJSON('peptide-schedule', []);
 let weekOffset = 0;
@@ -3742,7 +3756,7 @@ selectedDate.setHours(0,0,0,0);
 const FULL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function saveSchedule() {
-  localStorage.setItem('peptide-schedule', JSON.stringify(schedule));
+  safeSetItem('peptide-schedule', JSON.stringify(schedule));
   updateAddPeptideVisibility();
 }
 
@@ -3939,7 +3953,7 @@ function saveInjection(injectionKey, meta = {}) {
     notes: meta.notes || '',
     late: meta.late || false
   };
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  safeSetItem('injectionLog', JSON.stringify(log));
   // Milestone: first dose logged (#138)
   if (!localStorage.getItem('hasLoggedDose')) {
     localStorage.setItem('hasLoggedDose', '1');
@@ -3988,13 +4002,13 @@ function updateInjectionMeta(injectionKey, meta) {
     site: meta.site !== undefined ? meta.site : (existing.site || ''),
     notes: meta.notes !== undefined ? meta.notes : (existing.notes || '')
   };
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  safeSetItem('injectionLog', JSON.stringify(log));
 }
 
 function removeInjection(injectionKey) {
   const log = getInjectionLog();
   delete log[injectionKey];
-  localStorage.setItem('injectionLog', JSON.stringify(log));
+  safeSetItem('injectionLog', JSON.stringify(log));
 
   const parts = injectionKey.split('_');
   const dateStr = parts.pop();
@@ -4009,12 +4023,12 @@ function getSkipLog() {
 function saveDoseSkip(injectionKey) {
   const log = getSkipLog();
   log[injectionKey] = { skippedAt: new Date().toISOString() };
-  localStorage.setItem('skipLog', JSON.stringify(log));
+  safeSetItem('skipLog', JSON.stringify(log));
 }
 function removeDoseSkip(injectionKey) {
   const log = getSkipLog();
   delete log[injectionKey];
-  localStorage.setItem('skipLog', JSON.stringify(log));
+  safeSetItem('skipLog', JSON.stringify(log));
 }
 function isDoseSkipped(injectionKey) {
   return !!getSkipLog()[injectionKey];
@@ -4027,12 +4041,12 @@ function getSnoozeLog() {
 function saveDoseSnooze(injectionKey, untilISO) {
   const log = getSnoozeLog();
   log[injectionKey] = { until: untilISO };
-  localStorage.setItem('snoozeLog', JSON.stringify(log));
+  safeSetItem('snoozeLog', JSON.stringify(log));
 }
 function clearDoseSnooze(injectionKey) {
   const log = getSnoozeLog();
   delete log[injectionKey];
-  localStorage.setItem('snoozeLog', JSON.stringify(log));
+  safeSetItem('snoozeLog', JSON.stringify(log));
 }
 function isDoseSnoozed(injectionKey) {
   const log = getSnoozeLog();
@@ -4080,7 +4094,7 @@ function getVialData() {
 }
 
 function saveVialData(data) {
-  localStorage.setItem('vialData', JSON.stringify(data));
+  safeSetItem('vialData', JSON.stringify(data));
 }
 
 function getVialKey(entry) {
@@ -4172,7 +4186,7 @@ function savePeptideNote(peptideName, note) {
   } else {
     delete notes[peptideName];
   }
-  localStorage.setItem('peptideNotes', JSON.stringify(notes));
+  safeSetItem('peptideNotes', JSON.stringify(notes));
 }
 
 // ── Titration Timeline Data ─────────────────────────────────
@@ -9332,7 +9346,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const logs = safeGetJSON('peptideLogs', []);
     logs.push({ date, weight, energy, timestamp: Date.now() });
-    localStorage.setItem('peptideLogs', JSON.stringify(logs));
+    safeSetItem('peptideLogs', JSON.stringify(logs));
 
     renderLogsList();
     document.getElementById('log-weight').value = '';
@@ -9501,7 +9515,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     weights.push({ date: new Date().toISOString().split('T')[0], weight: current, timestamp: Date.now() });
-    localStorage.setItem('weightTracker', JSON.stringify(weights));
+    safeSetItem('weightTracker', JSON.stringify(weights));
 
     if (goal) {
       localStorage.setItem('weightGoal', goal);
@@ -10395,7 +10409,7 @@ function importCompassCSV(text) {
         startDate: r.startDate || null
       };
     }).filter(r => PEPTIDES[r.peptideIndex]);
-    localStorage.setItem('peptide-schedule', JSON.stringify(data));
+    safeSetItem('peptide-schedule', JSON.stringify(data));
   }
 
   // INJECTION_LOG
@@ -10403,7 +10417,7 @@ function importCompassCSV(text) {
   if (injRows) {
     const obj = {};
     injRows.forEach(r => { if (r.injectionKey) obj[r.injectionKey] = r.timestamp; });
-    localStorage.setItem('injectionLog', JSON.stringify(obj));
+    safeSetItem('injectionLog', JSON.stringify(obj));
   }
 
   // VIAL_DATA
@@ -10420,7 +10434,7 @@ function importCompassCSV(text) {
         createdAt: r.createdAt || ''
       };
     });
-    localStorage.setItem('vialData', JSON.stringify(obj));
+    safeSetItem('vialData', JSON.stringify(obj));
   }
 
   // PEPTIDE_NOTES
@@ -10428,7 +10442,7 @@ function importCompassCSV(text) {
   if (noteRows) {
     const obj = {};
     noteRows.forEach(r => { if (r.peptideName) obj[r.peptideName] = r.note || ''; });
-    localStorage.setItem('peptideNotes', JSON.stringify(obj));
+    safeSetItem('peptideNotes', JSON.stringify(obj));
   }
 
   // ACTIVITY_LOGS
@@ -10438,7 +10452,7 @@ function importCompassCSV(text) {
       date: r.date, weight: r.weight, energy: r.energy,
       timestamp: parseInt(r.timestamp) || Date.now()
     }));
-    localStorage.setItem('peptideLogs', JSON.stringify(data));
+    safeSetItem('peptideLogs', JSON.stringify(data));
   }
 
   // JOURNAL
@@ -10448,7 +10462,7 @@ function importCompassCSV(text) {
       date: r.date, mood: r.mood, note: r.note,
       timestamp: parseInt(r.timestamp) || Date.now()
     }));
-    localStorage.setItem('peptideJournal', JSON.stringify(data));
+    safeSetItem('peptideJournal', JSON.stringify(data));
   }
 
   // WEIGHT_TRACKER
@@ -10458,7 +10472,7 @@ function importCompassCSV(text) {
       date: r.date, weight: parseFloat(r.weight) || 0,
       timestamp: parseInt(r.timestamp) || Date.now()
     }));
-    localStorage.setItem('weightTracker', JSON.stringify(data));
+    safeSetItem('weightTracker', JSON.stringify(data));
   }
 
   // SETTINGS

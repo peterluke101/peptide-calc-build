@@ -28,7 +28,13 @@ function getJournal() {
 }
 
 function saveJournal(journal) {
-  localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
+  try {
+    localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      alert('Storage full — clear some data to continue saving.');
+    }
+  }
 }
 
 function getWeightUnit() {
