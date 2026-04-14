@@ -6904,12 +6904,27 @@ function getCheckInStreak(journal) {
 
 function getLastInjection() {
   const log = safeGetJSON('injectionLog', {});
-  const dates = Object.keys(log).sort().reverse();
-  if (!dates.length) return null;
-  const lastDate = dates[0];
-  const entry = Array.isArray(log[lastDate]) ? log[lastDate][0] : log[lastDate];
+  const keys = Object.keys(log);
+  if (!keys.length) return null;
+  // Keys are "PeptideName_YYYY-MM-DD" — sort by the date portion (last 10 chars) descending
+  keys.sort((a, b) => b.slice(-10).localeCompare(a.slice(-10)));
+  const lastKey = keys[0];
+  const entry = Array.isArray(log[lastKey]) ? log[lastKey][0] : log[lastKey];
   if (!entry) return null;
-  return { date: lastDate, ...entry };
+  // Extract date and peptide name from the key (format: "Name_YYYY-MM-DD")
+  const dateStr = lastKey.slice(-10);                      // "YYYY-MM-DD"
+  const peptideName = lastKey.slice(0, lastKey.length - 11); // strip trailing "_YYYY-MM-DD"
+  // Look up dose from the schedule entry
+  const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+  const schedEntry = sched.find(e => PEPTIDES[e.peptideIndex]?.name === peptideName);
+  const pepData = schedEntry ? PEPTIDES[schedEntry.peptideIndex] : null;
+  return {
+    date: dateStr,
+    peptide: peptideName || 'Unknown peptide',
+    dose: schedEntry?.dose || pepData?.defaultDose || '',
+    unit: pepData?.unit || schedEntry?.unit || 'mcg',
+    ...entry
+  };
 }
 
 function renderProtocolContext() {
