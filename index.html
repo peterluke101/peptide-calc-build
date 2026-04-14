@@ -3727,8 +3727,14 @@ const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// ── Safe localStorage helpers ─────────────────────────────────
+function safeGetJSON(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch(e) { return fallback; }
+}
+
 // ── State ────────────────────────────────────────────────────
-let schedule = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+let schedule = safeGetJSON('peptide-schedule', []);
 let weekOffset = 0;
 let selectedDate = new Date();
 selectedDate.setHours(0,0,0,0);
@@ -3919,7 +3925,7 @@ function formatLocalDate(date) {
 // ── Injection Log Functions ─────────────────────────────────
 function getInjectionLog() {
   try {
-    return JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    return safeGetJSON('injectionLog', {});
   } catch {
     return {};
   }
@@ -3998,7 +4004,7 @@ function removeInjection(injectionKey) {
 
 // ── Skip Log ────────────────────────────────────────────────
 function getSkipLog() {
-  try { return JSON.parse(localStorage.getItem('skipLog') || '{}'); } catch { return {}; }
+  try { return safeGetJSON('skipLog', {}); } catch { return {}; }
 }
 function saveDoseSkip(injectionKey) {
   const log = getSkipLog();
@@ -4016,7 +4022,7 @@ function isDoseSkipped(injectionKey) {
 
 // ── Snooze Log ───────────────────────────────────────────────
 function getSnoozeLog() {
-  try { return JSON.parse(localStorage.getItem('snoozeLog') || '{}'); } catch { return {}; }
+  try { return safeGetJSON('snoozeLog', {}); } catch { return {}; }
 }
 function saveDoseSnooze(injectionKey, untilISO) {
   const log = getSnoozeLog();
@@ -4067,7 +4073,7 @@ function updateOverdueBadge() {
 // ── Vial Tracking Functions ─────────────────────────────────
 function getVialData() {
   try {
-    return JSON.parse(localStorage.getItem('vialData') || '{}');
+    return safeGetJSON('vialData', {});
   } catch {
     return {};
   }
@@ -4153,7 +4159,7 @@ function resetSingleVial(key) {
 // ── Notes Functions ─────────────────────────────────────────
 function getPeptideNotes() {
   try {
-    return JSON.parse(localStorage.getItem('peptideNotes') || '{}');
+    return safeGetJSON('peptideNotes', {});
   } catch {
     return {};
   }
@@ -5117,7 +5123,7 @@ function renderToday(animate) {
         const oldStart = entry.startDate;
         entry.startDate = today;
         try {
-          const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+          const dcl = safeGetJSON('doseChangeLog', []);
           dcl.push({ date: today, peptide: pepName, field: 'startDate (reschedule)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
           if (dcl.length > 100) dcl.splice(0, dcl.length - 100);
           localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
@@ -5954,7 +5960,7 @@ function renderDoseChangeLog() {
   const $el = document.getElementById('dose-change-content');
   if (!$el) return;
 
-  const log = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+  const log = safeGetJSON('doseChangeLog', []);
   if (log.length === 0) {
     $el.innerHTML = '<div style="color:var(--text2);font-size:.85rem;padding:.5rem 0">No dose changes recorded yet.</div>';
     return;
@@ -5984,7 +5990,7 @@ function renderWeightChart() {
   const $svg  = document.getElementById('weight-svg');
   if (!$wrap || !$svg) return;
 
-  const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+  const weights = safeGetJSON('weightTracker', []);
   if (weights.length < 2) { $wrap.style.display = 'none'; return; }
   $wrap.style.display = 'block';
 
@@ -6025,7 +6031,7 @@ function renderWeightChart() {
   // Protocol start markers
   let svgExtra = '';
   try {
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const sched = safeGetJSON('peptide-schedule', []);
     const seenStarts = new Set();
     sched.forEach(entry => {
       const sd = entry.startDate;
@@ -6168,8 +6174,8 @@ function renderQuickInsights() {
   // --- Most consistent week in last 90 days ---
   let bestWeekLabel = '—', bestWeekRate = null;
   try {
-    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const log = safeGetJSON('injectionLog', {});
+    const sched = safeGetJSON('peptide-schedule', []);
     if (sched.length > 0) {
       const weekBuckets = {};
       for (let i = 89; i >= 0; i--) {
@@ -6204,7 +6210,7 @@ function renderQuickInsights() {
   let weightTrendHTML = '<span class="trend-flat">→ No data</span>';
   let weightDeltaLabel = '—';
   try {
-    const wt = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    const wt = safeGetJSON('weightTracker', []);
     if (wt.length >= 2) {
       const sorted = [...wt].sort((a,b) => a.date < b.date ? -1 : 1);
       const first = parseFloat(sorted[0].weight);
@@ -6228,9 +6234,9 @@ function renderQuickInsights() {
   let missedThisMonth = 0, missedLastMonth = 0;
   let missedTrendHTML = '<span class="trend-flat">→</span>';
   try {
-    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
-    const skipLog = JSON.parse(localStorage.getItem('skipLog') || '{}');
+    const log = safeGetJSON('injectionLog', {});
+    const sched = safeGetJSON('peptide-schedule', []);
+    const skipLog = safeGetJSON('skipLog', {});
     const now = new Date();
     const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
@@ -6256,9 +6262,9 @@ function renderQuickInsights() {
   // --- Weekday with most misses ---
   let worstDayName = '—';
   try {
-    const log2 = JSON.parse(localStorage.getItem('injectionLog') || '{}');
-    const skipLog2 = JSON.parse(localStorage.getItem('skipLog') || '{}');
-    const sched2 = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const log2 = safeGetJSON('injectionLog', {});
+    const skipLog2 = safeGetJSON('skipLog', {});
+    const sched2 = safeGetJSON('peptide-schedule', []);
     const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const dayMisses = [0,0,0,0,0,0,0];
     for (let i = 1; i <= 90; i++) {
@@ -6398,7 +6404,7 @@ function restartCycle(entryIdx) {
   const oldStart = entry.startDate;
   entry.startDate = today;
   try {
-    const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    const dcl = safeGetJSON('doseChangeLog', []);
     dcl.push({ date: today, peptide: pep?.name || '', field: 'startDate (restart)', oldValue: oldStart, newValue: today, timestamp: Date.now() });
     localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
   } catch(e) {}
@@ -6414,7 +6420,7 @@ function extendCycle(entryIdx) {
   const old = entry.cycleDays;
   entry.cycleDays = (entry.cycleDays || 28) + 28;
   try {
-    const dcl = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    const dcl = safeGetJSON('doseChangeLog', []);
     const today = formatLocalDate(new Date());
     dcl.push({ date: today, peptide: pep?.name || '', field: 'cycleDays (extend)', oldValue: old, newValue: entry.cycleDays, timestamp: Date.now() });
     localStorage.setItem('doseChangeLog', JSON.stringify(dcl));
@@ -6728,7 +6734,7 @@ const WEIGHT_UNIT_KEY = 'weightUnitPreference';
 // ── Data Models ──────────────────────────────────────────────
 function getLogs() {
   try {
-    return JSON.parse(localStorage.getItem(LOGS_STORAGE_KEY) || '[]');
+    return safeGetJSON(LOGS_STORAGE_KEY, []);
   } catch {
     return [];
   }
@@ -6740,7 +6746,7 @@ function saveLogs(logs) {
 
 function getJournal() {
   try {
-    return JSON.parse(localStorage.getItem(JOURNAL_STORAGE_KEY) || '[]');
+    return safeGetJSON(JOURNAL_STORAGE_KEY, []);
   } catch {
     return [];
   }
@@ -6876,7 +6882,7 @@ function getCheckInStreak(journal) {
 }
 
 function getLastInjection() {
-  const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+  const log = safeGetJSON('injectionLog', {});
   const dates = Object.keys(log).sort().reverse();
   if (!dates.length) return null;
   const lastDate = dates[0];
@@ -7468,7 +7474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAdvanced = localStorage.getItem('appMode') === 'advanced';
     if (isAdvanced) return 'power';
     const hasDose    = localStorage.getItem('hasLoggedDose');
-    const journal    = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    const journal    = safeGetJSON('peptideJournal', []);
     if (hasDose && journal.length >= 5) return 'power';
     const hasProto   = localStorage.getItem('hasSavedProtocol');
     if (hasProto) return 'active';
@@ -7491,7 +7497,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const $name = document.getElementById('psc-name');
         if ($name) $name.textContent = p.name || 'My Protocol';
         // Next dose from schedule
-        const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+        const sched = safeGetJSON('peptide-schedule', []);
         const $next = document.getElementById('psc-next-dose');
         if ($next) {
           if (sched.length > 0) {
@@ -7503,7 +7509,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Adherence from stats
         const $adh = document.getElementById('psc-adherence');
         if ($adh) {
-          const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+          const injLog = safeGetJSON('injectionLog', {});
           const total = Object.keys(injLog).length;
           if (total > 0) $adh.textContent = '✓ ' + total + ' dose' + (total !== 1 ? 's' : '') + ' logged';
         }
@@ -8271,7 +8277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Wizard result action buttons (#124) ────────────────────
   // Show "Log First Dose" only if no injections logged yet
   (function() {
-    const log = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const log = safeGetJSON('injectionLog', {});
     const hasLog = Object.keys(log).length > 0;
     const btn = document.getElementById('wiz-log-first-dose');
     if (btn && !hasLog) btn.style.display = '';
@@ -8679,7 +8685,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Log dose changes
     const pepName = PEPTIDES[pepIdx]?.name || ('Peptide ' + pepIdx);
-    const doseChangeLog = JSON.parse(localStorage.getItem('doseChangeLog') || '[]');
+    const doseChangeLog = safeGetJSON('doseChangeLog', []);
     const now = new Date();
     const dateStr = now.toISOString().split('T')[0];
     if (existing !== -1) {
@@ -8878,7 +8884,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Reconstitution Cheat Sheet ──────────────────────────────
   function getReconRecipes() {
-    try { return JSON.parse(localStorage.getItem('reconRecipes') || '[]'); } catch(e) { return []; }
+    try { return safeGetJSON('reconRecipes', []); } catch(e) { return []; }
   }
   function saveReconRecipes(arr) { localStorage.setItem('reconRecipes', JSON.stringify(arr)); }
   function calcReconUnits(vialMg, bacMl, doseMcg) {
@@ -9151,7 +9157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Cost Tracker ────────────────────────────────────────────
   function getCostEntries() {
-    try { return JSON.parse(localStorage.getItem('costEntries') || '[]'); } catch(e) { return []; }
+    try { return safeGetJSON('costEntries', []); } catch(e) { return []; }
   }
   function saveCostEntries(arr) { localStorage.setItem('costEntries', JSON.stringify(arr)); }
   function renderCostSummary() {
@@ -9308,7 +9314,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const logs = JSON.parse(localStorage.getItem('peptideLogs') || '[]');
+    const logs = safeGetJSON('peptideLogs', []);
     logs.push({ date, weight, energy, timestamp: Date.now() });
     localStorage.setItem('peptideLogs', JSON.stringify(logs));
 
@@ -9318,7 +9324,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function renderLogsList() {
-    const logs = JSON.parse(localStorage.getItem('peptideLogs') || '[]');
+    const logs = safeGetJSON('peptideLogs', []);
     const $list = document.getElementById('logs-list');
     if (!$list) return;
 
@@ -9471,7 +9477,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('weightStartingWeight', starting);
     }
 
-    const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    const weights = safeGetJSON('weightTracker', []);
 
     // Check for new personal low before pushing
     if (weights.length > 0 && current < weights[weights.length - 1].weight) {
@@ -9489,7 +9495,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function updateWeightDisplay() {
-    const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    const weights = safeGetJSON('weightTracker', []);
     const goal = parseFloat(localStorage.getItem('weightGoal'));
     const startingWeight = parseFloat(localStorage.getItem('weightStartingWeight'));
     const $current = document.getElementById('stat-current');
@@ -9620,7 +9626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Schedule
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const sched = safeGetJSON('peptide-schedule', []);
     section('SCHEDULE',
       ['peptideName','tier','vialMg','waterMl','cycleDays','startDate'],
       sched.map(s => {
@@ -9630,42 +9636,42 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     // Injection log
-    const injLog = JSON.parse(localStorage.getItem('injectionLog') || '{}');
+    const injLog = safeGetJSON('injectionLog', {});
     section('INJECTION_LOG',
       ['injectionKey','timestamp'],
       Object.entries(injLog).map(([k, v]) => [k, v])
     );
 
     // Vial data
-    const vialData = JSON.parse(localStorage.getItem('vialData') || '{}');
+    const vialData = safeGetJSON('vialData', {});
     section('VIAL_DATA',
       ['key','peptideName','vialMg','waterMl','totalDoses','usedDoses','createdAt'],
       Object.entries(vialData).map(([k, v]) => [k, v.peptideName || '', v.vialMg || 0, v.waterMl || 0, v.totalDoses || 0, v.usedDoses || 0, v.createdAt || ''])
     );
 
     // Peptide notes
-    const notes = JSON.parse(localStorage.getItem('peptideNotes') || '{}');
+    const notes = safeGetJSON('peptideNotes', {});
     section('PEPTIDE_NOTES',
       ['peptideName','note'],
       Object.entries(notes).map(([k, v]) => [k, v || ''])
     );
 
     // Activity logs
-    const actLogs = JSON.parse(localStorage.getItem('peptideLogs') || '[]');
+    const actLogs = safeGetJSON('peptideLogs', []);
     section('ACTIVITY_LOGS',
       ['date','weight','energy','timestamp'],
       actLogs.map(l => [l.date || '', l.weight || '', l.energy || '', l.timestamp || ''])
     );
 
     // Journal entries
-    const journal = JSON.parse(localStorage.getItem('peptideJournal') || '[]');
+    const journal = safeGetJSON('peptideJournal', []);
     section('JOURNAL',
       ['date','mood','note','timestamp'],
       journal.map(j => [j.date || '', j.mood || '', j.note || '', j.timestamp || ''])
     );
 
     // Weight tracker
-    const weights = JSON.parse(localStorage.getItem('weightTracker') || '[]');
+    const weights = safeGetJSON('weightTracker', []);
     section('WEIGHT_TRACKER',
       ['date','weight','timestamp'],
       weights.map(w => [w.date || '', w.weight || '', w.timestamp || ''])
@@ -9715,7 +9721,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Share Calendar (.ics export) ─────────────────────────────
   document.getElementById('share-calendar-option')?.addEventListener('click', () => {
-    const sched = JSON.parse(localStorage.getItem('peptide-schedule') || '[]');
+    const sched = safeGetJSON('peptide-schedule', []);
     if (!sched.length) { alert('No scheduled peptides to export.'); return; }
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
@@ -10450,7 +10456,7 @@ function importCompassCSV(text) {
 
 // ── Saved Protocols ──────────────────────────────────────────
 function getSavedProtocols() {
-  try { return JSON.parse(localStorage.getItem('savedProtocols') || '[]'); }
+  try { return safeGetJSON('savedProtocols', []); }
   catch(e) { return []; }
 }
 
