@@ -1,2 +1,11 @@
 .claude/
 .wrangler/
+
+# Local ops / drafts (not for repo)
+.git_backup/
+*.xlsx
+*.pdf
+
+# Backup / legacy files (archive only — see _archive/)
+*.html.backup*
+*-old.html
