@@ -443,6 +443,14 @@ body.light-mode .stack-peptide.is-featured{background:rgba(43,186,160,.06)}
 .gs-draw-label{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.35rem}
 .gs-draw-value{font-size:1.6rem;font-weight:700;color:var(--text)}
 .gs-draw-unit{font-size:.8rem;color:var(--text2);margin-left:.2rem}
+/* Custom dose input row */
+.gs-dose-row{display:flex;align-items:center;gap:.5rem;margin:.5rem 0 .75rem}
+.gs-dose-step-btn{width:38px;height:38px;flex-shrink:0;border:2px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:1.25rem;line-height:1;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;transition:border-color .15s}
+.gs-dose-step-btn:hover{border-color:var(--accent)}
+.gs-dose-custom-input{flex:1;min-width:0;text-align:center;padding:.55rem .5rem;border:2px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-size:1rem;font-weight:600;font-family:inherit;-webkit-appearance:none;-moz-appearance:textfield}
+.gs-dose-custom-input:focus{outline:none;border-color:var(--accent)}
+.gs-dose-custom-input::-webkit-inner-spin-button,.gs-dose-custom-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.gs-dose-unit-lbl{font-size:.8rem;color:var(--text2);flex-shrink:0;min-width:2.5rem;text-align:left}
 /* Summary grid */
 .gs-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.25rem}
 .gs-summary-item{background:var(--surface2);border-radius:8px;padding:.6rem .75rem}
@@ -2182,7 +2190,9 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <option value="low">Low</option>
       <option value="standard" selected>Standard</option>
       <option value="high">High</option>
+      <option value="custom">Custom</option>
     </select>
+    <input type="hidden" id="add-custom-dose-mcg" value="">
     <select id="add-vial" style="display:none"></select>
     <select id="add-water" style="display:none"></select>
     <select id="add-cycle" style="display:none">
@@ -2260,6 +2270,12 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     <div class="gs-step-panel" data-step="3">
       <div class="gs-step-heading">Dose</div>
       <div class="gs-tier-group" id="gs-tier-btns"></div>
+      <div class="gs-dose-row" id="gs-dose-row">
+        <button class="gs-dose-step-btn" id="gs-dose-minus" type="button">−</button>
+        <input type="number" class="gs-dose-custom-input" id="gs-dose-custom" min="0">
+        <span class="gs-dose-unit-lbl" id="gs-dose-unit-lbl">mcg</span>
+        <button class="gs-dose-step-btn" id="gs-dose-plus" type="button">+</button>
+      </div>
       <div id="gs-evidence-badge"></div>
       <div class="gs-draw-box">
         <div class="gs-draw-label">Draw</div>
@@ -3929,10 +3945,22 @@ function fmtUnits(u) {
   return +u.toFixed(1) + '';
 }
 
-function getDoseMcg(pep, tier) {
+function getDoseMcg(pep, tier, customDoseMcg) {
+  if (customDoseMcg > 0) return customDoseMcg;
   if (tier === 'low') return pep.lowMcg;
   if (tier === 'high') return pep.highMcg;
   return pep.stdMcg;
+}
+
+function getDoseStep(pep) {
+  const std = pep.stdMcg;
+  if (std >= 100000) return 10000;
+  if (std >= 50000)  return 5000;
+  if (std >= 10000)  return 1000;
+  if (std >= 2000)   return 250;
+  if (std >= 500)    return 50;
+  if (std >= 100)    return 25;
+  return 5;
 }
 
 function shortName(name) {
@@ -4141,7 +4169,7 @@ function getVialKey(entry) {
 
 function calculateTotalDoses(entry) {
   const pep = PEPTIDES[entry.peptideIndex];
-  const doseMcg = getDoseMcg(pep, entry.tier);
+  const doseMcg = getDoseMcg(pep, entry.tier, entry.customDoseMcg);
   if (doseMcg <= 0) return 0;
   return Math.floor((entry.vialMg * 1000) / doseMcg);
 }
@@ -4983,7 +5011,7 @@ function renderToday(animate) {
     schedule.forEach(entry => {
       const pep = PEPTIDES[entry.peptideIndex];
       if (!shouldInject(entry, date)) return;
-      const doseMcg = getDoseMcg(pep, entry.tier);
+      const doseMcg = getDoseMcg(pep, entry.tier, entry.customDoseMcg);
       const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
       const injectionKey = pep.name + '_' + formatLocalDate(date);
       const isDone = !!log[injectionKey];
@@ -5315,7 +5343,7 @@ function renderCalendar() {
 
       if (cs.status === 'inject') {
         hasEvents = true;
-        const doseMcg = getDoseMcg(pep, entry.tier);
+        const doseMcg = getDoseMcg(pep, entry.tier, entry.customDoseMcg);
         const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
 
         // Restart marker (first day of a new cycle after break)
@@ -5375,7 +5403,7 @@ function renderPeptidesList() {
 
   schedule.forEach((entry, idx) => {
     const pep = PEPTIDES[entry.peptideIndex];
-    const doseMcg = getDoseMcg(pep, entry.tier);
+    const doseMcg = getDoseMcg(pep, entry.tier, entry.customDoseMcg);
     const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
     const startDate = parseLocalDate(entry.startDate);
     const elapsed = daysBetween(startDate, now);
@@ -5510,7 +5538,7 @@ function renderPeptidesList() {
       </div>
       <div class="pep-body">
         <div class="pep-details">
-          <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)} (${entry.tier})</strong></div>
+          <div class="pep-detail">Dose<strong>${fmtDose(doseMcg)}${entry.tier !== 'custom' ? ' (' + entry.tier + ')' : ''}</strong></div>
           <div class="pep-detail">Draw<strong>${fmtUnits(units)} units</strong></div>
           <div class="pep-detail">Freq<strong>${pep.frequency}</strong></div>
         </div>
@@ -5561,7 +5589,7 @@ function renderPeptidesList() {
       const idx = parseInt(e.currentTarget.dataset.idx);
       const entry = schedule[idx];
       const pep = PEPTIDES[entry.peptideIndex];
-      const doseMcg = getDoseMcg(pep, entry.tier);
+      const doseMcg = getDoseMcg(pep, entry.tier, entry.customDoseMcg);
       const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
       printVialLabel(pep.name, entry.vialMg + 'mg', entry.waterMl + ' mL BAC water', fmtDose(doseMcg) + ' per draw (' + fmtUnits(units) + ' units)');
     });
@@ -8457,8 +8485,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const vialMg = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
           const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
           const tier = document.getElementById('add-tier')?.value || 'standard';
-          const tierDoses = { low: 0.5, standard: 1.0, high: 1.5 };
-          const doseMcg = Math.round(pep.dose * (tierDoses[tier] || 1.0) * 1000);
+          const customDoseMcg = parseFloat(document.getElementById('add-custom-dose-mcg')?.value) || 0;
+          const doseMcg = getDoseMcg(pep, tier, customDoseMcg);
           const concMcgMl = (vialMg * 1000) / waterMl;
           const units = (doseMcg / concMcgMl) * 100;
           showProtoSaveOverlay(pep.name, doseMcg, units);
@@ -8563,18 +8591,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('gs-tier-btns');
     if (!pep || !container) return;
 
+    // Determine display unit and step size for this peptide
+    const useMg   = pep.stdMcg >= 1000;
+    const stepMcg = getDoseStep(pep);
+    const stepVal = useMg ? stepMcg / 1000 : stepMcg;
+    const unitLbl = useMg ? 'mg' : 'mcg';
+
+    // Helper: mcg → display value
+    const mcgToDisplay = mcg => useMg ? +(mcg / 1000).toFixed(4) : mcg;
+    // Helper: display value → mcg
+    const displayToMcg = v => useMg ? Math.round(v * 1000) : Math.round(v);
+
     const tiers = [
       { key: 'low',      label: 'Low',      dose: pep.lowMcg },
       { key: 'standard', label: 'Standard', dose: pep.stdMcg },
       { key: 'high',     label: 'High',     dose: pep.highMcg }
     ];
+
+    // Render tier preset buttons
     const activeTier = document.getElementById('add-tier')?.value || 'standard';
     container.innerHTML = tiers.map(t => `
-      <button class="gs-tier-btn${t.key === activeTier ? ' active' : ''}" data-tier="${t.key}" type="button">
+      <button class="gs-tier-btn${t.key === activeTier ? ' active' : ''}" data-tier="${t.key}" data-dose="${t.dose}" type="button">
         <span class="gs-tier-label">${t.label}</span>
         <span class="gs-tier-dose">${fmtDose(t.dose)}</span>
       </button>
     `).join('');
+
+    // Set up custom input
+    const customInput = document.getElementById('gs-dose-custom');
+    const unitEl      = document.getElementById('gs-dose-unit-lbl');
+    if (customInput) {
+      customInput.step = stepVal;
+      customInput.min  = 0;
+      if (unitEl) unitEl.textContent = unitLbl;
+      // Seed with the active tier's dose
+      const seedTier = tiers.find(t => t.key === activeTier) || tiers[1];
+      const storedCustom = parseFloat(document.getElementById('add-custom-dose-mcg')?.value) || 0;
+      customInput.value = mcgToDisplay(storedCustom > 0 ? storedCustom : seedTier.dose);
+    }
 
     // Evidence badge for selected peptide
     if (pep.evidence) {
@@ -8584,32 +8638,73 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const calcDraw = () => {
-      const tier    = container.querySelector('.gs-tier-btn.active')?.dataset.tier || 'standard';
+    const syncHidden = (doseMcg, tierKey) => {
+      const tierSel = document.getElementById('add-tier');
+      if (tierSel) tierSel.value = tierKey || 'custom';
+      const customMcgEl = document.getElementById('add-custom-dose-mcg');
+      if (customMcgEl) customMcgEl.value = doseMcg;
+    };
+
+    const calcDraw = doseMcg => {
       const vialMg  = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
       const waterMl = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
-      const doseMcg = tier === 'low' ? pep.lowMcg : tier === 'high' ? pep.highMcg : pep.stdMcg;
       const units   = calcUnits(doseMcg, vialMg, waterMl);
       const el = document.getElementById('gs-draw-value');
       if (el) el.textContent = fmtUnits(units);
       const highWarn = document.getElementById('gs-high-dose-warn');
       if (highWarn) highWarn.style.display = units > 60 ? 'block' : 'none';
-      // Sync hidden tier select
-      const tierSel = document.getElementById('add-tier');
-      if (tierSel) tierSel.value = tier;
-      // Update math detail (keep open/closed state)
       const mathDetail = document.getElementById('gs-math-detail');
       if (mathDetail) mathDetail.innerHTML = buildMathHtml(doseMcg, vialMg, waterMl);
     };
 
+    // Tier button click → populate input, recalc
     container.querySelectorAll('.gs-tier-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         container.querySelectorAll('.gs-tier-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        calcDraw();
+        const doseMcg = parseInt(btn.dataset.dose, 10);
+        if (customInput) customInput.value = mcgToDisplay(doseMcg);
+        syncHidden(doseMcg, btn.dataset.tier);
+        calcDraw(doseMcg);
       });
     });
-    calcDraw();
+
+    // Custom input change → deactivate tier buttons, recalc
+    if (customInput) {
+      customInput.addEventListener('input', () => {
+        const raw = parseFloat(customInput.value);
+        if (isNaN(raw) || raw <= 0) return;
+        const doseMcg = displayToMcg(raw);
+        // Highlight tier btn if value matches exactly
+        let matchedTier = null;
+        container.querySelectorAll('.gs-tier-btn').forEach(b => {
+          const match = parseInt(b.dataset.dose, 10) === doseMcg;
+          b.classList.toggle('active', match);
+          if (match) matchedTier = b.dataset.tier;
+        });
+        syncHidden(doseMcg, matchedTier);
+        calcDraw(doseMcg);
+      });
+
+      // +/- stepper buttons
+      document.getElementById('gs-dose-minus')?.addEventListener('click', () => {
+        const cur = parseFloat(customInput.value) || mcgToDisplay(pep.stdMcg);
+        const next = Math.max(stepVal, Math.round((cur - stepVal) / stepVal) * stepVal);
+        customInput.value = +next.toFixed(6);
+        customInput.dispatchEvent(new Event('input'));
+      });
+      document.getElementById('gs-dose-plus')?.addEventListener('click', () => {
+        const cur = parseFloat(customInput.value) || mcgToDisplay(pep.stdMcg);
+        const next = Math.round((cur + stepVal) / stepVal) * stepVal;
+        customInput.value = +next.toFixed(6);
+        customInput.dispatchEvent(new Event('input'));
+      });
+    }
+
+    // Initial calc using seeded value
+    const initDoseMcg = displayToMcg(parseFloat(customInput?.value) || mcgToDisplay(pep.stdMcg));
+    syncHidden(initDoseMcg, activeTier === 'custom' ? null : activeTier);
+    calcDraw(initDoseMcg);
     initMathToggle('gs-math-toggle', 'gs-math-detail');
   }
 
@@ -8655,7 +8750,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cycleDays = parseInt(document.getElementById('gs-cycle-sel')?.value) || 0;
     const startDate = document.getElementById('gs-start-date')?.value || new Date().toISOString().split('T')[0];
 
-    const doseMcg   = !pep ? 0 : tier === 'low' ? pep.lowMcg : tier === 'high' ? pep.highMcg : pep.stdMcg;
+    const customDoseMcg = parseFloat(document.getElementById('add-custom-dose-mcg')?.value) || 0;
+    const doseMcg   = getDoseMcg(pep, tier, customDoseMcg);
     const units     = calcUnits(doseMcg, vialMg, waterMl);
     const conc      = (vialMg / waterMl).toFixed(2);
     const cycleLabel = cycleDays === 0 ? 'Ongoing' : cycleDays + ' days';
@@ -8681,7 +8777,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="gs-summary-val">${conc} mg/mL</div>
       </div>
       <div class="gs-summary-item">
-        <div class="gs-summary-lbl">Dose (${tier})</div>
+        <div class="gs-summary-lbl">Dose${tier !== 'custom' ? ' (' + tier + ')' : ''}</div>
         <div class="gs-summary-val">${fmtDose(doseMcg)}</div>
       </div>
       <div class="gs-summary-item">
@@ -8701,9 +8797,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gsReset() {
     gsShowStep(1);
-    // Reset tier to standard
+    // Reset tier and custom dose to defaults
     const tierSel = document.getElementById('add-tier');
     if (tierSel) tierSel.value = 'standard';
+    const customMcgEl = document.getElementById('add-custom-dose-mcg');
+    if (customMcgEl) customMcgEl.value = '';
   }
 
   // ── Trigger button opens stepper ───────────────────────────
@@ -8759,14 +8857,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const pepIdx    = parseInt(document.getElementById('gs-peptide-sel')?.value);
     const vialMg    = parseFloat(document.getElementById('gs-vial-sel')?.value) || 5;
     const waterMl   = parseFloat(document.getElementById('gs-water-sel')?.value) || 2;
-    const tier      = document.getElementById('add-tier')?.value || 'standard';
+    const tier          = document.getElementById('add-tier')?.value || 'standard';
+    const customDoseMcg = parseFloat(document.getElementById('add-custom-dose-mcg')?.value) || 0;
     const cycleDays = parseInt(document.getElementById('gs-cycle-sel')?.value) || 0;
     const startDate = document.getElementById('gs-start-date')?.value || new Date().toISOString().split('T')[0];
 
     if (isNaN(pepIdx)) return;
 
     const existing = schedule.findIndex(e => e.peptideIndex === pepIdx);
-    const entry = { peptideIndex: pepIdx, tier, vialMg, waterMl, cycleDays, startDate };
+    const entry = { peptideIndex: pepIdx, tier, customDoseMcg, vialMg, waterMl, cycleDays, startDate };
 
     // Log dose changes
     const pepName = PEPTIDES[pepIdx]?.name || ('Peptide ' + pepIdx);
@@ -10652,10 +10751,12 @@ function loadProtocol(id) {
   const alreadyOpen = addPanel?.style.display === 'block';
   if (!alreadyOpen) document.getElementById('add-trigger')?.click();
 
-  // Restore tier after open (gsReset resets tier to 'standard')
+  // Restore tier + custom dose after open (gsReset resets these to defaults)
   setTimeout(() => {
     const tierSel = document.getElementById('add-tier');
     if (tierSel) tierSel.value = p.tier;
+    const customMcgEl = document.getElementById('add-custom-dose-mcg');
+    if (customMcgEl) customMcgEl.value = p.customDoseMcg || 0;
   }, 0);
 
   addCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });

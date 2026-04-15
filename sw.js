@@ -1,4 +1,4 @@
-const CACHE_NAME = 'peptide-calc-v30';
+const CACHE_NAME = 'peptide-calc-v31';
 const ASSETS = ['./', './index.html', './schedule.html', './manifest.json', './logs-journal.js'];
 
 self.addEventListener('install', e => {
