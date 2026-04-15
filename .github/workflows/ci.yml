@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: HTML lint (full pages only — fragments excluded)
+        run: |
+          npx --yes htmlhint \
+            index.html schedule.html \
+            privacy.html terms.html data-handling.html \
+            test-collapse.html
+
+      - name: JS syntax check
+        run: |
+          set -e
+          for f in $(find . -type f -name "*.js" \
+            -not -path "./node_modules/*" \
+            -not -path "./_archive/*" \
+            -not -path "./.wrangler/*" \
+            -not -path "./.git/*" \
+            -not -path "./.claude/*" \
+            -not -path "./.git_backup/*"); do
+            node --check "$f"
+          done
+
+      - name: Validate manifest.json
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8'))"
+
+      - name: Validate sw.js syntax
+        run: node --check sw.js

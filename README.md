@@ -1,5 +1,7 @@
 # Peptide Compass Pro
 
+[![CI](https://github.com/peterluke101/peptide-calc-build/actions/workflows/ci.yml/badge.svg)](https://github.com/peterluke101/peptide-calc-build/actions/workflows/ci.yml)
+
 **Mission:** Track, organize, and better understand your peptide protocol.
 
 **Live site:** https://peptide-calc-build.pages.dev/
