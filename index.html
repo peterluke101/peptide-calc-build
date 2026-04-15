@@ -3669,6 +3669,28 @@ const EVIDENCE_ICONS = {
 };
 
 // ── Peptide Data ─────────────────────────────────────────────
+//
+// IU ↔ mcg conversion conventions used by this app (#204):
+//
+//   HGH (somatropin):  1 IU ≈ 333 mcg  (USP/NIH standard, ~3 IU per 1 mg)
+//                      lowMcg/stdMcg/highMcg are stored as mcg.
+//                      Display labels in IU are derived from this factor.
+//
+//   HCG:               1 "mg" in this app === 1000 IU
+//                      (community convention used by HCG vial labeling).
+//                      lowMcg/stdMcg/highMcg fields hold IU values directly,
+//                      since the calculator's draw math is unit-agnostic
+//                      (ratio of vial-units / dose-units), and HCG vials
+//                      are typically labeled in IU not mg.
+//                      Pharmacological 1 IU HCG ≈ 0.1 mcg, but that is not
+//                      how peptide-community vials are labeled.
+//
+// Anything not flagged here is dosed in mcg directly (no IU conversion).
+const DOSE_UNIT_CONVERSIONS = {
+  HGH: { iuPerMcg: 1 / 333, mcgPerIu: 333, source: 'USP somatropin standard' },
+  HCG: { iuPerMcg: 1, mcgPerIu: 1, source: 'app convention: stored field is IU, not mcg' }
+};
+
 const PEPTIDES = [
   { name: 'Adipotide', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, max 4 weeks. ⚠️ Monitor kidneys', frequency: '5on2off', timingIcon: '☀️', color: '#E8A838', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal studies; limited human trial data' } },
   { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human and animal metabolic studies; limited efficacy data' } },
@@ -3687,9 +3709,9 @@ const PEPTIDES = [
   { name: 'GHRP-6', lowMcg: 100, stdMcg: 100, highMcg: 300, rangeLabel: '100-300 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFAA44', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Rodent studies and some human GH pulse studies' } },
   { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', lowMcg: 1500, stdMcg: 2330, highMcg: 3500, rangeLabel: '1.5–3.5 mg daily blend', timing: 'morning/evening', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD76C', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Component compounds primarily animal-studied; limited human data' } },
   { name: 'Glutathione', lowMcg: 100000, stdMcg: 200000, highMcg: 200000, rangeLabel: '100-200 mg 3x/week', timing: 'morning', timingNote: 'Morning — 3x per week (Mon/Wed/Fri)', frequency: '3x/week', timingIcon: '☀️', color: '#88FF88', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human antioxidant studies; IV efficacy data limited' } },
-  { name: 'HCG', lowMcg: 250, stdMcg: 500, highMcg: 1500, rangeLabel: '250–1500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU', frequency: '3x/week', timingIcon: '☀️', color: '#E87838', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Established human clinical use; FDA-approved hormone' } },
+  { name: 'HCG', lowMcg: 250, stdMcg: 500, highMcg: 1500, rangeLabel: '250–1500 IU, 2-3x/week', timing: '☀️', timingNote: 'Spread through week — 2-3x/week (Mon/Wed/Fri). Note: doses in IU. App convention: vial "mg" = vial IU ÷ 1000; dose values are IU.', frequency: '3x/week', timingIcon: '☀️', color: '#E87838', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Established human clinical use; FDA approved for ovulation induction (OvidrelⓇ) and hypogonadism — off-label use is common.' } },
   { name: 'Hexarelin', lowMcg: 100, stdMcg: 100, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily, 4-8 week cycles', frequency: 'daily', timingIcon: '☀️🌙', color: '#DD44FF', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human GH secretagogue studies; limited modern data' } },
-  { name: 'HGH', lowMcg: 333, stdMcg: 666, highMcg: 1998, rangeLabel: '1–6 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Note: 1 IU ≈ 333 mcg', frequency: 'daily', timingIcon: '🌙', color: '#38E878', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Extensive human clinical data; FDA-approved hormone therapy' } },
+  { name: 'HGH', lowMcg: 333, stdMcg: 666, highMcg: 1998, rangeLabel: '1–6 IU daily', timing: '☀️🌙', timingNote: 'Morning fasted (fat loss) or evening (recovery). Conversion: 1 IU ≈ 333 mcg (USP somatropin standard, ~3 IU per mg).', frequency: 'daily', timingIcon: '🌙', color: '#38E878', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Extensive human clinical data; FDA approved for adult/pediatric GH deficiency, AIDS wasting, short bowel syndrome — anti-aging/recovery use is off-label.' } },
   { name: 'IGF-1 LR3', lowMcg: 20, stdMcg: 50, highMcg: 100, rangeLabel: '20-100 mcg daily', timing: 'anytime', timingNote: 'Post-workout — daily, max 4 week cycles', frequency: 'daily', timingIcon: '💪', color: '#FF4444', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal muscle studies; limited formal human efficacy data' } },
   { name: 'Ipamorelin', lowMcg: 100, stdMcg: 300, highMcg: 500, rangeLabel: '100–500 mcg, 1-3x/day', timing: '🌙', timingNote: 'Before bed preferred — empty stomach, 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#D838E8', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human PK data; limited efficacy trials' } },
   { name: 'KLOW Stack (TB + BPC + GHK + KPV)', lowMcg: 2000, stdMcg: 4000, highMcg: 6000, rangeLabel: '2-6 mg daily blend', timing: 'morning', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD700', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Component compounds primarily animal-studied; limited human data' } },
