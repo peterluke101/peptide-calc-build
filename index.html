@@ -2535,7 +2535,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         <polygon class="rc-syr-needle-tip" fill="#3DE8C3" points="302,19 302,43 330,30"/>
       </svg>
       <div class="rc-syringe-draw-label" id="rc-syringe-draw-label">10 units drawn</div>
-      <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe</div>
+      <div class="rc-syringe-hint">100-unit (1 ml) insulin syringe — draw shown to nearest 0.1 unit</div>
     </div>
   </div>
 </div>
@@ -3858,6 +3858,14 @@ function fmtDose(mcg) {
   return mcg + ' mcg';
 }
 
+// Returns RAW (un-rounded) syringe units to draw on a 100-unit insulin syringe.
+// Rounding policy (#205): callers display this with .toFixed(2) for the math
+// breakdown so the user sees the honest fractional units. The "nearest mark"
+// guidance for the actual physical syringe is computed separately by
+// getNearestMark(), which intentionally rounds to the nearest gradation
+// (not down) — peptide doses are conservative by design (low/std/high tiers
+// already give the user a safety margin), so nearest-mark beats round-down
+// for keeping the user on the labeled tier.
 function calcUnits(doseMcg, vialMg, waterMl) {
   const concMcgPerUnit = (vialMg * 1000) / (waterMl * 100);
   return concMcgPerUnit > 0 ? doseMcg / concMcgPerUnit : 0;
@@ -8964,11 +8972,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try { return safeGetJSON('reconRecipes', []); } catch(e) { return []; }
   }
   function saveReconRecipes(arr) { safeSetItem('reconRecipes', JSON.stringify(arr)); }
+  // Returns syringe units rounded to the nearest 0.1 unit on a 100-unit
+  // insulin syringe. Rounding policy (#205): nearest-tenth (not floor) is
+  // used because the syringe-graphic UI displays this as a single number;
+  // showing "exactly N units" would over-state precision when raw draw is
+  // e.g. 9.47. The user-visible syringe hint surfaces this rounding mode.
   function calcReconUnits(vialMg, bacMl, doseMcg) {
     if (!vialMg || !bacMl || !doseMcg) return null;
     const concMcgPerMl = (vialMg * 1000) / bacMl;
     const drawMl = doseMcg / concMcgPerMl;
-    return Math.round(drawMl * 1000) / 10; // units on 100-unit syringe
+    return Math.round(drawMl * 1000) / 10; // round to nearest 0.1 unit
   }
   function renderReconList() {
     const list = document.getElementById('recon-list');
@@ -10001,6 +10014,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return sz === 30 ? 0.5 : 1; // 30-unit syringes have half-unit marks
     }
 
+    // Returns { lower, upper, nearest, exact } for a given raw draw on a
+    // physical syringe with `sz`-unit gradations. `nearest` is the closer
+    // of lower/upper (tie goes to upper). `exact` is true when the raw
+    // draw lands exactly on a gradation. Rounding policy (#205):
+    // nearest-mark is intentional — it gives users the most accurate
+    // physical reading. The companion `rc-between-marks` warning is
+    // shown when the raw draw doesn't land cleanly on a gradation, so
+    // users always see the honest fractional value alongside the mark.
     function getNearestMark(drawUnits, sz) {
       const grad = getGraduation(sz);
       const lower = Math.floor(drawUnits / grad) * grad;
