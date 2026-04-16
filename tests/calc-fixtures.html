@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Peptide Calc — Unit Conversion Test Fixtures</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #111; color: #eee; }
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1rem; color: #aaa; margin-top: 2rem; }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1.5rem; }
+  th, td { text-align: left; padding: .4rem .6rem; border: 1px solid #333; font-size: .85rem; }
+  th { background: #222; }
+  .pass { color: #4ade80; }
+  .fail { color: #f87171; font-weight: bold; }
+  .summary { margin-top: 1.5rem; font-size: 1.1rem; padding: 1rem; border-radius: 8px; }
+  .summary.all-pass { background: rgba(74,222,128,.1); border: 1px solid #4ade80; }
+  .summary.has-fail { background: rgba(248,113,113,.1); border: 1px solid #f87171; }
+</style>
+</head>
+<body>
+<h1>Peptide Calc — Unit Conversion Test Fixtures</h1>
+<p style="color:#888;font-size:.8rem">
+  Tests the two core math functions extracted from index.html.
+  Open this file in a browser to run. No build system needed.
+</p>
+<div id="results"></div>
+<div id="summary"></div>
+
+<script>
+// ── Extracted math (must match index.html exactly) ──────────
+
+// From index.html calcUnits(): returns RAW fractional syringe units
+function calcUnits(doseMcg, vialMg, waterMl) {
+  const concMcgPerUnit = (vialMg * 1000) / (waterMl * 100);
+  return concMcgPerUnit > 0 ? doseMcg / concMcgPerUnit : 0;
+}
+
+// From index.html calcReconUnits(): returns rounded to nearest 0.1 unit
+function calcReconUnits(vialMg, bacMl, doseMcg) {
+  if (!vialMg || !bacMl || !doseMcg) return null;
+  const concMcgPerMl = (vialMg * 1000) / bacMl;
+  const drawMl = doseMcg / concMcgPerMl;
+  return Math.round(drawMl * 1000) / 10;
+}
+
+// ── Test fixtures ───────────────────────────────────────────
+// Each: { name, vialMg, waterMl, doseMcg, expectedUnits, expectedReconUnits, note }
+//
+// expectedUnits = raw fractional (calcUnits output)
+// expectedReconUnits = rounded to 0.1 (calcReconUnits output)
+//
+// IU convention per DOSE_UNIT_CONVERSIONS in index.html:
+//   HGH: 1 IU = 333 mcg (USP somatropin). Data stored as mcg.
+//   HCG: data stored as IU directly in the mcg field. vialMg "5" = 5000 IU.
+
+const fixtures = [
+  // ── BPC-157 (animal data, daily, mcg) ──
+  { name: 'BPC-157 low',  vialMg: 5, waterMl: 2, doseMcg: 200, expectedUnits: 8,    expectedReconUnits: 8,    note: '200 mcg from 5mg/2ml' },
+  { name: 'BPC-157 std',  vialMg: 5, waterMl: 2, doseMcg: 300, expectedUnits: 12,   expectedReconUnits: 12,   note: '300 mcg from 5mg/2ml' },
+  { name: 'BPC-157 high', vialMg: 5, waterMl: 2, doseMcg: 500, expectedUnits: 20,   expectedReconUnits: 20,   note: '500 mcg from 5mg/2ml' },
+  { name: 'BPC-157 low water', vialMg: 5, waterMl: 1, doseMcg: 300, expectedUnits: 6, expectedReconUnits: 6, note: 'less water = more concentrated' },
+
+  // ── TB-500 (animal data, 2x/week, mcg) ──
+  { name: 'TB-500 std',   vialMg: 5, waterMl: 2, doseMcg: 2500, expectedUnits: 100, expectedReconUnits: 100, note: '2.5mg from 5mg/2ml = full syringe' },
+  { name: 'TB-500 low',   vialMg: 5, waterMl: 2, doseMcg: 1000, expectedUnits: 40,  expectedReconUnits: 40,  note: '1mg from 5mg/2ml' },
+
+  // ── HGH (human data, IU→mcg, daily) ──
+  // 1 IU = 333 mcg. vialMg=10 means 10mg vial (~30 IU).
+  { name: 'HGH 1 IU',    vialMg: 10, waterMl: 2, doseMcg: 333,  expectedUnits: 6.66, expectedReconUnits: 6.7,  note: '1 IU ≈ 333 mcg from 10mg/2ml' },
+  { name: 'HGH 2 IU',    vialMg: 10, waterMl: 2, doseMcg: 666,  expectedUnits: 13.32, expectedReconUnits: 13.3, note: '2 IU ≈ 666 mcg from 10mg/2ml' },
+  { name: 'HGH 4 IU',    vialMg: 10, waterMl: 2, doseMcg: 1332, expectedUnits: 26.64, expectedReconUnits: 26.6, note: '4 IU ≈ 1332 mcg from 10mg/2ml' },
+  { name: 'HGH 6 IU',    vialMg: 10, waterMl: 2, doseMcg: 1998, expectedUnits: 39.96, expectedReconUnits: 40,   note: '6 IU ≈ 1998 mcg from 10mg/2ml' },
+
+  // ── HCG (human/FDA, IU stored as mcg field) ──
+  // vialMg=5 = 5000 IU community convention. doseMcg=500 = 500 IU.
+  { name: 'HCG 250 IU',  vialMg: 5, waterMl: 2, doseMcg: 250,  expectedUnits: 10,   expectedReconUnits: 10,   note: '250 IU from 5000 IU/2ml' },
+  { name: 'HCG 500 IU',  vialMg: 5, waterMl: 2, doseMcg: 500,  expectedUnits: 20,   expectedReconUnits: 20,   note: '500 IU from 5000 IU/2ml' },
+  { name: 'HCG 1000 IU', vialMg: 5, waterMl: 2, doseMcg: 1000, expectedUnits: 40,   expectedReconUnits: 40,   note: '1000 IU from 5000 IU/2ml' },
+  { name: 'HCG 1500 IU', vialMg: 5, waterMl: 2, doseMcg: 1500, expectedUnits: 60,   expectedReconUnits: 60,   note: '1500 IU from 5000 IU/2ml' },
+
+  // ── Semaglutide (human/FDA, weekly, mcg) ──
+  { name: 'Sema 0.25mg', vialMg: 5, waterMl: 2, doseMcg: 250,  expectedUnits: 10,   expectedReconUnits: 10,   note: 'starting dose' },
+  { name: 'Sema 0.5mg',  vialMg: 5, waterMl: 2, doseMcg: 500,  expectedUnits: 20,   expectedReconUnits: 20,   note: 'titration step' },
+  { name: 'Sema 1mg',    vialMg: 5, waterMl: 2, doseMcg: 1000, expectedUnits: 40,   expectedReconUnits: 40,   note: 'maintenance dose' },
+  { name: 'Sema 2.4mg',  vialMg: 5, waterMl: 2, doseMcg: 2400, expectedUnits: 96,   expectedReconUnits: 96,   note: 'max labeled dose' },
+
+  // ── Tirzepatide (human/FDA, weekly, mcg) ──
+  { name: 'Tirz 2.5mg',  vialMg: 30, waterMl: 3, doseMcg: 2500,  expectedUnits: 25,  expectedReconUnits: 25,  note: 'starting dose, 30mg vial' },
+  { name: 'Tirz 5mg',    vialMg: 30, waterMl: 3, doseMcg: 5000,  expectedUnits: 50,  expectedReconUnits: 50,  note: 'mid titration' },
+  { name: 'Tirz 15mg',   vialMg: 30, waterMl: 3, doseMcg: 15000, expectedUnits: 150, expectedReconUnits: 150,  note: 'max dose — exceeds 100u syringe' },
+
+  // ── GHK-Cu (animal data, daily, mcg) ──
+  { name: 'GHK-Cu std',  vialMg: 10, waterMl: 2, doseMcg: 2000, expectedUnits: 40,   expectedReconUnits: 40,   note: '2mg from 10mg/2ml' },
+  { name: 'GHK-Cu low',  vialMg: 10, waterMl: 2, doseMcg: 1000, expectedUnits: 20,   expectedReconUnits: 20,   note: '1mg from 10mg/2ml' },
+
+  // ── Edge cases ──
+  { name: 'Zero dose',       vialMg: 5,  waterMl: 2, doseMcg: 0,    expectedUnits: 0,    expectedReconUnits: null, note: 'zero dose returns 0/null' },
+  { name: 'Very small dose', vialMg: 10, waterMl: 2, doseMcg: 10,   expectedUnits: 0.2,  expectedReconUnits: 0.2,  note: '10 mcg — below practical syringe precision' },
+  { name: 'Max concentration', vialMg: 10, waterMl: 0.5, doseMcg: 300, expectedUnits: 1.5, expectedReconUnits: 1.5, note: 'minimal water = high concentration' },
+];
+
+// ── Runner ──────────────────────────────────────────────────
+const EPSILON = 0.005;
+function approxEq(a, b) { return Math.abs(a - b) < EPSILON; }
+
+let passCount = 0, failCount = 0;
+const $results = document.getElementById('results');
+
+// Group by peptide (split on first space in name)
+const groups = {};
+fixtures.forEach(f => {
+  const group = f.name.split(' ')[0];
+  (groups[group] = groups[group] || []).push(f);
+});
+
+Object.entries(groups).forEach(([group, tests]) => {
+  const h2 = document.createElement('h2');
+  h2.textContent = group;
+  $results.appendChild(h2);
+
+  const table = document.createElement('table');
+  table.innerHTML = `<tr><th>Test</th><th>Vial</th><th>Water</th><th>Dose</th><th>calcUnits</th><th>Expected</th><th>reconUnits</th><th>Expected</th><th>Status</th></tr>`;
+
+  tests.forEach(f => {
+    const actualUnits = calcUnits(f.doseMcg, f.vialMg, f.waterMl);
+    const actualRecon = calcReconUnits(f.vialMg, f.waterMl, f.doseMcg);
+
+    const unitsPass = approxEq(actualUnits, f.expectedUnits);
+    const reconPass = f.expectedReconUnits === null
+      ? actualRecon === null
+      : actualRecon !== null && approxEq(actualRecon, f.expectedReconUnits);
+    const pass = unitsPass && reconPass;
+
+    if (pass) passCount++; else failCount++;
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td title="${f.note}">${f.name}</td>
+      <td>${f.vialMg}mg</td>
+      <td>${f.waterMl}ml</td>
+      <td>${f.doseMcg}mcg</td>
+      <td class="${unitsPass ? 'pass' : 'fail'}">${actualUnits.toFixed(2)}</td>
+      <td>${f.expectedUnits}</td>
+      <td class="${reconPass ? 'pass' : 'fail'}">${actualRecon ?? 'null'}</td>
+      <td>${f.expectedReconUnits ?? 'null'}</td>
+      <td class="${pass ? 'pass' : 'fail'}">${pass ? '✓ PASS' : '✗ FAIL'}</td>
+    `;
+    table.appendChild(row);
+  });
+
+  $results.appendChild(table);
+});
+
+// Summary
+const $summary = document.getElementById('summary');
+const allPass = failCount === 0;
+$summary.className = 'summary ' + (allPass ? 'all-pass' : 'has-fail');
+$summary.textContent = allPass
+  ? `✓ All ${passCount} tests passed`
+  : `✗ ${failCount} of ${passCount + failCount} tests failed`;
+</script>
+</body>
+</html>
