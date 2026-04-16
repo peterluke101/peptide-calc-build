@@ -1,5 +1,17 @@
-const CACHE_NAME = 'peptide-calc-v31';
-const ASSETS = ['./', './index.html', './schedule.html', './manifest.json', './logs-journal.js'];
+const CACHE_NAME = 'peptide-calc-v32';
+const ASSETS = [
+  './',
+  './index.html',
+  './schedule.html',
+  './manifest.json',
+  './logs-journal.js',
+  './privacy.html',
+  './terms.html',
+  './data-handling.html',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-512-maskable.png'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));

@@ -8125,17 +8125,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initAdvancedToolsSlot();
 
-  function switchToTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
-    if (btn) btn.classList.add('active');
-    const tab = document.getElementById('tab-' + tabName);
-    if (tab) tab.classList.add('active');
-    document.querySelector('.app-content')?.scrollTo(0, 0);
-    localStorage.setItem('activeTab', tabName);
-  }
-
   function getAppMode() {
     return localStorage.getItem('appMode') || 'simple';
   }
@@ -8231,6 +8220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     const target = document.getElementById('tab-' + tabName);
     if (target) target.classList.add('active');
+    document.querySelector('.app-content')?.scrollTo(0, 0);
     localStorage.setItem('activeTab', tabName);
   }
 
@@ -8944,14 +8934,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('next-week')?.addEventListener('click', () => { 
     weekOffset++; 
     renderCalendar(); 
-  });
-  
-  // ── Clear History ───────────────────────────────────────────
-  document.getElementById('clear-history')?.addEventListener('click', () => {
-    if (confirm('Clear all injection history?')) {
-      localStorage.removeItem('injectionHistory');
-      renderAll();
-    }
   });
   
   // ── Share Buttons ───────────────────────────────────────────
