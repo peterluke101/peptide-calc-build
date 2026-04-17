@@ -19,7 +19,9 @@ html,body{background:#f5f6fa;color:#1a1a2e}
 html.dark-mode,body.dark-mode{background:#0a0a0a!important;color:#fff!important}
 :root{--bg:#f5f6fa;--surface:#ffffff;--surface2:#e2e4ec;--border:#c0c4cc;--accent:#0d9b83;--accent-dim:rgba(13,155,131,.20);--text:#1a1a2e;--text2:#484860;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,.10),0 0 0 1px rgba(0,0,0,.04);--card-bg:#ffffff;--text-muted:#484860}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
+body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden;background:var(--bg)}
+/* Suppress card fade-in animation on repeat tab switches (runs once on initial load only) */
+body.tabs-ready .animate-in{animation:none}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
@@ -307,9 +309,10 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Collapsible peptide cards ───────────────────────────── */
 .pep-collapse-header{cursor:pointer;margin-bottom:0;user-select:none;-webkit-user-select:none}
 .peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
-.pep-summary{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;overflow:hidden}
-.pep-summary-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;flex-shrink:0;padding-left:.15rem}
+.pep-summary{display:flex;flex-direction:column;gap:.1rem;flex:1;min-width:0;overflow:hidden}
+.pep-summary-row{display:flex;align-items:center;gap:.5rem;min-width:0}
+.pep-summary-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;padding-left:1.05rem}
 .pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
 .peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
 .pep-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
@@ -3712,7 +3715,7 @@ const PEPTIDES = [
   { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human and animal metabolic studies; limited efficacy data' } },
   { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human obesity trials; limited broader efficacy data' } },
   { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; limited peer-reviewed data' } },
-  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Primarily rodent studies; limited human trial data' } },
+  { name: 'BPC-157', lowMcg: 200, midMcg: 250, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Primarily rodent studies; limited human trial data' } },
   { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available' } },
   { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human PK studies; mostly anecdotal for bodybuilding use' } },
   { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; mostly anecdotal for bodybuilding use' } },
@@ -5526,8 +5529,10 @@ function renderPeptidesList() {
     div.innerHTML = `
       <div class="pep-header pep-collapse-header">
         <div class="pep-summary">
-          <span class="pep-dot" style="background:${pep.color}"></span>
-          <span class="pep-summary-name">${pep.name}</span>
+          <div class="pep-summary-row">
+            <span class="pep-dot" style="background:${pep.color}"></span>
+            <span class="pep-summary-name">${pep.name}</span>
+          </div>
           <span class="pep-summary-meta">${fmtDose(doseMcg)} · ${pep.frequency}</span>
         </div>
         <div style="display:flex;align-items:center;gap:.4rem">
@@ -6788,8 +6793,14 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
     const tabContent = document.getElementById('tab-' + targetTab);
     if (tabContent) tabContent.classList.add('active');
 
+    // Scroll to top on tab switch
+    document.querySelector('.app-content').scrollTop = 0;
+
     // Save active tab
     localStorage.setItem('activeTab', targetTab);
+
+    // After first user-initiated switch, suppress card fade-in animations on future switches
+    document.body.classList.add('tabs-ready');
   });
 });
 
@@ -7152,14 +7163,24 @@ function getEnergyEmoji(rating) {
 }
 
 function getMoodEmoji(mood) {
-  const moodMap = {
+  // Numeric scale 1–5 from the check-in pill form (data-val)
+  const numericMap = {
+    '1': '😞 Rough',
+    '2': '😕 Meh',
+    '3': '😐 Okay',
+    '4': '😊 Good',
+    '5': '😄 Great'
+  };
+  // Legacy emoji-string keys from older entries
+  const emojiMap = {
     '😫': '😫 Very Bad',
     '😕': '😕 Bad',
     '😐': '😐 Neutral',
     '🙂': '🙂 Good',
     '😄': '😄 Excellent'
   };
-  return moodMap[mood] || mood || '😐';
+  const key = String(mood);
+  return numericMap[key] || emojiMap[key] || '😐';
 }
 
 function getSymptomEmoji(symptom) {
@@ -7659,7 +7680,13 @@ document.addEventListener('DOMContentLoaded', () => {
         $panel.style.maxHeight = $panel.scrollHeight + 'px';
         $panel.classList.remove('collapsed');
         if ($icon) $icon.style.transform = 'rotate(0deg)';
+        // Release maxHeight after animation so dynamically-rendered content (e.g. peptide cards) isn't clipped
+        $panel.addEventListener('transitionend', function onExpand() {
+          if (open) $panel.style.maxHeight = 'none';
+          $panel.removeEventListener('transitionend', onExpand);
+        }, { once: true });
       } else {
+        // Re-measure before collapsing in case content grew since last open
         $panel.style.maxHeight = $panel.scrollHeight + 'px';
         requestAnimationFrame(() => {
           $panel.style.maxHeight = '0';
@@ -8222,6 +8249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (target) target.classList.add('active');
     document.querySelector('.app-content')?.scrollTo(0, 0);
     localStorage.setItem('activeTab', tabName);
+    document.body.classList.add('tabs-ready');
   }
 
   // "Mix my vial" → wizard step 2 (diluent), or navigate to recon-sheet tab
@@ -8594,6 +8622,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tiers = [
       { key: 'low',      label: 'Low',      dose: pep.lowMcg },
+      ...(pep.midMcg ? [{ key: 'mid', label: 'Mid', dose: pep.midMcg }] : []),
       { key: 'standard', label: 'Standard', dose: pep.stdMcg },
       { key: 'high',     label: 'High',     dose: pep.highMcg }
     ];
@@ -8960,30 +8989,6 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('installBannerClosed', 'true');
   });
   
-  // ── Bottom Tab Navigation ───────────────────────────────────
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTab = btn.dataset.tab;
-
-      // Update active tab button
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Show target tab content, hide others
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      const tabContent = document.getElementById('tab-' + targetTab);
-      if (tabContent) tabContent.classList.add('active');
-
-      // Scroll to top on tab switch
-      document.querySelector('.app-content').scrollTop = 0;
-
-      // Save active tab
-      localStorage.setItem('activeTab', targetTab);
-    });
-  });
-
   // Learn option in More tab — show tab-learn
   document.getElementById('learn-option')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));

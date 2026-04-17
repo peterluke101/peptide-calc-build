@@ -1,4 +1,4 @@
-const CACHE_NAME = 'peptide-calc-v32';
+const CACHE_NAME = 'peptide-calc-v35';
 const ASSETS = [
   './',
   './index.html',
