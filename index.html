@@ -308,7 +308,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .pep-collapse-header{cursor:pointer;margin-bottom:0;user-select:none;-webkit-user-select:none}
 .peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
 .pep-summary{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;overflow:hidden}
-.pep-summary-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pep-summary-name{font-size:.9rem;font-weight:600;word-break:break-word}
 .pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;flex-shrink:0;padding-left:.15rem}
 .pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
 .peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
@@ -3166,6 +3166,19 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     </div>
   </div>
 
+  <!-- Saved Protocols Management Section -->
+  <div class="card animate-in" id="protocols-more-section">
+    <div class="section-header" style="margin-bottom:.75rem">
+      <h2>Saved Protocols</h2>
+    </div>
+    <div id="protocols-empty-state" class="empty-state" style="display:none">
+      <div class="icon">📋</div>
+      <h3>No saved protocols</h3>
+      <p>Save your current schedule as a protocol from the main screen.</p>
+    </div>
+    <div id="protocols-more-list"></div>
+  </div>
+
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
   <p style="text-align:center;font-size:.7rem;margin-top:.5rem;padding-bottom:.5rem;opacity:.55;">
     <a href="privacy.html" style="color:var(--text2);text-decoration:none;margin:0 .4rem;">Privacy Policy</a>
@@ -4686,12 +4699,11 @@ function renderInjectionHistory() {
     parts.pop(); // remove date
     const peptideName = parts.join('_');
     const ts = getInjectionTimestamp(val);
-    const date = new Date(ts);
-    const timeStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    const date = ts ? new Date(ts) : null;
+    const isValidDate = date && !isNaN(date.getTime());
+    const timeStr = isValidDate
+      ? date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+      : 'Unknown date';
 
     return `
       <div class="history-item">
