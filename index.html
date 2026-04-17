@@ -307,9 +307,10 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Collapsible peptide cards ───────────────────────────── */
 .pep-collapse-header{cursor:pointer;margin-bottom:0;user-select:none;-webkit-user-select:none}
 .peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
-.pep-summary{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;overflow:hidden}
-.pep-summary-name{font-size:.9rem;font-weight:600;word-break:break-word}
-.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;flex-shrink:0;padding-left:.15rem}
+.pep-summary{display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;gap:.1rem}
+.pep-summary-top{display:flex;align-items:center;gap:.5rem;min-width:0}
+.pep-summary-name{font-size:.9rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;padding-left:1.1rem}
 .pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
 .peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
 .pep-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
@@ -5541,8 +5542,10 @@ function renderPeptidesList() {
     div.innerHTML = `
       <div class="pep-header pep-collapse-header">
         <div class="pep-summary">
-          <span class="pep-dot" style="background:${pep.color}"></span>
-          <span class="pep-summary-name">${pep.name}</span>
+          <div class="pep-summary-top">
+            <span class="pep-dot" style="background:${pep.color}"></span>
+            <span class="pep-summary-name">${pep.name}</span>
+          </div>
           <span class="pep-summary-meta">${fmtDose(doseMcg)} · ${pep.frequency}</span>
         </div>
         <div style="display:flex;align-items:center;gap:.4rem">
