@@ -1785,6 +1785,11 @@ body.light-mode .btn-secondary{background:transparent!important;color:#1a9e88!im
 .rc-result-summary{background:var(--surface);border-radius:10px;padding:.85rem 1rem;margin:.6rem 0 .5rem;text-align:center}
 .rc-result-summary .rc-result-value{font-size:3rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
 .rc-result-summary .rc-result-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:.3rem}
+.rc-answer-hero{background:var(--accent-dim);border:2px solid rgba(61,232,195,.35);border-radius:14px;padding:1.1rem 1rem 1rem;margin:.75rem 0 .5rem;text-align:center}
+.rc-answer-hero-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.4rem;opacity:.85}
+.rc-answer-hero-value{font-size:3.4rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em}
+.rc-answer-hero-unit{font-size:1.5rem;font-weight:700;color:var(--accent);opacity:.75}
+.rc-answer-hero-sub{font-size:.85rem;font-weight:600;color:var(--text2);margin-top:.35rem;letter-spacing:.01em}
 .rc-result-secondary{display:flex;gap:.5rem;margin:.4rem 0}
 .rc-result-secondary-item{flex:1;background:var(--surface);border-radius:8px;padding:.45rem .6rem;text-align:center}
 .rc-result-secondary-item .label{font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
@@ -2421,33 +2426,25 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         <button class="rc-seg-btn" data-units="100">100</button>
       </div>
     </div>
-    <!-- Syringe size selector -->
-    <div style="margin-top:.75rem">
-      <label style="font-size:.78rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:.25rem">Physical Syringe Size</label>
-      <div class="rc-syringe-size-group">
-        <button class="rc-sz-btn" data-sz="30">0.3 mL<br><span style="font-size:.65rem">30 unit</span></button>
-        <button class="rc-sz-btn" data-sz="50">0.5 mL<br><span style="font-size:.65rem">50 unit</span></button>
-        <button class="rc-sz-btn active" data-sz="100">1.0 mL<br><span style="font-size:.65rem">100 unit</span></button>
-      </div>
-    </div>
-    <!-- Result — simplified layout (#107) -->
+    <!-- Result — BAC water as hero answer -->
     <div class="rc-result">
-      <!-- Primary: units to draw (big) + secondary row -->
-      <div class="rc-result-summary">
-        <div class="rc-result-label">Units to draw</div>
-        <div>
-          <span class="rc-result-value" id="rc-result-value">—</span>
-          <span class="rc-result-unit" style="font-size:1.1rem;color:var(--text2);margin-left:.3rem">units</span>
+      <!-- Hero: BAC water to add -->
+      <div class="rc-answer-hero">
+        <div class="rc-answer-hero-label">Add this much BAC water</div>
+        <div class="rc-answer-hero-value">
+          <span id="rc-result-value-ml">—</span><span class="rc-answer-hero-unit"> mL</span>
         </div>
+        <div class="rc-answer-hero-sub" id="rc-answer-syringes">—</div>
       </div>
+      <!-- Secondary supporting info -->
       <div class="rc-result-secondary">
         <div class="rc-result-secondary-item">
-          <div class="label">Desired dose</div>
+          <div class="label">Dose per injection</div>
           <div class="val" id="rc-result-dose-display">—</div>
         </div>
         <div class="rc-result-secondary-item">
-          <div class="label">Diluent to add</div>
-          <div class="val"><span id="rc-result-value-ml">—</span> mL</div>
+          <div class="label">Draw</div>
+          <div class="val"><span id="rc-result-value">—</span> units</div>
         </div>
         <div class="rc-result-secondary-item">
           <div class="label">Concentration</div>
@@ -10047,7 +10044,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultVal  = document.getElementById('rc-result-value');
     const breakdown  = document.getElementById('rc-result-breakdown');
     let syringeUnits = 10;
-    let syringeSize = parseInt(localStorage.getItem('rc-syringe-size') || '100', 10);
+    const syringeSize = 100; // locked to 1mL U-100 syringe
 
     // ── Peptide vial size lookup (common commercial sizes) ──
     const COMMON_VIALS = {
@@ -10220,11 +10217,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const rcResultMl   = document.getElementById('rc-result-value-ml');
       const rcResultConc = document.getElementById('rc-result-conc');
       const rcResultDose = document.getElementById('rc-result-dose-display');
+      const rcSyringes   = document.getElementById('rc-answer-syringes');
       if (rcResultMl)   rcResultMl.textContent   = display;
       if (rcResultConc) rcResultConc.textContent  = `${((vialMg * 1000) / waterMl).toFixed(0)} mcg/mL`;
       if (rcResultDose) rcResultDose.textContent  = doseDisplay;
-      // rc-result-value now shows syringe units (not mL) — update it
+      // rc-result-value shows draw units (supporting info)
       if (resultVal) resultVal.textContent = syringeUnits;
+      // syringe count helper
+      if (rcSyringes) {
+        const rounded = Math.round(waterMl * 4) / 4;
+        const whole = Math.floor(rounded);
+        const frac = rounded - whole;
+        const fracStr = frac === 0.25 ? '¼' : frac === 0.5 ? '½' : frac === 0.75 ? '¾' : '';
+        const totalStr = whole > 0 ? (fracStr ? `${whole}${fracStr}` : `${whole}`) : (fracStr || '< 1');
+        const word = rounded === 1 ? 'syringe' : 'syringes';
+        rcSyringes.textContent = waterMl > 0 ? `${totalStr} full ${word} of BAC water` : '—';
+      }
 
       // Mark first result seen for upsell unlock (#130) and stage milestone (#138)
       if (!localStorage.getItem('hasSeenResult')) {
@@ -10308,22 +10316,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Syringe size buttons
-    document.querySelectorAll('.rc-sz-btn').forEach(btn => {
-      // Restore active state on load
-      if (parseInt(btn.dataset.sz) === syringeSize) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-      btn.addEventListener('click', () => {
-        syringeSize = parseInt(btn.dataset.sz);
-        localStorage.setItem('rc-syringe-size', syringeSize);
-        document.querySelectorAll('.rc-sz-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        calcAndRender();
-      });
-    });
+    // Syringe size locked to 100-unit (1mL U-100) — selector removed
 
     // ── Common scenario presets ──
     const PRESETS = {
