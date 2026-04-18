@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juvenis Medical — Option A: Dark Gold</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D0F14;
+  --surface:#161A22;
+  --surface2:#1C2230;
+  --gold:#C9963A;
+  --gold-light:#E0AE55;
+  --gold-dim:rgba(201,150,58,.12);
+  --text:#F0EDE8;
+  --text2:#9BA4B5;
+  --text3:#5C6478;
+  --border:rgba(255,255,255,.07);
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,15,20,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:var(--text);letter-spacing:.02em}
+.logo-sub{font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-weight:500}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--gold);color:#0D0F14;font-weight:700;font-size:.82rem;padding:.5rem 1.2rem;border-radius:8px;text-decoration:none;letter-spacing:.04em;transition:background .2s,transform .15s}
+.nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
+@media(max-width:768px){.nav-links{display:none}}
+
+/* HERO */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:100px 1.5rem 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 60% 30%,rgba(201,150,58,.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.hero-inner{max-width:1100px;margin:0 auto;width:100%}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold-dim);border:1px solid rgba(201,150,58,.2);border-radius:100px;padding:.35rem .9rem;margin-bottom:1.75rem}
+.hero-eyebrow span{font-size:.7rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.12em}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.6rem,6vw,4.4rem);font-weight:700;line-height:1.1;letter-spacing:-.03em;margin-bottom:1.5rem;max-width:750px}
+h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:1.1rem;color:var(--text2);max-width:520px;line-height:1.7;margin-bottom:2.5rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+.btn-primary{background:var(--gold);color:#0D0F14;font-weight:700;font-size:.95rem;padding:.85rem 2rem;border-radius:10px;text-decoration:none;letter-spacing:.03em;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 12px 32px rgba(201,150,58,.3)}
+.btn-secondary{color:var(--text2);font-size:.9rem;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:color .2s}
+.btn-secondary:hover{color:var(--text)}
+.btn-secondary::after{content:'→';transition:transform .2s}
+.btn-secondary:hover::after{transform:translateX(3px)}
+.hero-trust{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--text3);font-weight:500}
+.trust-dot{width:20px;height:20px;background:var(--gold-dim);border:1px solid rgba(201,150,58,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--gold)}
+
+/* SERVICES */
+.section{padding:5rem 1.5rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:.75rem}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.02em;margin-bottom:1rem;line-height:1.2}
+.section-sub{color:var(--text2);font-size:1rem;max-width:480px;line-height:1.7;margin-bottom:3rem}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden}
+.service-card{background:var(--surface);padding:1.75rem 1.5rem;transition:background .2s;cursor:pointer;position:relative}
+.service-card:hover{background:var(--surface2)}
+.service-card:hover .service-icon{background:var(--gold);color:#0D0F14}
+.service-icon{width:44px;height:44px;background:var(--gold-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.2rem;transition:all .2s;color:var(--gold)}
+.service-name{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:600;margin-bottom:.4rem}
+.service-desc{font-size:.78rem;color:var(--text2);line-height:1.5}
+.service-arrow{position:absolute;top:1.5rem;right:1.5rem;color:var(--text3);font-size:.8rem;opacity:0;transition:opacity .2s,transform .2s}
+.service-card:hover .service-arrow{opacity:1;transform:translate(2px,-2px)}
+
+/* HOW IT WORKS */
+.steps-section{background:var(--surface);padding:5rem 1.5rem}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;margin-top:3rem}
+.step{position:relative;padding-left:3.5rem}
+.step-num{position:absolute;left:0;top:0;width:36px;height:36px;background:var(--gold-dim);border:1px solid rgba(201,150,58,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:.8rem;font-weight:700;color:var(--gold)}
+.step-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;margin-bottom:.5rem}
+.step-desc{font-size:.84rem;color:var(--text2);line-height:1.6}
+
+/* STATS */
+.stats-section{padding:5rem 1.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2rem;margin-top:2rem}
+.stat{text-align:center;padding:2rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.4rem;font-weight:700;color:var(--gold);letter-spacing:-.03em;line-height:1}
+.stat-label{font-size:.75rem;color:var(--text2);margin-top:.4rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+
+/* CTA BANNER */
+.cta-section{padding:5rem 1.5rem}
+.cta-box{max-width:1100px;margin:0 auto;background:var(--gold-dim);border:1px solid rgba(201,150,58,.2);border-radius:20px;padding:4rem 3rem;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(201,150,58,.08),transparent)}
+.cta-box h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.02em;margin-bottom:1rem}
+.cta-box p{color:var(--text2);font-size:1rem;margin-bottom:2rem;max-width:420px;margin-left:auto;margin-right:auto}
+.cta-note{font-size:.72rem;color:var(--text3);margin-top:1rem}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:2.5rem 1.5rem;text-align:center}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.5rem}
+.footer-text{font-size:.72rem;color:var(--text3);line-height:1.7;max-width:600px;margin:0 auto}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-eyebrow{animation:fadeUp .6s ease both}
+h1{animation:fadeUp .6s .1s ease both}
+.hero-sub{animation:fadeUp .6s .2s ease both}
+.hero-actions{animation:fadeUp .6s .3s ease both}
+.hero-trust{animation:fadeUp .6s .4s ease both}
+
+@media(max-width:600px){
+  .hero{padding:80px 1rem 60px}
+  .cta-box{padding:2.5rem 1.5rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-main">Juvenis Medical</span>
+      <span class="logo-sub">Fort Lauderdale</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">FAQ</a></li>
+    </ul>
+    <a href="#qualify" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span>Telehealth &amp; In-Person · Fort Lauderdale</span></div>
+    <h1>Your Best Years<br>Aren't <em>Behind</em> You.</h1>
+    <p class="hero-sub">Peptide therapy, hormone optimization, and men's health — backed by 20+ years of clinical expertise. Cash-pay, no hoops, no waiting rooms.</p>
+    <div class="hero-actions">
+      <a href="#qualify" class="btn-primary">See If You Qualify ↗</a>
+      <a href="#services" class="btn-secondary">View all services</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><div class="trust-dot">✓</div> 1,000+ patients treated</div>
+      <div class="trust-item"><div class="trust-dot">✓</div> Nationwide telehealth (peptides)</div>
+      <div class="trust-item"><div class="trust-dot">✓</div> Florida TRT via telehealth</div>
+      <div class="trust-item"><div class="trust-dot">✓</div> No insurance required</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-label">What We Treat</div>
+    <h2 class="section-title">Precision Medicine<br>for Every Goal</h2>
+    <p class="section-sub">Whether you're optimizing performance, reclaiming energy, or addressing a specific health concern — we build a protocol around you.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <div class="service-name">Men's Health &amp; ED</div>
+        <div class="service-desc">Comprehensive sexual health, performance restoration, and confidence rebuilt — privately.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔬</div>
+        <div class="service-name">Testosterone / TRT</div>
+        <div class="service-desc">Lab-guided testosterone therapy to restore drive, muscle, and vitality where it belongs.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📉</div>
+        <div class="service-name">Weight Loss</div>
+        <div class="service-desc">GLP-1 protocols, peptide-assisted fat loss, and metabolic reset — medically supervised.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💉</div>
+        <div class="service-name">Peptide Therapy</div>
+        <div class="service-desc">BPC-157, TB-500, Sermorelin, and more. Recovery, growth, and longevity protocols.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚖️</div>
+        <div class="service-name">BHRT</div>
+        <div class="service-desc">Bioidentical hormone balancing for men and women — personalized down to the molecule.</div>
+        <span class="service-arrow">↗</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="section-inner">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Three Steps to<br>Your Protocol</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Free Intro Call</div>
+        <div class="step-desc">15 minutes with Dr. Paul. No obligation, no judgment. Just an honest conversation about your goals and what's possible.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Labs &amp; Assessment</div>
+        <div class="step-desc">Comprehensive bloodwork gives us the full picture. We don't guess — we test, then optimize.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Your Protocol</div>
+        <div class="step-desc">A personalized plan, delivered to your door or in-clinic. Ongoing monitoring adjusts as your body responds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="section-inner">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Years Clinical Experience</div></div>
+      <div class="stat"><div class="stat-num">1K+</div><div class="stat-label">Patients Treated</div></div>
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-label">US States Served</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Cash Pay · No Insurance</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="qualify">
+  <div class="cta-box">
+    <div class="section-label">Ready to Start</div>
+    <h2>Find Out If You Qualify</h2>
+    <p>Answer a few quick questions and we'll tell you exactly what we can do for you — and whether telehealth or an in-person visit is the right fit.</p>
+    <a href="#" class="btn-primary" style="display:inline-flex;margin:0 auto">See If You Qualify ↗</a>
+    <div class="cta-note">Takes 2 minutes. No credit card. No commitment.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Juvenis Medical</div>
+    <div class="footer-text">Peptide &amp; Hormone Specialists · Oakland Park, FL 33334<br>
+    This website is for informational purposes only and does not constitute medical advice. Telehealth services may be subject to state-specific prescribing regulations. Controlled substance prescriptions via telehealth available to Florida residents only.</div>
+  </div>
+</footer>
+
+</body>
+</html>
