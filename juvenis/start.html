@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>See If You Qualify — Juvenis Medical</title>
+<meta name="description" content="Find out if Juvenis Medical is the right fit. Answer four quick questions to check eligibility and schedule your free consultation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="jv-styles.css">
+<style>
+.funnel-wrap{min-height:calc(100vh - var(--nav-h));display:flex;align-items:flex-start;justify-content:center;padding:3rem 1.25rem 4rem;padding-top:calc(var(--nav-h) + 3rem)}
+.funnel-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:2.5rem;max-width:560px;width:100%;position:relative}
+.funnel-progress{display:flex;gap:.5rem;margin-bottom:2rem}
+.fp-dot{height:4px;border-radius:2px;background:var(--border2);flex:1;transition:background .3s}
+.fp-dot.active{background:var(--gold)}
+.funnel-step{display:none}
+.funnel-step.active{display:block}
+.funnel-step-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.75rem}
+.funnel-step h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;color:var(--text);margin-bottom:.5rem;line-height:1.3}
+.funnel-step p{font-size:.85rem;color:var(--text2);line-height:1.6;margin-bottom:1.75rem}
+.choice-grid{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
+.choice-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:1rem 1.25rem;text-align:left;cursor:pointer;transition:all .2s;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;display:flex;align-items:center;gap:.75rem}
+.choice-btn:hover{border-color:var(--gold-border);background:var(--gold-dim)}
+.choice-btn.selected{border-color:var(--gold);background:var(--gold-dim)}
+.choice-icon{width:36px;height:36px;background:var(--surface3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.choice-text h4{font-size:.85rem;font-weight:600;margin-bottom:.1rem;color:var(--text)}
+.choice-text p{font-size:.73rem;color:var(--text2);margin:0;line-height:1.4}
+.funnel-nav{display:flex;gap:.75rem;justify-content:space-between;margin-top:1.25rem}
+.btn-back{background:transparent;border:1px solid var(--border2);color:var(--text2);border-radius:var(--radius);padding:.65rem 1.25rem;cursor:pointer;font-family:'Inter',sans-serif;font-size:.85rem;transition:all .2s}
+.btn-back:hover{border-color:var(--gold-border);color:var(--text)}
+.btn-next{background:var(--gold);color:#0D0F14;border:none;border-radius:var(--radius);padding:.65rem 1.75rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;transition:all .2s;opacity:.5;pointer-events:none}
+.btn-next.enabled{opacity:1;pointer-events:all}
+.btn-next.enabled:hover{background:var(--gold-light)}
+/* Result screens */
+.result-box{text-align:center;padding:1rem 0}
+.result-icon-wrap{width:64px;height:64px;border-radius:50%;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;font-size:1.75rem}
+.result-icon-wrap.green{background:rgba(74,222,128,.12);border:2px solid rgba(74,222,128,.3)}
+.result-icon-wrap.amber{background:rgba(251,191,36,.12);border:2px solid rgba(251,191,36,.3)}
+.result-icon-wrap.gold{background:var(--gold-dim);border:2px solid var(--gold-border)}
+.result-box h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;color:var(--text);margin-bottom:.75rem}
+.result-box p{font-size:.85rem;color:var(--text2);line-height:1.7;max-width:440px;margin:0 auto 1.5rem}
+.result-detail{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;text-align:left;margin-bottom:1.5rem}
+.result-detail h4{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.result-detail p{font-size:.77rem;color:var(--text2);margin:0;line-height:1.55}
+.result-actions{display:flex;flex-direction:column;gap:.75rem;align-items:center}
+.funnel-aside{font-size:.72rem;color:var(--text3);text-align:center;margin-top:1.5rem;line-height:1.6}
+/* State dropdown */
+.state-select-wrap{margin-bottom:1.5rem}
+.state-select-wrap label{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem}
+.state-select-wrap select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:.85rem 1rem;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239BA4B5' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;cursor:pointer;transition:border-color .2s}
+.state-select-wrap select:focus{outline:none;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><span class="nav-logo-main">Juvenis Medical</span><span class="nav-logo-sub">Fort Lauderdale</span></a><ul class="nav-links"><li><a href="services/">Services</a></li><li><a href="about.html">About</a></li><li><a href="index.html#process">How It Works</a></li><li><a href="contact.html">Contact</a></li></ul><a href="start.html" class="nav-cta active">See If You Qualify</a><button class="nav-hamburger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')"><span></span><span></span><span></span></button></div></nav>
+<div class="nav-mobile"><a href="services/">Services</a><a href="about.html">About</a><a href="index.html#process">How It Works</a><a href="contact.html">Contact</a><a href="start.html" class="btn btn-gold">See If You Qualify →</a></div>
+
+<div class="funnel-wrap">
+  <div class="funnel-box">
+    <!-- Progress Bar -->
+    <div class="funnel-progress">
+      <div class="fp-dot active" id="p1"></div>
+      <div class="fp-dot" id="p2"></div>
+      <div class="fp-dot" id="p3"></div>
+      <div class="fp-dot" id="p4"></div>
+    </div>
+
+    <!-- Step 1: What brings you here? -->
+    <div class="funnel-step active" id="step1">
+      <div class="funnel-step-label">Step 1 of 3</div>
+      <h2>What brings you to Juvenis Medical?</h2>
+      <p>Select the option that best describes your primary concern. You'll get a more specific path from there.</p>
+      <div class="choice-grid">
+        <button class="choice-btn" onclick="selectChoice(this, 'service', 'hormone')" type="button">
+          <div class="choice-icon">⚡</div>
+          <div class="choice-text"><h4>Hormones & Low T</h4><p>Fatigue, low libido, muscle loss, mood changes, brain fog</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'service', 'peptides')" type="button">
+          <div class="choice-icon">🔬</div>
+          <div class="choice-text"><h4>Peptide Therapy</h4><p>Recovery, anti-aging, growth hormone support, energy, longevity</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'service', 'weightloss')" type="button">
+          <div class="choice-icon">⚖️</div>
+          <div class="choice-text"><h4>Medical Weight Loss</h4><p>GLP-1 therapy, metabolic evaluation, body composition</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'service', 'bhrt')" type="button">
+          <div class="choice-icon">🌿</div>
+          <div class="choice-text"><h4>Women's Hormones (BHRT)</h4><p>Perimenopause, menopause, thyroid, estrogen/progesterone balance</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'service', 'unsure')" type="button">
+          <div class="choice-icon">🧬</div>
+          <div class="choice-text"><h4>Not Sure — I Need an Evaluation</h4><p>I want a comprehensive assessment to understand what's driving my symptoms</p></div>
+        </button>
+      </div>
+      <div class="funnel-nav">
+        <span></span>
+        <button class="btn-next" id="next1" onclick="goToStep(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Location / Telehealth Eligibility -->
+    <div class="funnel-step" id="step2">
+      <div class="funnel-step-label">Step 2 of 3</div>
+      <h2>Where are you located?</h2>
+      <p>Some services require a Florida resident for telehealth due to state regulations. Others are available nationwide. Your state helps us confirm which options apply to you.</p>
+      <div class="choice-grid">
+        <button class="choice-btn" onclick="selectChoice(this, 'location', 'florida')" type="button">
+          <div class="choice-icon">🌴</div>
+          <div class="choice-text"><h4>Florida Resident</h4><p>I live in Florida and can do telehealth or visit in person</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'location', 'other-state')" type="button">
+          <div class="choice-icon">✈️</div>
+          <div class="choice-text"><h4>Outside Florida — Telehealth</h4><p>I'm in another state and prefer remote care</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'location', 'visit')" type="button">
+          <div class="choice-icon">🏥</div>
+          <div class="choice-text"><h4>Outside Florida — Will Visit</h4><p>I'm willing to travel to the Fort Lauderdale clinic</p></div>
+        </button>
+      </div>
+      <div class="funnel-nav">
+        <button class="btn-back" onclick="goToStep(1)">← Back</button>
+        <button class="btn-next" id="next2" onclick="goToStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: What are you looking for in a provider? -->
+    <div class="funnel-step" id="step3">
+      <div class="funnel-step-label">Step 3 of 3</div>
+      <h2>One last thing — what matters most to you?</h2>
+      <p>This helps Dr. Paul prepare for your consultation and make the most of your time.</p>
+      <div class="choice-grid">
+        <button class="choice-btn" onclick="selectChoice(this, 'priority', 'results')" type="button">
+          <div class="choice-icon">🎯</div>
+          <div class="choice-text"><h4>Real Results, Not Generic Advice</h4><p>I've been told I'm "normal" but I know something is off</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'priority', 'access')" type="button">
+          <div class="choice-icon">📞</div>
+          <div class="choice-text"><h4>Direct Access to My Doctor</h4><p>I don't want to be passed around between staff and PAs</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'priority', 'convenience')" type="button">
+          <div class="choice-icon">🏠</div>
+          <div class="choice-text"><h4>Convenience & Remote Care</h4><p>I want labs, prescriptions, and follow-ups handled without constant office visits</p></div>
+        </button>
+        <button class="choice-btn" onclick="selectChoice(this, 'priority', 'comprehensive')" type="button">
+          <div class="choice-icon">🔍</div>
+          <div class="choice-text"><h4>Comprehensive Evaluation</h4><p>I want to understand my full picture — not just one hormone or one symptom</p></div>
+        </button>
+      </div>
+      <div class="funnel-nav">
+        <button class="btn-back" onclick="goToStep(2)">← Back</button>
+        <button class="btn-next" id="next3" onclick="showResult()">See My Options →</button>
+      </div>
+    </div>
+
+    <!-- Result: Florida + Hormone (full access) -->
+    <div class="funnel-step" id="result-full">
+      <div class="result-box">
+        <div class="result-icon-wrap green">✓</div>
+        <h2>You're a Great Fit</h2>
+        <p>Based on your answers, all of our services are available to you — including telehealth and in-person. Here's the next step.</p>
+        <div class="result-detail">
+          <h4>Recommended Starting Point</h4>
+          <p>A free 15-minute consultation with Dr. Paul to discuss your goals, explain the blood panel process, and answer your questions. No commitment required.</p>
+        </div>
+        <div class="result-actions">
+          <a href="contact.html" class="btn btn-gold" style="width:100%;text-align:center;padding:1rem">Book Free Consultation →</a>
+          <a href="services/" style="font-size:.82rem;color:var(--text2);margin-top:.25rem">Browse all services first</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result: Out of state + Hormone (limited to peptides/BHRT/weight loss) -->
+    <div class="funnel-step" id="result-limited">
+      <div class="result-box">
+        <div class="result-icon-wrap amber">⚡</div>
+        <h2>Good News — You Qualify for Telehealth</h2>
+        <p>Peptide therapy, medical weight loss, and women's hormone balancing (BHRT) are all available via telehealth nationwide. Testosterone therapy (TRT) requires Florida residency or an in-person visit due to state regulations.</p>
+        <div class="result-detail">
+          <h4>Your Options</h4>
+          <p><strong style="color:var(--text)">Available to you remotely:</strong> Peptides, Medical Weight Loss, Women's BHRT<br><br><strong style="color:var(--text)">Requires in-person visit:</strong> Testosterone Therapy (TRT), full men's hormone panel</p>
+        </div>
+        <div class="result-actions">
+          <a href="contact.html" class="btn btn-gold" style="width:100%;text-align:center;padding:1rem">Book Free Consultation →</a>
+          <a href="services/peptides.html" style="font-size:.82rem;color:var(--text2);margin-top:.25rem">Explore Peptide Therapy</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result: Out of state, will visit -->
+    <div class="funnel-step" id="result-inperson">
+      <div class="result-box">
+        <div class="result-icon-wrap gold">★</div>
+        <h2>All Services Available to You</h2>
+        <p>In-person patients are welcome from any state. Our Fort Lauderdale clinic can provide the full range of services including testosterone therapy, comprehensive hormone panels, and all peptide protocols.</p>
+        <div class="result-detail">
+          <h4>Fort Lauderdale Clinic</h4>
+          <p>1164 E. Oakland Park Blvd., Suite #202, Oakland Park, FL 33334<br>Mon–Fri 8am–5pm · Sat by appointment · (954) 982-8378</p>
+        </div>
+        <div class="result-actions">
+          <a href="contact.html" class="btn btn-gold" style="width:100%;text-align:center;padding:1rem">Book Free Consultation →</a>
+          <a href="services/" style="font-size:.82rem;color:var(--text2);margin-top:.25rem">Browse all services</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="funnel-aside">Your answers are not stored or shared. This questionnaire is for routing only.<br>All medical evaluation is done by Dr. Paul Goodkin, DC, supervised by Dr. Tom Macek, MD.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Juvenis Medical</div>
+      <p class="footer-tagline">Precision medicine for people who demand more from life.</p>
+      <p class="footer-addr">1164 E. Oakland Park Blvd., Suite #202<br>Oakland Park, FL 33334<br>(954) 982-8378</p>
+    </div>
+    <div class="footer-col"><div class="footer-col-title">Services</div><a href="services/trt.html">Testosterone Therapy</a><a href="services/mens-health.html">Men's Health</a><a href="services/weight-loss.html">Medical Weight Loss</a><a href="services/peptides.html">Peptide Therapy</a><a href="services/bhrt.html">Women's Hormones</a></div>
+    <div class="footer-col"><div class="footer-col-title">Practice</div><a href="about.html">About Dr. Paul</a><a href="index.html#process">How It Works</a><a href="contact.html">Contact</a></div>
+    <div class="footer-col"><div class="footer-col-title">Hours</div><p style="font-size:.78rem;line-height:1.8;color:var(--text2)">Mon – Fri: 8am – 5pm<br>Saturday: By Appt<br>Telehealth: Flexible</p></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Juvenis Medical | peptidesandhormones.com · Dr. Paul Goodkin, DC · FL License CH7998</p><p>This site is for informational purposes only and does not constitute medical advice. Telehealth for controlled substances available to Florida residents only.</p></div>
+</footer>
+
+<script>
+const state = { service: null, location: null, priority: null };
+
+function selectChoice(btn, field, value) {
+  // Deselect siblings
+  btn.closest('.choice-grid').querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state[field] = value;
+  // Enable next button
+  const stepNum = { service: 1, location: 2, priority: 3 }[field];
+  const nextBtn = document.getElementById('next' + stepNum);
+  if (nextBtn) nextBtn.classList.add('enabled');
+}
+
+function goToStep(num) {
+  document.querySelectorAll('.funnel-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + num).classList.add('active');
+  // Update progress dots
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('p' + i).classList.toggle('active', i <= num);
+  }
+  document.querySelector('.funnel-wrap').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function showResult() {
+  document.querySelectorAll('.funnel-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('p4').classList.add('active');
+
+  const { service, location } = state;
+
+  // Determine which result to show
+  let resultId;
+  if (location === 'visit') {
+    resultId = 'result-inperson';
+  } else if (location === 'florida') {
+    resultId = 'result-full';
+  } else {
+    // Out of state telehealth
+    if (service === 'hormone' || service === 'unsure') {
+      resultId = 'result-limited';
+    } else {
+      resultId = 'result-full'; // peptides, BHRT, weight loss = all available nationwide
+    }
+  }
+
+  document.getElementById(resultId).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
