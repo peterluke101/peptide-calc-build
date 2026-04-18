@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Juvenis Medical</title>
+<meta name="description" content="Hormone optimization, peptide therapy, medical weight loss, and bioidentical hormone replacement. Telehealth nationwide and in-person in Fort Lauderdale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../jv-styles.css">
+<style>
+.svc-hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+.svc-hub-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-decoration:none;display:block;transition:all .25s;position:relative;overflow:hidden}
+.svc-hub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));opacity:0;transition:opacity .25s}
+.svc-hub-card:hover{border-color:var(--gold-border);transform:translateY(-3px)}
+.svc-hub-card:hover::before{opacity:1}
+.svc-icon{width:44px;height:44px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:1.25rem}
+.svc-hub-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
+.svc-hub-card p{font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:1.25rem}
+.svc-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.svc-hub-link{font-size:.8rem;font-weight:600;color:var(--gold);display:flex;align-items:center;gap:.35rem}
+.svc-hub-link::after{content:'→'}
+.availability-key{display:flex;gap:1.5rem;align-items:center;justify-content:center;margin-top:3rem;flex-wrap:wrap}
+.availability-key-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--text2)}
+.availability-key-dot{width:10px;height:10px;border-radius:50%}
+.dot-nationwide{background:#4CAF50}
+.dot-fl{background:#F59E0B}
+.who-two-col{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem}
+@media(max-width:650px){.who-two-col{grid-template-columns:1fr}}
+.who-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem}
+.who-col h3{font-family:'Space Grotesk',sans-serif;font-size:.95rem;color:var(--text);margin-bottom:1rem}
+.who-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.who-col ul li{font-size:.82rem;color:var(--text2);display:flex;align-items:flex-start;gap:.6rem;line-height:1.5}
+.who-col ul li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="../index.html" class="nav-logo"><span class="nav-logo-main">Juvenis Medical</span><span class="nav-logo-sub">Fort Lauderdale</span></a><ul class="nav-links"><li><a href="../services/" class="active">Services</a></li><li><a href="../about.html">About</a></li><li><a href="../index.html#process">How It Works</a></li><li><a href="../contact.html">Contact</a></li></ul><a href="../start.html" class="nav-cta">See If You Qualify</a><button class="nav-hamburger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')"><span></span><span></span><span></span></button></div></nav>
+<div class="nav-mobile"><a href="../services/">Services</a><a href="../about.html">About</a><a href="../index.html#process">How It Works</a><a href="../contact.html">Contact</a><a href="../start.html" class="btn btn-gold">See If You Qualify →</a></div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-breadcrumb"><a href="../index.html">Home</a> <span>/</span> <span>Services</span></div>
+    <span class="label">What We Treat</span>
+    <h1>Precision Medicine for<br>People Who Demand More</h1>
+    <p>Every service at Juvenis Medical starts with comprehensive bloodwork and ends with a protocol built specifically for you. No guesswork. No one-size-fits-all prescriptions.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label">Our Services</span>
+      <h2>Five Programs.<br>One Comprehensive Approach.</h2>
+      <p>Most patients come in for one concern — and discover others. We evaluate the complete hormonal picture and build a protocol that addresses everything driving your symptoms.</p>
+    </div>
+
+    <div class="svc-hub-grid">
+      <a href="trt.html" class="svc-hub-card">
+        <div class="svc-icon">⚡</div>
+        <h3>Testosterone Therapy (TRT)</h3>
+        <p>Lab-guided testosterone replacement for men experiencing fatigue, low libido, muscle loss, and mood changes. Comprehensive 70+ factor blood panel. Rx delivered to your door.</p>
+        <div class="svc-tags">
+          <span class="page-hero-tag fl-only">FL Telehealth Only</span>
+          <span class="page-hero-tag available">In-Person: All States</span>
+        </div>
+        <div class="svc-hub-link">Learn About TRT</div>
+      </a>
+
+      <a href="mens-health.html" class="svc-hub-card">
+        <div class="svc-icon">🧬</div>
+        <h3>Men's Health & Hormone Optimization</h3>
+        <p>Full-spectrum men's health evaluation covering hormones, thyroid, metabolic health, and nutrient status. For men who want to understand and optimize their biology — not just treat a single symptom.</p>
+        <div class="svc-tags">
+          <span class="page-hero-tag fl-only">FL Telehealth Only</span>
+          <span class="page-hero-tag available">In-Person: All States</span>
+        </div>
+        <div class="svc-hub-link">Learn About Men's Health</div>
+      </a>
+
+      <a href="peptides.html" class="svc-hub-card">
+        <div class="svc-icon">🔬</div>
+        <h3>Peptide Therapy</h3>
+        <p>BPC-157, Sermorelin, Ipamorelin+CJC-1295, NAD+, PT-141, and GAC. Targeted peptides for recovery, growth hormone support, fat metabolism, energy, and longevity. Available nationwide.</p>
+        <div class="svc-tags">
+          <span class="page-hero-tag available">Nationwide Telehealth</span>
+          <span class="page-hero-tag available">In-Person: All States</span>
+        </div>
+        <div class="svc-hub-link">Learn About Peptides</div>
+      </a>
+
+      <a href="weight-loss.html" class="svc-hub-card">
+        <div class="svc-icon">⚖️</div>
+        <h3>Medical Weight Loss</h3>
+        <p>Metabolic evaluation + GLP-1 therapy + hormone optimization. If diet and exercise haven't worked, there's usually a biological reason. We find it — and address it directly.</p>
+        <div class="svc-tags">
+          <span class="page-hero-tag available">Nationwide Telehealth</span>
+          <span class="page-hero-tag available">In-Person: All States</span>
+        </div>
+        <div class="svc-hub-link">Learn About Weight Loss</div>
+      </a>
+
+      <a href="bhrt.html" class="svc-hub-card">
+        <div class="svc-icon">🌿</div>
+        <h3>Women's Hormone Balancing (BHRT)</h3>
+        <p>Bioidentical hormone replacement therapy for women navigating perimenopause, menopause, thyroid dysfunction, and adrenal fatigue. Compounded to your exact lab values.</p>
+        <div class="svc-tags">
+          <span class="page-hero-tag available">Nationwide Telehealth</span>
+          <span class="page-hero-tag available">In-Person: All States</span>
+        </div>
+        <div class="svc-hub-link">Learn About BHRT</div>
+      </a>
+    </div>
+
+    <div class="availability-key">
+      <div class="availability-key-item"><div class="availability-key-dot dot-nationwide"></div> Nationwide Telehealth Available</div>
+      <div class="availability-key-item"><div class="availability-key-dot dot-fl"></div> Florida Telehealth Only (controlled substances)</div>
+      <div class="availability-key-item"><div class="availability-key-dot" style="background:var(--gold)"></div> In-Person: All States Welcome</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface)">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label">Is This Right for You?</span>
+      <h2>Who We Work With</h2>
+    </div>
+    <div class="who-two-col">
+      <div class="who-col">
+        <h3>Good Candidates</h3>
+        <ul>
+          <li>Adults 25–75 experiencing symptoms of hormonal decline</li>
+          <li>People whose standard blood work "comes back normal" but who still feel off</li>
+          <li>Athletes and high performers focused on recovery and longevity</li>
+          <li>Women navigating perimenopause or menopause symptoms</li>
+          <li>Anyone frustrated with conventional medicine's response to their concerns</li>
+          <li>Florida residents or those willing to visit in person</li>
+          <li>People ready to commit to labs, follow-up, and protocol compliance</li>
+        </ul>
+      </div>
+      <div class="who-col">
+        <h3>What to Expect</h3>
+        <ul>
+          <li>Everything starts with comprehensive bloodwork — no exceptions</li>
+          <li>Free 15-minute consultation before any financial commitment</li>
+          <li>Blood panel fee: $349 (70+ markers, no insurance required)</li>
+          <li>Medications sourced from licensed compounding pharmacies only</li>
+          <li>Ongoing follow-up labs every 6–8 weeks (initial phase)</li>
+          <li>Direct access to Dr. Paul — not a rotating staff of PAs</li>
+          <li>No insurance accepted — no insurance interference either</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <h2>Not Sure Where to Start?<br>Let's Figure It Out Together.</h2>
+    <p>A free 15-minute consultation is the first step. Tell us what's going on — we'll tell you which evaluation makes the most sense and what to expect from there.</p>
+    <a href="../start.html" class="btn btn-gold" style="font-size:1rem;padding:1rem 2.5rem">Start Here — Free Consultation →</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Juvenis Medical</div>
+      <p class="footer-tagline">Precision medicine for people who demand more from life.</p>
+      <p class="footer-addr">1164 E. Oakland Park Blvd., Suite #202<br>Oakland Park, FL 33334<br>(954) 982-8378</p>
+    </div>
+    <div class="footer-col"><div class="footer-col-title">Services</div><a href="trt.html">Testosterone Therapy</a><a href="mens-health.html">Men's Health</a><a href="weight-loss.html">Medical Weight Loss</a><a href="peptides.html">Peptide Therapy</a><a href="bhrt.html">Women's Hormones</a></div>
+    <div class="footer-col"><div class="footer-col-title">Practice</div><a href="../about.html">About Dr. Paul</a><a href="../index.html#process">How It Works</a><a href="../contact.html">Contact</a><a href="../start.html">See If You Qualify</a></div>
+    <div class="footer-col"><div class="footer-col-title">Hours</div><p style="font-size:.78rem;line-height:1.8;color:var(--text2)">Mon – Fri: 8am – 5pm<br>Saturday: By Appt<br>Telehealth: Flexible</p></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Juvenis Medical | peptidesandhormones.com · Dr. Paul Goodkin, DC · FL License CH7998</p><p>Telehealth services for controlled substances available to Florida residents only. Non-controlled peptide and hormone therapy available nationwide. This site is for informational purposes and does not constitute medical advice.</p></div>
+</footer>
+</body>
+</html>
