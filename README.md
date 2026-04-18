@@ -1,98 +1,72 @@
-# Peptide Compass Pro
+# peptide-calc-build
 
 [![CI](https://github.com/peterluke101/peptide-calc-build/actions/workflows/ci.yml/badge.svg)](https://github.com/peterluke101/peptide-calc-build/actions/workflows/ci.yml)
 
-**Mission:** Track, organize, and better understand your peptide protocol.
-
-**Live site:** https://peptide-calc-build.pages.dev/
+This repo hosts two separate projects:
 
 ---
 
-## Architecture
+## 1. Peptide Compass Pro (`/`)
 
-- **Single-file PWA** — `index.html` contains all HTML, CSS, and JS inline
-- **`schedule.html`** — separate calendar/schedule page
-- **Deployed on Cloudflare Pages** — auto-deploys from `main` branch
-- Dark theme default, light mode toggle via `body.light-mode` class
-- All data stored in `localStorage` — no backend, no accounts
+**Live:** https://peptide-calc-build.pages.dev/
 
----
+Track, organize, and better understand your peptide protocol.
 
-## Key localStorage Keys
+- Single-file PWA — `index.html` inline HTML/CSS/JS
+- Deployed on Cloudflare Pages — auto-deploys from `main`
+- Dark theme, light mode toggle, all data in `localStorage`
 
-| Key | Contents |
-|-----|----------|
-| `schedule` | Scheduled doses |
-| `injectionLog` | Logged doses |
-| `savedProtocols` | Saved protocol configurations |
-| `vialInventory` | Vial tracking with lifecycle data |
-| `journalEntries` | Journal entries |
-| `skipLog` | Skipped doses |
-| `doseChangeLog` | Dose change history |
-| `weightLog` | Weight tracking |
-| `theme` | Dark/light mode preference |
-| `hasOnboarded` | Onboarding completion flag |
-| `activeTab` | Last active tab |
+**Key files:** `index.html`, `schedule.html`, `sw.js`, `manifest.json`, `pro/`
 
 ---
 
-## Features
+## 2. Juvenis Medical Website (`/juvenis/`)
 
-- Reconstitution calculator with math transparency (Show Math expandable)
-- Reverse calculator (dose → syringe mark)
-- Protocol builder and saved protocols
-- Stack builder with recommendations
-- Schedule creation with calendar (.ics) export
-- Today's Doses card with one-tap actions (done / skip / move)
-- Adherence stats — streaks, adherence %, progress rings
-- Vial inventory with full lifecycle tracking (reconstitution date, discard-by date, doses remaining, runout forecast)
-- Injection log with dose change history
-- Journal with symptom tracking
-- Weight tracking with trend charts and protocol overlay
-- Side-effect timeline
-- Missed-dose analytics
-- Learn tab — foundational educational content (accordion style)
-- Data export / import (CSV)
-- Dark / light mode
-- PWA installable (Add to Home Screen)
+**Staging:** https://peterluke101.github.io/peptide-calc-build/juvenis/
+**Production:** https://peptidesandhormones.com *(DNS pending)*
+
+Physician website for Dr. Paul Goodkin — peptide therapy, hormone optimization, and medical weight loss in Fort Lauderdale, FL.
+
+- Pure static HTML/CSS — no build step
+- 21 pages across home, services, and individual peptide compound pages
+- Full JSON-LD schema (FAQPage, BreadcrumbList, MedicalBusiness)
+- Sitemap + robots.txt included
+
+**See:** [`juvenis/README.md`](juvenis/README.md) for full documentation.
 
 ---
 
-## Tab Structure
+## Repository Structure
 
-**Bottom nav:** Compass (main) · Schedule (→ schedule.html) · History · More
+```
+/                          # Peptide Compass Pro (PWA)
+├── index.html
+├── schedule.html
+├── sw.js
+├── manifest.json
+├── pro/                   # Pro tier features
+├── docs/                  # Documentation
+└── _archive/              # Legacy files
 
-**Sub-tabs accessible from More:** Weight · Stacks · Logs · Journal · Learn · Inventory
-
----
-
-## Sprint History
-
-| Sprint | Topic | PR | Status |
-|--------|-------|----|--------|
-| Sprint 5 | Adherence & Reminders | #69 | ✅ Merged |
-| Sprint 10 | Inventory & Vial Lifecycle | #75 | ✅ Merged |
-| Sprint 11 | Logging Insights & Trend Summaries | #76 | ✅ Merged |
-| Sprint 12 | Evidence & Source Transparency | #72 | Planned |
-| Sprint 13 | Scheduler Polish for Repeat Use | #73 | Planned |
-| Sprint 14 | Credibility & Trust Layer | #74 | Planned |
-
----
-
-## Monetization (Planned)
-
-- **Model:** Freemium + subscription
-- **Free tier:** Calculator, reverse calc, 1 protocol, basic reminders, 7-day history, intro Learn entries
-- **Premium tier:** $8.99/mo or $49.99/yr — everything else (Navigator unlock)
-- **Billing:** RevenueCat (mobile) + Stripe (web)
-- **Launch order:** Google Play first, then Apple App Store
-- See issues [#77](https://github.com/peterluke101/peptide-calc-build/issues/77)–[#81](https://github.com/peterluke101/peptide-calc-build/issues/81) for app store and monetization work
+juvenis/                   # Juvenis Medical website
+├── index.html
+├── jv-styles.css
+├── about.html
+├── contact.html
+├── start.html
+├── sitemap.xml
+├── robots.txt
+├── services/              # Service category pages (5)
+└── peptides/              # Individual compound pages (9)
+```
 
 ---
 
-## Development
+## Deployment
 
-- All UI changes go in `index.html` (and `schedule.html` for schedule-page changes)
-- Branch from `main`, open a PR, merge, verify on live site
-- Cloudflare Pages auto-deploys on merge to `main`
-- Branch naming: `feature/<issue>-<short-desc>`, `fix/<issue>-<short-desc>`
+- **Peptide Compass Pro** → Cloudflare Pages (auto-deploy on push to `main`)
+- **Juvenis Medical** → GitHub Pages at `/juvenis/` path; push via Contents API or direct commit
+
+## License
+
+Private — all rights reserved.
