@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juvenis Medical — Peptide & Hormone Specialists, Fort Lauderdale</title>
+<meta name="description" content="Juvenis Medical offers peptide therapy, testosterone (TRT), weight loss, BHRT, and men's & women's health in Fort Lauderdale. Telehealth available nationwide for peptides, Florida for hormone therapy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="jv-styles.css">
+<style>
+/* ── HOME-SPECIFIC ── */
+.hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:calc(var(--nav-h) + 4rem) 1.5rem 5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 70% at 65% 35%,rgba(201,150,58,.07) 0%,transparent 65%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.hero-inner{max-width:var(--max-w);margin:0 auto;width:100%}
+.hero h1{max-width:780px;margin-bottom:1.5rem}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:1.05rem;max-width:520px;margin-bottom:2.5rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.85rem;align-items:center;margin-bottom:3.5rem}
+.hero-trust{display:flex;flex-wrap:wrap;gap:1.25rem;padding-top:2.25rem;border-top:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:.45rem;font-size:.75rem;color:var(--text3);font-weight:500}
+.trust-check{width:18px;height:18px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--gold);font-weight:800;flex-shrink:0}
+
+/* services grid */
+.services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden}
+@media(max-width:900px){.services-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+.service-card{background:var(--surface);padding:1.75rem 1.25rem;transition:background .2s;position:relative;overflow:hidden}
+.service-card:hover{background:var(--surface2)}
+.service-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.service-card:hover::after{transform:scaleX(1)}
+.service-card .card-icon{margin-bottom:.9rem}
+.service-card h3{font-size:.88rem;margin-bottom:.35rem;color:var(--text)}
+.service-card p{font-size:.74rem;line-height:1.5}
+.service-availability{display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;padding:.15rem .5rem;border-radius:4px;margin-top:.6rem}
+.avail-national{background:rgba(74,222,128,.08);color:rgba(74,222,128,.75);border:1px solid rgba(74,222,128,.15)}
+.avail-fl{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
+
+/* about section */
+.about-section{padding:5rem 1.5rem;background:var(--surface)}
+.about-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:center}
+@media(max-width:800px){.about-inner{grid-template-columns:1fr}}
+.about-photo{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-lg);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;max-width:380px}
+.about-photo-placeholder{text-align:center;padding:2rem}
+.about-photo-placeholder p{font-size:.75rem;color:var(--text3);margin-top:.5rem}
+.about-photo-initials{font-family:'Space Grotesk',sans-serif;font-size:4rem;font-weight:700;color:var(--gold);opacity:.3;line-height:1}
+.about-photo-badge{position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);background:rgba(13,15,20,.9);border:1px solid var(--gold-border);border-radius:100px;padding:.5rem 1.1rem;white-space:nowrap;backdrop-filter:blur(8px)}
+.about-photo-badge span{font-size:.7rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.1em}
+.about-content .label{display:block;margin-bottom:.65rem}
+.about-content h2{margin-bottom:1.25rem}
+.about-content p{margin-bottom:1rem;font-size:.9rem}
+.about-pills{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+.about-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:.35rem .85rem;font-size:.72rem;font-weight:500;color:var(--text2)}
+.about-pill::before{content:'•';color:var(--gold)}
+
+/* testimonials */
+.testimonials-section{padding:5rem 1.5rem}
+
+/* process section */
+.process-section{background:var(--surface);padding:5rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin-top:3rem}
+@media(max-width:768px){.process-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.process-grid{grid-template-columns:1fr}}
+.process-step{background:var(--surface);padding:2.25rem 1.75rem;position:relative}
+.process-step-num{font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:700;color:var(--gold-dim);letter-spacing:-.05em;line-height:1;margin-bottom:.85rem;-webkit-text-stroke:1px var(--gold-border)}
+.process-step h3{font-size:.92rem;margin-bottom:.5rem;color:var(--text)}
+.process-step p{font-size:.78rem;line-height:1.6}
+
+/* trust strip */
+.trust-strip{background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.75rem 1.5rem}
+.trust-strip-inner{max-width:var(--max-w);margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem}
+.trust-strip-item{display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--text2);font-weight:500}
+.trust-strip-icon{font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-main">Juvenis Medical</span>
+      <span class="nav-logo-sub">Fort Lauderdale</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="services/">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="index.html#process">How It Works</a></li>
+      <li><a href="index.html#faq">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="start.html" class="nav-cta">See If You Qualify</a>
+    <button class="nav-hamburger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile">
+  <a href="services/">Services</a>
+  <a href="about.html">About</a>
+  <a href="index.html#process">How It Works</a>
+  <a href="index.html#faq">FAQ</a>
+  <a href="contact.html">Contact</a>
+  <a href="start.html" class="btn btn-gold">See If You Qualify →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="pill anim-fade-up"><div class="pill-dot"></div><span>Now Accepting New Patients</span></div>
+    <h1 class="anim-fade-up anim-delay-1">Your Best Years<br>Aren't <em>Behind</em> You.</h1>
+    <p class="hero-sub anim-fade-up anim-delay-2">Peptide therapy, hormone optimization, and precision medicine — backed by 20+ years of clinical expertise and a doctor who actually uses these protocols himself.</p>
+    <div class="hero-actions anim-fade-up anim-delay-3">
+      <a href="start.html" class="btn btn-gold">See If You Qualify →</a>
+      <a href="services/" class="btn-text">View all services</a>
+    </div>
+    <div class="hero-trust anim-fade-up anim-delay-4">
+      <div class="trust-item"><div class="trust-check">✓</div>1,000+ patients treated</div>
+      <div class="trust-item"><div class="trust-check">✓</div>20+ years clinical experience</div>
+      <div class="trust-item"><div class="trust-check">✓</div>Peptide telehealth — all 50 states</div>
+      <div class="trust-item"><div class="trust-check">✓</div>TRT telehealth — Florida residents</div>
+      <div class="trust-item"><div class="trust-check">✓</div>No insurance required · No surprises</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-strip-inner">
+    <div class="trust-strip-item"><span class="trust-strip-icon">🎖️</span> US Navy Veteran</div>
+    <div class="trust-strip-item"><span class="trust-strip-icon">🥋</span> Black Belt BJJ</div>
+    <div class="trust-strip-item"><span class="trust-strip-icon">🔬</span> Licensed Compounding Pharmacies Only</div>
+    <div class="trust-strip-item"><span class="trust-strip-icon">💳</span> Cash Pay · No Insurance · No Surprises</div>
+    <div class="trust-strip-item"><span class="trust-strip-icon">📋</span> Free 15-Min Consult</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="label">What We Treat</span>
+      <h2>Precision Protocols<br>for Every Goal</h2>
+      <p>Whether you're optimizing performance, reclaiming energy, or addressing a specific health concern — every protocol is built around your labs and your biology.</p>
+    </div>
+    <div class="services-grid">
+      <a href="services/mens-health.html" class="service-card">
+        <div class="card-icon">⚡</div>
+        <h3>Men's Health &amp; ED</h3>
+        <p>Private, effective treatment for sexual health and performance.</p>
+        <span class="service-availability avail-fl">FL Telehealth</span>
+      </a>
+      <a href="services/trt.html" class="service-card">
+        <div class="card-icon">🔬</div>
+        <h3>Testosterone / TRT</h3>
+        <p>Lab-guided therapy to restore energy, drive, and vitality.</p>
+        <span class="service-availability avail-fl">FL Telehealth</span>
+      </a>
+      <a href="services/weight-loss.html" class="service-card">
+        <div class="card-icon">📉</div>
+        <h3>Weight Loss</h3>
+        <p>GLP-1 and peptide-assisted fat loss, medically supervised.</p>
+        <span class="service-availability avail-national">Nationwide</span>
+      </a>
+      <a href="services/peptides.html" class="service-card">
+        <div class="card-icon">💉</div>
+        <h3>Peptide Therapy</h3>
+        <p>Recovery, growth, and longevity — BPC-157, Sermorelin, and more.</p>
+        <span class="service-availability avail-national">Nationwide</span>
+      </a>
+      <a href="services/bhrt.html" class="service-card">
+        <div class="card-icon">⚖️</div>
+        <h3>BHRT</h3>
+        <p>Bioidentical hormone balancing for men and women.</p>
+        <span class="service-availability avail-fl">FL Telehealth</span>
+      </a>
+    </div>
+    <p style="font-size:.72rem;color:var(--text3);margin-top:1.25rem;text-align:center">
+      <span style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);color:rgba(74,222,128,.75);border-radius:4px;padding:.15rem .5rem;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-right:.5rem">Nationwide</span> services available via telehealth to all 50 states &nbsp;·&nbsp;
+      <span style="background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);border-radius:4px;padding:.15rem .5rem;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-right:.5rem">FL Telehealth</span> for Florida residents · In-person clinic available for all patients
+    </p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="process-section" id="process">
+  <div class="section-inner">
+    <div class="section-header text-center">
+      <span class="label">How It Works</span>
+      <h2>From First Contact<br>to Your Protocol</h2>
+      <p style="margin:0 auto">Simple, streamlined, and built around your schedule — whether you're across the country or around the corner.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <h3>Free 15-Min Consult</h3>
+        <p>Talk directly with Dr. Paul. Discuss your goals, ask questions, and get an honest assessment of what's possible — at no charge.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <h3>Diagnostic Testing</h3>
+        <p>Comprehensive bloodwork or urine analysis (70+ factors) gives us the full picture. We test first, then optimize — never guess.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <h3>Your Protocol</h3>
+        <p>A personalized treatment plan built around your specific labs, goals, and lifestyle. Dialed in to your biology — not a template.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <h3>Rx to Your Door</h3>
+        <p>Medications sourced from licensed compounding pharmacies, shipped directly to you. Ongoing monitoring keeps your protocol optimized.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:3rem">
+      <a href="start.html" class="btn btn-gold">Start Your Journey →</a>
+      <p class="cta-note mt-2">Takes 2 minutes. No credit card. No commitment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div class="about-photo">
+      <div class="about-photo-placeholder">
+        <div class="about-photo-initials">PG</div>
+        <p>Professional photo<br>coming soon</p>
+      </div>
+      <div class="about-photo-badge"><span>Dr. Paul Goodkin, DC · Founder</span></div>
+    </div>
+    <div class="about-content">
+      <span class="label">About Dr. Paul</span>
+      <h2>A Doctor Who<br>Lives What He Prescribes</h2>
+      <p>Dr. Paul Goodkin has been practicing for over 20 years and has helped more than 1,000 patients reclaim their health, energy, and vitality. He is a Doctor of Chiropractic, a US Navy veteran and former officer, a black belt in Brazilian Jiu Jitsu, and a former top-grade rugby player.</p>
+      <p>He doesn't just prescribe these protocols — he uses them himself. Every day, Dr. Paul trains hard, and with the help of hormone optimization and peptide therapy, has no intention of ever stopping.</p>
+      <p>His clinic, Juvenis Medical, has established a reputation as one of South Florida's leaders in peptide and hormone therapy — for both men and women. Cash-pay only, with no insurance bureaucracy standing between you and your results.</p>
+      <div class="about-pills">
+        <span class="about-pill">US Navy Veteran</span>
+        <span class="about-pill">Brazilian Jiu Jitsu Black Belt</span>
+        <span class="about-pill">20+ Years Practice</span>
+        <span class="about-pill">1,000+ Patients</span>
+        <span class="about-pill">Doctor of Chiropractic</span>
+        <span class="about-pill">Licensed Compounding</span>
+      </div>
+      <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap">
+        <a href="about.html" class="btn btn-ghost">Full Bio &amp; Team</a>
+        <a href="start.html" class="btn btn-gold">See If You Qualify →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Years Clinical Experience</div></div>
+    <div class="stat"><div class="stat-num">1K+</div><div class="stat-label">Patients Treated</div></div>
+    <div class="stat"><div class="stat-num">50</div><div class="stat-label">States Served</div></div>
+    <div class="stat"><div class="stat-num">$0</div><div class="stat-label">Insurance Required</div></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-inner">
+    <div class="section-header text-center">
+      <span class="label">Patient Stories</span>
+      <h2>Real Results,<br>Real People</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <p class="testimonial-body">"Dr. Paul Goodkin is amazing. He assisted in coaching me through hormone supplements and I feel 100 times better!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">T</div>
+          <div><div class="testimonial-name">Tiffany B.</div><div class="testimonial-stars">★★★★★</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-body">"I was in terrible pain from arthritis. 45 days later, I am back to working out. Life Changer!!!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div><div class="testimonial-name">Amy L.</div><div class="testimonial-stars">★★★★★</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-body">"I feel so amazing, my stomach is flat, my skin is how it was when I was young. I recommend him 10,000%."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">C</div>
+          <div><div class="testimonial-name">Carolina D.</div><div class="testimonial-stars">★★★★★</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-body">"He makes me feel at ease to speak about very challenging health topics. He truly cares for your health and well-being."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">R</div>
+          <div><div class="testimonial-name">Roseli U.</div><div class="testimonial-stars">★★★★★</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="cta-band-box">
+    <span class="label">Get Started Today</span>
+    <h2>Find Out If You Qualify</h2>
+    <p>Answer a few quick questions and we'll show you exactly which services fit your situation — and whether telehealth or an in-person visit is right for you.</p>
+    <div class="cta-band-actions">
+      <a href="start.html" class="btn btn-gold">See If You Qualify →</a>
+      <a href="contact.html" class="btn btn-ghost">Book a Call</a>
+    </div>
+    <p class="cta-note">Takes 2 minutes. Free 15-min consult with Dr. Paul. No commitment.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Juvenis Medical</div>
+        <div class="footer-tagline">Peptide &amp; Hormone Specialists<br>Fort Lauderdale, Florida</div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          1164 E. Oakland Park Blvd., Suite 202<br>Oakland Park, FL 33334
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          (954) 982-8378
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          paul@peptidesandhormones.com
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Mon–Fri 8am–5pm · Sat by appointment
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services/mens-health.html">Men's Health &amp; ED</a></li>
+          <li><a href="services/trt.html">Testosterone / TRT</a></li>
+          <li><a href="services/weight-loss.html">Weight Loss</a></li>
+          <li><a href="services/peptides.html">Peptide Therapy</a></li>
+          <li><a href="services/bhrt.html">BHRT</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Clinic</h4>
+        <ul>
+          <li><a href="about.html">About Dr. Paul</a></li>
+          <li><a href="start.html">See If You Qualify</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="contact.html">Free Consult</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Telehealth Disclosure</a></li>
+          <li><a href="#">Compounding Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-legal">This website is for informational purposes only and does not constitute medical advice. Telehealth services for controlled substances (including TRT) are available to Florida residents only. Non-controlled peptide therapy is available nationwide via telehealth. In-person visits at our Oakland Park, FL clinic are open to all patients. All medications are sourced from licensed compounding pharmacies only.</p>
+      <p class="footer-copy">© 2025 Juvenis Medical LLC</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
