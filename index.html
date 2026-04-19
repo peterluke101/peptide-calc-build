@@ -562,7 +562,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   .cal-event .ev-dot{width:5px;height:5px}
   .cal-rest{text-align:center;font-size:.62rem;color:var(--text2);padding:4px 0;font-style:italic}
   .pep-details{grid-template-columns:1fr 1fr}
-  .bottom-nav{padding:.35rem 0 calc(.45rem + env(safe-area-inset-bottom))}
+  .bottom-nav{padding:.35rem 0 env(safe-area-inset-bottom)}
   .tab-label{font-size:.62rem}
   .form-row{flex-wrap:wrap}
   .tab-content{width:100%;max-width:100%}
@@ -640,7 +640,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 .tab-content {
   display: none;
   width: 100%;
-  padding-bottom: max(6rem, calc(4rem + env(safe-area-inset-bottom))); /* Space for bottom nav + safe area */
+  padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); /* Space for bottom nav + safe area */
   background: var(--bg);
 }
 
