@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Juvenis Medical</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://peptidesandhormones.com/contact">
+<link rel="stylesheet" href="jv-styles.css">
+<style>
+.contact-section{padding:5rem 1.5rem}
+.contact-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:start}
+@media(max-width:860px){.contact-inner{grid-template-columns:1fr}}
+.contact-info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2.25rem;margin-bottom:1.5rem}
+.contact-info-card h3{font-size:1rem;margin-bottom:1.5rem;color:var(--text)}
+.contact-row{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.contact-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.contact-row-icon{width:36px;height:36px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.contact-row-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.25rem}
+.contact-row-value{font-size:.85rem;color:var(--text);font-weight:500;line-height:1.5}
+.contact-row-value a{color:var(--gold);transition:color .2s}
+.contact-row-value a:hover{color:var(--gold-light)}
+.consult-card{background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:var(--radius-lg);padding:2rem;text-align:center}
+.consult-card h3{font-size:1.1rem;margin-bottom:.6rem}
+.consult-card p{font-size:.82rem;margin-bottom:1.5rem}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2.25rem}
+.form-card h3{font-size:1rem;margin-bottom.25rem;color:var(--text);margin-bottom:1.5rem}
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.08em}
+.form-input,.form-textarea,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:.75rem 1rem;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;transition:border-color .2s;outline:none;-webkit-appearance:none}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-dim)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-textarea{resize:vertical;min-height:120px;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.form-submit{width:100%;background:var(--gold);color:#0D0F14;font-weight:700;font-size:.9rem;padding:1rem;border-radius:10px;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;margin-top:.5rem}
+.form-submit:hover{background:var(--gold-light);transform:translateY(-1px)}
+.telehealth-note{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-top:1.5rem}
+.telehealth-note h4{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.telehealth-note ul{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.telehealth-note li{font-size:.76rem;color:var(--text2);display:flex;align-items:flex-start;gap:.4rem;line-height:1.5}
+.telehealth-note li::before{content:'•';color:var(--gold);flex-shrink:0}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><a href="index.html" class="nav-logo"><span class="nav-logo-main">Juvenis Medical</span><span class="nav-logo-sub">Fort Lauderdale</span></a><ul class="nav-links"><li><a href="services/">Services</a></li><li><a href="blog/">Learn</a></li><li><a href="about.html">About</a></li><li><a href="index.html#process">How It Works</a></li><li><a href="contact.html" class="active">Contact</a></li></ul><a href="start.html" class="nav-cta">See If You Qualify</a><button class="nav-hamburger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')"><span></span><span></span><span></span></button></div></nav>
+<div class="nav-mobile"><a href="services/">Services</a><a href="blog/">Learn</a><a href="about.html">About</a><a href="index.html#process">How It Works</a><a href="contact.html">Contact</a><a href="start.html" class="btn btn-gold">See If You Qualify →</a></div>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-breadcrumb"><a href="index.html">Home</a> <span>/</span> <span>Contact</span></div>
+    <span class="label">Get in Touch</span>
+    <h1>We'd Love to<br>Hear From You</h1>
+    <p>Start with a free 15-minute consult with Dr. Paul, or reach out with any questions. We respond to every email.</p>
+  </div>
+</div>
+
+<section class="contact-section">
+  <div class="contact-inner">
+    <div>
+      <div class="contact-info-card">
+        <h3>Clinic Information</h3>
+        <div class="contact-row">
+          <div class="contact-row-icon">📍</div>
+          <div><div class="contact-row-label">Address</div><div class="contact-row-value">1164 E. Oakland Park Blvd., Suite 202<br>Oakland Park, FL 33334</div></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-row-icon">📞</div>
+          <div><div class="contact-row-label">Phone</div><div class="contact-row-value"><a href="tel:9549828378">(954) 982-8378</a></div></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-row-icon">✉️</div>
+          <div><div class="contact-row-label">Email</div><div class="contact-row-value"><a href="mailto:paul@peptidesandhormones.com">paul@peptidesandhormones.com</a></div></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-row-icon">🕐</div>
+          <div><div class="contact-row-label">Hours</div><div class="contact-row-value">Monday – Friday: 8:00am – 5:00pm<br>Saturday: By appointment only</div></div>
+        </div>
+      </div>
+
+      <div class="consult-card">
+        <h3>Free 15-Min Consult</h3>
+        <p>Talk directly with Dr. Paul — no coordinator, no PA. Discuss your goals and get an honest assessment. Zero cost, zero commitment.</p>
+        <a href="#contact-form" class="btn btn-gold" style="width:100%;justify-content:center">Book Your Free Consult →</a>
+      </div>
+
+      <div class="telehealth-note">
+        <h4>Telehealth Availability</h4>
+        <ul>
+          <li>Peptide therapy &amp; weight loss — available to all 50 states via telehealth</li>
+          <li>Testosterone (TRT) &amp; hormone therapy — telehealth for Florida residents only</li>
+          <li>In-person clinic (Oakland Park, FL) — all services, any state</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="form-card" id="contact-form">
+      <h3>Book Your Free 15-Min Consult</h3>
+      <p style="font-size:.82rem;color:var(--text2);margin-bottom:1.5rem;margin-top:-.75rem">Fill out the short form below and Dr. Paul's team will reach out within 1 business day.</p>
+      <iframe
+        id="zf-widget-root"
+        aria-label="Peptides & Hormones Website Lead"
+        frameborder="0"
+        style="height:800px;width:100%;border:none;border-radius:8px;"
+        src="https://forms.zohopublic.com/juvenismedicalllc/form/WebsiteLeadForm/formperma/EWDfAEQRBZrULAPESccLg11UjO10_sypfgUyswHavf0">
+      </iframe>
+      <script>
+        // Auto-resize iframe to match Zoho form height — no internal scrollbar
+        window.addEventListener('message', function(e) {
+          var data = e.data;
+          if (data && typeof data === 'string') {
+            var parts = data.split('|');
+            if (parts.length >= 2) {
+              var perma = parts[0], h = parseInt(parts[1], 10);
+              var f = document.getElementById('zf-widget-root');
+              if (f && f.src.indexOf(perma) > -1 && !isNaN(h)) {
+                f.style.height = (h + 24) + 'px';
+              }
+            }
+          }
+        }, false);
+      </script>
+      <p style="font-size:.7rem;color:var(--text3);margin-top:.85rem;text-align:center">We respond to every message, typically within 1 business day.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Juvenis Medical</div>
+      <p class="footer-tagline">Precision medicine for people who demand more from life.</p>
+      <p class="footer-addr">1164 E. Oakland Park Blvd., Suite #202<br>Oakland Park, FL 33334<br>(954) 982-8378</p>
+    </div>
+    <div class="footer-col"><div class="footer-col-title">Services</div><a href="services/trt.html">Testosterone / TRT</a><a href="services/mens-health.html">Men's Health</a><a href="services/peptides.html">Peptide Therapy</a><a href="services/weight-loss.html">Medical Weight Loss</a><a href="services/bhrt.html">Women's Hormones</a></div>
+    <div class="footer-col"><div class="footer-col-title">Peptides</div><a href="peptides/bpc-157.html">BPC-157</a><a href="peptides/sermorelin.html">Sermorelin</a><a href="peptides/ipamorelin-cjc-1295.html">Ipamorelin / CJC-1295</a><a href="peptides/nad-plus.html">NAD+</a><a href="peptides/semaglutide.html">Semaglutide</a><a href="peptides/tirzepatide.html">Tirzepatide</a></div>
+    <div class="footer-col"><div class="footer-col-title">Practice</div><a href="about.html">About Dr. Paul</a><a href="index.html#process">How It Works</a><a href="contact.html">Contact</a><a href="start.html">See If You Qualify</a></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 Juvenis Medical | peptidesandhormones.com · Dr. Paul Goodkin, DC · FL License CH7998 · NPI 1083750665</p><p>This site is for informational purposes only and does not constitute medical advice. Telehealth for controlled substances available to Florida residents only.</p></div>
+</footer>
+</body></html>
