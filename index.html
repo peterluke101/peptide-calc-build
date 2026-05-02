@@ -2183,7 +2183,6 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 <div class="card animate-in add-peptide-section add-peptide-primary" id="add-peptide-card">
   <div class="section-title">
     <div class="add-peptide-title-group">
-      <span class="add-peptide-step">STEP 1</span>
       <span>Add Peptide</span>
     </div>
     <button class="collapse-toggle" id="add-section-toggle" aria-label="Collapse add peptide section">
@@ -4562,7 +4561,7 @@ function renderStackRecommendations(goal) {
       <div class="stack-featured-tag">⭐ Featured Pick</div>
       <div class="stack-featured-name">${pick.name}</div>
       <div class="stack-featured-desc">${pick.desc}</div>
-      <button class="stack-featured-btn" data-featured-peptide="${pick.name}">+ Add to Stack</button>
+      <button class="stack-featured-btn" data-featured-peptide="${pick.name}">+ Add to Schedule</button>
     </div>
   ` : '';
 
@@ -4578,7 +4577,7 @@ function renderStackRecommendations(goal) {
     ${categoriesHtml}
   `;
 
-  // Wire Add to Stack button — shows confirmation sheet before opening guided flow
+  // Wire Add to Schedule button — shows confirmation sheet before opening guided flow
   const addBtn = $recommendations.querySelector('[data-featured-peptide]');
   if (addBtn) {
     addBtn.addEventListener('click', () => {
@@ -4983,16 +4982,21 @@ function renderToday(animate) {
 
     if (schedule.length === 0) {
       $counter.innerHTML = '';
-      $list.innerHTML = `<div class="today-empty-cta">
-        <div class="today-empty-cta-body">
-          <div class="today-empty-cta-icon">💉</div>
-          <div class="today-empty-cta-text">
-            <div class="today-empty-cta-headline">Get Started — Add Your First Peptide</div>
-            <div class="today-empty-cta-sub">Set up your peptide, calculate your dose, and get a schedule in minutes.</div>
+      if (localStorage.getItem('today-empty-cta-dismissed') === '1') {
+        $list.innerHTML = `<div class="today-empty-min" style="padding:1.25rem 0;text-align:center;color:var(--text2);font-size:.82rem;line-height:1.5">No peptides scheduled.<br>Use <strong>+ Add Peptide</strong> above when you're ready.</div>`;
+      } else {
+        $list.innerHTML = `<div class="today-empty-cta">
+          <div class="today-empty-cta-body">
+            <div class="today-empty-cta-icon">💉</div>
+            <div class="today-empty-cta-text">
+              <div class="today-empty-cta-headline">Get Started — Add Your First Peptide</div>
+              <div class="today-empty-cta-sub">Set up your peptide, calculate your dose, and get a schedule in minutes.</div>
+            </div>
           </div>
-        </div>
-        <button class="today-empty-cta-btn" onclick="openAddPeptideForm()">+ Add Peptide</button>
-      </div>`;
+          <button class="today-empty-cta-btn" onclick="openAddPeptideForm()">+ Add Peptide</button>
+          <button type="button" class="today-empty-cta-dismiss" onclick="dismissTodayEmptyCta()" style="background:none;border:none;color:var(--text2);font-family:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer;padding:.5rem;align-self:center">Maybe later</button>
+        </div>`;
+      }
       return;
     }
 
@@ -7713,6 +7717,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   window.openAddPeptideForm = openAddPeptideForm;
+
+  // Dismiss the Today empty-state CTA. User can still add peptides via the
+  // main "+ Add Peptide" button on the Schedule tab.
+  function dismissTodayEmptyCta() {
+    safeSetItem('today-empty-cta-dismissed', '1');
+    if (typeof renderToday === 'function') renderToday(false);
+  }
+  window.dismissTodayEmptyCta = dismissTodayEmptyCta;
 
   // ── Onboarding V3 (#141) ─────────────────────────────────────
   const OB3_FEATURED = [
