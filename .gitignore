@@ -1,5 +1,6 @@
-# Claude / Wrangler local state
-.claude/
+# Claude / Wrangler local state — ignore everything under .claude/ except rules/
+.claude/*
+!.claude/rules/
 .wrangler/
 
 # Local ops / drafts (not for repo)
