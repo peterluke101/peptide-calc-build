@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Peptide Compass Pro</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +19,9 @@ html,body{background:#f5f6fa;color:#1a1a2e}
 html.dark-mode,body.dark-mode{background:#0a0a0a!important;color:#fff!important}
 :root{--bg:#f5f6fa;--surface:#ffffff;--surface2:#e2e4ec;--border:#c0c4cc;--accent:#0d9b83;--accent-dim:rgba(13,155,131,.20);--text:#1a1a2e;--text2:#484860;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,.10),0 0 0 1px rgba(0,0,0,.04);--card-bg:#ffffff;--text-muted:#484860}
 html{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-size-adjust:100%;-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden}
+body{height:100dvh;display:flex;flex-direction:column;margin:0;-webkit-tap-highlight-color:transparent;overflow:hidden;background:var(--bg)}
+/* Suppress card fade-in animation on repeat tab switches (runs once on initial load only) */
+body.tabs-ready .animate-in{animation:none}
 
 /* iOS Fixes */
 input,select,textarea,button{font-size:16px;-webkit-appearance:none;border-radius:8px;touch-action:manipulation}
@@ -308,10 +309,10 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Collapsible peptide cards ───────────────────────────── */
 .pep-collapse-header{cursor:pointer;margin-bottom:0;user-select:none;-webkit-user-select:none}
 .peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
-.pep-summary{display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;gap:.1rem}
-.pep-summary-top{display:flex;align-items:center;gap:.5rem;min-width:0}
-.pep-summary-name{font-size:.9rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;padding-left:1.1rem}
+.pep-summary{display:flex;flex-direction:column;gap:.1rem;flex:1;min-width:0;overflow:hidden}
+.pep-summary-row{display:flex;align-items:center;gap:.5rem;min-width:0}
+.pep-summary-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;padding-left:1.05rem}
 .pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
 .peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
 .pep-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
@@ -562,6 +563,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   .cal-event .ev-dot{width:5px;height:5px}
   .cal-rest{text-align:center;font-size:.62rem;color:var(--text2);padding:4px 0;font-style:italic}
   .pep-details{grid-template-columns:1fr 1fr}
+  .bottom-nav{padding:.35rem 0 calc(.45rem + env(safe-area-inset-bottom))}
   .tab-label{font-size:.62rem}
   .form-row{flex-wrap:wrap}
   .tab-content{width:100%;max-width:100%}
@@ -583,14 +585,11 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 
 /* ── Bottom Navigation Tabs ────────────────────────────────── */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  flex-shrink: 0;
   background: var(--surface);
   border-top: 1px solid var(--border);
   display: flex;
-  padding: 0 0 env(safe-area-inset-bottom);
+  padding: .2rem 0 max(env(safe-area-inset-bottom), .2rem);
   z-index: 1000;
   box-shadow: 0 -2px 16px rgba(0,0,0,.10),0 -1px 0 rgba(0,0,0,.06);
 }
@@ -603,14 +602,14 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
   justify-content: center;
   background: none;
   border: none;
-  padding: .3rem 0;
+  padding: .25rem 0;
   color: var(--text2);
   font-size: .7rem;
   font-weight: 500;
   cursor: pointer;
   transition: all .2s;
   -webkit-tap-highlight-color: transparent;
-  min-height: 48px;
+  min-height: 44px;
 }
 
 .tab-btn.active {
@@ -639,7 +638,7 @@ body.first-run #welcome-card #welcome-skip:hover{color:rgba(255,255,255,.85)}
 .tab-content {
   display: none;
   width: 100%;
-  padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); /* Space for bottom nav + safe area */
+  padding-bottom: max(6rem, calc(4rem + env(safe-area-inset-bottom))); /* Space for bottom nav + safe area */
   background: var(--bg);
 }
 
@@ -1334,7 +1333,7 @@ body.light-mode .rc-preset-btn{background:#f5f5f5}
 .rc-tradeoff{font-size:.68rem;color:var(--text2);line-height:1.5;margin-top:.6rem;padding:.5rem .7rem .5rem .85rem;border-left:2px solid rgba(61,232,195,.3);text-align:left;opacity:.85}
 .rc-tradeoff b{color:var(--text);opacity:1}
 /* App tagline */
-.app-tagline{font-size:.65rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem;text-transform:none;opacity:.6}
+.app-tagline{font-size:.82rem;color:var(--text2);text-align:center;margin:-.5rem 0 1.25rem;line-height:1.55;letter-spacing:.01em;padding:0 .5rem}
 
 /* ── Saved Protocols ─────────────────────────────────────── */
 /* Quick-load strip above Add Peptide */
@@ -1784,11 +1783,6 @@ body.light-mode .btn-secondary{background:transparent!important;color:#1a9e88!im
 .rc-result-summary{background:var(--surface);border-radius:10px;padding:.85rem 1rem;margin:.6rem 0 .5rem;text-align:center}
 .rc-result-summary .rc-result-value{font-size:3rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
 .rc-result-summary .rc-result-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:.3rem}
-.rc-answer-hero{background:var(--accent-dim);border:2px solid rgba(61,232,195,.35);border-radius:14px;padding:1.1rem 1rem 1rem;margin:.75rem 0 .5rem;text-align:center}
-.rc-answer-hero-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.4rem;opacity:.85}
-.rc-answer-hero-value{font-size:3.4rem;font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.03em}
-.rc-answer-hero-unit{font-size:1.5rem;font-weight:700;color:var(--accent);opacity:.75}
-.rc-answer-hero-sub{font-size:.85rem;font-weight:600;color:var(--text2);margin-top:.35rem;letter-spacing:.01em}
 .rc-result-secondary{display:flex;gap:.5rem;margin:.4rem 0}
 .rc-result-secondary-item{flex:1;background:var(--surface);border-radius:8px;padding:.45rem .6rem;text-align:center}
 .rc-result-secondary-item .label{font-size:.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
@@ -2425,25 +2419,33 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         <button class="rc-seg-btn" data-units="100">100</button>
       </div>
     </div>
-    <!-- Result — BAC water as hero answer -->
-    <div class="rc-result">
-      <!-- Hero: BAC water to add -->
-      <div class="rc-answer-hero">
-        <div class="rc-answer-hero-label">Add this much BAC water</div>
-        <div class="rc-answer-hero-value">
-          <span id="rc-result-value-ml">—</span><span class="rc-answer-hero-unit"> mL</span>
-        </div>
-        <div class="rc-answer-hero-sub" id="rc-answer-syringes">—</div>
+    <!-- Syringe size selector -->
+    <div style="margin-top:.75rem">
+      <label style="font-size:.78rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:.25rem">Physical Syringe Size</label>
+      <div class="rc-syringe-size-group">
+        <button class="rc-sz-btn" data-sz="30">0.3 mL<br><span style="font-size:.65rem">30 unit</span></button>
+        <button class="rc-sz-btn" data-sz="50">0.5 mL<br><span style="font-size:.65rem">50 unit</span></button>
+        <button class="rc-sz-btn active" data-sz="100">1.0 mL<br><span style="font-size:.65rem">100 unit</span></button>
       </div>
-      <!-- Secondary supporting info -->
+    </div>
+    <!-- Result — simplified layout (#107) -->
+    <div class="rc-result">
+      <!-- Primary: units to draw (big) + secondary row -->
+      <div class="rc-result-summary">
+        <div class="rc-result-label">Units to draw</div>
+        <div>
+          <span class="rc-result-value" id="rc-result-value">—</span>
+          <span class="rc-result-unit" style="font-size:1.1rem;color:var(--text2);margin-left:.3rem">units</span>
+        </div>
+      </div>
       <div class="rc-result-secondary">
         <div class="rc-result-secondary-item">
-          <div class="label">Dose per injection</div>
+          <div class="label">Desired dose</div>
           <div class="val" id="rc-result-dose-display">—</div>
         </div>
         <div class="rc-result-secondary-item">
-          <div class="label">Draw</div>
-          <div class="val"><span id="rc-result-value">—</span> units</div>
+          <div class="label">Diluent to add</div>
+          <div class="val"><span id="rc-result-value-ml">—</span> mL</div>
         </div>
         <div class="rc-result-secondary-item">
           <div class="label">Concentration</div>
@@ -3164,19 +3166,6 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     </div>
   </div>
 
-  <!-- Saved Protocols Management Section -->
-  <div class="card animate-in" id="protocols-more-section">
-    <div class="section-header" style="margin-bottom:.75rem">
-      <h2>Saved Protocols</h2>
-    </div>
-    <div id="protocols-empty-state" class="empty-state" style="display:none">
-      <div class="icon">📋</div>
-      <h3>No saved protocols</h3>
-      <p>Save your current schedule as a protocol from the main screen.</p>
-    </div>
-    <div id="protocols-more-list"></div>
-  </div>
-
   <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
   <p style="text-align:center;font-size:.7rem;margin-top:.5rem;padding-bottom:.5rem;opacity:.55;">
     <a href="privacy.html" style="color:var(--text2);text-decoration:none;margin:0 .4rem;">Privacy Policy</a>
@@ -3726,15 +3715,15 @@ const PEPTIDES = [
   { name: 'AICAR', lowMcg: 25000, stdMcg: 50000, highMcg: 150000, rangeLabel: '25–150 mg daily', timing: '☀️', timingNote: 'Morning or pre-workout — daily, 4-6 week cycles. WADA banned.', frequency: 'daily', timingIcon: '☀️', color: '#38A8E8', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human and animal metabolic studies; limited efficacy data' } },
   { name: 'AOD-9604', lowMcg: 300, stdMcg: 300, highMcg: 500, rangeLabel: '300-500 mcg daily', timing: 'morning', timingNote: 'Morning fasted — daily', frequency: 'daily', timingIcon: '☀️', color: '#FF6CEE', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human obesity trials; limited broader efficacy data' } },
   { name: 'ARA-290', lowMcg: 1000, stdMcg: 2000, highMcg: 4000, rangeLabel: '1–4 mg daily', timing: '☀️', timingNote: 'Morning — daily, 28-day courses', frequency: 'daily', timingIcon: '☀️', color: '#E83838', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; limited peer-reviewed data' } },
-  { name: 'BPC-157', lowMcg: 200, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Primarily rodent studies; limited human trial data' } },
+  { name: 'BPC-157', lowMcg: 200, midMcg: 250, stdMcg: 300, highMcg: 500, rangeLabel: '200–500 mcg', timing: 'morning+evening', timingNote: 'Twice daily — morning & evening', frequency: 'daily', timingIcon: '☀️🌙', color: '#3DE8C3', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Primarily rodent studies; limited human trial data' } },
   { name: 'Cagrilintide', lowMcg: 250, stdMcg: 1000, highMcg: 2400, rangeLabel: '0.25–2.4 mg weekly', timing: '☀️', timingNote: 'Morning — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#38E8D4', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available' } },
-  { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse, 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human PK studies; mostly anecdotal for bodybuilding use' } },
+  { name: 'CJC-1295 no DAC + Ipamorelin', lowMcg: 100, stdMcg: 200, highMcg: 300, rangeLabel: '100–300 mcg each', timing: 'evening', timingNote: 'Evening — before bed for GH pulse', frequency: 'daily', timingIcon: '🌙', color: '#C78FFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human PK studies; mostly anecdotal for bodybuilding use' } },
   { name: 'CJC-1295 with DAC', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg, 1-2x/week', timing: '🌙', timingNote: 'Evening — 1-2x per week, empty stomach', frequency: 'weekly', timingIcon: '🌙', color: '#A838E8', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Small human studies; mostly anecdotal for bodybuilding use' } },
   { name: 'Dihexa', lowMcg: 10000, stdMcg: 20000, highMcg: 30000, rangeLabel: '10-30 mg oral daily', timing: 'morning', timingNote: 'Morning — oral, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️', color: '#DDAAFF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal cognitive studies; very limited human data' } },
   { name: 'DSIP', lowMcg: 100, stdMcg: 250, highMcg: 300, rangeLabel: '100–300 mcg before bed', timing: '🌙', timingNote: 'Before bed — 5 on / 2 off', frequency: '5on2off', timingIcon: '🌙', color: '#3838E8', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human sleep studies; limited modern peer review' } },
   { name: 'Epitalon', lowMcg: 1000, stdMcg: 2000, highMcg: 5000, rangeLabel: '1–5 mg daily (20-day cycles)', timing: '🌙', timingNote: 'Evening — daily for 20 days, 2-3x per year', frequency: 'daily', timingIcon: '🌙', color: '#E8D438', cycleWeeks: 4, breakWeeks: 24, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Animal and small human longevity studies' } },
   { name: 'FOXO4-DRI', lowMcg: 500, stdMcg: 1000, highMcg: 2000, rangeLabel: '0.5–2 mg daily', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, 2-week courses. ⚠️ Experimental', frequency: '5on2off', timingIcon: '☀️', color: '#8838E8', cycleWeeks: 2, breakWeeks: 4, evidence: { level: 'uncertain', label: 'High Uncertainty', source: 'Very early research; mostly animal senolytic data' } },
-  { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg, 5 on / 2 off', timing: 'morning', timingNote: 'Morning or evening — 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Cell/animal wound healing studies; limited human clinical data' } },
+  { name: 'GHK-Cu', lowMcg: 1000, stdMcg: 2000, highMcg: 3000, rangeLabel: '1-3 mg daily', timing: 'morning', timingNote: 'Morning or evening — daily, 5 on / 2 off', frequency: '5on2off', timingIcon: '☀️🌙', color: '#6CD4FF', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Cell/animal wound healing studies; limited human clinical data' } },
   { name: 'GHRP-2', lowMcg: 100, stdMcg: 150, highMcg: 200, rangeLabel: '100-200 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#44FFAA', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Rodent studies and some human GH pulse studies' } },
   { name: 'GHRP-6', lowMcg: 100, stdMcg: 100, highMcg: 300, rangeLabel: '100-300 mcg 2-3x/day', timing: 'morning', timingNote: 'Empty stomach — 2-3x daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFAA44', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Rodent studies and some human GH pulse studies' } },
   { name: 'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)', lowMcg: 1500, stdMcg: 2330, highMcg: 3500, rangeLabel: '1.5–3.5 mg daily blend', timing: 'morning/evening', timingNote: 'Morning or evening — daily', frequency: 'daily', timingIcon: '☀️🌙', color: '#FFD76C', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Component compounds primarily animal-studied; limited human data' } },
@@ -3749,7 +3738,7 @@ const PEPTIDES = [
   { name: 'L-Carnitine', lowMcg: 200000, stdMcg: 500000, highMcg: 1000000, rangeLabel: '200–1000 mg, 2-3x/week', timing: '☀️', timingNote: 'Morning or pre-workout — 2-3x/week', frequency: '3x/week', timingIcon: '☀️', color: '#E83878', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Human trials for metabolic and exercise performance' } },
   { name: 'LL-37', lowMcg: 50, stdMcg: 125, highMcg: 250, rangeLabel: '50–250 mcg daily', timing: '☀️', timingNote: 'Morning — daily, 50-day courses', frequency: 'daily', timingIcon: '☀️', color: '#38E8A8', cycleWeeks: 7, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal antimicrobial/wound studies; limited human clinical data' } },
   { name: 'Mazdutide', lowMcg: 1500, stdMcg: 4000, highMcg: 9000, rangeLabel: '1.5–9 mg weekly', timing: '☀️', timingNote: 'Any day — once weekly, titrate up. ⚠️ Investigational', frequency: 'weekly', timingIcon: '☀️', color: '#E838A8', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 2/3 human trial data available; investigational' } },
-  { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance (skip days in maintenance phase)', frequency: 'daily', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human tanning studies; limited formal efficacy data' } },
+  { name: 'Melanotan I', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100–500 mcg daily', timing: '☀️', timingNote: 'Morning — daily loading 2-3 weeks, then 2x/week maintenance', frequency: '2x/week', timingIcon: '☀️', color: '#A8E838', cycleWeeks: 4, breakWeeks: 8, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human tanning studies; limited formal efficacy data' } },
   { name: 'Melanotan II', lowMcg: 100, stdMcg: 250, highMcg: 500, rangeLabel: '100-500 mcg daily', timing: 'evening', timingNote: 'Evening — daily during loading, then 1-2x/week', frequency: 'daily', timingIcon: '🌙', color: '#CC8844', cycleWeeks: 4, breakWeeks: 8, evidence: { level: 'anecdotal', label: 'Anecdotal', source: 'Widely used; limited formal human efficacy data' } },
   { name: 'MK-677 (Ibutamoren)', lowMcg: 10000, stdMcg: 25000, highMcg: 25000, rangeLabel: '10-25 mg daily', timing: 'evening', timingNote: 'Before bed — daily, 8-12 week cycles', frequency: 'daily', timingIcon: '🌙', color: '#44BBFF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human GH secretagogue studies; limited long-term data' } },
   { name: 'MOTS-C', lowMcg: 1000, stdMcg: 1000, highMcg: 1000, rangeLabel: '1 mg daily (5on/2off)', timing: 'morning', timingNote: 'Morning — daily, 5 days on / 2 days off', frequency: '5on2off', timingIcon: '☀️', color: '#6CFFE0', cycleWeeks: 4, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Mouse studies; early human exploration only' } },
@@ -3768,7 +3757,7 @@ const PEPTIDES = [
   { name: 'TB-500', lowMcg: 2000, stdMcg: 2500, highMcg: 5000, rangeLabel: '2–5 mg', timing: 'anytime', timingNote: 'Any time — 2x per week', frequency: '2x/week', timingIcon: '☀️🌙', color: '#6C8EFF', cycleWeeks: 6, breakWeeks: 4, evidence: { level: 'animal', label: 'Animal Data', source: 'Animal studies; very limited human data' } },
   { name: 'Tesamorelin', lowMcg: 1000, stdMcg: 2000, highMcg: 2000, rangeLabel: '1-2 mg daily', timing: 'evening', timingNote: 'Before bed — daily, empty stomach', frequency: 'daily', timingIcon: '🌙', color: '#C3A6FF', cycleWeeks: 12, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'FDA approved for HIV-associated lipodystrophy (Egrifta®) — body composition and anti-aging use is off-label.' } },
   { name: 'Thymalin', lowMcg: 5000, stdMcg: 10000, highMcg: 20000, rangeLabel: '5–20 mg daily', timing: '☀️', timingNote: 'Morning — daily for 5-10 days, 1-2x per year', frequency: 'daily', timingIcon: '☀️', color: '#78E8A8', cycleWeeks: 1, breakWeeks: 24, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Soviet-era studies; limited modern peer-reviewed data' } },
-  { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — 5 on / 2 off, or 2x per week', frequency: '5on2off', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'Human clinical trials for immune modulation; approved in some countries' } },
+  { name: 'Thymosin Alpha-1', lowMcg: 750, stdMcg: 1500, highMcg: 1600, rangeLabel: '0.75–1.6 mg', timing: '☀️', timingNote: 'Morning — twice weekly', frequency: '2x/week', timingIcon: '☀️', color: '#A878E8', cycleWeeks: 8, breakWeeks: 4, evidence: { level: 'human', label: 'Human Data', source: 'Human clinical trials for immune modulation; approved in some countries' } },
   { name: 'Tirzepatide', lowMcg: 2500, stdMcg: 5000, highMcg: 15000, rangeLabel: '2.5-15 mg weekly', timing: 'morning', timingNote: 'Any day — once weekly, titrate up every 4 weeks', frequency: 'weekly', timingIcon: '☀️', color: '#FF6CA6', cycleWeeks: 16, breakWeeks: 0, evidence: { level: 'human', label: 'Human Data', source: 'Phase 3 human trials; FDA approved for type 2 diabetes (Mounjaro®) and chronic weight management (Zepbound®) — peptide-community dosing may differ from labeled protocol.' } },
   { name: 'VIP', lowMcg: 50, stdMcg: 50, highMcg: 100, rangeLabel: '50–100 mcg, 2-4x/day', timing: '☀️🌙', timingNote: 'Throughout day — nasal or SubQ. ⚠️ CIRS protocol required', frequency: 'daily', timingIcon: '☀️', color: '#E8E838', cycleWeeks: 0, breakWeeks: 0, evidence: { level: 'limited', label: 'Limited Evidence', source: 'Some human CIRS/mold illness studies; limited broader data' } },
 ];
@@ -4697,11 +4686,12 @@ function renderInjectionHistory() {
     parts.pop(); // remove date
     const peptideName = parts.join('_');
     const ts = getInjectionTimestamp(val);
-    const date = ts ? new Date(ts) : null;
-    const isValidDate = date && !isNaN(date.getTime());
-    const timeStr = isValidDate
-      ? date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
-      : 'Unknown date';
+    const date = new Date(ts);
+    const timeStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
 
     return `
       <div class="history-item">
@@ -5539,7 +5529,7 @@ function renderPeptidesList() {
     div.innerHTML = `
       <div class="pep-header pep-collapse-header">
         <div class="pep-summary">
-          <div class="pep-summary-top">
+          <div class="pep-summary-row">
             <span class="pep-dot" style="background:${pep.color}"></span>
             <span class="pep-summary-name">${pep.name}</span>
           </div>
@@ -6803,8 +6793,14 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
     const tabContent = document.getElementById('tab-' + targetTab);
     if (tabContent) tabContent.classList.add('active');
 
+    // Scroll to top on tab switch
+    document.querySelector('.app-content').scrollTop = 0;
+
     // Save active tab
     localStorage.setItem('activeTab', targetTab);
+
+    // After first user-initiated switch, suppress card fade-in animations on future switches
+    document.body.classList.add('tabs-ready');
   });
 });
 
@@ -7167,14 +7163,24 @@ function getEnergyEmoji(rating) {
 }
 
 function getMoodEmoji(mood) {
-  const moodMap = {
+  // Numeric scale 1–5 from the check-in pill form (data-val)
+  const numericMap = {
+    '1': '😞 Rough',
+    '2': '😕 Meh',
+    '3': '😐 Okay',
+    '4': '😊 Good',
+    '5': '😄 Great'
+  };
+  // Legacy emoji-string keys from older entries
+  const emojiMap = {
     '😫': '😫 Very Bad',
     '😕': '😕 Bad',
     '😐': '😐 Neutral',
     '🙂': '🙂 Good',
     '😄': '😄 Excellent'
   };
-  return moodMap[mood] || mood || '😐';
+  const key = String(mood);
+  return numericMap[key] || emojiMap[key] || '😐';
 }
 
 function getSymptomEmoji(symptom) {
@@ -7674,7 +7680,13 @@ document.addEventListener('DOMContentLoaded', () => {
         $panel.style.maxHeight = $panel.scrollHeight + 'px';
         $panel.classList.remove('collapsed');
         if ($icon) $icon.style.transform = 'rotate(0deg)';
+        // Release maxHeight after animation so dynamically-rendered content (e.g. peptide cards) isn't clipped
+        $panel.addEventListener('transitionend', function onExpand() {
+          if (open) $panel.style.maxHeight = 'none';
+          $panel.removeEventListener('transitionend', onExpand);
+        }, { once: true });
       } else {
+        // Re-measure before collapsing in case content grew since last open
         $panel.style.maxHeight = $panel.scrollHeight + 'px';
         requestAnimationFrame(() => {
           $panel.style.maxHeight = '0';
@@ -8140,17 +8152,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   initAdvancedToolsSlot();
 
-  function switchToTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
-    if (btn) btn.classList.add('active');
-    const tab = document.getElementById('tab-' + tabName);
-    if (tab) tab.classList.add('active');
-    document.querySelector('.app-content')?.scrollTo(0, 0);
-    localStorage.setItem('activeTab', tabName);
-  }
-
   function getAppMode() {
     return localStorage.getItem('appMode') || 'simple';
   }
@@ -8246,7 +8247,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     const target = document.getElementById('tab-' + tabName);
     if (target) target.classList.add('active');
+    document.querySelector('.app-content')?.scrollTo(0, 0);
     localStorage.setItem('activeTab', tabName);
+    document.body.classList.add('tabs-ready');
   }
 
   // "Mix my vial" → wizard step 2 (diluent), or navigate to recon-sheet tab
@@ -8619,6 +8622,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tiers = [
       { key: 'low',      label: 'Low',      dose: pep.lowMcg },
+      ...(pep.midMcg ? [{ key: 'mid', label: 'Mid', dose: pep.midMcg }] : []),
       { key: 'standard', label: 'Standard', dose: pep.stdMcg },
       { key: 'high',     label: 'High',     dose: pep.highMcg }
     ];
@@ -8961,14 +8965,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar(); 
   });
   
-  // ── Clear History ───────────────────────────────────────────
-  document.getElementById('clear-history')?.addEventListener('click', () => {
-    if (confirm('Clear all injection history?')) {
-      localStorage.removeItem('injectionHistory');
-      renderAll();
-    }
-  });
-  
   // ── Share Buttons ───────────────────────────────────────────
   document.getElementById('share-app-btn')?.addEventListener('click', async () => {
     await handleShare('app', 'share-app-btn');
@@ -8993,30 +8989,6 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('installBannerClosed', 'true');
   });
   
-  // ── Bottom Tab Navigation ───────────────────────────────────
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTab = btn.dataset.tab;
-
-      // Update active tab button
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Show target tab content, hide others
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      const tabContent = document.getElementById('tab-' + targetTab);
-      if (tabContent) tabContent.classList.add('active');
-
-      // Scroll to top on tab switch
-      document.querySelector('.app-content').scrollTop = 0;
-
-      // Save active tab
-      localStorage.setItem('activeTab', targetTab);
-    });
-  });
-
   // Learn option in More tab — show tab-learn
   document.getElementById('learn-option')?.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -10043,7 +10015,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultVal  = document.getElementById('rc-result-value');
     const breakdown  = document.getElementById('rc-result-breakdown');
     let syringeUnits = 10;
-    const syringeSize = 100; // locked to 1mL U-100 syringe
+    let syringeSize = parseInt(localStorage.getItem('rc-syringe-size') || '100', 10);
 
     // ── Peptide vial size lookup (common commercial sizes) ──
     const COMMON_VIALS = {
@@ -10216,22 +10188,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const rcResultMl   = document.getElementById('rc-result-value-ml');
       const rcResultConc = document.getElementById('rc-result-conc');
       const rcResultDose = document.getElementById('rc-result-dose-display');
-      const rcSyringes   = document.getElementById('rc-answer-syringes');
       if (rcResultMl)   rcResultMl.textContent   = display;
       if (rcResultConc) rcResultConc.textContent  = `${((vialMg * 1000) / waterMl).toFixed(0)} mcg/mL`;
       if (rcResultDose) rcResultDose.textContent  = doseDisplay;
-      // rc-result-value shows draw units (supporting info)
+      // rc-result-value now shows syringe units (not mL) — update it
       if (resultVal) resultVal.textContent = syringeUnits;
-      // syringe count helper
-      if (rcSyringes) {
-        const rounded = Math.round(waterMl * 4) / 4;
-        const whole = Math.floor(rounded);
-        const frac = rounded - whole;
-        const fracStr = frac === 0.25 ? '¼' : frac === 0.5 ? '½' : frac === 0.75 ? '¾' : '';
-        const totalStr = whole > 0 ? (fracStr ? `${whole}${fracStr}` : `${whole}`) : (fracStr || '< 1');
-        const word = rounded === 1 ? 'syringe' : 'syringes';
-        rcSyringes.textContent = waterMl > 0 ? `${totalStr} full ${word} of BAC water` : '—';
-      }
 
       // Mark first result seen for upsell unlock (#130) and stage milestone (#138)
       if (!localStorage.getItem('hasSeenResult')) {
@@ -10315,7 +10276,22 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Syringe size locked to 100-unit (1mL U-100) — selector removed
+    // Syringe size buttons
+    document.querySelectorAll('.rc-sz-btn').forEach(btn => {
+      // Restore active state on load
+      if (parseInt(btn.dataset.sz) === syringeSize) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+      btn.addEventListener('click', () => {
+        syringeSize = parseInt(btn.dataset.sz);
+        localStorage.setItem('rc-syringe-size', syringeSize);
+        document.querySelectorAll('.rc-sz-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        calcAndRender();
+      });
+    });
 
     // ── Common scenario presets ──
     const PRESETS = {
