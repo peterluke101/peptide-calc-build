@@ -5175,7 +5175,7 @@ function renderToday(animate) {
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
-          <div class="today-name">${pep.name} ${badgeHtml}</div>
+          <div class="today-name">${pep.name} ${badgeHtml} <button class="pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}" title="What is this used for?">ⓘ</button></div>
           <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)} · ${fmtUnits(units)} u</div>
         </div>
         ${actionsHtml}
@@ -5191,6 +5191,12 @@ function renderToday(animate) {
 
     function attachRowHandlers(div, item) {
       const { injectionKey, pep, doseMcg, units } = item;
+
+      // Info (ⓘ) — show "what people take it for" popup
+      div.querySelector('.pep-info-btn')?.addEventListener('click', e => {
+        e.stopPropagation();
+        showPeptideInfo(pep.name);
+      });
 
       // Math toggle
       div.querySelector('.today-math-btn')?.addEventListener('click', e => {
