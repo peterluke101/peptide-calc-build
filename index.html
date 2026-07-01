@@ -3902,7 +3902,15 @@ function renderPepDiscover() {
     }).filter(Boolean).join('');
     return `<div class="pd-category"><div class="pd-cat-header" onclick="this.closest('.pd-category').classList.toggle('pd-open')"><span class="pd-cat-title">${cat.label}<span class="pd-cat-count">${cat.names.length}</span></span><span class="pd-cat-chev">›</span></div><div class="pd-cat-body">${rows}</div></div>`;
   }).join('');
+  // Wire up info buttons after render
+  container.querySelectorAll('.pep-info-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      showPeptideInfo(btn.dataset.pepName);
+    });
+  });
 }
+
 
 function getShortUse(name) {
   const full = PEPTIDE_USES[name] || '';
