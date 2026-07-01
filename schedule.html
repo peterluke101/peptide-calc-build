@@ -309,6 +309,8 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 /* ── Responsive ──────────────────────────────────────────── */
 @media(max-width:600px){
   /* Calendar: horizontal scroll cards — swipe through days */
+  .cal-grid-wrap{position:relative}
+  .cal-grid-wrap::after{content:'';position:absolute;top:0;right:0;bottom:.5rem;width:2.5rem;background:linear-gradient(to right,transparent,var(--surface));pointer-events:none;border-radius:0 10px 10px 0}
   .cal-grid{display:flex;overflow-x:auto;gap:.5rem;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x mandatory}
   .cal-grid::-webkit-scrollbar{display:none}
   .cal-day{flex:0 0 calc(33.33% - .35rem);min-width:92px;min-height:110px;scroll-snap-align:start;display:flex;flex-direction:column;padding:.65rem .5rem;border-radius:10px;cursor:pointer;background:var(--surface2);transition:all .15s;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.06)}
@@ -472,7 +474,9 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
       <button id="next-week" aria-label="Next week">›</button>
     </div>
   </div>
-  <div class="cal-grid" id="cal-grid"></div>
+  <div class="cal-grid-wrap">
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
 </div>
 
 <!-- Injection History -->
