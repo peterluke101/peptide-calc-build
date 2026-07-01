@@ -1754,12 +1754,28 @@ body.first-run #more-tools-expander{display:none}
 #more-tools-panel .task-card-title{font-size:.78rem;font-weight:600}
 #more-tools-panel .task-card-desc{display:none}
 #more-tools-panel .task-card-arrow{display:none}
-/* Dominant primary task card for returning users */
-body:not(.first-run) #task-calc-dose{background:var(--accent);border-color:var(--accent);color:#000;flex:0 0 100%;max-width:100%;flex-direction:row;min-height:52px;align-items:center;gap:.75rem;padding:.75rem 1rem;margin-bottom:.25rem}
-body:not(.first-run) #task-calc-dose .task-card-icon{font-size:1.3rem;width:auto}
-body:not(.first-run) #task-calc-dose .task-card-title{font-size:.9rem;color:#000;font-weight:700}
-body:not(.first-run) #task-calc-dose .task-card-desc{display:block;color:rgba(0,0,0,.6);font-size:.72rem}
-body:not(.first-run) #task-calc-dose .task-card-arrow{display:block;color:rgba(0,0,0,.5)}
+/* ── Peptide Discover ────────────────────────────────────────── */
+#pep-discover{width:100%;max-width:720px;margin:0 auto .75rem}
+body.first-run #pep-discover{display:none}
+.pd-header{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.6rem;padding:0 .1rem}
+.pd-header-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.pd-header-sub{font-size:.68rem;color:var(--text2)}
+.pd-category{border:1px solid var(--border);border-radius:10px;margin-bottom:.4rem;overflow:hidden;background:var(--surface)}
+.pd-cat-header{display:flex;align-items:center;justify-content:space-between;padding:.55rem .85rem;cursor:pointer;user-select:none;background:var(--surface2);-webkit-tap-highlight-color:transparent}
+.pd-cat-title{font-size:.75rem;font-weight:700;color:var(--text)}
+.pd-cat-count{font-size:.62rem;font-weight:400;color:var(--text2);margin-left:.3rem}
+.pd-cat-chev{font-size:.85rem;color:var(--text2);transition:transform .2s;flex-shrink:0}
+.pd-category.pd-open .pd-cat-chev{transform:rotate(90deg)}
+.pd-cat-body{display:none;padding:.2rem .4rem .3rem}
+.pd-category.pd-open .pd-cat-body{display:block}
+.pd-row{display:flex;align-items:center;gap:.5rem;padding:.38rem .45rem;border-radius:7px;transition:background .12s}
+.pd-row:hover{background:var(--surface2)}
+.pd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pd-name{flex:1;font-size:.78rem;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd-ev-badge{font-size:.55rem;font-weight:700;color:#fff;padding:.12rem .42rem;border-radius:8px;white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em}
+.pd-ev-green{background:#16a34a}
+.pd-ev-yellow{background:#d97706}
+.pd-ev-red{background:#b91c1c}
 /* Homepage zones */
 .homepage-zone-sep{display:flex;align-items:center;gap:.65rem;margin:.75rem 0 .5rem;color:var(--text2);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;max-width:720px;width:100%}
 .homepage-zone-sep::before,.homepage-zone-sep::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -1818,7 +1834,6 @@ body.light-mode .btn-secondary{background:transparent!important;color:#1a9e88!im
 .task-card-list{display:flex;flex-direction:column;gap:.5rem}
 .task-card{display:flex;align-items:center;gap:.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;cursor:pointer;transition:background .15s,border-color .15s;min-height:56px;text-align:left;width:100%;font-family:inherit;color:var(--text);-webkit-appearance:none;appearance:none}
 .task-card:hover,.task-card:active{background:var(--surface);border-color:var(--accent)}
-body:not(.first-run) #task-calc-dose:hover{background:#0b8870;border-color:#0b8870}
 .task-card-icon{font-size:1.25rem;flex-shrink:0;width:28px;text-align:center}
 .task-card-text{flex:1;min-width:0}
 .task-card-title{font-size:.9rem;font-weight:600;color:var(--text)}
@@ -1973,23 +1988,31 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 <!-- Task Picker (#103, #128) -->
 <div id="task-picker">
   <div class="task-picker-label">What would you like to do?</div>
-  <div class="task-card-list">
-    <button class="task-card" id="task-calc-dose">
-      <span class="task-card-icon">💉</span>
-      <span class="task-card-text">
-        <span class="task-card-title">Calculate a dose</span>
-        <span class="task-card-desc">Find units to draw for your peptide and dose</span>
-      </span>
-      <span class="task-card-arrow">›</span>
-    </button>
+  <div class="task-card-list"></div>
+</div>
+
+<!-- Discover Peptides section (replaces teal calc hero) -->
+<div id="pep-discover">
+  <div class="pd-header">
+    <span class="pd-header-title">🔬 Explore Peptides</span>
+    <span class="pd-header-sub">Tap ⓘ to learn about any compound</span>
   </div>
+  <div id="pep-discover-list"></div>
 </div>
 
 <!-- More Tools expander for returning users (#128) -->
 <div id="more-tools-expander">
-  <button id="more-tools-toggle-btn">More tools ›</button>
+  <button id="more-tools-toggle-btn">Tools ›</button>
   <div id="more-tools-panel">
     <div class="task-card-grid">
+      <button class="task-card" id="task-calc-dose">
+        <span class="task-card-icon">💉</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Calculate a dose</span>
+          <span class="task-card-desc">Find units to draw for your peptide and dose</span>
+        </span>
+        <span class="task-card-arrow">›</span>
+      </button>
       <button class="task-card" id="task-reconstitute">
         <span class="task-card-icon">🧪</span>
         <span class="task-card-text">
@@ -3840,6 +3863,46 @@ const PEPTIDE_USES = {
   'Tirzepatide': 'A dual GIP/GLP-1 agonist commonly used for weight loss and blood-sugar control. FDA approved as Mounjaro® and Zepbound®.',
   'VIP': 'Vasoactive Intestinal Peptide, commonly used in CIRS/mold-illness recovery protocols for inflammation and hormonal balance, typically nasal. Limited broader data.'
 };
+
+// ── Peptide Discovery Library ─────────────────────────────────
+const PEP_CATEGORIES = [
+  { label: '🔧 Healing & Recovery',       names: ['BPC-157','TB-500','GHK-Cu','ARA-290','LL-37','KPV','GLOW Stack (BPC-157 + TB-500 + GHK-Cu)','KLOW Stack (TB + BPC + GHK + KPV)','PEG-MGF'] },
+  { label: '⚖️ Fat Loss & Metabolism',     names: ['Semaglutide','Tirzepatide','Retatrutide','Cagrilintide','Mazdutide','Survodutide','Tesamorelin','AOD-9604','Adipotide','L-Carnitine','MOTS-C','AICAR'] },
+  { label: '💪 Muscle, GH & Performance', names: ['HGH','Ipamorelin','CJC-1295 no DAC + Ipamorelin','CJC-1295 with DAC','Sermorelin','MK-677 (Ibutamoren)','Hexarelin','GHRP-2','GHRP-6','IGF-1 LR3'] },
+  { label: '🧬 Longevity & Anti-Aging',   names: ['NAD+','Epitalon','SS-31 (Elamipretide)','FOXO4-DRI','Glutathione'] },
+  { label: '🧠 Brain, Mood & Sleep',      names: ['Semax','Selank','Dihexa','DSIP','PE-22-28','VIP'] },
+  { label: '❤️ Hormonal & Sexual Health', names: ['PT-141 (Bremelanotide)','Oxytocin','HCG','Melanotan II','Melanotan I'] },
+  { label: '🛡️ Immune & Inflammation',    names: ['Thymosin Alpha-1','Thymalin'] }
+];
+
+function _pdEvClass(level) {
+  if (level === 'human')   return 'pd-ev-green';
+  if (level === 'limited') return 'pd-ev-yellow';
+  return 'pd-ev-red';
+}
+function _pdEvLabel(level) {
+  if (level === 'human')   return 'Human Data';
+  if (level === 'limited') return 'Limited';
+  if (level === 'animal')  return 'Animal Data';
+  return 'Low Evidence';
+}
+
+function renderPepDiscover() {
+  const container = document.getElementById('pep-discover-list');
+  if (!container) return;
+  container.innerHTML = PEP_CATEGORIES.map(cat => {
+    const rows = cat.names.map(name => {
+      const pep = PEPTIDES.find(p => p.name === name);
+      if (!pep) return '';
+      const ev   = pep.evidence || {};
+      const cls  = _pdEvClass(ev.level);
+      const lbl  = _pdEvLabel(ev.level);
+      const info = PEPTIDE_USES[name] ? `<button class="pep-use-icon pep-info-btn" data-pep-name="${escapeHtml(name)}" aria-label="About ${escapeHtml(name)}" style="min-height:0;min-width:0">i</button>` : '';
+      return `<div class="pd-row"><span class="pd-dot" style="background:${pep.color}"></span><span class="pd-name">${escapeHtml(name)}</span><span class="pd-ev-badge ${cls}">${lbl}</span>${info}</div>`;
+    }).filter(Boolean).join('');
+    return `<div class="pd-category"><div class="pd-cat-header" onclick="this.closest('.pd-category').classList.toggle('pd-open')"><span class="pd-cat-title">${cat.label}<span class="pd-cat-count">${cat.names.length}</span></span><span class="pd-cat-chev">›</span></div><div class="pd-cat-body">${rows}</div></div>`;
+  }).join('');
+}
 
 function getShortUse(name) {
   const full = PEPTIDE_USES[name] || '';
@@ -7708,6 +7771,7 @@ function setupLogbookToggle() {
 document.addEventListener('DOMContentLoaded', () => {
   // Render everything
   renderAll();
+  renderPepDiscover();
 
   // ── First-Time Onboarding ────────────────────────────────────
   function isFirstRun() {
