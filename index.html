@@ -2208,9 +2208,9 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
     <!-- Hidden elements populated by existing page-load code -->
     <select id="add-peptide" style="display:none"></select>
     <select id="add-tier" style="display:none">
-      <option value="low">Low</option>
-      <option value="standard" selected>Standard</option>
-      <option value="high">High</option>
+      <option value="low">Lower end</option>
+      <option value="standard" selected>Mid-range</option>
+      <option value="high">Higher end</option>
       <option value="custom">Custom</option>
     </select>
     <input type="hidden" id="add-custom-dose-mcg" value="">
@@ -8766,10 +8766,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayToMcg = v => useMg ? Math.round(v * 1000) : Math.round(v);
 
     const tiers = [
-      { key: 'low',      label: 'Low',      dose: pep.lowMcg },
+      { key: 'low',      label: 'Lower end', dose: pep.lowMcg },
       ...(pep.midMcg ? [{ key: 'mid', label: 'Mid', dose: pep.midMcg }] : []),
-      { key: 'standard', label: 'Standard', dose: pep.stdMcg },
-      { key: 'high',     label: 'High',     dose: pep.highMcg }
+      { key: 'standard', label: 'Mid-range', dose: pep.stdMcg },
+      { key: 'high',     label: 'Higher end', dose: pep.highMcg }
     ];
 
     // Render tier preset buttons
@@ -10796,7 +10796,7 @@ function saveSavedProtocols(arr) {
 function fmtProtocolMeta(p) {
   const pep = PEPTIDES[p.peptideIndex];
   if (!pep) return '—';
-  const tierLabel = p.tier === 'low' ? 'Low' : p.tier === 'high' ? 'High' : 'Standard';
+  const tierLabel = p.tier === 'low' ? 'Lower end' : p.tier === 'high' ? 'Higher end' : 'Mid-range';
   const freqLabel = pep.frequency || 'daily';
   const cycleLabel = p.cycleDays === 0 ? 'Ongoing' : p.cycleDays + '-day cycle';
   return `${pep.name} · ${tierLabel} dose · ${freqLabel} · ${cycleLabel}`;
@@ -10815,7 +10815,7 @@ function renderProtocolsQuick() {
   section.style.display = 'block';
   list.innerHTML = protocols.map(p => {
     const pep = PEPTIDES[p.peptideIndex];
-    const tierLabel = p.tier === 'low' ? 'Low' : p.tier === 'high' ? 'High' : 'Std';
+    const tierLabel = p.tier === 'low' ? 'Low end' : p.tier === 'high' ? 'High end' : 'Mid';
     return `
       <button class="protocol-quick-btn" data-proto-load="${p.id}">
         <span class="pqb-name">${escapeHtml(p.name)}</span>
