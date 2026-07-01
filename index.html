@@ -110,6 +110,8 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 /* ── Peptide Info (ⓘ) ────────────────────────────────────── */
 .pep-info-btn{background:none;border:none;color:var(--text2);font-size:1rem;line-height:1;cursor:pointer;padding:.1rem .3rem;opacity:.6;flex-shrink:0;transition:opacity .15s,color .15s}
 .pep-info-btn:hover{opacity:1;color:var(--accent)}
+.use-pill{display:inline-flex;align-items:center;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:20px;font-size:.68rem;font-weight:600;line-height:1;padding:.2rem .55rem;cursor:pointer;flex-shrink:0;letter-spacing:.01em;transition:background .15s,color .15s;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;opacity:1}
+.use-pill:hover{background:color-mix(in srgb,var(--accent) 25%,transparent)}
 .pep-info-header{display:flex;align-items:center;gap:.5rem;justify-content:center;padding:.25rem 0}
 .pep-info-name{font-size:1.25rem;font-weight:700;color:var(--text);letter-spacing:-.01em;text-align:center}
 .pep-info-badge-row{display:flex;justify-content:center}
@@ -3827,6 +3829,15 @@ const PEPTIDE_USES = {
   'VIP': 'Vasoactive Intestinal Peptide, commonly used in CIRS/mold-illness recovery protocols for inflammation and hormonal balance, typically nasal. Limited broader data.'
 };
 
+function getShortUse(name) {
+  const full = PEPTIDE_USES[name] || '';
+  if (!full) return '';
+  const m = full.match(/(?:commonly used|explored|used) for ([^.]+)/i);
+  let phrase = m ? m[1].trim() : full.split(/[.!]/)[0].trim();
+  if (phrase.length > 40) phrase = phrase.slice(0, 37).replace(/\s+\S*$/, '') + '\u2026';
+  return phrase;
+}
+
 const VIALS = [1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,70,80,100,200,250,500,1000,2000,2500];
 const WATER = [0.5,1,1.5,2,2.5,3,4,5];
 
@@ -4582,7 +4593,7 @@ function renderStackRecommendations(goal) {
       <div class="stack-peptide${peptide.featured ? ' is-featured' : ''}">
         <div class="stack-peptide-header">
           <div class="stack-peptide-name">
-            ${peptide.featured ? '⭐ ' : ''}${peptide.name}${pepData ? `<button class="pep-info-btn" data-pep-name="${pepData.name}" aria-label="About ${pepData.name}" title="What is this used for?">ⓘ</button>` : ''}
+            ${peptide.featured ? '⭐ ' : ''}${peptide.name}${pepData && PEPTIDE_USES[pepData.name] ? `<button class="use-pill pep-info-btn" data-pep-name="${pepData.name}" aria-label="About ${pepData.name}">${escapeHtml(getShortUse(pepData.name))}</button>` : ''}
           </div>
           <div class="stack-peptide-priority ${peptide.priority}">${peptide.priority}</div>
         </div>
@@ -5175,7 +5186,7 @@ function renderToday(animate) {
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
-          <div class="today-name">${pep.name} ${badgeHtml} <button class="pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}" title="What is this used for?">ⓘ</button></div>
+          <div class="today-name">${pep.name} ${badgeHtml} ${PEPTIDE_USES[pep.name] ? `<button class="use-pill pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}">${escapeHtml(getShortUse(pep.name))}</button>` : ''}</div>
           <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)} · ${fmtUnits(units)} u</div>
         </div>
         ${actionsHtml}
@@ -5647,7 +5658,7 @@ function renderPeptidesList() {
           <div class="pep-summary-row">
             <span class="pep-dot" style="background:${pep.color}"></span>
             <span class="pep-summary-name">${pep.name}</span>
-            <button class="pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}" title="What is this used for?">ⓘ</button>
+            ${PEPTIDE_USES[pep.name] ? `<button class="use-pill pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}">${escapeHtml(getShortUse(pep.name))}</button>` : ''}
           </div>
           <span class="pep-summary-meta">${fmtDose(doseMcg)} · ${pep.frequency}</span>
         </div>
