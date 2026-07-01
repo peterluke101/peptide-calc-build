@@ -160,10 +160,11 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 #weight-celebrate-msg{background:var(--accent);color:#000;border-radius:14px;padding:.55rem 1.3rem;font-size:1.05rem;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.22);letter-spacing:.02em}
 .today-item:active{transform:scale(.98)}
 .today-item.completed{opacity:.6;background:rgba(61,232,195,.06)}
-.today-item.completed .today-name{text-decoration:line-through;text-decoration-color:var(--accent)}
+.today-item.completed .today-name-text{text-decoration:line-through;text-decoration-color:var(--accent)}
 .today-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .today-info{flex:1;min-width:0}
-.today-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.today-name{font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:.35rem;min-width:0}
+.today-name-text{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .today-meta{font-size:.75rem;color:var(--text2);margin-top:.15rem}
 .today-units{font-size:1rem;font-weight:700;color:var(--accent);white-space:nowrap;padding-left:.5rem}
 .today-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.9rem}
@@ -321,7 +322,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .peptide-entry.expanded .pep-collapse-header{margin-bottom:.6rem}
 .pep-summary{display:flex;flex-direction:column;gap:.1rem;flex:1;min-width:0;overflow:hidden}
 .pep-summary-row{display:flex;align-items:center;gap:.5rem;min-width:0}
-.pep-summary-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pep-summary-name{font-size:.95rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .pep-summary-meta{font-size:.72rem;color:var(--text2);white-space:nowrap;padding-left:1.05rem}
 .pep-chevron{font-size:1.1rem;color:var(--text2);line-height:1;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);display:inline-block}
 .peptide-entry.expanded .pep-chevron{transform:rotate(90deg)}
@@ -5186,7 +5187,7 @@ function renderToday(animate) {
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
         <div class="today-info">
-          <div class="today-name">${pep.name} ${badgeHtml} ${PEPTIDE_USES[pep.name] ? `<button class="use-pill pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}">${escapeHtml(getShortUse(pep.name))}</button>` : ''}</div>
+          <div class="today-name"><span class="today-name-text">${pep.name}</span>${badgeHtml}${PEPTIDE_USES[pep.name] ? `<button class="use-pill pep-info-btn" data-pep-name="${pep.name}" aria-label="About ${pep.name}">${escapeHtml(getShortUse(pep.name))}</button>` : ''}</div>
           <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)} · ${fmtUnits(units)} u</div>
         </div>
         ${actionsHtml}
