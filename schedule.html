@@ -96,7 +96,21 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 .today-info{flex:1;min-width:0}
 .today-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .today-meta{font-size:.75rem;color:var(--text2);margin-top:.15rem}
-.today-units{font-size:1rem;font-weight:700;color:var(--accent);white-space:nowrap;padding-left:.5rem}
+.today-units{font-size:1rem;font-weight:700;color:var(--accent);white-space:nowrap}
+.today-units-col{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding-left:.5rem}
+.pep-use-icon{background:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:50%;width:1.1rem;height:1.1rem;font-size:.65rem;font-style:italic;font-weight:700;line-height:1;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;opacity:.75;transition:opacity .15s,background .15s}
+.pep-use-icon:hover{opacity:1;background:rgba(13,155,131,.12)}
+.pep-use-icon:active{opacity:1}
+.pep-info-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.pep-info-sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:520px;max-height:88dvh;overflow-y:auto;padding:1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:1.25rem;animation:slideUp .3s ease}
+.pep-info-header{display:flex;align-items:center;gap:.5rem;justify-content:center;padding:.25rem 0}
+.pep-info-name{font-size:1.25rem;font-weight:700;color:var(--text);letter-spacing:-.01em;text-align:center}
+.pep-info-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto -.5rem}
+.pep-info-body{font-size:.85rem;color:var(--text2);line-height:1.65}
+.pep-info-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.25rem}
+.pep-info-disclaimer{font-size:.72rem;color:var(--text2);line-height:1.55;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem .85rem}
+.pep-info-close{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.75rem;font-family:inherit;font-size:.9rem;font-weight:500;cursor:pointer;width:100%;transition:background .2s}
+.pep-info-close:hover{background:var(--border)}
 .today-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.9rem}
 .done-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:.5rem;-webkit-tap-highlight-color:transparent;user-select:none}
 .done-btn:hover{background:var(--accent-dim);border-color:var(--accent)}
@@ -1378,7 +1392,10 @@ function renderToday(animate) {
           <div class="today-name">${pep.name}</div>
           <div class="today-meta">${pep.timingIcon} ${pep.timingNote} · ${fmtDose(doseMcg)}</div>
         </div>
-        <div class="today-units">${fmtUnits(units)} u</div>
+        <div class="today-units-col">
+          <div class="today-units">${fmtUnits(units)} u</div>
+          ${PEPTIDE_USES[pep.name] ? `<button class="pep-use-icon" data-pep-name="${pep.name}" aria-label="About ${pep.name}">i</button>` : ''}
+        </div>
         <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}">
           ${isDone ? '✓ Done' : 'Inject'}
         </button>
@@ -1930,6 +1947,91 @@ if (!localStorage.getItem('hasOnboarded')) {
 if (localStorage.getItem('appMode') === 'advanced') {
   document.body.classList.add('advanced-mode');
 }
+
+// ── Peptide Uses (for info icon popup) ───────────────────────
+const PEPTIDE_USES = {
+  'Adipotide':'Explored for fat loss. Marketed as a targeted fat-reduction compound thought to cut the blood supply to fat tissue.',
+  'AICAR':'Sometimes called "exercise in a pill." Users explore it for endurance, stamina, and metabolic/fat-loss support.',
+  'AOD-9604':'A fragment of HGH commonly used for fat loss without the broader growth-hormone effects.',
+  'ARA-290':'Commonly explored for nerve pain, neuropathy, and inflammation.',
+  'BPC-157':'One of the most popular "healing" peptides. Commonly used for tendon, ligament, muscle, and gut repair and general injury recovery.',
+  'Cagrilintide':'An amylin analog commonly used for weight management and appetite control, often paired with semaglutide.',
+  'CJC-1295 no DAC + Ipamorelin':'A popular growth-hormone-releasing combo. Commonly used for lean muscle, fat loss, recovery, and sleep quality.',
+  'CJC-1295 with DAC':'A longer-acting GH-releasing peptide for sustained GH elevation to support muscle, recovery, and fat loss.',
+  'Dihexa':'An oral nootropic peptide commonly explored for cognition, memory, and focus.',
+  'DSIP':'Delta Sleep-Inducing Peptide. Commonly used for sleep quality, relaxation, and stress.',
+  'Epitalon':'A longevity peptide commonly used for anti-aging, sleep, and cellular health.',
+  'FOXO4-DRI':'An experimental senolytic explored for clearing aging ("senescent") cells for longevity goals.',
+  'GHK-Cu':'A copper peptide commonly used for skin, hair, collagen, and wound healing.',
+  'GHRP-2':'A growth-hormone-releasing peptide commonly used for muscle gain, fat loss, and appetite stimulation.',
+  'GHRP-6':'Commonly used for muscle, recovery, and notably strong appetite stimulation. Popular in bulking protocols.',
+  'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)':'A blend commonly used for skin glow, healing, and recovery.',
+  'Glutathione':'A master antioxidant commonly used for detox, skin brightening, and immune/liver support.',
+  'HCG':'Commonly used to support testosterone production and fertility during or after TRT/steroid cycles.',
+  'Hexarelin':'A potent GH secretagogue commonly used for muscle growth and recovery.',
+  'HGH':'Commonly used for fat loss, muscle, recovery, skin, and anti-aging.',
+  'IGF-1 LR3':'A long-acting form of IGF-1 commonly used for muscle growth and recovery post-workout.',
+  'Ipamorelin':'A gentle, selective GH-releasing peptide commonly used for lean muscle, recovery, fat loss, and sleep.',
+  'KLOW Stack (TB + BPC + GHK + KPV)':'Commonly used for comprehensive healing, recovery, and anti-inflammatory support.',
+  'KPV':'An anti-inflammatory peptide commonly used for gut issues, IBD, and skin inflammation.',
+  'L-Carnitine':'Commonly used for fat metabolism, energy, and exercise performance.',
+  'LL-37':'An antimicrobial peptide commonly explored for infections, gut health, and wound healing.',
+  'Mazdutide':'An investigational GLP-1/glucagon dual agonist explored for weight loss and metabolic health.',
+  'Melanotan I':'Commonly used for tanning and sun protection by stimulating melanin.',
+  'Melanotan II':'Commonly used for tanning and, anecdotally, libido.',
+  'MK-677 (Ibutamoren)':'An oral GH secretagogue commonly used for muscle, recovery, sleep, and appetite.',
+  'MOTS-C':'A mitochondrial peptide commonly used for metabolic health, energy, endurance, and fat loss.',
+  'NAD+':'Commonly used for energy, cellular repair, mental clarity, and anti-aging.',
+  'Oxytocin':'The "bonding" hormone, commonly used for mood, connection, stress relief, and libido.',
+  'PE-22-28':'An experimental peptide explored for depression and mood.',
+  'PEG-MGF':'A pegylated mechano growth factor commonly used for muscle repair and growth post-workout.',
+  'PT-141 (Bremelanotide)':'Commonly used for libido and sexual function in both men and women.',
+  'Retatrutide':'An investigational triple agonist commonly explored for substantial weight loss and metabolic health.',
+  'Selank':'An anti-anxiety nootropic peptide commonly used for stress, anxiety, and focus.',
+  'Semaglutide':'A GLP-1 agonist commonly used for weight loss and blood-sugar control by curbing appetite.',
+  'Semax':'A nootropic peptide commonly used for focus, memory, cognitive performance, and neuroprotection.',
+  'Sermorelin':'A GH-releasing peptide commonly used for anti-aging, recovery, sleep, and body composition.',
+  'SS-31 (Elamipretide)':'A mitochondria-targeted peptide commonly explored for energy, cellular health, and age-related decline.',
+  'Survodutide':'An investigational GLP-1/glucagon dual agonist explored for weight loss and liver health.',
+  'TB-500':'A healing and recovery peptide commonly used for injury repair, flexibility, and inflammation.',
+  'Tesamorelin':'A GH-releasing peptide commonly used for reducing visceral belly fat and improving body composition.',
+  'Thymalin':'An immune-support peptide commonly used for immune restoration and anti-aging.',
+  'Thymosin Alpha-1':'An immune-modulating peptide commonly used for immune support, infection resistance, and recovery.',
+  'Tirzepatide':'A dual GIP/GLP-1 agonist commonly used for weight loss and blood-sugar control.',
+  'VIP':'Vasoactive Intestinal Peptide, commonly used in CIRS/mold-illness recovery protocols for inflammation and hormonal balance.'
+};
+
+function showPeptideInfo(pepName) {
+  const pep = PEPTIDES.find(p => p.name === pepName);
+  if (!pep) return;
+  const uses = PEPTIDE_USES[pep.name] || 'No usage information available yet for this compound.';
+  const overlay = document.createElement('div');
+  overlay.className = 'pep-info-overlay';
+  overlay.innerHTML = `
+    <div class="pep-info-sheet" role="dialog" aria-modal="true">
+      <div class="pep-info-handle"></div>
+      <div class="pep-info-header">
+        <span class="today-dot" style="background:${pep.color}"></span>
+        <span class="pep-info-name">${pep.name}</span>
+      </div>
+      <div>
+        <div class="pep-info-label">Commonly used for</div>
+        <div class="pep-info-body">${uses}</div>
+      </div>
+      <div class="pep-info-disclaimer">⚕️ Educational only — not medical advice. Always consult a qualified healthcare provider.</div>
+      <button class="pep-info-close">Close</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => document.body.removeChild(overlay);
+  overlay.querySelector('.pep-info-close').addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.pep-use-icon');
+  if (btn) { e.stopPropagation(); showPeptideInfo(btn.dataset.pepName); }
+});
 
 // ── Theme ─────────────────────────────────────────────────────
 if (localStorage.getItem('theme') === 'dark') {
