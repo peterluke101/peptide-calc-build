@@ -173,7 +173,7 @@ button,.btn,.tab-btn,.goal-btn,.share-btn,.clear-btn,.install-banner-btn,.instal
 .today-meta{font-size:.75rem;color:var(--text2);margin-top:.15rem}
 .today-units{font-size:1rem;font-weight:700;color:var(--accent);white-space:nowrap;padding-left:.5rem}
 .today-empty{text-align:center;padding:1.5rem;color:var(--text2);font-size:.9rem}
-.done-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:.5rem;-webkit-tap-highlight-color:transparent;user-select:none}
+.done-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.4rem .6rem;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:.5rem;-webkit-tap-highlight-color:transparent;user-select:none;min-height:0;min-width:0}
 .done-btn:hover{background:var(--accent-dim);border-color:var(--accent)}
 .done-btn:active{transform:scale(.95)}
 .done-btn.done{background:var(--accent);color:#000;border-color:var(--accent);animation:donePop .3s ease}
@@ -1228,7 +1228,7 @@ body.dark-mode .app-content,body.dark-mode .tab-content,body.dark-mode #tab-sche
 .badge-skipped{color:var(--text2);background:var(--surface);border:1px solid var(--border)}
 /* Today action buttons (Skip, Move, Undo) */
 .today-actions{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
-.today-skip-btn,.today-move-btn,.today-undo-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.35rem .5rem;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;min-height:32px}
+.today-skip-btn,.today-move-btn,.today-undo-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.35rem .5rem;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;min-height:0;min-width:0}
 .today-skip-btn:hover{border-color:var(--text2);color:var(--text)}
 .today-move-btn:hover{border-color:var(--accent);color:var(--accent)}
 .today-undo-btn:hover{border-color:var(--border);color:var(--text)}
@@ -1482,10 +1482,10 @@ body.first-run .stacks-new-user-note{display:block}
 .s11-summary::-webkit-details-marker{display:none}
 .s11-body{padding-top:.5rem}
 /* === Missed-dose & schedule resilience (Issue #87) === */
-.today-late-btn{background:none;border:1px solid #f59e0b;color:#f59e0b;border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer;transition:background .15s}
+.today-late-btn{background:none;border:1px solid #f59e0b;color:#f59e0b;border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer;transition:background .15s;min-height:0;min-width:0}
 .today-late-btn:hover{background:#f59e0b22}
-.today-snooze-btn{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:.2rem .45rem;font-size:.8rem;cursor:pointer}
-.today-reschedule-btn{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer}
+.today-snooze-btn{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:.2rem .45rem;font-size:.8rem;cursor:pointer;min-height:0;min-width:0}
+.today-reschedule-btn{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer;min-height:0;min-width:0}
 .late-badge{display:inline-block;background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b;border-radius:4px;font-size:.65rem;padding:.05rem .3rem;font-weight:600;vertical-align:middle;margin-left:.25rem}
 .today-conflict-banner{background:#fef3c7;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:.4rem .65rem;font-size:.78rem;color:#92400e;margin-bottom:.5rem;line-height:1.4}
 body.dark-mode .today-conflict-banner{background:#451a0344;color:#fcd34d;border-color:#f59e0b}
