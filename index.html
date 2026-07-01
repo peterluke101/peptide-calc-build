@@ -3790,7 +3790,7 @@ const PEPTIDES = [
 // "research explores") — these describe popular/anecdotal use and early
 // research, NOT proven medical outcomes. Surfaced via the ⓘ info popup.
 const PEPTIDE_USES = {
-  'Adipotide': 'Explored for fat loss. Marketed as a targeted fat-reduction compound thought to cut the blood supply to fat tissue. Users take it in short cycles for rapid weight reduction; evidence is limited to animal studies.',
+  'Adipotide': 'Explored for fat loss in research settings. Marketed as a targeted fat-reduction compound thought to cut the blood supply to fat tissue. Users report taking it in short cycles; evidence is limited to animal studies and human outcomes are not established.',
   'AICAR': 'Sometimes called "exercise in a pill." Users explore it for endurance, stamina, and metabolic/fat-loss support. Banned by WADA for competition. Human efficacy data is limited.',
   'AOD-9604': 'A fragment of HGH commonly used for fat loss without the broader growth-hormone effects. Users report appetite and body-composition support; human obesity trials showed modest results.',
   'ARA-290': 'Commonly explored for nerve pain, neuropathy, and inflammation. Users report relief from chronic pain and improved nerve function. Backed by small human studies.',
@@ -3800,21 +3800,21 @@ const PEPTIDE_USES = {
   'CJC-1295 with DAC': 'A longer-acting GH-releasing peptide. Commonly used for sustained GH elevation to support muscle, recovery, and fat loss with less frequent dosing.',
   'Dihexa': 'An oral nootropic peptide commonly explored for cognition, memory, and focus. Users report mental clarity; evidence is mostly from animal cognitive studies.',
   'DSIP': 'Delta Sleep-Inducing Peptide. Commonly used for sleep quality, relaxation, and stress. Users report deeper sleep; modern peer-reviewed data is limited.',
-  'Epitalon': 'A longevity peptide commonly used for anti-aging, sleep, and cellular health. Thought to support telomerase activity; based on animal and small human studies.',
+  'Epitalon': 'A longevity peptide commonly explored for cellular health and sleep support. Thought to influence telomerase activity in early research; based on animal studies and a small number of human trials — effects in healthy adults are not established.',
   'FOXO4-DRI': 'An experimental senolytic explored for clearing aging ("senescent") cells. Users take short courses for longevity goals. Very early research, mostly animal data.',
   'GHK-Cu': 'A copper peptide commonly used for skin, hair, collagen, and wound healing. Popular in anti-aging and "glow" protocols. Based on cell and animal studies.',
-  'GHRP-2': 'A growth-hormone-releasing peptide commonly used for muscle gain, fat loss, and appetite stimulation by increasing GH output.',
-  'GHRP-6': 'Similar to GHRP-2; commonly used for muscle, recovery, and notably strong appetite stimulation. Popular in bulking protocols.',
+  'GHRP-2': 'A growth-hormone-releasing peptide commonly explored for muscle support, fat loss, and appetite stimulation. Thought to work by stimulating GH release; human efficacy data is limited.',
+  'GHRP-6': 'Similar to GHRP-2; commonly explored for muscle support, recovery, and notably strong appetite stimulation. Popular in community bulking protocols; formal human efficacy data is limited.',
   'GLOW Stack (BPC-157 + TB-500 + GHK-Cu)': 'A blend of BPC-157, TB-500, and GHK-Cu commonly used for skin glow, healing, and recovery — combining repair and collagen-support compounds.',
   'Glutathione': 'A master antioxidant commonly used for detox, skin brightening, and immune/liver support. Popular in wellness and anti-aging routines.',
   'HCG': 'Commonly used to support testosterone production and fertility, and to maintain testicular function during or after TRT or steroid cycles. Established clinical use.',
   'Hexarelin': 'A potent GH secretagogue commonly used for muscle growth and recovery. Among the strongest GH-releasing peptides; tolerance can build quickly.',
-  'HGH': 'Human growth hormone, commonly used for fat loss, muscle, recovery, skin, and anti-aging. Extensive clinical data; use outside diagnosed deficiency is off-label.',
-  'IGF-1 LR3': 'A long-acting form of IGF-1 commonly used for muscle growth and recovery, typically post-workout. Based largely on animal muscle studies.',
+  'HGH': 'Human growth hormone with extensive clinical data for diagnosed deficiency. Commonly explored off-label for body composition, recovery, and longevity goals — off-label use is not FDA-approved and outcomes vary significantly.',
+  'IGF-1 LR3': 'A long-acting form of IGF-1 commonly explored for muscle support and recovery, typically post-workout. Based largely on animal muscle studies; human efficacy is not well established.',
   'Ipamorelin': 'A gentle, selective GH-releasing peptide commonly used for lean muscle, recovery, fat loss, and sleep, with relatively few side effects.',
   'KLOW Stack (TB + BPC + GHK + KPV)': 'A blend of TB-500, BPC-157, GHK-Cu, and KPV commonly used for comprehensive healing, recovery, and anti-inflammatory support.',
   'KPV': 'An anti-inflammatory peptide commonly used for gut issues, IBD, and skin inflammation. Users report calmer inflammation; evidence is mostly animal data.',
-  'L-Carnitine': 'Commonly used for fat metabolism, energy, and exercise performance — helping shuttle fat to be burned for fuel. Supported by human metabolic trials.',
+  'L-Carnitine': 'Commonly used for fat metabolism, energy, and exercise performance — thought to support fat utilization for fuel. Some human metabolic trials exist; results vary.',
   'LL-37': 'An antimicrobial peptide commonly explored for infections, gut health, and wound healing. Based on animal studies; limited human clinical data.',
   'Mazdutide': 'An investigational GLP-1/glucagon dual agonist commonly explored for weight loss and metabolic health. Supported by phase 2/3 trials.',
   'Melanotan I': 'Commonly used for tanning and sun protection by stimulating melanin. More targeted than Melanotan II. Limited formal efficacy data.',
@@ -5510,7 +5510,7 @@ function showPeptideInfo(pepName) {
       </div>
       ${ev.level ? `<div class="pep-info-badge-row"><span class="ev-badge ev-badge-${ev.level}">${EVIDENCE_ICONS[ev.level] || ''} ${escapeHtml(ev.label || '')}</span></div>` : ''}
       <div class="about-section">
-        <div class="about-section-title">Commonly used for</div>
+        <div class="about-section-title">Commonly reported uses (educational reference only)</div>
         <div class="about-section-body">${escapeHtml(uses)}</div>
       </div>
       <div class="about-section">
