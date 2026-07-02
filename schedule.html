@@ -673,7 +673,7 @@ const PEPTIDE_USES = {
   'PE-22-28': 'An experimental peptide explored for depression and mood. Users report antidepressant-like effects; very early research with minimal human data.',
   'PEG-MGF': 'A pegylated mechano growth factor commonly used for muscle repair and growth post-workout. Based on animal muscle studies.',
   'PT-141 (Bremelanotide)': 'Commonly used for libido and sexual function in both men and women. FDA approved for low sexual desire in premenopausal women; other uses are off-label.',
-  'Retatrutide': 'An investigational triple agonist (GIP/GLP-1/glucagon) commonly explored for substantial weight loss and metabolic health. Strong phase 2/3 data.',
+  'Retatrutide': 'A triple receptor agonist targeting GIP, GLP-1, and glucagon — making it unique among the newer weight-loss compounds. While semaglutide hits one receptor and tirzepatide hits two, retatrutide hits all three simultaneously. The glucagon component is the key differentiator: it directly raises resting energy expenditure, meaning your body burns more calories even at rest, stacked on top of the powerful appetite suppression from the GLP-1 and GIP pathways. In a landmark Eli Lilly Phase 2 trial published in the NEJM (2023), participants at the 12 mg dose lost an average of 24.2% of body weight over 48 weeks — the highest weight-loss percentage ever recorded in a drug trial at that time, surpassing tirzepatide and semaglutide in head-to-head comparisons. It also produced significant reductions in liver fat, making it a strong candidate for MASH/NASH treatment in addition to obesity. Phase 3 trials (the TRIUMPH program) are currently underway. Titration is slow and deliberate — starting at 1 mg and stepping up over several months — to minimize GI side effects from the glucagon receptor activation. Side-effect profile is similar to other GLP-1 class compounds (nausea, GI discomfort during uptitration), but generally manageable with a proper ramp.',
   'Selank': 'An anti-anxiety nootropic peptide commonly used for stress, anxiety, and focus. Based on Russian clinical data; limited Western studies.',
   'Semaglutide': 'A GLP-1 agonist commonly used for weight loss and blood-sugar control by curbing appetite. FDA approved as Ozempic® and Wegovy®.',
   'Semax': 'A nootropic peptide commonly used for focus, memory, cognitive performance, and neuroprotection. Based on Russian clinical data.',
@@ -689,21 +689,30 @@ const PEPTIDE_USES = {
 };
 
 function showPeptideInfo(pepName) {
+  if (document.querySelector('.pep-info-overlay')) return; // one modal at a time
   const pep = PEPTIDES.find(p => p.name === pepName);
   if (!pep) return;
   const uses = PEPTIDE_USES[pep.name] || 'No usage information available for this compound.';
   const overlay = document.createElement('div');
   overlay.className = 'pep-info-overlay';
-  overlay.innerHTML = `<div class="pep-info-sheet" role="dialog" aria-modal="true"><div style="text-align:center;padding:.25rem 0 .5rem"><span class="today-dot" style="background:${pep.color};display:inline-block;margin-right:.4rem"></span><span class="pep-info-sname">${pep.name}</span></div><div><div class="pep-info-label">Commonly reported uses (educational reference only)</div><div class="pep-info-body">${uses}</div></div><div class="pep-info-disc">⚕️ Educational only — not medical advice. These describe uses people commonly report or that early research explores, not proven outcomes. Always consult a qualified healthcare provider.</div><button class="pep-info-close" style="margin-top:.5rem">Close</button></div>`;
+  overlay.innerHTML = `<div class="pep-info-sheet" role="dialog" aria-modal="true" tabindex="-1" aria-label="About ${escapeHtml(pep.name)}"><div style="text-align:center;padding:.25rem 0 .5rem"><span class="today-dot" style="background:${pep.color};display:inline-block;margin-right:.4rem"></span><span class="pep-info-sname">${escapeHtml(pep.name)}</span></div><div><div class="pep-info-label">Commonly reported uses (educational reference only)</div><div class="pep-info-body">${escapeHtml(uses)}</div></div><div class="pep-info-disc">⚕️ Educational only — not medical advice. These describe uses people commonly report or that early research explores, not proven outcomes. Always consult a qualified healthcare provider.</div><button class="pep-info-close" style="margin-top:.5rem">Close</button></div>`;
   document.body.appendChild(overlay);
-  const close = () => document.body.removeChild(overlay);
+  const prevFocus = document.activeElement;
+  const close = () => {
+    document.removeEventListener('keydown', onKey);
+    overlay.remove();
+    if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
+  };
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  overlay.querySelector('.pep-info-sheet').focus();
   overlay.querySelector('.pep-info-close').addEventListener('click', close);
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
 document.addEventListener('click', e => {
   const btn = e.target.closest('.pep-use-icon');
-  if (btn) { e.stopPropagation(); showPeptideInfo(btn.dataset.pepName); }
+  if (btn) showPeptideInfo(btn.dataset.pepName);
 });
 
 const VIALS = [1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,70,80,100,200,250,500,1000,2000,2500];
@@ -716,7 +725,8 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = String(str || '');
-  return div.innerHTML;
+  // textContent->innerHTML escapes <>& but not quotes; escape them for attribute contexts
+  return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ── Safe Storage Helpers ─────────────────────────────────────
