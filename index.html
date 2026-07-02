@@ -3912,14 +3912,6 @@ function renderPepDiscover() {
 }
 
 
-function getShortUse(name) {
-  const full = PEPTIDE_USES[name] || '';
-  if (!full) return '';
-  const m = full.match(/(?:commonly used|explored|used) for ([^.]+)/i);
-  let phrase = m ? m[1].trim() : full.split(/[.!]/)[0].trim();
-  if (phrase.length > 40) phrase = phrase.slice(0, 37).replace(/\s+\S*$/, '') + '\u2026';
-  return phrase;
-}
 
 const VIALS = [1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,70,80,100,200,250,500,1000,2000,2500];
 const WATER = [0.5,1,1.5,2,2.5,3,4,5];
@@ -3931,7 +3923,8 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = String(str || '');
-  return div.innerHTML;
+  // textContent->innerHTML escapes <>& but not quotes; escape them for attribute contexts
+  return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ── Safe localStorage helpers ─────────────────────────────────
@@ -5566,6 +5559,7 @@ const pepExpandedSet = new Set();
 
 // Bottom-sheet popup: "what people allegedly take this peptide for"
 function showPeptideInfo(pepName) {
+  if (document.querySelector('.pep-info-overlay')) return; // one modal at a time
   const pep = PEPTIDES.find(p => p.name === pepName);
   if (!pep) return;
   const uses = PEPTIDE_USES[pep.name] || 'No usage information available yet for this compound.';
@@ -5574,7 +5568,7 @@ function showPeptideInfo(pepName) {
   const overlay = document.createElement('div');
   overlay.className = 'about-overlay pep-info-overlay';
   overlay.innerHTML = `
-    <div class="about-sheet pep-info-sheet" role="dialog" aria-modal="true" aria-label="About ${escapeHtml(pep.name)}">
+    <div class="about-sheet pep-info-sheet" role="dialog" aria-modal="true" tabindex="-1" aria-label="About ${escapeHtml(pep.name)}">
       <div class="pep-info-header">
         <span class="pep-dot" style="background:${pep.color}"></span>
         <span class="pep-info-name">${escapeHtml(pep.name)}</span>
@@ -5594,7 +5588,15 @@ function showPeptideInfo(pepName) {
     </div>
   `;
   document.body.appendChild(overlay);
-  const close = () => document.body.removeChild(overlay);
+  const prevFocus = document.activeElement;
+  const close = () => {
+    document.removeEventListener('keydown', onKey);
+    overlay.remove();
+    if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
+  };
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  overlay.querySelector('.pep-info-sheet').focus();
   overlay.querySelector('.about-close').addEventListener('click', close);
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
