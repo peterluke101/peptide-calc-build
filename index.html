@@ -12,6 +12,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script>document.documentElement.classList.add('light-mode');if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.remove('light-mode');document.documentElement.classList.add('dark-mode');}</script>
+<script>
+/* #255: Schedule is PWA home. Hub hashes stay on index.html. */
+(function () {
+  var h = (location.hash || '').replace(/^#/, '').split('?')[0];
+  if (h === 'learn') h = 'research';
+  var hub = {history:1,research:1,more:1,advanced:1,weight:1,logs:1,journal:1,logbook:1,'recon-sheet':1,'cost-tracker':1,methodology:1,stacks:1};
+  if (h && hub[h]) return;
+  document.documentElement.style.visibility = 'hidden';
+  location.replace('schedule.html');
+})();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 /* Light-first defaults — dark mode overrides below */
@@ -1192,8 +1203,9 @@ body.light-mode .btn-demo-try { background: var(--surface2); border-color: var(-
 /* Scrollable container and tab backgrounds */
 body.light-mode .app-content { background: #f5f6fa !important; }
 body.light-mode .tab-content { background: #f5f6fa !important; }
-body.light-mode #tab-schedule { background: #f5f6fa !important; }
+body.light-mode #tab-legacy-home { background: #f5f6fa !important; }
 body.light-mode #tab-history,
+body.light-mode #tab-research,
 body.light-mode #logs-view { background: #f5f6fa !important; }
 /* Quick Insights boxes */
 body.light-mode .insight-box { background: #ffffff !important; border-color: var(--border); }
@@ -1215,7 +1227,7 @@ html.dark-mode,body.dark-mode{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;
 body.dark-mode .card,body.dark-mode .section-card{background:var(--surface);border-color:var(--border)}
 body.dark-mode .bottom-nav{background:var(--surface);border-top:1px solid var(--border)}
 body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:var(--surface2);color:var(--text);border-color:var(--border)}
-body.dark-mode .app-content,body.dark-mode .tab-content,body.dark-mode #tab-schedule{background:#0a0a0a!important}
+body.dark-mode .app-content,body.dark-mode .tab-content,body.dark-mode #tab-legacy-home{background:#0a0a0a!important}
 
 /* ── Sprint 5: Adherence & Overdue ─────────────────────────── */
 /* Overdue badge on nav icon */
@@ -1756,7 +1768,6 @@ body.first-run #more-tools-expander{display:none}
 #more-tools-panel .task-card-arrow{display:none}
 /* ── Peptide Discover ────────────────────────────────────────── */
 #pep-discover{width:100%;max-width:720px;margin:0 auto .75rem}
-body.first-run #pep-discover{display:none}
 .pd-header{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.6rem;padding:0 .1rem}
 .pd-header-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
 .pd-header-sub{font-size:.68rem;color:var(--text2)}
@@ -1918,7 +1929,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 <div class="app-content">
 
 <!-- Tab Content Containers -->
-<div id="tab-schedule" class="tab-content active">
+<div id="tab-legacy-home" class="tab-content">
   <!-- Nav (removed calculator link) -->
   <nav class="nav" style="display: none;">
     <!-- Calculator link removed - Schedule is now the main app -->
@@ -1991,14 +2002,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   <div class="task-card-list"></div>
 </div>
 
-<!-- Discover Peptides section (replaces teal calc hero) -->
-<div id="pep-discover">
-  <div class="pd-header">
-    <span class="pd-header-title">🔬 Explore Peptides</span>
-    <span class="pd-header-sub">Tap ⓘ to learn about any compound</span>
-  </div>
-  <div id="pep-discover-list"></div>
-</div>
+<!-- Explore Peptides moved to #tab-research (#255) -->
 
 <!-- More Tools expander for returning users (#128) -->
 <div id="more-tools-expander">
@@ -2101,6 +2105,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <h3 style="text-align:center;margin-bottom:.75rem">Calculated draw amount</h3>
       <div class="wiz-result-units" id="wiz-result-units">—</div>
       <div class="wiz-result-units-label">units on a 100-unit syringe</div>
+      <div class="wiz-result-units" id="wiz-result-ml" style="font-size:1.35rem;padding:.15rem 0 .5rem">— mL</div>
       <div class="wiz-result-row">
         <span class="wiz-result-row-label">Entered amount</span>
         <span class="wiz-result-row-val" id="wiz-r-dose">—</span>
@@ -2119,10 +2124,10 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
         <span class="math-chevron">▶</span> Show how this was calculated
       </button>
       <div class="math-detail" id="wiz-math-detail"></div>
-      <!-- Action buttons (#124) -->
+      <!-- One primary CTA (#255) -->
       <div class="wiz-result-actions-v2">
-        <button class="btn btn-primary" id="wiz-save-protocol">💾 Save as Protocol</button>
-        <button class="btn btn-secondary" id="wiz-add-schedule">🗓️ Add to Schedule</button>
+        <button class="btn btn-primary" id="wiz-add-schedule">Add to Schedule</button>
+        <button class="btn btn-secondary" id="wiz-save-protocol" style="display:none">💾 Save as Protocol</button>
         <button class="btn btn-secondary" id="wiz-log-first-dose" style="display:none">📝 Log First Dose</button>
       </div>
       <div class="wiz-result-actions" style="margin-top:.5rem">
@@ -2642,7 +2647,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 <button id="share-schedule-btn" class="share-btn">📤 Share Schedule</button>
 
 <p class="disclaimer">For educational math only — not medical advice. Always consult a qualified healthcare provider.</p>
-</div> <!-- Close #tab-schedule -->
+</div> <!-- Close #tab-legacy-home -->
 
 <!-- Stacks Tab Content -->
 <div id="tab-stacks" class="tab-content">
@@ -2658,7 +2663,7 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   </div>
 
   <div class="stacks-new-user-note">
-    💡 <strong>Tip:</strong> Set up your first protocol on the Compass tab before building stacks — that way your active peptides appear in your current stack automatically.
+    💡 <strong>Tip:</strong> Set up your first protocol on the Schedule tab before building stacks — that way your active peptides appear in your current stack automatically.
   </div>
   <div class="stack-disclaimer">
     ℹ️ <strong>Educational reference only.</strong> Stack examples reflect commonly reported combinations in published literature. They are not personalized recommendations. Consider starting with one compound at a time and consult your healthcare provider before combining compounds.
@@ -2721,6 +2726,12 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
       <h2>More Tools</h2>
     </div>
     <div class="adv-nav-grid">
+      <button class="task-card" id="adv-goto-calc">
+        <span class="task-card-icon">💉</span>
+        <span class="task-card-text">
+          <span class="task-card-title">Calculate a dose</span>
+        </span>
+      </button>
       <button class="task-card" id="adv-goto-recon">
         <span class="task-card-icon">📋</span>
         <span class="task-card-text">
@@ -3071,12 +3082,30 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   <div class="card animate-in">
     <div class="more-options">
 
-      <!-- Learn Tab -->
-      <div class="more-option" id="learn-option">
-        <div class="more-icon">🧬</div>
+      <div class="more-option" id="more-calc-option">
+        <div class="more-icon">💉</div>
         <div class="more-text">
-          <div class="more-title">Learn</div>
-          <div class="more-desc">Peptide basics, dosing, and reconstitution explained</div>
+          <div class="more-title">Calculate a dose</div>
+          <div class="more-desc">Forward calc — units and mL to draw</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
+      <div class="more-option" id="more-bac-option">
+        <div class="more-icon">🧪</div>
+        <div class="more-text">
+          <div class="more-title">BAC Water Calculator</div>
+          <div class="more-desc">Know your dose? Find how much BAC water to add</div>
+        </div>
+        <div class="more-arrow">›</div>
+      </div>
+
+      <!-- Research -->
+      <div class="more-option" id="learn-option">
+        <div class="more-icon">🔬</div>
+        <div class="more-text">
+          <div class="more-title">Research</div>
+          <div class="more-desc">Explore peptides and educational reference</div>
         </div>
         <div class="more-arrow">›</div>
       </div>
@@ -3301,11 +3330,19 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
   </div>
 </div>
 
-<!-- Learn Tab Content -->
-<div id="tab-learn" class="tab-content">
+<!-- Research Tab — catalog + encyclopedia (#255) -->
+<div id="tab-research" class="tab-content">
   <div class="header">
-    <h1>Learn <span>the Basics</span></h1>
-    <p style="font-size:.9rem;color:var(--text2);margin-top:.5rem;max-width:600px;text-align:center;">Foundational knowledge — educational reference only, not medical advice.</p>
+    <h1>Peptide <span>Research</span></h1>
+    <p style="font-size:.9rem;color:var(--text2);margin-top:.5rem;max-width:600px;text-align:center;">Explore compounds and educational reference — not medical advice.</p>
+  </div>
+
+  <div id="pep-discover">
+    <div class="pd-header">
+      <span class="pd-header-title">🔬 Explore Peptides</span>
+      <span class="pd-header-sub">Tap ⓘ to learn about any compound</span>
+    </div>
+    <div id="pep-discover-list"></div>
   </div>
 
   <div class="learn-disclaimer">
@@ -3694,29 +3731,29 @@ body.light-mode #tab-advanced .task-card-title{color:var(--text)}
 
 </div><!-- /.app-content -->
 
-<!-- Bottom Navigation Tabs -->
+<!-- Bottom Navigation — Schedule | History | Research | More (+ Advanced) -->
 <div class="bottom-nav">
-  <button class="tab-btn active" data-tab="schedule">
-    <span class="tab-icon">📅</span>
-    <span class="tab-label">Compass</span>
-  </button>
-  <button class="tab-btn" id="nav-schedule-link">
+  <button class="tab-btn" id="nav-schedule-link" type="button">
     <span class="tab-icon">🗓️</span>
     <span class="new-dot"></span>
     <span class="tab-label">Schedule</span>
   </button>
-  <button class="tab-btn" data-tab="history" style="position:relative">
+  <button class="tab-btn" data-tab="history" style="position:relative" type="button">
     <span class="tab-icon">🕐</span>
     <span class="overdue-badge" id="overdue-badge"></span>
     <span class="new-dot"></span>
     <span class="tab-label">History</span>
   </button>
-  <button class="tab-btn" data-tab="more" style="position:relative">
+  <button class="tab-btn" data-tab="research" type="button">
+    <span class="tab-icon">🔬</span>
+    <span class="tab-label">Research</span>
+  </button>
+  <button class="tab-btn" data-tab="more" style="position:relative" type="button">
     <span class="tab-icon">⚙️</span>
     <span class="more-alert-dot" id="more-alert-dot"></span>
     <span class="tab-label">More</span>
   </button>
-  <button class="tab-btn tab-btn-advanced" data-tab="advanced">
+  <button class="tab-btn tab-btn-advanced" data-tab="advanced" type="button">
     <span class="tab-icon">⚗️</span>
     <span class="tab-label">Advanced</span>
   </button>
@@ -4740,14 +4777,10 @@ function renderStackRecommendations(goal) {
           const idx = Array.from(sel.options).findIndex(o => o.text === pepName);
           if (idx >= 0) sel.value = sel.options[idx].value;
         });
-        const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
-        if (scheduleTab) scheduleTab.click();
-        setTimeout(() => {
-          const addPanel = document.getElementById('add-panel');
-          if (addPanel) { addPanel.style.display = 'block'; gsShowStep(1); }
-          const addTrigger = document.getElementById('add-trigger');
-          if (addTrigger) addTrigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 120);
+        const pepSel = document.getElementById('add-peptide') || document.getElementById('gs-peptide-sel');
+        const pepIdx = pepSel ? pepSel.value : '';
+        try { sessionStorage.setItem('pendingProtocol', JSON.stringify({ peptideIndex: pepIdx })); } catch (err) { /* ignore */ }
+        window.location.href = 'schedule.html#add';
       });
     });
   }
@@ -6920,10 +6953,21 @@ document.getElementById('peptides-toggle') && document.getElementById('peptides-
 // ── Add to Home Screen + WhatsApp Detection ─────────────────
 let deferredPrompt = null;
 
+function hasReachedFirstValue() {
+  if (localStorage.getItem('hasAddedPeptide') === 'true' || localStorage.getItem('hasAddedPeptide') === '1') return true;
+  if (localStorage.getItem('hasSavedProtocol') === '1') return true;
+  if (localStorage.getItem('hasLoggedDose') === '1') return true;
+  const sched = safeGetJSON('peptide-schedule', []);
+  if (Array.isArray(sched) && sched.length > 0) return true;
+  const protocols = safeGetJSON('savedProtocols', []);
+  if (Array.isArray(protocols) && protocols.length > 0) return true;
+  return false;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  showInstallBanner('native');
+  if (hasReachedFirstValue()) showInstallBanner('native');
 });
 
 function showInstallBanner(type) {
@@ -6933,6 +6977,7 @@ function showInstallBanner(type) {
   const sub = document.getElementById('install-banner-sub');
   const btn = document.getElementById('install-banner-btn');
 
+  if (!hasReachedFirstValue()) return;
   if (localStorage.getItem('install-banner-dismissed')) return;
 
   if (type === 'native') {
@@ -7812,7 +7857,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if ($toast) {
         $toast.style.display = 'block';
         document.querySelector('.tab-btn[data-tab="history"]')?.classList.add('show-new-dot');
-        document.querySelector('.tab-btn[data-tab="schedule"]')?.classList.add('show-new-dot');
+        document.getElementById('nav-schedule-link')?.classList.add('show-new-dot');
         setTimeout(() => { $toast.style.display = 'none'; }, 4000);
       }
     }
@@ -8367,8 +8412,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!slot) return;
     const rcCard = document.getElementById('reverse-calc-card');
     const stackCard = document.getElementById('stack-card');
+    const wiz = document.getElementById('calc-wizard');
     if (rcCard) slot.appendChild(rcCard);
     if (stackCard) { stackCard.style.display = ''; slot.appendChild(stackCard); }
+    if (wiz) slot.appendChild(wiz);
   }
   initAdvancedToolsSlot();
 
@@ -8384,9 +8431,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.body.classList.add('simple-mode');
       document.body.classList.remove('advanced-mode');
-      // If currently on the advanced tab, go back to Compass
+      // If currently on the advanced tab, go back to Schedule
       const advTab = document.getElementById('tab-advanced');
-      if (advTab?.classList.contains('active')) switchToTab('schedule');
+      if (advTab?.classList.contains('active')) window.location.href = 'schedule.html';
     }
     const toggle = document.getElementById('app-mode-toggle');
     if (toggle) toggle.checked = (mode === 'advanced');
@@ -8463,6 +8510,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Switch bottom-nav tab programmatically (mirrors the tab-btn click handler)
   function switchToTab(tabName) {
+    if (tabName === 'schedule' || tabName === 'legacy-home' || tabName === 'home' || tabName === 'compass') {
+      window.location.href = 'schedule.html';
+      return;
+    }
+    if (tabName === 'learn') tabName = 'research';
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     const target = document.getElementById('tab-' + tabName);
@@ -8567,6 +8619,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const units = volMl * 100;
 
     document.getElementById('wiz-result-units').textContent = units.toFixed(1);
+    const wizMl = document.getElementById('wiz-result-ml');
+    if (wizMl) wizMl.textContent = volMl.toFixed(3) + ' mL';
     document.getElementById('wiz-r-dose').textContent = wizDoseUnitMcg ? `${doseMcg} mcg` : `${doseRaw} mg`;
     document.getElementById('wiz-r-conc').textContent = `${concMcgMl.toFixed(0)} mcg/mL`;
     document.getElementById('wiz-r-vol').textContent = `${volMl.toFixed(3)} mL`;
@@ -9209,14 +9263,35 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('installBannerClosed', 'true');
   });
   
-  // Learn option in More tab — show tab-learn
   document.getElementById('learn-option')?.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    const learnTab = document.getElementById('tab-learn');
-    if (learnTab) learnTab.classList.add('active');
-    document.querySelector('.app-content').scrollTop = 0;
-    localStorage.setItem('activeTab', 'learn');
+    switchToTab('research');
+  });
+
+  function openDoseWizard() {
+    switchToTab('advanced');
+    const wizard = document.getElementById('calc-wizard');
+    if (wizard) {
+      wizard.classList.add('active');
+      wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    if (typeof wizShowStep === 'function') wizShowStep(1);
+  }
+
+  document.getElementById('more-calc-option')?.addEventListener('click', openDoseWizard);
+  document.getElementById('adv-goto-calc')?.addEventListener('click', openDoseWizard);
+  document.getElementById('more-bac-option')?.addEventListener('click', () => {
+    switchToTab('advanced');
+    const rcCard = document.getElementById('reverse-calc-card');
+    if (rcCard) {
+      rcCard.style.display = '';
+      const toggle = document.getElementById('reverse-calc-toggle');
+      const panel  = document.getElementById('rc-panel');
+      if (toggle && panel && !toggle.checked) {
+        toggle.checked = true;
+        panel.style.display = 'block';
+      }
+      rcCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   });
 
   // Learn tab accordion toggles
@@ -9642,25 +9717,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore active tab on load — hash takes priority (e.g. index.html#history)
   const hashTab = window.location.hash.replace('#', '');
-  const MAIN_TABS = ['schedule', 'history', 'more', 'advanced'];
-  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'learn', 'logbook', 'recon-sheet', 'cost-tracker', 'methodology'];
-  let savedTab = hashTab || localStorage.getItem('activeTab') || 'schedule';
-  // First run or fresh install — always start on Compass
-  if (isFirstRun()) savedTab = 'schedule';
-  // Sub-tabs are children of More; never restore them as the root landing tab
-  if (SUB_TABS.includes(savedTab)) savedTab = 'schedule';
-  // If advanced tab was saved but mode is now simple, fall back to Compass
-  if (savedTab === 'advanced' && getAppMode() !== 'advanced') savedTab = 'schedule';
-  // Ensure only valid main tabs are used; fall back to Compass
-  if (!MAIN_TABS.includes(savedTab)) savedTab = 'schedule';
+  const MAIN_TABS = ['history', 'research', 'more', 'advanced'];
+  const SUB_TABS  = ['weight', 'stacks', 'logs', 'journal', 'logbook', 'recon-sheet', 'cost-tracker', 'methodology'];
+  let savedTab = hashTab || localStorage.getItem('activeTab') || 'history';
+  if (savedTab === 'learn') savedTab = 'research';
+  if (savedTab === 'schedule' || savedTab === 'compass' || savedTab === 'legacy-home' || savedTab === 'home') {
+    window.location.replace('schedule.html');
+    return;
+  }
+  // Sub-tabs are children of More; restore More rather than bouncing home
+  if (SUB_TABS.includes(savedTab) && !hashTab) savedTab = 'more';
+  // If advanced tab was saved but mode is now simple, fall back to More
+  if (savedTab === 'advanced' && getAppMode() !== 'advanced') savedTab = 'more';
+  if (!MAIN_TABS.includes(savedTab) && !SUB_TABS.includes(savedTab)) {
+    window.location.replace('schedule.html');
+    return;
+  }
   if (hashTab) history.replaceState(null, '', window.location.pathname); // clean URL
   const tabBtn = document.querySelector('.tab-btn[data-tab="' + savedTab + '"]');
   if (tabBtn) {
     tabBtn.click();
-  } else if (savedTab === 'weight' || savedTab === 'learn') {
-    // Sub-tabs with no bottom nav button — show content directly
+  } else if (SUB_TABS.includes(savedTab) || savedTab === 'research') {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab-' + savedTab)?.classList.add('active');
+    if (savedTab === 'research') {
+      document.querySelector('.tab-btn[data-tab="research"]')?.classList.add('active');
+    }
   }
 
   // ── Sprint 11 Collapsibles ──────────────────────────────────
@@ -10938,35 +11020,8 @@ function loadProtocol(id) {
   const p = protocols.find(x => x.id === id);
   if (!p) return;
 
-  // Switch to Compass tab
-  document.querySelector('[data-tab="schedule"]')?.click();
-
-  // Pre-fill stepper fields before opening
-  const pepSel   = document.getElementById('gs-peptide-sel');
-  const vialSel  = document.getElementById('gs-vial-sel');
-  const waterSel = document.getElementById('gs-water-sel');
-  const cycleSel = document.getElementById('gs-cycle-sel');
-  if (pepSel)   pepSel.value   = String(p.peptideIndex);
-  if (vialSel)  vialSel.value  = String(p.vialMg);
-  if (waterSel) waterSel.value = String(p.waterMl);
-  if (cycleSel) cycleSel.value = String(p.cycleDays);
-
-  // Expand if compact, then trigger open (internally calls gsReset → gsShowStep(1))
-  const addCard = document.getElementById('add-peptide-card');
-  if (addCard?.classList.contains('compact')) addCard.classList.remove('compact');
-  const addPanel = document.getElementById('add-panel');
-  const alreadyOpen = addPanel?.style.display === 'block';
-  if (!alreadyOpen) document.getElementById('add-trigger')?.click();
-
-  // Restore tier + custom dose after open (gsReset resets these to defaults)
-  setTimeout(() => {
-    const tierSel = document.getElementById('add-tier');
-    if (tierSel) tierSel.value = p.tier;
-    const customMcgEl = document.getElementById('add-custom-dose-mcg');
-    if (customMcgEl) customMcgEl.value = p.customDoseMcg || 0;
-  }, 0);
-
-  addCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  try { sessionStorage.setItem('pendingProtocol', JSON.stringify(p)); } catch (err) { /* ignore */ }
+  window.location.href = 'schedule.html#add';
 }
 
 function deleteProtocol(id) {
