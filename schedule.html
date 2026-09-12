@@ -33,15 +33,10 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 .nav-sep{color:var(--border);font-size:.7rem;user-select:none}
 
 /* ── Header ──────────────────────────────────────────────── */
-.header{text-align:center;margin-bottom:2rem}
+.header{text-align:center;margin-bottom:.25rem}
 .header h1{font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .header h1 span{color:var(--accent)}
 .header p{font-size:.8rem;font-weight:400;color:var(--text2);margin-top:.35rem;letter-spacing:.06em;text-transform:uppercase}
-
-/* Share button */
-.share-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.6rem 1rem;font-family:inherit;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;transition:all .2s;margin-top:.75rem}
-.share-btn:hover{background:#2dd4b0;transform:translateY(-1px)}
-.share-btn:active{transform:translateY(0)}
 
 /* Gumroad Banner */
 .gumroad-banner{background:linear-gradient(135deg,var(--accent-dim),rgba(61,232,195,.08));border:1px solid rgba(61,232,195,.2);border-radius:var(--radius);padding:1.25rem;margin:0 auto 2rem;max-width:720px;width:100%}
@@ -451,7 +446,6 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
 
 <div class="header">
   <h1>Peptide <span>Compass Pro</span></h1>
-  <button id="share-btn" class="share-btn">📤 Share Schedule</button>
 </div>
 
 <p class="disclaimer" style="margin-top:.25rem;margin-bottom:.75rem;opacity:.8">Personal reference tool only — not medical advice. Always verify with a qualified medical professional.</p>
@@ -1958,45 +1952,6 @@ document.querySelectorAll('.goal-btn').forEach(btn => {
     e.target.classList.add('active');
     renderStackRecommendations(e.target.getAttribute('data-goal'));
   });
-});
-
-// ── Share functionality ─────────────────────────────────────
-document.getElementById('share-btn').addEventListener('click', async () => {
-  const shareData = {
-    title: 'Peptide Compass Pro',
-    text: 'Hey — thought you might find this useful. Peptide schedule, dose calculator, injection tracking.\n\n' + window.location.href + '\n\nQuick Start Guide ($9.99):\nhttps://peterlukedigital.gumroad.com/l/fkhwu'
-  };
-
-  if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-    try {
-      await navigator.share(shareData);
-    } catch (err) {
-      // User cancelled
-    }
-  } else {
-    // Fallback: textarea copy method (works on iOS Safari)
-    const text = '💉 Peptide Compass Pro — track your stack, log injections, cycle tracking & more\n\n👉 ' + window.location.href + '\n\n📖 New to peptides? Grab the Quick Start Guide ($9.99)\n👉 https://peterlukedigital.gumroad.com/l/fkhwu';
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-    }
-    const btn = document.getElementById('share-btn');
-    const original = btn.textContent;
-    btn.textContent = '✓ Link Copied!';
-    btn.style.background = '#10b981';
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.style.background = 'var(--accent)';
-    }, 2000);
-  }
 });
 
 // ── Peptides List Collapse Toggle ───────────────────────────
