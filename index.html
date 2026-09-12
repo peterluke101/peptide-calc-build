@@ -8679,14 +8679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('wiz-math-toggle')?.setAttribute('aria-expanded', open);
   });
 
-  // ── Wizard result action buttons (#124) ────────────────────
-  // Show "Log First Dose" only if no injections logged yet
-  (function() {
-    const log = safeGetJSON('injectionLog', {});
-    const hasLog = Object.keys(log).length > 0;
-    const btn = document.getElementById('wiz-log-first-dose');
-    if (btn && !hasLog) btn.style.display = '';
-  })();
+  // ── Wizard result: one primary CTA (#255) ──────────────────
 
   document.getElementById('wiz-save-protocol')?.addEventListener('click', () => {
     const vialMg  = parseFloat(document.getElementById('wiz-vial')?.value) || 5;
