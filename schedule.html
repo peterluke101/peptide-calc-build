@@ -2042,13 +2042,12 @@ document.getElementById('peptides-toggle').addEventListener('click', function() 
 let deferredPrompt = null;
 
 function hasReachedFirstValue() {
-  if (localStorage.getItem('hasAddedPeptide') === 'true' || localStorage.getItem('hasAddedPeptide') === '1') return true;
-  if (localStorage.getItem('hasSavedProtocol') === '1') return true;
-  if (localStorage.getItem('hasLoggedDose') === '1') return true;
   const sched = safeGetJSON('peptide-schedule', []);
   if (Array.isArray(sched) && sched.length > 0) return true;
   const protocols = safeGetJSON('savedProtocols', []);
   if (Array.isArray(protocols) && protocols.length > 0) return true;
+  const inj = safeGetJSON('injectionLog', {});
+  if (inj && typeof inj === 'object' && Object.keys(inj).length > 0) return true;
   return false;
 }
 
