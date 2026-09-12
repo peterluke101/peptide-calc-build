@@ -2,7 +2,7 @@
   "name": "Peptide Compass Pro",
   "short_name": "Peptide Pro",
   "description": "Peptide reconstitution calculator with dose scheduling and injection journal",
-  "start_url": "/",
+  "start_url": "/schedule.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

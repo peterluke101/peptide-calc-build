@@ -114,6 +114,9 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 .done-btn:hover{background:var(--accent-dim);border-color:var(--accent)}
 .done-btn:active{transform:scale(.95)}
 .done-btn.done{background:var(--accent);color:#000;border-color:var(--accent);animation:donePop .3s ease}
+.today-skip-btn,.today-undo-btn{background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:.4rem .55rem;font-size:.7rem;font-weight:600;cursor:pointer;margin-left:.35rem;font-family:inherit;min-height:44px}
+.today-item.skipped{opacity:.7}
+.today-item.skipped .today-name{text-decoration:line-through}
 
 /* ── History Section ─────────────────────────────────────── */
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
@@ -289,6 +292,15 @@ button, .btn, .tab-btn, .goal-btn{min-height:44px;min-width:44px}
 .btn-add-trigger{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;background:none;border:1px dashed var(--border);border-radius:10px;color:var(--text2);font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s;margin-top:.5rem}
 .btn-add-trigger:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .btn-add-trigger .plus{font-size:1.1rem;font-weight:300}
+.add-pep-home{padding:.45rem .65rem;margin-bottom:.75rem}
+.btn-add-trigger.slim{margin-top:0;padding:.4rem .65rem;min-height:44px;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+.add-draw-label{font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;text-align:center;margin:.15rem 0 .35rem}
+.add-draw-preview{display:flex;align-items:baseline;justify-content:center;gap:.85rem;background:var(--surface2);border-radius:10px;padding:.75rem;margin:0 0 .75rem}
+.add-draw-units{font-size:1.65rem;font-weight:800;color:var(--accent);line-height:1}
+.add-draw-ml{font-size:1rem;font-weight:600;color:var(--text)}
+#gumroad-banner{display:none}
+#gumroad-banner.show{display:block}
+#stack-card{display:none}
 
 
 
@@ -444,7 +456,7 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
 
 <p class="disclaimer" style="margin-top:.25rem;margin-bottom:.75rem;opacity:.8">Personal reference tool only — not medical advice. Always verify with a qualified medical professional.</p>
 
-<!-- A2HS / WhatsApp Banner -->
+<!-- A2HS / WhatsApp Banner — delayed until first value (#130 / #255) -->
 <div class="install-banner" id="install-banner">
   <div class="install-banner-icon" id="install-banner-icon">📲</div>
   <div class="install-banner-text">
@@ -453,6 +465,64 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
   </div>
   <button class="install-banner-btn" id="install-banner-btn">Install</button>
   <button class="install-banner-close" id="install-banner-close">✕</button>
+</div>
+
+<!-- Add Peptide — thin collapsed control at top of home (#255) -->
+<div class="card animate-in add-pep-home" id="add-pep-home">
+  <button class="btn-add-trigger slim" id="add-trigger" type="button"><span class="plus">+</span> Add Peptide</button>
+  <div class="add-panel" id="add-panel" style="display:none">
+    <div class="field">
+      <label for="add-peptide">Peptide</label>
+      <select id="add-peptide"></select>
+    </div>
+    <div class="field">
+      <label for="add-tier">Dose Tier</label>
+      <select id="add-tier">
+        <option value="low">Low</option>
+        <option value="standard" selected>Standard</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="add-vial">Vial Size</label>
+      <select id="add-vial"></select>
+    </div>
+    <div class="field">
+      <label for="add-water">Bacteriostatic Water</label>
+      <select id="add-water"></select>
+    </div>
+    <div class="field">
+      <label for="add-cycle">Cycle Length (days)</label>
+      <select id="add-cycle">
+        <option value="7">7 days (1 week)</option>
+        <option value="10">10 days</option>
+        <option value="14">14 days (2 weeks)</option>
+        <option value="20">20 days</option>
+        <option value="21">21 days (3 weeks)</option>
+        <option value="28">28 days (4 weeks)</option>
+        <option value="35">35 days (5 weeks)</option>
+        <option value="42">42 days (6 weeks)</option>
+        <option value="49">49 days (7 weeks)</option>
+        <option value="56" selected>56 days (8 weeks)</option>
+        <option value="84">84 days (12 weeks)</option>
+        <option value="0">Ongoing (no end)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="add-start-date">Start Date</label>
+      <input type="date" id="add-start-date">
+      <div class="helper-text">When did you start this peptide?</div>
+    </div>
+    <div class="add-draw-label">Draw amount</div>
+    <div class="add-draw-preview" id="add-draw-preview">
+      <span class="add-draw-units" id="add-draw-units">—</span>
+      <span class="add-draw-ml" id="add-draw-ml">— mL</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="add-confirm">Add to Schedule</button>
+      <button class="btn btn-secondary" id="add-cancel">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- Today's Injections -->
@@ -512,59 +582,11 @@ body.advanced-mode .tab-btn-advanced{display:flex!important}
     </button>
   </div>
   <div id="peptides-list"></div>
-  <button class="btn-add-trigger" id="add-trigger"><span class="plus">+</span> Add Peptide</button>
-  <div class="add-panel" id="add-panel" style="display:none">
-    <div class="field">
-      <label for="add-peptide">Peptide</label>
-      <select id="add-peptide"></select>
-    </div>
-    <div class="field">
-      <label for="add-tier">Dose Tier</label>
-      <select id="add-tier">
-        <option value="low">Low</option>
-        <option value="standard" selected>Standard</option>
-        <option value="high">High</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="add-vial">Vial Size</label>
-      <select id="add-vial"></select>
-    </div>
-    <div class="field">
-      <label for="add-water">Bacteriostatic Water</label>
-      <select id="add-water"></select>
-    </div>
-    <div class="field">
-      <label for="add-cycle">Cycle Length (days)</label>
-      <select id="add-cycle">
-        <option value="7">7 days (1 week)</option>
-        <option value="10">10 days</option>
-        <option value="14">14 days (2 weeks)</option>
-        <option value="20">20 days</option>
-        <option value="21">21 days (3 weeks)</option>
-        <option value="28">28 days (4 weeks)</option>
-        <option value="35">35 days (5 weeks)</option>
-        <option value="42">42 days (6 weeks)</option>
-        <option value="49">49 days (7 weeks)</option>
-        <option value="56" selected>56 days (8 weeks)</option>
-        <option value="84">84 days (12 weeks)</option>
-        <option value="0">Ongoing (no end)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="add-start-date">Start Date</label>
-      <input type="date" id="add-start-date">
-      <div class="helper-text">When did you start this peptide?</div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="add-confirm">Add to Schedule</button>
-      <button class="btn btn-secondary" id="add-cancel">Cancel</button>
-    </div>
-  </div>
+  <button class="btn-add-trigger" id="add-another-trigger" type="button"><span class="plus">+</span> Add another</button>
 </div>
 
-<!-- Gumroad Banner -->
-<div class="gumroad-banner">
+<!-- Gumroad Banner — delayed until first value (#130 / #255) -->
+<div class="gumroad-banner" id="gumroad-banner">
   <div class="banner-content">
     <div class="banner-icon">📚</div>
     <div class="banner-text">
@@ -849,6 +871,20 @@ function removeInjection(injectionKey) {
   const dateStr = parts.pop();
   const peptideName = parts.join('_');
   incrementVialUsage(peptideName, -1);
+}
+
+function getSkipLog() {
+  return safeGetJSON('skipLog', {});
+}
+function saveDoseSkip(injectionKey) {
+  const log = getSkipLog();
+  log[injectionKey] = { skippedAt: new Date().toISOString() };
+  safeSetItem('skipLog', JSON.stringify(log));
+}
+function removeDoseSkip(injectionKey) {
+  const log = getSkipLog();
+  delete log[injectionKey];
+  safeSetItem('skipLog', JSON.stringify(log));
 }
 
 // ── Vial Tracking Functions ─────────────────────────────────
@@ -1364,15 +1400,48 @@ function autoPopulateCycle(pepIdx) {
   }
 }
 
+function updateAddDrawPreview() {
+  const pep = PEPTIDES[parseInt($addPep.value)];
+  const unitsEl = document.getElementById('add-draw-units');
+  const mlEl = document.getElementById('add-draw-ml');
+  if (!pep || !unitsEl || !mlEl) return;
+  const doseMcg = getDoseMcg(pep, document.getElementById('add-tier').value);
+  const vialMg = parseFloat($addVial.value);
+  const waterMl = parseFloat($addWater.value);
+  const units = calcUnits(doseMcg, vialMg, waterMl);
+  const volMl = units / 100;
+  unitsEl.textContent = fmtUnits(units) + ' u';
+  mlEl.textContent = (isFinite(volMl) ? volMl.toFixed(2) : '—') + ' mL';
+}
+
+function openAddPanel() {
+  $addPanel.style.display = 'block';
+  const pepIdx = parseInt($addPep.value);
+  const existing = schedule.find(e => e.peptideIndex === pepIdx);
+  $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
+  autoPopulateCycle(pepIdx);
+  updateAddDrawPreview();
+  $addPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 $addTrigger.addEventListener('click', () => {
-  $addPanel.style.display = $addPanel.style.display === 'none' ? 'block' : 'none';
-  if ($addPanel.style.display === 'block') {
-    const pepIdx = parseInt($addPep.value);
-    const existing = schedule.find(e => e.peptideIndex === pepIdx);
-    $addStartDate.value = existing ? existing.startDate : new Date().toISOString().split('T')[0];
-    autoPopulateCycle(pepIdx);
-    $addPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if ($addPanel.style.display === 'none' || !$addPanel.style.display) {
+    openAddPanel();
+  } else {
+    $addPanel.style.display = 'none';
   }
+});
+
+document.getElementById('add-another-trigger')?.addEventListener('click', () => {
+  openAddPanel();
+  document.getElementById('add-pep-home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+['change', 'input'].forEach(evt => {
+  $addPep.addEventListener(evt, updateAddDrawPreview);
+  $addVial.addEventListener(evt, updateAddDrawPreview);
+  $addWater.addEventListener(evt, updateAddDrawPreview);
+  document.getElementById('add-tier')?.addEventListener(evt, updateAddDrawPreview);
 });
 
 document.getElementById('add-cancel').addEventListener('click', () => {
@@ -1395,8 +1464,13 @@ document.getElementById('add-confirm').addEventListener('click', () => {
   }
 
   saveSchedule();
+  try {
+    localStorage.setItem('hasAddedPeptide', 'true');
+    localStorage.setItem('hasOnboarded', '1');
+  } catch (e) { /* quota */ }
   $addPanel.style.display = 'none';
   renderAll();
+  revealPostValuePromos();
 });
 
 function removePeptide(idx) {
@@ -1429,7 +1503,7 @@ function renderToday(animate) {
 
     if (schedule.length === 0) {
       $counter.textContent = '';
-      $list.innerHTML = '<div class="today-empty">No peptides scheduled yet. Add one below.</div>';
+      $list.innerHTML = '<div class="today-empty">No peptides scheduled yet. Tap Add Peptide above.</div>';
       return;
     }
 
@@ -1466,10 +1540,15 @@ function renderToday(animate) {
       const units = calcUnits(doseMcg, entry.vialMg, entry.waterMl);
       const injectionKey = pep.name + '_' + formatLocalDate(date);
       const isDone = !!log[injectionKey];
+      const isSkipped = !!getSkipLog()[injectionKey];
       if (isDone) doneItems++;
 
       const div = document.createElement('div');
-      div.className = 'today-item' + (isDone ? ' completed' : '');
+      div.className = 'today-item' + (isDone ? ' completed' : '') + (isSkipped && !isDone ? ' skipped' : '');
+
+      const skipBtn = isDone ? '' : (isSkipped
+        ? `<button class="today-undo-btn" data-injection="${injectionKey}">Undo skip</button>`
+        : `<button class="today-skip-btn" data-injection="${injectionKey}">Skip</button>`);
 
       div.innerHTML = `
         <div class="today-dot" style="background:${pep.color}"></div>
@@ -1484,6 +1563,7 @@ function renderToday(animate) {
         <button class="done-btn ${isDone ? 'done' : ''}" data-injection="${injectionKey}">
           ${isDone ? '✓ Done' : 'Inject'}
         </button>
+        ${skipBtn}
       `;
       $list.appendChild(div);
     });
@@ -1520,6 +1600,8 @@ function renderToday(animate) {
         } else {
           // Mark done
           saveInjection(injectionKey);
+          removeDoseSkip(injectionKey);
+          try { localStorage.setItem('hasLoggedDose', '1'); } catch (err) { /* quota */ }
           btn.classList.add('done');
           row.classList.add('completed');
           btn.textContent = '✓ Done';
@@ -1537,6 +1619,22 @@ function renderToday(animate) {
         let done = 0;
         allBtns.forEach(b => { if (b.classList.contains('done')) done++; });
         $counter.textContent = done + ' of ' + total + ' completed';
+      });
+    });
+
+    $list.querySelectorAll('.today-skip-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        saveDoseSkip(btn.getAttribute('data-injection'));
+        renderToday();
+        renderInjectionHistory();
+      });
+    });
+    $list.querySelectorAll('.today-undo-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeDoseSkip(btn.getAttribute('data-injection'));
+        renderToday();
       });
     });
   }
@@ -1943,10 +2041,25 @@ document.getElementById('peptides-toggle').addEventListener('click', function() 
 // ── Add to Home Screen + WhatsApp Detection ─────────────────
 let deferredPrompt = null;
 
+function hasReachedFirstValue() {
+  const sched = safeGetJSON('peptide-schedule', []);
+  if (Array.isArray(sched) && sched.length > 0) return true;
+  const protocols = safeGetJSON('savedProtocols', []);
+  if (Array.isArray(protocols) && protocols.length > 0) return true;
+  const inj = safeGetJSON('injectionLog', {});
+  if (inj && typeof inj === 'object' && Object.keys(inj).length > 0) return true;
+  return false;
+}
+
+function revealPostValuePromos() {
+  if (!hasReachedFirstValue()) return;
+  document.getElementById('gumroad-banner')?.classList.add('show');
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  showInstallBanner('native');
+  if (hasReachedFirstValue()) showInstallBanner('native');
 });
 
 function showInstallBanner(type) {
@@ -1956,6 +2069,7 @@ function showInstallBanner(type) {
   const sub = document.getElementById('install-banner-sub');
   const btn = document.getElementById('install-banner-btn');
 
+  if (!hasReachedFirstValue()) return;
   if (localStorage.getItem('install-banner-dismissed')) return;
 
   if (type === 'native') {
@@ -2023,10 +2137,27 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-// ── Onboarding gate — redirect to index if not yet onboarded ──
-if (!localStorage.getItem('hasOnboarded')) {
-  window.location.replace('index.html');
+revealPostValuePromos();
+
+if (location.hash === '#add') {
+  openAddPanel();
 }
+
+(function applyPendingProtocol() {
+  const raw = sessionStorage.getItem('pendingProtocol');
+  if (!raw) return;
+  sessionStorage.removeItem('pendingProtocol');
+  try {
+    const p = JSON.parse(raw);
+    if (p.peptideIndex != null && $addPep) $addPep.value = String(p.peptideIndex);
+    if (p.vialMg && $addVial) $addVial.value = String(p.vialMg);
+    if (p.waterMl && $addWater) $addWater.value = String(p.waterMl);
+    if (p.cycleDays != null) document.getElementById('add-cycle').value = String(p.cycleDays);
+    if (p.tier) document.getElementById('add-tier').value = p.tier;
+    if (p.startDate && $addStartDate) $addStartDate.value = p.startDate;
+    openAddPanel();
+  } catch (e) { /* ignore */ }
+})();
 
 // ── Advanced mode — restore class from localStorage ───────────
 if (localStorage.getItem('appMode') === 'advanced') {
@@ -2049,25 +2180,25 @@ if (localStorage.getItem('theme') === 'dark') {
 
 </div><!-- /.app-content -->
 
-<!-- Bottom Navigation -->
+<!-- Bottom Navigation — Schedule | History | Research | More (+ Advanced) -->
 <div class="bottom-nav">
-  <button class="tab-btn" onclick="window.location.href='index.html'">
-    <span class="tab-icon">📅</span>
-    <span class="tab-label">Compass</span>
-  </button>
-  <button class="tab-btn active">
+  <button class="tab-btn active" type="button">
     <span class="tab-icon">🗓️</span>
     <span class="tab-label">Schedule</span>
   </button>
-  <button class="tab-btn" onclick="window.location.href='index.html#history'">
+  <button class="tab-btn" type="button" onclick="window.location.href='index.html#history'">
     <span class="tab-icon">🕐</span>
     <span class="tab-label">History</span>
   </button>
-  <button class="tab-btn" onclick="window.location.href='index.html#more'">
+  <button class="tab-btn" type="button" onclick="window.location.href='index.html#research'">
+    <span class="tab-icon">🔬</span>
+    <span class="tab-label">Research</span>
+  </button>
+  <button class="tab-btn" type="button" onclick="window.location.href='index.html#more'">
     <span class="tab-icon">⚙️</span>
     <span class="tab-label">More</span>
   </button>
-  <button class="tab-btn tab-btn-advanced" onclick="window.location.href='index.html#advanced'">
+  <button class="tab-btn tab-btn-advanced" type="button" onclick="window.location.href='index.html#advanced'">
     <span class="tab-icon">⚗️</span>
     <span class="tab-label">Advanced</span>
   </button>
